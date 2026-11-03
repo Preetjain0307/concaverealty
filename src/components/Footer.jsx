@@ -10,7 +10,7 @@ import {
   Share2
 } from 'lucide-react';
 
-export function Footer({ onNavigate, onOpenEnquiry, onOpenTour }) {
+export function Footer({ onNavigate, onOpenEnquiry }) {
   return (
     <footer className="bg-[#EFECE6] text-[#14221F] pt-16 pb-10 border-t border-[#E5E0D8] text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -24,7 +24,6 @@ export function Footer({ onNavigate, onOpenEnquiry, onOpenTour }) {
             <button onClick={() => onNavigate('projects')} className="block hover:text-[#245348] text-left">Our Developments</button>
             <button onClick={() => onNavigate('locations')} className="block hover:text-[#245348] text-left">Key Locations</button>
             <button onClick={() => onNavigate('amenities')} className="block hover:text-[#245348] text-left">Signature Hospitality</button>
-            <button onClick={() => onOpenTour(1)} className="block hover:text-[#245348] text-left text-[#C59B4E] font-medium">360° Virtual Tours</button>
           </div>
 
           {/* Column 2 */}

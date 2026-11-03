@@ -85,7 +85,6 @@ export function App() {
           }}
           currentView={currentView}
           onOpenEnquiry={handleOpenEnquiry}
-          onOpenTour={handleOpenTour}
           activeUser={activeUser}
           onLogout={handleLogout}
         />
@@ -199,8 +198,7 @@ export function App() {
           <VirtualTourModal
             isOpen={tourModalOpen}
             onClose={() => setTourModalOpen(false)}
-            tourUrl={tourProject.virtualTourUrl || "https://view.pixeldo.com/KalpataruAdvay/"}
-            title={`${tourProject.name} 360° Virtual Experience`}
+            project={tourProject}
           />
         </ErrorBoundary>
 
@@ -220,7 +218,6 @@ export function App() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             onOpenEnquiry={handleOpenEnquiry}
-            onOpenTour={handleOpenTour}
           />
         </ErrorBoundary>
 

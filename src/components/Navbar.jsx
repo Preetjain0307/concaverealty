@@ -14,7 +14,7 @@ import {
   Search
 } from 'lucide-react';
 
-export function Navbar({ onNavigate, currentView, onOpenEnquiry, onOpenTour, activeUser, onLogout }) {
+export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onLogout }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [portalDropdownOpen, setPortalDropdownOpen] = useState(false);
 
@@ -70,13 +70,6 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, onOpenTour, act
               className={`hover:text-[#C59B4E] transition-colors ${currentView === 'amenities' ? 'text-[#C59B4E] border-b border-[#C59B4E] pb-1' : ''}`}
             >
               Amenities
-            </button>
-            <button
-              onClick={() => onOpenTour(1)}
-              className="inline-flex items-center gap-1.5 text-[#C59B4E] hover:text-white transition-colors"
-            >
-              <Compass className="w-3.5 h-3.5" />
-              <span>360° Tours</span>
             </button>
           </div>
 
@@ -207,12 +200,6 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, onOpenTour, act
             className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-gray-200"
           >
             Amenities
-          </button>
-          <button
-            onClick={() => { onOpenTour(1); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-[#C59B4E]"
-          >
-            360° Tours
           </button>
 
           <div className="pt-2 border-t border-white/10 flex gap-2">
