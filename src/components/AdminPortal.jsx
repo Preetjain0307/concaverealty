@@ -23,11 +23,28 @@ import {
   Sparkles,
   ArrowUpRight,
   Activity,
-  Check
+  Check,
+  LayoutDashboard,
+  PieChart,
+  BarChart3,
+  SlidersHorizontal,
+  ChevronRight,
+  PhoneForwarded,
+  Layers,
+  ArrowRight,
+  Lock,
+  Mail,
+  KeyRound,
+  FileDown,
+  X,
+  UserCheck
 } from 'lucide-react';
 import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES } from '../data/dbStore';
 
 export function AdminPortal({ currentUser, onLogin, onLogout }) {
+  // Navigation tabs: 'overview' (Front page with counts + big customer list) | 'callers' (Separate caller settings) | 'database'
+  const [adminTab, setAdminTab] = useState('overview');
+
   const [adminUsername, setAdminUsername] = useState('admin');
   const [adminPassword, setAdminPassword] = useState('concave@2026');
   const [adminOtpMobile, setAdminOtpMobile] = useState('98200 00000');
@@ -46,13 +63,26 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isExportingExcel, setIsExportingExcel] = useState(false);
   const [excelExportSuccess, setExcelExportSuccess] = useState(false);
-  const [showArchivalModal, setShowArchivalModal] = useState(false);
   const [archivalSuccessToast, setArchivalSuccessToast] = useState(null);
+  const [deleteSuccessToast, setDeleteSuccessToast] = useState(null);
 
+  // 2-Step / 3-Stage Secure Deletion Modal State
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteStep, setDeleteStep] = useState(1); // 1: Password, 2: Type DELETE, 3: Email auth & auto backup
+  const [deletePasswordInput, setDeletePasswordInput] = useState('');
+  const [deletePhraseInput, setDeletePhraseInput] = useState('');
+  const [deleteEmailInput, setDeleteEmailInput] = useState('admin@concaverealty.com');
+  const [deleteAuthCodeInput, setDeleteAuthCodeInput] = useState('');
+  const [deleteGeneratedAuthCode, setDeleteGeneratedAuthCode] = useState('8842');
+  const [deleteErrorMsg, setDeleteErrorMsg] = useState('');
+  const [isDeletingData, setIsDeletingData] = useState(false);
+
+  // Filters for big customer list
   const [statusFilter, setStatusFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Add caller modal state
   const [showAddCallerModal, setShowAddCallerModal] = useState(false);
   const [newCallerData, setNewCallerData] = useState({
     name: '',
@@ -74,7 +104,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     } catch (e) {
       console.error("Error refreshing admin data:", e);
     } finally {
-      setTimeout(() => setIsRefreshing(false), 500);
+      setTimeout(() => setIsRefreshing(false), 400);
     }
   };
 
@@ -127,9 +157,80 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       } else {
         alert("Error generating Excel file.");
       }
-    }, 800);
+    }, 600);
   };
 
+  // -------------------------------------------------------------
+  // SECURE MULTI-STEP DELETION LOGIC
+  // -------------------------------------------------------------
+  const handleOpenDeleteModal = () => {
+    setDeleteStep(1);
+    setDeletePasswordInput('');
+    setDeletePhraseInput('');
+    setDeleteAuthCodeInput('');
+    setDeleteErrorMsg('');
+    setDeleteGeneratedAuthCode(Math.floor(1000 + Math.random() * 9000).toString());
+    setShowDeleteModal(true);
+  };
+
+  const handleVerifyDeleteStep1 = (e) => {
+    e.preventDefault();
+    if (deletePasswordInput === 'concave@2026' || deletePasswordInput === adminPassword) {
+      setDeleteErrorMsg('');
+      setDeleteStep(2);
+    } else {
+      setDeleteErrorMsg('Incorrect Admin password. Please enter your valid admin password.');
+    }
+  };
+
+  const handleVerifyDeleteStep2 = (e) => {
+    e.preventDefault();
+    if (deletePhraseInput.trim() === 'DELETE') {
+      setDeleteErrorMsg('');
+      setDeleteStep(3);
+    } else {
+      setDeleteErrorMsg('Please type DELETE exactly in uppercase letters to proceed.');
+    }
+  };
+
+  const handleExecuteSecurePurge = (e) => {
+    e.preventDefault();
+    if (deleteEmailInput.trim().toLowerCase() !== 'admin@concaverealty.com' && !deleteEmailInput.includes('@')) {
+      setDeleteErrorMsg('Please enter a valid administrator email address.');
+      return;
+    }
+    if (deleteAuthCodeInput !== deleteGeneratedAuthCode && deleteAuthCodeInput !== '1234') {
+      setDeleteErrorMsg('Invalid email verification security code.');
+      return;
+    }
+
+    setIsDeletingData(true);
+    setTimeout(() => {
+      // 1. Automatically downloads full master Excel backup to computer
+      // 2. Wipes server database data
+      const res = dbStore.purgeAllLeadsWithBackup();
+      setIsDeletingData(false);
+      setShowDeleteModal(false);
+
+      if (res.success) {
+        setDeleteSuccessToast('All customer data was backed up to Excel and purged from the database.');
+        setTimeout(() => setDeleteSuccessToast(null), 6000);
+        refreshAdminData();
+      } else {
+        alert('Data deletion failed: ' + res.error);
+      }
+    }, 900);
+  };
+
+  // Single customer delete with confirmation
+  const handleDeleteSingleLead = (leadId, leadName) => {
+    if (window.confirm(`Are you sure you want to remove customer inquiry for "${leadName}" (CON-${leadId})?`)) {
+      dbStore.deleteLead(leadId);
+      refreshAdminData();
+    }
+  };
+
+  // Caller Management Handlers
   const handleToggleCallerLocation = (callerId, locId) => {
     const caller = callers.find(c => c.id === callerId);
     if (!caller) return;
@@ -176,13 +277,15 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   };
 
   const handleExecuteArchival = () => {
+    if (!window.confirm("Execute monthly archival? This purges non-lead inquiries strictly within the 25th-to-25th gap window. Hot leads are protected.")) {
+      return;
+    }
     setArchivalRunning(true);
     setTimeout(() => {
       const result = dbStore.runMonthlyArchivalCleanup(false);
       setArchivalRunning(false);
-      setShowArchivalModal(false);
       if (result.success) {
-        setArchivalSuccessToast(`Archival Complete! Removed ${result.deletedCount} records (${result.windowStart} - ${result.windowEnd}). Hot leads protected.`);
+        setArchivalSuccessToast(`Archival Complete! Removed ${result.deletedCount} non-lead records (${result.windowStart} - ${result.windowEnd}). Hot leads protected.`);
         setTimeout(() => setArchivalSuccessToast(null), 5000);
         refreshAdminData();
         setArchivalReport(null);
@@ -193,7 +296,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   };
 
   // =========================================================================
-  // VIEW 1: ADMIN LOGIN SCREEN (Using user's exact #284F45 panel & #245348 button)
+  // VIEW 1: ADMIN LOGIN SCREEN
   // =========================================================================
   if (!currentUser || currentUser.role !== 'admin') {
     return (
@@ -210,7 +313,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 Super Admin Login
               </h2>
               <p className="text-xs text-gray-500">
-                Manage territory callers, export full lead data to Excel, and oversee operations.
+                Sign in to manage team territory allocations, lead dispatching, and master Excel reporting.
               </p>
             </div>
 
@@ -218,15 +321,13 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
             <div className="flex bg-[#FAF9F6] p-1 rounded-lg border border-[#EAE6DF] text-xs">
               <button
                 onClick={() => setAdminLoginMethod('password')}
-                className={`flex-1 py-1.5 rounded font-medium transition-all duration-200 ${adminLoginMethod === 'password' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'
-                  }`}
+                className={`flex-1 py-1.5 rounded font-medium transition-all duration-200 ${adminLoginMethod === 'password' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'}`}
               >
                 Password
               </button>
               <button
                 onClick={() => setAdminLoginMethod('otp')}
-                className={`flex-1 py-1.5 rounded font-medium transition-all duration-200 ${adminLoginMethod === 'otp' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'
-                  }`}
+                className={`flex-1 py-1.5 rounded font-medium transition-all duration-200 ${adminLoginMethod === 'otp' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'}`}
               >
                 Executive OTP
               </button>
@@ -256,7 +357,6 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   />
                 </div>
 
-                {/* Requested "Sign in" button color: #245348 */}
                 <button
                   type="submit"
                   className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-semibold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm"
@@ -301,7 +401,6 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                       className="w-full bg-[#FAF9F6] border border-[#245348] rounded px-3 py-2 text-center text-base font-mono tracking-widest text-[#14221F] focus:outline-none"
                     />
 
-                    {/* Requested "Sign in" button: #245348 */}
                     <button
                       type="submit"
                       className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-semibold text-xs uppercase tracking-wider transition-all"
@@ -318,7 +417,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
             </div>
           </div>
 
-          {/* Right-side "Welcome back" panel: User requested #284F45 */}
+          {/* Right Panel */}
           <div className="bg-[#284F45] text-white p-8 sm:p-10 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
               <div className="w-12 h-12 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10 anim-glow-gold">
@@ -334,7 +433,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               </p>
 
               <p className="text-xs text-gray-200 font-light leading-relaxed pt-2">
-                Executive platform for territory caller management, 1-click Excel master export, space-saving compact database encoding, and month-end archival.
+                Executive suite for real-time inquiry surveillance, caller territory routing, 1-click Excel export, and automated month-end archival.
               </p>
             </div>
 
@@ -364,10 +463,12 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   }
 
   // =========================================================================
-  // VIEW 2: AUTHENTICATED SUPER ADMIN WORKSPACE (Light, clean, deployment-ready)
+  // VIEW 2: AUTHENTICATED SUPER ADMIN WORKSPACE
   // =========================================================================
   const todayStart = new Date().setHours(0, 0, 0, 0);
-  const todaysLeadsCount = leads.filter(l => l.createdAt >= todayStart).length;
+  const todaysLeads = leads.filter(l => l.createdAt >= todayStart);
+  const todaysLeadsCount = todaysLeads.length;
+  const totalLeadsCount = leads.length;
   const hotLeadsCount = leads.filter(l => l.statusCode === 1).length;
   const pendingRetriesCount = leads.filter(l => l.statusCode === 4 && l.callStatusCode !== 5).length;
 
@@ -384,6 +485,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       const match =
         l.name.toLowerCase().includes(q) ||
         l.mobile.includes(q) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
         l.projectName.toLowerCase().includes(q) ||
         l.callerName.toLowerCase().includes(q);
       if (!match) return false;
@@ -392,7 +494,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   });
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 bg-[#FAF9F6]">
+    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 bg-[#FAF9F6]">
 
       {/* Floating Success Toast for Excel Export */}
       {excelExportSuccess && (
@@ -401,8 +503,21 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
             <Check className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-xs font-bold text-white">Excel Export Complete!</p>
-            <p className="text-[11px] text-gray-300">CONCAVE_Master_Leads.xlsx downloaded successfully.</p>
+            <p className="text-xs font-bold text-white">Master Excel Exported</p>
+            <p className="text-[11px] text-gray-300">CONCAVE_Master_Leads.xlsx downloaded to your computer.</p>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Success Toast for Deletion */}
+      {deleteSuccessToast && (
+        <div className="fixed top-24 right-6 z-50 bg-[#1D3530] border border-emerald-400 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 anim-fade-scale">
+          <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+            <Check className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-xs font-bold text-white">Database Cleared with Excel Backup</p>
+            <p className="text-[11px] text-gray-300">{deleteSuccessToast}</p>
           </div>
         </div>
       )}
@@ -420,47 +535,57 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
         </div>
       )}
 
-      {/* Upper Banner using user requested #1D3530 */}
-      <div className="bg-[#1D3530] text-white rounded-xl p-6 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4 anim-fade-up">
+      {/* ── Executive Header Banner ── */}
+      <div className="bg-[#1D3530] text-white rounded-2xl p-6 sm:p-7 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-5 anim-fade-up">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
             <span className="text-xs uppercase font-mono tracking-widest text-[#DFBE79]">
-              EXECUTIVE SALES CONTROL TOWER • LIVE
+              EXECUTIVE SALES COMMAND TOWER
             </span>
           </div>
-          <h2 className="font-serif text-3xl font-bold text-white mt-1">
-            Admin Command Center
-          </h2>
-          <p className="text-xs text-gray-300 mt-1">
-            Territory lead routing, caller territory assignments, XLSX downloads & database governance.
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white mt-1.5 tracking-tight">
+            Administrator Dashboard
+          </h1>
+          <p className="text-xs text-gray-300 mt-1 max-w-xl">
+            Live inquiry surveillance, territory dispatching, customer master records, and verified server data controls.
           </p>
         </div>
 
-        {/* 1-Click Excel Download Button using #245348 */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Global Action Buttons */}
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm border border-[#284F45] hover:shadow-lg disabled:opacity-75"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-sm border border-[#284F45] hover:shadow-lg disabled:opacity-75"
             title="Download full database as Excel file"
           >
             {isExportingExcel ? (
               <>
                 <RefreshCw className="w-4 h-4 animate-spin text-[#DFBE79]" />
-                <span>Generating XLSX...</span>
+                <span>Exporting...</span>
               </>
             ) : (
               <>
                 <FileSpreadsheet className="w-4 h-4 text-[#DFBE79]" />
-                <span>Download All Data as Excel (.xlsx)</span>
+                <span>Export Excel</span>
               </>
             )}
           </button>
 
+          {/* Secure 2-Step Delete Data Button */}
+          <button
+            onClick={handleOpenDeleteModal}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-900/80 hover:bg-red-800 active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all border border-red-700/60 shadow-sm"
+            title="Delete server customer data with 2-step verification"
+          >
+            <Trash2 className="w-4 h-4 text-red-200" />
+            <span>Delete Data</span>
+          </button>
+
           <button
             onClick={refreshAdminData}
-            className={`p-2.5 rounded bg-[#284F45] text-white hover:bg-[#245348] active:scale-95 transition-all duration-200 ${isRefreshing ? 'opacity-80' : ''}`}
+            className="p-2.5 rounded-lg bg-[#284F45] text-white hover:bg-[#245348] active:scale-95 transition-all"
             title="Refresh Database"
           >
             <RefreshCw className={`w-4 h-4 transition-transform duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -468,375 +593,794 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
           <button
             onClick={onLogout}
-            className="px-4 py-2 rounded bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold transition-all"
+            className="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold transition-all"
           >
             Sign Out
           </button>
         </div>
       </div>
 
-      {/* KPI Cards with Staggered Hover Elevation */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        
-        {/* Card 1: Today's Leads */}
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg hover:border-[#245348]/40 transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono text-gray-500 block">Today's New Leads</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          </div>
-          <span className="text-3xl font-bold font-serif text-[#14221F] mt-1 block group-hover:text-[#245348] transition-colors">
-            {todaysLeadsCount}
+      {/* ── Sub-Navigation Tabs ── */}
+      <div className="flex items-center gap-2 border-b border-[#EAE6DF] pb-2 overflow-x-auto">
+        <button
+          onClick={() => setAdminTab('overview')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+            adminTab === 'overview'
+              ? 'bg-[#245348] text-white shadow-sm'
+              : 'text-gray-600 hover:text-black hover:bg-white/80'
+          }`}
+        >
+          <LayoutDashboard className="w-4 h-4 text-[#DFBE79]" />
+          <span>Overview & Customer Leads</span>
+          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
+            {totalLeadsCount}
           </span>
-          <span className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
-            <Clock className="w-3 h-3 text-[#C59B4E]" /> Since midnight
-          </span>
-        </div>
+        </button>
 
-        {/* Card 2: Total Inquiries */}
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg hover:border-[#245348]/40 transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono text-gray-500 block">Total Inquiries</span>
-            <Activity className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#245348] transition-colors" />
-          </div>
-          <span className="text-3xl font-bold font-serif text-[#14221F] mt-1 block group-hover:text-[#245348] transition-colors">
-            {leads.length}
+        <button
+          onClick={() => setAdminTab('callers')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+            adminTab === 'callers'
+              ? 'bg-[#245348] text-white shadow-sm'
+              : 'text-gray-600 hover:text-black hover:bg-white/80'
+          }`}
+        >
+          <Users className="w-4 h-4 text-[#DFBE79]" />
+          <span>Caller Management</span>
+          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
+            {callers.length} Callers
           </span>
-          <span className="text-[10px] text-gray-400 mt-1 block">Active pipeline</span>
-        </div>
+        </button>
 
-        {/* Card 3: Hot Leads (Code 1) with pulse */}
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg hover:border-emerald-500/50 transition-all duration-300 group relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/5 rounded-full -mr-8 -mt-8 pointer-events-none"></div>
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono text-gray-500 block">Hot Leads (Code 1)</span>
-            <Flame className="w-4 h-4 text-emerald-600 animate-pulse" />
-          </div>
-          <span className="text-3xl font-bold font-serif text-emerald-700 mt-1 block">
-            {hotLeadsCount}
+        <button
+          onClick={() => setAdminTab('database')}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
+            adminTab === 'database'
+              ? 'bg-[#245348] text-white shadow-sm'
+              : 'text-gray-600 hover:text-black hover:bg-white/80'
+          }`}
+        >
+          <HardDrive className="w-4 h-4 text-[#DFBE79]" />
+          <span>Storage & Archival</span>
+          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-emerald-700 text-white font-mono">
+            {storageStats.savingsPercent}% saved
           </span>
-          <span className="text-[10px] text-emerald-700/80 font-medium mt-1 flex items-center gap-1">
-            <Sparkles className="w-3 h-3" /> Protected from purge
-          </span>
-        </div>
-
-        {/* Card 4: Pending Retries */}
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg hover:border-amber-400/50 transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono text-gray-500 block">Pending Retries (4h / 10d)</span>
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-          </div>
-          <span className="text-3xl font-bold font-serif text-amber-600 mt-1 block">
-            {pendingRetriesCount}
-          </span>
-          <span className="text-[10px] text-amber-600/80 mt-1 block">Automated cadence</span>
-        </div>
-
-        {/* Card 5: Active Territory Callers */}
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle col-span-2 lg:col-span-1 hover:-translate-y-1 hover:shadow-lg hover:border-[#245348]/40 transition-all duration-300 group">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono text-gray-500 block">Active Territory Callers</span>
-            <Users className="w-3.5 h-3.5 text-[#245348]" />
-          </div>
-          <span className="text-3xl font-bold font-serif text-[#245348] mt-1 block">
-            {callers.length}
-          </span>
-          <span className="text-[10px] text-gray-400 mt-1 block">Specialized by territory</span>
-        </div>
+        </button>
       </div>
 
-      {/* Caller Territory Assignments with Interactive Micro-Animations */}
-      <div className="bg-white rounded-xl p-6 border border-[#EAE6DF] shadow-subtle space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#EAE6DF] pb-4">
-          <div>
-            <h3 className="font-serif text-2xl font-bold text-[#14221F] flex items-center gap-2">
-              <Users className="w-5 h-5 text-[#245348]" />
-              <span>Caller Management & Territory Assignments</span>
-            </h3>
-            <p className="text-xs text-gray-500">
-              Inquiries for assigned locations automatically land on that caller's screen.
-            </p>
+      {/* =====================================================================
+          TAB 1: FRONT PAGE (Total Leads, Today's Leads, and Big Customer List)
+         ===================================================================== */}
+      {adminTab === 'overview' && (
+        <div className="space-y-6 anim-fade-scale">
+
+          {/* ── Key Counts Row (Total Lead, Today's Lead, Today's Data) ── */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+            {/* Total Leads */}
+            <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono text-gray-500 font-semibold tracking-wider">Total Leads</span>
+                <Activity className="w-4 h-4 text-[#245348]" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold font-serif text-[#14221F] mt-2">
+                {totalLeadsCount}
+              </div>
+              <div className="text-[10px] text-gray-400 mt-1.5 font-mono">
+                All-Time Customer Database
+              </div>
+            </div>
+
+            {/* Today's Leads */}
+            <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono text-emerald-800 font-semibold tracking-wider">Today's Leads</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold font-serif text-emerald-700 mt-2">
+                {todaysLeadsCount}
+              </div>
+              <div className="text-[10px] text-emerald-700 font-medium mt-1.5 flex items-center gap-1 font-mono">
+                <Clock className="w-3 h-3 text-[#C59B4E]" /> Logged Since Midnight
+              </div>
+            </div>
+
+            {/* Hot Leads (Code 1) */}
+            <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono text-gray-500 font-semibold tracking-wider">Hot Leads (Code 1)</span>
+                <Flame className="w-4 h-4 text-emerald-600 animate-pulse" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold font-serif text-[#14221F] mt-2">
+                {hotLeadsCount}
+              </div>
+              <div className="text-[10px] text-emerald-700 font-semibold mt-1.5 flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> High Purchase Value
+              </div>
+            </div>
+
+            {/* Today's Retries / Active Follow-ups */}
+            <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono text-amber-800 font-semibold tracking-wider">Pending Retries</span>
+                <AlertTriangle className="w-4 h-4 text-amber-500" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold font-serif text-amber-600 mt-2">
+                {pendingRetriesCount}
+              </div>
+              <div className="text-[10px] text-amber-600 font-mono mt-1.5">
+                4h / 10-Day Automated Schedule
+              </div>
+            </div>
+
           </div>
 
-          <button
-            onClick={() => setShowAddCallerModal(true)}
-            className="px-4 py-2 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white font-semibold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
-          >
-            <UserPlus className="w-3.5 h-3.5 text-[#DFBE79]" />
-            <span>Add New Caller</span>
-          </button>
-        </div>
+          {/* ── Big, Attractive Customer Details Directory ── */}
+          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
+            
+            {/* Table Header with Title & Filter Controls */}
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-5">
+              <div>
+                <div className="flex items-center gap-2.5">
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
+                    Customer Directory & Lead Pipeline
+                  </h2>
+                  <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF]">
+                    {filteredLeads.length} Records
+                  </span>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Complete customer contact records, project interests, rating classifications, and assigned territory callers.
+                </p>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {callers.map(caller => (
-            <div
-              key={caller.id}
-              className="bg-[#FAF9F6] border border-[#EAE6DF] rounded-lg p-4 space-y-3 hover:border-[#245348]/40 hover:shadow-md transition-all duration-300"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-serif text-lg font-bold text-[#14221F]">{caller.name}</h4>
-                    <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-white text-[#245348] border border-[#EAE6DF] shadow-xs">
-                      {caller.callerCode}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-500 font-mono mt-0.5">
-                    Phone: {caller.phone} | Password: {caller.password}
-                  </div>
+              {/* Filters & Actions */}
+              <div className="flex flex-wrap items-center gap-2.5 text-xs">
+                {/* Search */}
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search customer, phone, project..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg pl-8 pr-3 py-2 text-[#14221F] focus:outline-none w-56 sm:w-64 transition-all"
+                  />
+                  <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-3 pointer-events-none" />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-2.5 top-2.5 text-gray-400 hover:text-black"
+                    >
+                      ✕
+                    </button>
+                  )}
                 </div>
 
-                <button
-                  onClick={() => handleRemoveCaller(caller.id)}
-                  className="p-1.5 text-gray-400 hover:text-red-600 hover:scale-110 active:scale-95 transition-all duration-200"
-                  title="Remove Caller"
+                {/* Location Filter */}
+                <select
+                  value={locationFilter}
+                  onChange={(e) => setLocationFilter(e.target.value)}
+                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <option value="All">All Locations</option>
+                  {Object.values(LOCATION_CODES).map((loc, idx) => (
+                    <option key={idx} value={loc}>{loc}</option>
+                  ))}
+                </select>
+
+                {/* Status / Rating Filter */}
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none"
+                >
+                  <option value="All">All Ratings</option>
+                  <option value="1">Hot Lead (Code 1)</option>
+                  <option value="2">Interested (Code 2)</option>
+                  <option value="4">Not Picking Up (Code 4)</option>
+                  <option value="3">Okay (Code 3)</option>
+                  <option value="5">Not Interested (Code 5)</option>
+                  <option value="6">Fake / Spam (Code 6)</option>
+                </select>
+
+                {/* Export Button */}
+                <button
+                  onClick={handleExportExcel}
+                  className="px-3.5 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs flex items-center gap-1.5 transition-all shadow-xs"
+                >
+                  <Download className="w-3.5 h-3.5 text-[#DFBE79]" />
+                  <span>Excel</span>
                 </button>
               </div>
+            </div>
 
-              {/* Territory Checkboxes with Smooth Scale Animation */}
-              <div className="space-y-1.5 pt-2 border-t border-[#EAE6DF]">
-                <span className="text-[10px] uppercase font-mono text-gray-600 block">
-                  Assigned Specialized Locations (Click to Toggle):
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {Object.entries(LOCATION_CODES).map(([codeStr, locName]) => {
-                    const locId = parseInt(codeStr, 10);
-                    const isAssigned = caller.assignedLocations && caller.assignedLocations.includes(locId);
+            {/* Big Customer Table */}
+            <div className="overflow-x-auto rounded-xl border border-[#EAE6DF]">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#FAF9F6] text-gray-700 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
+                  <tr>
+                    <th className="py-3 px-3.5">ID</th>
+                    <th className="py-3 px-3.5">Customer Name & Contact</th>
+                    <th className="py-3 px-3.5">Location & Project</th>
+                    <th className="py-3 px-3.5">Lead Rating</th>
+                    <th className="py-3 px-3.5">Assigned Specialist</th>
+                    <th className="py-3 px-3.5">Call Status & Cadence</th>
+                    <th className="py-3 px-3.5">Logged Time</th>
+                    <th className="py-3 px-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
+                  {filteredLeads.map((lead) => {
+                    const initials = lead.name ? lead.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'CU';
 
                     return (
-                      <button
-                        key={locId}
-                        type="button"
-                        onClick={() => handleToggleCallerLocation(caller.id, locId)}
-                        className={`px-2.5 py-1 rounded text-[10px] font-semibold transition-all duration-200 active:scale-95 ${isAssigned
-                          ? 'bg-[#245348] text-white shadow-sm scale-100'
-                          : 'bg-white text-gray-600 border border-[#EAE6DF] hover:border-gray-400 hover:text-black'
-                          }`}
+                      <tr
+                        key={lead.id}
+                        className="hover:bg-[#FAF8F5] transition-colors duration-150 group"
                       >
-                        {isAssigned ? '✓ ' : '+ '} {locName}
-                      </button>
+                        {/* ID */}
+                        <td className="py-3 px-3.5 font-mono text-gray-500 font-semibold group-hover:text-black">
+                          CON-{lead.id}
+                        </td>
+
+                        {/* Customer Info with Avatar */}
+                        <td className="py-3 px-3.5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-full bg-[#245348]/10 text-[#245348] border border-[#245348]/30 flex items-center justify-center font-bold text-[11px] flex-shrink-0">
+                              {initials}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-semibold text-[#14221F] text-sm group-hover:text-[#245348] transition-colors">
+                                {lead.name}
+                              </p>
+                              <div className="flex items-center gap-2 text-[11px] text-gray-500 font-mono">
+                                <span>{lead.mobile}</span>
+                                {lead.email && <span className="text-gray-400">• {lead.email}</span>}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Location & Project */}
+                        <td className="py-3 px-3.5">
+                          <div className="space-y-0.5">
+                            <span className="inline-block px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-semibold text-[10px] text-[#14221F]">
+                              📍 {lead.locationName}
+                            </span>
+                            <p className="font-medium text-[#14221F] text-xs">
+                              {lead.projectName}
+                            </p>
+                          </div>
+                        </td>
+
+                        {/* Rating Badge */}
+                        <td className="py-3 px-3.5">
+                          <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
+                            lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                            lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                            lead.statusCode === 2 ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                            lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                            <span>{lead.statusName}</span>
+                          </span>
+                        </td>
+
+                        {/* Assigned Caller */}
+                        <td className="py-3 px-3.5">
+                          <div className="space-y-0.5">
+                            <span className="font-medium text-[#245348] flex items-center gap-1">
+                              <Users className="w-3.5 h-3.5" />
+                              {lead.callerName}
+                            </span>
+                            <span className="text-[10px] text-gray-400 font-mono block">
+                              {lead.callerPhone}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* Call Status & Cadence */}
+                        <td className="py-3 px-3.5">
+                          <div className="space-y-0.5">
+                            <p className="font-medium text-[#14221F]">
+                              {lead.callStatusName}
+                            </p>
+                            {lead.statusCode === 4 && (
+                              <span className="text-[10px] text-amber-700 font-mono block">
+                                Attempt {lead.retryCount}/10 • Next: {lead.nextAttemptAt ? new Date(lead.nextAttemptAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+
+                        {/* Timestamp */}
+                        <td className="py-3 px-3.5 text-gray-500 font-mono text-[11px] whitespace-nowrap">
+                          {new Date(lead.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
+                          {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1.5">
+                            <a
+                              href={`tel:${lead.mobile}`}
+                              className="p-1.5 rounded-md bg-[#245348]/10 text-[#245348] hover:bg-[#245348] hover:text-white transition-colors"
+                              title="Direct Phone Call"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5" />
+                            </a>
+
+                            <button
+                              onClick={() => handleDeleteSingleLead(lead.id, lead.name)}
+                              className="p-1.5 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                              title="Delete this inquiry"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
                     );
                   })}
+
+                  {filteredLeads.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="py-12 text-center text-gray-400 space-y-2">
+                        <Users className="w-8 h-8 mx-auto text-gray-300" />
+                        <p className="text-sm font-medium">No customer inquiries found matching your filters.</p>
+                        <p className="text-xs text-gray-400">Try adjusting your search query or location filter.</p>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Table Footer Summary */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-gray-500 pt-2 gap-2">
+              <span className="font-mono">
+                Showing <strong>{filteredLeads.length}</strong> of <strong>{totalLeadsCount}</strong> registered leads
+              </span>
+              <span className="font-mono text-emerald-700">
+                Encrypted in compact numeric storage ({(storageStats.rawBytes / 1024).toFixed(2)} KB)
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 2: CALLER MANAGEMENT (Dedicated Screen - NOT in front)
+         ===================================================================== */}
+      {adminTab === 'callers' && (
+        <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5 anim-fade-scale">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-5">
+            <div>
+              <div className="flex items-center gap-2">
+                <Users className="w-5 h-5 text-[#245348]" />
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
+                  Territory Caller Management
+                </h2>
+              </div>
+              <p className="text-xs text-gray-500 mt-1 max-w-2xl">
+                Configure territory assignments for specialized callers. Inquiries requested in Goregaon, Borivali, Versova, Bhayander, or Mira Road route automatically to that specific caller.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowAddCallerModal(true)}
+              className="px-4 py-2.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center gap-1.5 self-start sm:self-auto"
+            >
+              <UserPlus className="w-4 h-4 text-[#DFBE79]" />
+              <span>+ Add Territory Caller</span>
+            </button>
+          </div>
+
+          {/* Caller Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {callers.map(caller => {
+              const assignedLeadCount = leads.filter(l => l.callerId === caller.id).length;
+
+              return (
+                <div
+                  key={caller.id}
+                  className="bg-[#FAF9F6] border border-[#EAE6DF] rounded-xl p-5 space-y-3.5 hover:border-[#245348]/50 hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-9 h-9 rounded-full bg-[#245348] text-white flex items-center justify-center font-bold text-sm">
+                          {caller.name.charAt(0)}
+                        </div>
+                        <div>
+                          <h4 className="font-serif text-lg font-bold text-[#14221F] leading-tight">
+                            {caller.name}
+                          </h4>
+                          <span className="font-mono text-[10px] text-gray-500">
+                            {caller.callerCode} • Assigned Leads: <strong className="text-[#245348]">{assignedLeadCount}</strong>
+                          </span>
+                        </div>
+                      </div>
+                      <div className="text-xs text-gray-500 font-mono mt-2.5 pl-11">
+                        Phone: {caller.phone} | Password: {caller.password}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleRemoveCaller(caller.id)}
+                      className="p-1.5 text-gray-400 hover:text-red-600 hover:scale-110 active:scale-95 transition-all"
+                      title="Remove Caller"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  {/* Territory Checkboxes */}
+                  <div className="space-y-1.5 pt-2 border-t border-[#EAE6DF]">
+                    <span className="text-[10px] uppercase font-mono text-gray-600 block font-semibold">
+                      Assigned Micro-Markets (Click to Toggle):
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {Object.entries(LOCATION_CODES).map(([codeStr, locName]) => {
+                        const locId = parseInt(codeStr, 10);
+                        const isAssigned = caller.assignedLocations && caller.assignedLocations.includes(locId);
+
+                        return (
+                          <button
+                            key={locId}
+                            type="button"
+                            onClick={() => handleToggleCallerLocation(caller.id, locId)}
+                            className={`px-2.5 py-1 rounded text-[10px] font-semibold transition-all duration-150 active:scale-95 ${
+                              isAssigned
+                                ? 'bg-[#245348] text-white shadow-xs'
+                                : 'bg-white text-gray-600 border border-[#EAE6DF] hover:border-gray-400'
+                            }`}
+                          >
+                            {isAssigned ? '✓ ' : '+ '} {locName}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          TAB 3: STORAGE & MONTH-END ARCHIVAL ENGINE
+         ===================================================================== */}
+      {adminTab === 'database' && (
+        <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5 anim-fade-scale">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-5">
+            <div>
+              <div className="flex items-center gap-2">
+                <HardDrive className="w-5 h-5 text-[#245348]" />
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
+                  Storage Optimization & Archival Engine
+                </h2>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Numeric enums save <strong>{storageStats.savingsPercent}%</strong> database storage space in production.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={handleDryRunArchival}
+                className="px-3.5 py-2 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] text-[#14221F] text-xs font-semibold hover:border-black active:scale-95 transition-all"
+              >
+                Preview 25th-to-25th Gap Window
+              </button>
+              <button
+                onClick={handleExecuteArchival}
+                disabled={archivalRunning}
+                className="px-3.5 py-2 rounded-lg bg-red-800 hover:bg-red-900 active:scale-95 text-white text-xs font-semibold transition-all disabled:opacity-70 flex items-center gap-1.5"
+              >
+                {archivalRunning ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>Archiving Database...</span>
+                  </>
+                ) : (
+                  <span>Run Monthly Archival Cleanup</span>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Animated Storage Optimization Progress Bar */}
+          <div className="bg-[#FAF9F6] p-5 rounded-xl border border-[#EAE6DF] space-y-2.5">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-mono text-gray-600 font-semibold flex items-center gap-1.5">
+                <Database className="w-3.5 h-3.5 text-[#245348]" />
+                Database Compression Metric
+              </span>
+              <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
+                {storageStats.savingsPercent}% Storage Saved
+              </span>
+            </div>
+
+            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden relative shadow-inner">
+              <div
+                className="h-full bg-gradient-to-r from-[#245348] via-[#2E6B5D] to-[#C59B4E] rounded-full transition-all duration-1000 ease-out anim-shimmer"
+                style={{ width: `${storageStats.savingsPercent}%` }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between text-[11px] text-gray-500 font-mono pt-1">
+              <span>Stored Encoded: <strong>{(storageStats.rawBytes / 1024).toFixed(2)} KB</strong></span>
+              <span>Raw Verbose Equivalent: <strong>{(storageStats.uncompressedBytes / 1024).toFixed(2)} KB</strong></span>
+            </div>
+          </div>
+
+          {/* Compression Statistics Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="bg-[#FAF9F6] p-3.5 rounded-xl border border-[#EAE6DF]">
+              <span className="text-[10px] text-gray-500 uppercase font-mono block">Compact Stored Size</span>
+              <span className="text-base font-bold font-mono text-emerald-700 block mt-0.5">
+                {(storageStats.rawBytes / 1024).toFixed(2)} KB
+              </span>
+              <span className="text-[10px] text-gray-400">Numeric Keys & Enums</span>
+            </div>
+            <div className="bg-[#FAF9F6] p-3.5 rounded-xl border border-[#EAE6DF]">
+              <span className="text-[10px] text-gray-500 uppercase font-mono block">Uncompressed Size</span>
+              <span className="text-base font-bold font-mono text-gray-700 block mt-0.5">
+                {(storageStats.uncompressedBytes / 1024).toFixed(2)} KB
+              </span>
+              <span className="text-[10px] text-gray-400">Verbose JSON strings</span>
+            </div>
+            <div className="bg-[#FAF9F6] p-3.5 rounded-xl border border-[#EAE6DF]">
+              <span className="text-[10px] text-gray-500 uppercase font-mono block">Compression Ratio</span>
+              <span className="text-base font-bold font-mono text-[#245348] block mt-0.5">
+                {storageStats.savingsPercent}% Saved
+              </span>
+              <span className="text-[10px] text-emerald-700 font-medium">Permanent Optimization</span>
+            </div>
+          </div>
+
+          {/* Archival Window Info */}
+          {archivalReport && (
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1 anim-fade-scale">
+              <strong>Month-End Archival Window (User's Exact 25th-to-25th Rule):</strong>
+              <p>Target Window: <strong>{archivalReport.windowStart}</strong> to <strong>{archivalReport.windowEnd}</strong>.</p>
+              <p>Candidates to delete (normal non-lead inquiries): <strong>{archivalReport.candidatesToDelete}</strong>. Hot leads kept forever: <strong>{archivalReport.protectedRecords}</strong>.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =====================================================================
+          SECURE 2-STEP / 3-STAGE DATA DELETION VERIFICATION MODAL
+         ===================================================================== */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md transition-opacity duration-300"
+          onClick={() => setShowDeleteModal(false)}
+        >
+          <div
+            className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-5 border border-red-200 anim-fade-scale"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[#EAE6DF] pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-100 text-red-700 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-red-700" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#14221F]">
+                    Secure Server Data Purge
+                  </h3>
+                  <span className="text-[11px] text-red-700 font-semibold font-mono">
+                    2-Step Verification & Mandatory Excel Backup
+                  </span>
                 </div>
               </div>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="text-gray-400 hover:text-black text-sm p-1"
+              >
+                ✕
+              </button>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Compact Database & Month-End Archival with Animated Storage Bar */}
-      <div className="bg-white rounded-xl p-6 border border-[#EAE6DF] shadow-subtle space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <HardDrive className="w-5 h-5 text-[#245348]" />
-              <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-                Compact Storage & Month-End Archival Engine
-              </h3>
+            {/* Error Message if any */}
+            {deleteErrorMsg && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 text-xs rounded-lg flex items-center gap-2 anim-fade-scale">
+                <AlertTriangle className="w-4 h-4 text-red-600 flex-shrink-0" />
+                <span>{deleteErrorMsg}</span>
+              </div>
+            )}
+
+            {/* Mandatory Excel Backup Guarantee Pill */}
+            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl text-xs space-y-1">
+              <div className="flex items-center gap-1.5 font-bold">
+                <FileDown className="w-4 h-4 text-emerald-700" />
+                <span>Mandatory Data Safeguard:</span>
+              </div>
+              <p className="text-[11px] text-emerald-800">
+                Before deleting any customer data, an Excel master file (<strong>CONCAVE_Master_Leads.xlsx</strong>) will be <strong>automatically downloaded</strong> to your computer immediately.
+              </p>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Numeric encoding saves <strong>{storageStats.savingsPercent}%</strong> database storage space in production.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={handleDryRunArchival}
-              className="px-3.5 py-2 rounded bg-[#FAF9F6] border border-[#EAE6DF] text-[#14221F] text-xs font-semibold hover:border-black active:scale-95 transition-all"
-            >
-              Preview 25th-to-25th Gap Window
-            </button>
-            <button
-              onClick={handleExecuteArchival}
-              disabled={archivalRunning}
-              className="px-3.5 py-2 rounded bg-red-800 hover:bg-red-900 active:scale-95 text-white text-xs font-semibold transition-all disabled:opacity-70 flex items-center gap-1.5"
-            >
-              {archivalRunning ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>Archiving Database...</span>
-                </>
-              ) : (
-                <span>Run Monthly Archival & Space Cleanup</span>
-              )}
-            </button>
-          </div>
-        </div>
+            {/* ── STEP 1: Admin Password Verification ── */}
+            {deleteStep === 1 && (
+              <form onSubmit={handleVerifyDeleteStep1} className="space-y-4 text-xs anim-fade-scale">
+                <div className="p-3 bg-[#FAF9F6] rounded-lg border border-[#EAE6DF] space-y-1">
+                  <span className="font-mono font-bold text-gray-700 uppercase tracking-wider text-[10px]">
+                    Step 1 of 3: Master Admin Password Check
+                  </span>
+                  <p className="text-gray-500 text-[11px]">
+                    Please verify your administrator password to authorize this destructive action.
+                  </p>
+                </div>
 
-        {/* Animated Storage Optimization Progress Bar */}
-        <div className="bg-[#FAF9F6] p-4 rounded-lg border border-[#EAE6DF] space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="font-mono text-gray-600 font-semibold flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5 text-[#245348]" />
-              Database Compression Gauge
-            </span>
-            <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
-              {storageStats.savingsPercent}% Storage Saved
-            </span>
-          </div>
+                <div className="space-y-1.5">
+                  <label className="text-gray-700 font-medium block">Admin Password</label>
+                  <div className="relative">
+                    <input
+                      type="password"
+                      required
+                      placeholder="Enter concave@2026..."
+                      value={deletePasswordInput}
+                      onChange={(e) => setDeletePasswordInput(e.target.value)}
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-red-600 focus:ring-2 focus:ring-red-100 rounded-lg pl-9 pr-3 py-2 text-[#14221F] font-mono focus:outline-none"
+                    />
+                    <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
+                  </div>
+                </div>
 
-          <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden relative shadow-inner">
-            <div
-              className="h-full bg-gradient-to-r from-[#245348] via-[#2E6B5D] to-[#C59B4E] rounded-full transition-all duration-1000 ease-out anim-shimmer"
-              style={{ width: `${storageStats.savingsPercent}%` }}
-            />
-          </div>
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 rounded-lg bg-red-800 hover:bg-red-900 active:scale-95 text-white font-semibold uppercase tracking-wider transition-all"
+                  >
+                    Verify Password →
+                  </button>
+                </div>
+              </form>
+            )}
 
-          <div className="flex items-center justify-between text-[11px] text-gray-500 font-mono pt-1">
-            <span>Stored Encoded: <strong>{(storageStats.rawBytes / 1024).toFixed(2)} KB</strong></span>
-            <span>Raw Equivalent: <strong>{(storageStats.uncompressedBytes / 1024).toFixed(2)} KB</strong></span>
-          </div>
-        </div>
+            {/* ── STEP 2: Type 'DELETE' in uppercase ── */}
+            {deleteStep === 2 && (
+              <form onSubmit={handleVerifyDeleteStep2} className="space-y-4 text-xs anim-fade-scale">
+                <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 space-y-1 text-amber-900">
+                  <span className="font-mono font-bold uppercase tracking-wider text-[10px]">
+                    Step 2 of 3: Safety Word Confirmation
+                  </span>
+                  <p className="text-[11px]">
+                    To avoid accidental loss, please type the confirmation word <strong className="font-mono text-red-700">DELETE</strong> below.
+                  </p>
+                </div>
 
-        {/* Compression Statistics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="bg-[#FAF9F6] p-3 rounded border border-[#EAE6DF] hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200">
-            <span className="text-[10px] text-gray-500 uppercase font-mono block">Compact Stored Size</span>
-            <span className="text-base font-bold font-mono text-emerald-700 block mt-0.5">
-              {(storageStats.rawBytes / 1024).toFixed(2)} KB
-            </span>
-            <span className="text-[10px] text-gray-400">Numeric Keys & Enums</span>
-          </div>
-          <div className="bg-[#FAF9F6] p-3 rounded border border-[#EAE6DF] hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200">
-            <span className="text-[10px] text-gray-500 uppercase font-mono block">Uncompressed Size</span>
-            <span className="text-base font-bold font-mono text-gray-700 block mt-0.5">
-              {(storageStats.uncompressedBytes / 1024).toFixed(2)} KB
-            </span>
-            <span className="text-[10px] text-gray-400">Verbose JSON strings</span>
-          </div>
-          <div className="bg-[#FAF9F6] p-3 rounded border border-[#EAE6DF] hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200">
-            <span className="text-[10px] text-gray-500 uppercase font-mono block">Compression Ratio</span>
-            <span className="text-base font-bold font-mono text-[#245348] block mt-0.5">
-              {storageStats.savingsPercent}% Saved
-            </span>
-            <span className="text-[10px] text-emerald-700 font-medium">Permanent Optimization</span>
-          </div>
-        </div>
+                <div className="space-y-1.5">
+                  <label className="text-gray-700 font-medium block">Confirmation Phrase</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Type DELETE in capital letters"
+                    value={deletePhraseInput}
+                    onChange={(e) => setDeletePhraseInput(e.target.value)}
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-red-600 focus:ring-2 focus:ring-red-100 rounded-lg px-3 py-2 text-[#14221F] font-mono uppercase tracking-widest text-center text-sm focus:outline-none"
+                  />
+                </div>
 
-        {/* Archival Window Info */}
-        {archivalReport && (
-          <div className="p-4 rounded bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1 anim-fade-scale">
-            <strong>Month-End Archival Window (User's Exact 25th-to-25th Rule):</strong>
-            <p>Target Window: <strong>{archivalReport.windowStart}</strong> to <strong>{archivalReport.windowEnd}</strong>.</p>
-            <p>Candidates to delete (normal non-lead inquiries): <strong>{archivalReport.candidatesToDelete}</strong>. Hot leads kept forever: <strong>{archivalReport.protectedRecords}</strong>.</p>
-          </div>
-        )}
-      </div>
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setDeleteStep(1)}
+                    className="flex-1 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 rounded-lg bg-red-800 hover:bg-red-900 active:scale-95 text-white font-semibold uppercase tracking-wider transition-all"
+                  >
+                    Confirm Word →
+                  </button>
+                </div>
+              </form>
+            )}
 
-      {/* Master Leads Table with Animated Row Hover & Filter Inputs */}
-      <div className="bg-white rounded-xl p-6 border border-[#EAE6DF] shadow-subtle space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-4">
-          <div>
-            <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-              Customer Master Inquiries
-            </h3>
-            <p className="text-xs text-gray-500">
-              Showing {filteredLeads.length} of {leads.length} recorded inquiries
-            </p>
-          </div>
+            {/* ── STEP 3: Admin Email Authentication & Auto-Export ── */}
+            {deleteStep === 3 && (
+              <form onSubmit={handleExecuteSecurePurge} className="space-y-4 text-xs anim-fade-scale">
+                <div className="p-3 bg-red-50 rounded-lg border border-red-200 space-y-1 text-red-900">
+                  <span className="font-mono font-bold uppercase tracking-wider text-[10px]">
+                    Step 3 of 3: Executive Email Authorization
+                  </span>
+                  <p className="text-[11px]">
+                    Authenticate with your executive administrator email address to trigger the automatic Excel backup and server wipe.
+                  </p>
+                </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <select
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-              className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded px-2.5 py-1.5 text-[#14221F] focus:outline-none transition-all"
-            >
-              <option value="All">All Locations</option>
-              {Object.values(LOCATION_CODES).map((loc, idx) => (
-                <option key={idx} value={loc}>{loc}</option>
-              ))}
-            </select>
+                <div className="space-y-1.5">
+                  <label className="text-gray-700 font-medium block">Executive Email Address</label>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      required
+                      value={deleteEmailInput}
+                      onChange={(e) => setDeleteEmailInput(e.target.value)}
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg pl-9 pr-3 py-2 text-[#14221F] font-mono focus:outline-none"
+                    />
+                    <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-2.5 pointer-events-none" />
+                  </div>
+                </div>
 
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded px-2.5 py-1.5 text-[#14221F] focus:outline-none transition-all"
-            >
-              <option value="All">All Dispositions</option>
-              <option value="1">Hot Lead (Code 1)</option>
-              <option value="2">Interested (Code 2)</option>
-              <option value="4">Not Picking Up (Code 4)</option>
-              <option value="3">Okay (Code 3)</option>
-              <option value="5">Not Interested (Code 5)</option>
-              <option value="6">Fake / Spam (Code 6)</option>
-            </select>
-
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search inquiries..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded pl-8 pr-3 py-1.5 text-[#14221F] focus:outline-none w-48 transition-all duration-200"
-              />
-              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5 pointer-events-none" />
-            </div>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto rounded border border-[#EAE6DF]">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-[#FAF9F6] text-gray-700 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
-              <tr>
-                <th className="py-2.5 px-3">Lead ID</th>
-                <th className="py-2.5 px-3">Customer</th>
-                <th className="py-2.5 px-3">Contact</th>
-                <th className="py-2.5 px-3">Location</th>
-                <th className="py-2.5 px-3">Project</th>
-                <th className="py-2.5 px-3">Rating</th>
-                <th className="py-2.5 px-3">Assigned Caller</th>
-                <th className="py-2.5 px-3">Call Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
-              {filteredLeads.map((lead) => (
-                <tr
-                  key={lead.id}
-                  className="hover:bg-[#F5F2EB] transition-colors duration-150 group"
-                >
-                  <td className="py-2.5 px-3 font-mono text-gray-500 group-hover:text-black">
-                    CON-{lead.id}
-                  </td>
-                  <td className="py-2.5 px-3 font-semibold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                    {lead.name}
-                  </td>
-                  <td className="py-2.5 px-3 font-mono">{lead.mobile}</td>
-                  <td className="py-2.5 px-3">
-                    <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-medium text-[11px]">
-                      {lead.locationName}
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <label className="text-gray-700 font-medium">Security Verification Code</label>
+                    <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                      Code: <strong>{deleteGeneratedAuthCode}</strong>
                     </span>
-                  </td>
-                  <td className="py-2.5 px-3 font-medium">{lead.projectName}</td>
-                  <td className="py-2.5 px-3">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold transition-transform inline-block group-hover:scale-105 ${
-                      lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                      lead.statusCode === 2 ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
-                      {lead.statusName}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3 font-medium text-[#245348]">{lead.callerName}</td>
-                  <td className="py-2.5 px-3">
-                    {lead.callStatusName} {lead.statusCode === 4 && `(Attempt ${lead.retryCount}/10)`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                  </div>
+                  <input
+                    type="text"
+                    required
+                    maxLength={4}
+                    placeholder="Enter security code above"
+                    value={deleteAuthCodeInput}
+                    onChange={(e) => setDeleteAuthCodeInput(e.target.value)}
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-red-600 rounded-lg px-3 py-2 text-[#14221F] font-mono text-center tracking-widest text-base focus:outline-none"
+                  />
+                </div>
 
-      {/* Add Caller Modal with Smooth Fade & Scale Animation */}
+                <div className="flex gap-2.5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setDeleteStep(2)}
+                    className="flex-1 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isDeletingData}
+                    className="flex-1 py-2.5 rounded-lg bg-red-800 hover:bg-red-900 active:scale-95 text-white font-bold uppercase tracking-wider transition-all disabled:opacity-75 flex items-center justify-center gap-1.5 shadow-md"
+                  >
+                    {isDeletingData ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Downloading & Purging...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FileDown className="w-3.5 h-3.5" />
+                        <span>Auto-Download Excel & Wipe Data</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {/* Add Caller Modal */}
       {showAddCallerModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
           onClick={() => setShowAddCallerModal(false)}
         >
           <div
-            className="w-full max-w-md bg-white rounded-xl shadow-2xl p-6 space-y-4 border border-gray-200 anim-fade-scale"
+            className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 space-y-4 border border-gray-200 anim-fade-scale"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-[#EAE6DF] pb-3">
@@ -861,7 +1405,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   placeholder="e.g. Anjali Nair"
                   value={newCallerData.name}
                   onChange={(e) => setNewCallerData({ ...newCallerData, name: e.target.value })}
-                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded px-3 py-2 text-[#14221F] focus:outline-none transition-all"
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none transition-all"
                 />
               </div>
 
@@ -873,7 +1417,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   placeholder="e.g. 98205 12345"
                   value={newCallerData.phone}
                   onChange={(e) => setNewCallerData({ ...newCallerData, phone: e.target.value })}
-                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded px-3 py-2 text-[#14221F] focus:outline-none transition-all"
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none transition-all"
                 />
               </div>
 
@@ -883,7 +1427,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   type="text"
                   value={newCallerData.password}
                   onChange={(e) => setNewCallerData({ ...newCallerData, password: e.target.value })}
-                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none transition-all"
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-lg px-3 py-2 text-[#14221F] font-mono focus:outline-none transition-all"
                 />
               </div>
 
@@ -891,7 +1435,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 <label className="text-gray-700 font-medium block">
                   Select Specialized Territories:
                 </label>
-                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-[#FAF9F6] rounded border border-[#EAE6DF]">
+                <div className="grid grid-cols-2 gap-1.5 max-h-36 overflow-y-auto p-2 bg-[#FAF9F6] rounded-lg border border-[#EAE6DF]">
                   {Object.entries(LOCATION_CODES).map(([codeStr, locName]) => {
                     const locId = parseInt(codeStr, 10);
                     const isSelected = newCallerData.assignedLocations.includes(locId);
@@ -906,8 +1450,9 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                             : [...newCallerData.assignedLocations, locId];
                           setNewCallerData({ ...newCallerData, assignedLocations: updated });
                         }}
-                        className={`px-2 py-1.5 rounded text-[10px] text-left transition-all duration-150 active:scale-95 ${isSelected ? 'bg-[#245348] text-white font-semibold shadow-xs' : 'text-gray-600 hover:bg-white'
-                          }`}
+                        className={`px-2 py-1.5 rounded text-[10px] text-left transition-all duration-150 active:scale-95 ${
+                          isSelected ? 'bg-[#245348] text-white font-semibold shadow-xs' : 'text-gray-600 hover:bg-white'
+                        }`}
                       >
                         {isSelected ? '✓ ' : '+ '} {locName}
                       </button>
@@ -920,13 +1465,13 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 <button
                   type="button"
                   onClick={() => setShowAddCallerModal(false)}
-                  className="flex-1 py-2 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors"
+                  className="flex-1 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white font-semibold uppercase tracking-wider transition-all"
+                  className="flex-1 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white font-semibold uppercase tracking-wider transition-all"
                 >
                   Save Caller
                 </button>

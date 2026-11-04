@@ -653,6 +653,40 @@ export const dbStore = {
   },
 
   // ==============================================================
+  // ADMIN SECURE DATA PURGE WITH MANDATORY EXCEL BACKUP
+  // 1. Always exports full Excel spreadsheet first
+  // 2. Wipes or resets database leads
+  // ==============================================================
+  purgeAllLeadsWithBackup() {
+    try {
+      this.init();
+      // Step 1: Mandatory auto-download of master Excel
+      this.exportMasterLeadsToExcel();
+
+      // Step 2: Purge leads data
+      setRawData(DB_KEY, []);
+      return { success: true };
+    } catch (e) {
+      console.error("Purge error:", e);
+      return { success: false, error: e.message };
+    }
+  },
+
+  // Single customer lead deletion
+  deleteLead(leadId) {
+    try {
+      this.init();
+      const rawLeads = getRawData(DB_KEY, []);
+      const remaining = rawLeads.filter(l => l.id !== leadId);
+      setRawData(DB_KEY, remaining);
+      return true;
+    } catch (e) {
+      console.error("Delete single lead error:", e);
+      return false;
+    }
+  },
+
+  // ==============================================================
   // MONTH-END ARCHIVAL & RETENTION ENGINE (User's Exact Rules)
   // 1. Automatically exports Excel backup before any record deletion
   // 2. Only deletes NORMAL non-lead data (NEVER deletes Hot Lead 1 or 2)
