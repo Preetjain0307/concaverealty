@@ -420,8 +420,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           {/* Right Panel */}
           <div className="bg-[#284F45] text-white p-8 sm:p-10 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10 anim-glow-gold">
-                <img src="/logo.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
+              <div className="w-16 h-16 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10 anim-glow-gold">
+                <img src="/logo_icon.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
               </div>
 
               <h3 className="font-serif text-3xl font-bold">

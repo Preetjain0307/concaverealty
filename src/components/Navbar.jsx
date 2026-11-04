@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { 
-  Building2, 
-  MapPin, 
-  Compass, 
-  PhoneCall, 
-  ShieldCheck, 
-  Headphones, 
-  Menu, 
-  X, 
-  ChevronDown, 
+import {
+  Building2,
+  MapPin,
+  Compass,
+  PhoneCall,
+  ShieldCheck,
+  Headphones,
+  Menu,
+  X,
+  ChevronDown,
   Sparkles,
   MessageCircle,
   Search
@@ -22,22 +22,22 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
     <nav className="fixed top-0 left-0 right-0 z-40 bg-[#1D3530] text-white border-b border-[#284F45] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          
+
           {/* Brand Logo & Slogan (Lodha minimalist style) */}
-          <div 
+          <div
             onClick={() => onNavigate('home')}
             className="flex items-center gap-3.5 cursor-pointer group"
           >
-            <div className="w-11 h-11 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform">
-              <img 
-                src="/logo.jpg" 
-                alt="Concave Realty" 
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform">
+              <img
+                src="/logo_icon.jpg"
+                alt="Concave Realty"
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
             <div className="flex flex-col">
-              <span className="font-serif text-2xl font-bold tracking-widest text-white">
-                CONCAVE
+              <span className="font-serif text-xl sm:text-2xl font-bold tracking-wider sm:tracking-widest text-white whitespace-nowrap">
+                CONCAVE REALTY
               </span>
               <span className="text-[10px] uppercase font-sans tracking-[0.25em] text-[#C59B4E] -mt-0.5 hidden sm:inline-block">
                 Where Legacy Meets Luxury
@@ -51,7 +51,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               onClick={() => onNavigate('home')}
               className={`hover:text-[#C59B4E] transition-colors ${currentView === 'home' ? 'text-[#C59B4E] border-b border-[#C59B4E] pb-1' : ''}`}
             >
-              Our Story
+              Home
             </button>
             <button
               onClick={() => onNavigate('projects')}
@@ -75,7 +75,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
           {/* Right Action Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            
+
             {/* Minimal Lodha Enquire Action */}
             <button
               onClick={() => onOpenEnquiry({ projectName: "Kalpataru Advay", location: "Borivali West" })}
@@ -106,7 +106,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               </button>
 
               {portalDropdownOpen && (
-                <div 
+                <div
                   className="absolute right-0 mt-2 w-56 bg-[#1D3530] border border-[#284F45] rounded-lg shadow-xl p-2 z-50 text-xs space-y-1"
                   onMouseLeave={() => setPortalDropdownOpen(false)}
                 >
@@ -181,7 +181,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
             onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
             className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-gray-200"
           >
-            Our Story
+            Home
           </button>
           <button
             onClick={() => { onNavigate('projects'); setMobileMenuOpen(false); }}

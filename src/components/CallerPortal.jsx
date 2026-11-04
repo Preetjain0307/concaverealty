@@ -308,8 +308,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
           {/* Right-side "Welcome back" panel: User requested #284F45 */}
           <div className="bg-[#284F45] text-white p-8 sm:p-10 flex flex-col justify-between space-y-6">
             <div className="space-y-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10">
-                <img src="/logo.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
+              <div className="w-16 h-16 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10">
+                <img src="/logo_icon.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
               </div>
               
               <h3 className="font-serif text-3xl font-bold">
@@ -362,7 +362,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
       {/* Upper Banner using user requested #1D3530 */}
       <div className="bg-[#1D3530] text-white rounded-xl p-6 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-[#284F45] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] flex-shrink-0">
+          <div className="w-16 h-16 rounded-full bg-[#284F45] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] flex-shrink-0">
             <Headphones className="w-6 h-6" />
           </div>
           <div>

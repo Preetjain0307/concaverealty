@@ -147,3 +147,32 @@
   transition: all 0.2s ease;
 }
 
+/* ── Champagne-Gold diagonal shine animation ── */
+@keyframes diagonalChampagneShine {
+  0% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+
+.gold-shine-text {
+  display: inline-block;
+  color: #FFFFFF;
+  background: linear-gradient(
+    45deg,
+    #FFFFFF 0%,
+    #FFFFFF 38%,
+    #E8D5A8 46%,
+    #C8A96B 50%,
+    #A98245 54%,
+    #FFFFFF 62%,
+    #FFFFFF 100%
+  );
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: diagonalChampagneShine 1.8s linear infinite;
+}

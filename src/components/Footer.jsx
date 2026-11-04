@@ -20,7 +20,7 @@ export function Footer({ onNavigate, onOpenEnquiry }) {
           
           {/* Column 1 */}
           <div className="space-y-2.5 font-light text-gray-700">
-            <button onClick={() => onNavigate('home')} className="block hover:text-[#245348] text-left">Our Story</button>
+            <button onClick={() => onNavigate('home')} className="block hover:text-[#245348] text-left">About Us</button>
             <button onClick={() => onNavigate('projects')} className="block hover:text-[#245348] text-left">Our Developments</button>
             <button onClick={() => onNavigate('locations')} className="block hover:text-[#245348] text-left">Key Locations</button>
             <button onClick={() => onNavigate('amenities')} className="block hover:text-[#245348] text-left">Signature Hospitality</button>
@@ -60,7 +60,7 @@ export function Footer({ onNavigate, onOpenEnquiry }) {
           <div className="flex flex-col items-start md:items-end justify-between space-y-6">
             <div className="text-left md:text-right">
               <span className="font-serif text-3xl font-bold tracking-widest text-[#14221F] block">
-                CONCAVE
+                CONCAVE REALTY
               </span>
               <span className="text-[10px] uppercase font-sans tracking-[0.25em] text-[#C59B4E] block">
                 Where Legacy Meets Luxury
