@@ -6,26 +6,26 @@ import * as XLSX from 'xlsx';
 // ==========================================
 
 export const STATUS_CODES = {
-  1: "Hot Lead (More Interested)",
-  2: "Interested",
+  1: "Hot Lead",
+  2: "Lead",
   3: "Okay / Follow Up",
   4: "Not Picking Up",
   5: "Not Interested",
   6: "Fake / Spam",
-  7: "New Lead"
+  7: "Lead"
 };
 
 export const REVERSE_STATUS_CODES = {
   "hot_lead": 1,
   "more_interested": 1,
-  "lead": 1,
+  "lead": 2,
   "interested": 2,
   "okay": 3,
   "not_picking": 4,
   "not_picking_up": 4,
   "not_interested": 5,
   "fake": 6,
-  "new": 7
+  "new": 2
 };
 
 export const CALL_STATUS_CODES = {
@@ -134,6 +134,111 @@ const DEFAULT_CALLERS = [
 // Initial Seed Leads (Stored with compact single-letter keys)
 // { i: id, n: name, m: mobile, e: email, l: locId, p: projId, t: typeId, s: statusId, c: callerId, cs: callStatusId, rc: retryCount, na: nextAttempt, ts: createdAt, nt: notes }
 const INITIAL_SEED_LEADS = [
+  // ── HISTORICAL RECORDS (July - September 2026) for Quarterly Queue Engine ──
+  {
+    i: 91,
+    n: "Kunal Shah",
+    m: "98200 44111",
+    e: "kunal.shah@example.com",
+    l: 2, // Versova
+    p: 2, // Godrej Skyshore
+    t: 1,
+    s: 5, // Not Interested (Disposable non-lead)
+    c: 3,
+    cs: 1,
+    rc: 0,
+    na: null,
+    ts: new Date(2026, 6, 15, 11, 30).getTime(), // 15 Jul 2026
+    d: "Budget mismatch for 4 BHK sky bungalow. Customer looking under 5 Cr.",
+    nt: [{ by: "Sneha Kapadia", at: new Date(2026, 6, 15, 12, 0).getTime(), txt: "Client budget is too low for Versova luxury tier. Marked Not Interested." }]
+  },
+  {
+    i: 92,
+    n: "Sanjay Singhal",
+    m: "98190 22334",
+    e: "sanjay.s@corp.in",
+    l: 1, // Borivali West
+    p: 1, // Kalpataru Advay
+    t: 2,
+    s: 1, // Hot Lead (1) -> PROTECTED FOREVER!
+    c: 2,
+    cs: 1,
+    rc: 0,
+    na: null,
+    ts: new Date(2026, 6, 22, 14, 15).getTime(), // 22 Jul 2026
+    d: "Booked 3 BHK royal suite with custom wooden deck.",
+    nt: [{ by: "Priya Deshmukh", at: new Date(2026, 6, 22, 15, 0).getTime(), txt: "Hot Lead from July. Token paid. High value VIP account." }]
+  },
+  {
+    i: 93,
+    n: "Meera Nair",
+    m: "98201 99881",
+    e: "meera.test@fake.com",
+    l: 3, // Goregaon
+    p: 4, // Concave Signature
+    t: 1,
+    s: 6, // Fake / Spam (Disposable non-lead)
+    c: 1,
+    cs: 1,
+    rc: 0,
+    na: null,
+    ts: new Date(2026, 7, 10, 16, 45).getTime(), // 10 Aug 2026
+    d: "Invalid contact inquiry from aggregator.",
+    nt: [{ by: "Rahul Sharma", at: new Date(2026, 7, 10, 17, 0).getTime(), txt: "Phone number invalid, bot lead. Marked Fake/Spam." }]
+  },
+  {
+    i: 94,
+    n: "Vikramaditya Roy",
+    m: "98203 11223",
+    e: "v.roy@conglomerate.com",
+    l: 7, // Worli
+    p: 5, // Lodha World Towers
+    t: 5,
+    s: 2, // Lead (2) -> PROTECTED FOREVER!
+    c: 3,
+    cs: 1,
+    rc: 0,
+    na: null,
+    ts: new Date(2026, 7, 28, 10, 20).getTime(), // 28 Aug 2026
+    d: "Evaluating 4 BHK sea-facing suite in World View tower.",
+    nt: [{ by: "Sneha Kapadia", at: new Date(2026, 7, 28, 11, 0).getTime(), txt: "Active HNI lead from August. Discussing payment milestones." }]
+  },
+  {
+    i: 95,
+    n: "Harsh Vardhan",
+    m: "98204 77665",
+    e: "harsh.v@outlook.com",
+    l: 6, // Kandivali
+    p: 3, // Godrej Reserve
+    t: 1,
+    s: 5, // Not Interested (Disposable non-lead)
+    c: 4,
+    cs: 1,
+    rc: 0,
+    na: null,
+    ts: new Date(2026, 8, 14, 18, 0).getTime(), // 14 Sep 2026
+    d: "Relocating to Bangalore corporate office.",
+    nt: [{ by: "Vikram Mehta", at: new Date(2026, 8, 14, 18, 30).getTime(), txt: "Customer shifting cities. Not Interested in Mumbai properties." }]
+  },
+  {
+    i: 96,
+    n: "Nisha Patel",
+    m: "91670 55443",
+    e: "nisha.p@demo.com",
+    l: 5, // Mira Road
+    p: 6, // Mira-Bhayander Waterfront
+    t: 3,
+    s: 4, // Not Picking Up -> PROTECTED PENDING CALL!
+    c: 2,
+    cs: 3, // Daily retry pending
+    rc: 3,
+    na: Date.now() + 3600 * 1000 * 20,
+    ts: new Date(2026, 8, 29, 12, 10).getTime(), // 29 Sep 2026
+    d: "Requested callback regarding 2 BHK waterfront facing unit.",
+    nt: [{ by: "Priya Deshmukh", at: new Date(2026, 8, 29, 12, 30).getTime(), txt: "Pending caller follow-up." }]
+  },
+
+  // ── RECENT RECORDS (Past 30 Days / November 2026) 100% IMMUNE FROM PURGE ──
   {
     i: 101,
     n: "Aarav Mehta",
@@ -280,8 +385,17 @@ export const dbStore = {
   // Initialize storage if empty
   init() {
     try {
-      if (!localStorage.getItem(DB_KEY)) {
+      const stored = localStorage.getItem(DB_KEY);
+      if (!stored) {
         setRawData(DB_KEY, INITIAL_SEED_LEADS);
+      } else {
+        const parsed = JSON.parse(stored);
+        // Ensure historical seeds are present if current storage only has recent records
+        const hasHistorical = Array.isArray(parsed) && parsed.some(l => l.ts < Date.now() - 30 * 24 * 3600 * 1000);
+        if (!hasHistorical) {
+          const historicalSeeds = INITIAL_SEED_LEADS.filter(l => l.ts < Date.now() - 30 * 24 * 3600 * 1000);
+          setRawData(DB_KEY, [...historicalSeeds, ...parsed]);
+        }
       }
       if (!localStorage.getItem(CALLERS_KEY)) {
         setRawData(CALLERS_KEY, DEFAULT_CALLERS);
@@ -343,17 +457,65 @@ export const dbStore = {
     }
   },
 
-  // Automatic Lead Router by Location
-  // Finds the caller who specializes in this location
+  // Automatic Lead Router by Location with EQUAL LOAD BALANCING
+  // If multiple callers are assigned to the same location, divides enquiries equally
   findCallerForLocation(locId) {
     try {
-      const callers = this.getCallers().filter(c => c.active);
-      const match = callers.find(c => c.assignedLocations && c.assignedLocations.includes(locId));
-      if (match) return match.id;
-      // Fallback: round-robin or first available caller
-      return callers.length > 0 ? callers[0].id : null;
+      const callers = this.getCallers().filter(c => c.active !== false);
+      const matches = callers.filter(c => c.assignedLocations && c.assignedLocations.includes(locId));
+      
+      if (matches.length === 1) return matches[0].id;
+      
+      if (matches.length > 1) {
+        // Equal load balancing: find caller who currently has the fewest active leads
+        const rawLeads = getRawData(DB_KEY, []);
+        const countMap = {};
+        matches.forEach(m => { countMap[m.id] = 0; });
+        rawLeads.forEach(l => {
+          if (countMap[l.c] !== undefined) {
+            countMap[l.c]++;
+          }
+        });
+        // Pick the caller with least assigned leads
+        matches.sort((a, b) => (countMap[a.id] || 0) - (countMap[b.id] || 0));
+        return matches[0].id;
+      }
+      
+      // Fallback
+      return callers.length > 0 ? callers[0].id : 1;
     } catch {
       return 1;
+    }
+  },
+
+  // Divert Work from an absent caller to another selected caller
+  reassignCallerLeads(fromCallerId, toCallerId) {
+    try {
+      this.init();
+      const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+      const callers = this.getCallers();
+      const fromCaller = callers.find(c => c.id === fromCallerId);
+      const toCaller = callers.find(c => c.id === toCallerId);
+
+      let transferredCount = 0;
+      rawLeads.forEach(lead => {
+        if (lead.c === fromCallerId) {
+          lead.c = toCallerId;
+          transferredCount++;
+          if (!lead.nt) lead.nt = [];
+          lead.nt.unshift({
+            by: "Admin Work Diverter",
+            at: Date.now(),
+            txt: `Work diverted from ${fromCaller ? fromCaller.name : 'Caller #' + fromCallerId} to ${toCaller ? toCaller.name : 'Caller #' + toCallerId} (Absentee Coverage).`
+          });
+        }
+      });
+
+      setRawData(DB_KEY, rawLeads);
+      return { success: true, count: transferredCount, toCallerName: toCaller ? toCaller.name : `Caller #${toCallerId}` };
+    } catch (e) {
+      console.error("Divert work error:", e);
+      return { success: false, error: e.message };
     }
   },
 
@@ -683,6 +845,211 @@ export const dbStore = {
     } catch (e) {
       console.error("Delete single lead error:", e);
       return false;
+    }
+  },
+
+  // ==============================================================
+  // DATE-RANGE CUSTOM EXCEL EXPORT
+  // ==============================================================
+  exportDateRangeLeadsToExcel(startDateStr, endDateStr) {
+    try {
+      this.init();
+      const startMs = new Date(startDateStr).setHours(0, 0, 0, 0);
+      const endMs = new Date(endDateStr).setHours(23, 59, 59, 999);
+
+      const allLeads = this.getAllLeads();
+      const filtered = allLeads.filter(l => l.createdAt >= startMs && l.createdAt <= endMs);
+
+      if (filtered.length === 0) {
+        return { success: false, count: 0, message: "No records found in selected date range." };
+      }
+
+      const excelRows = filtered.map((l, index) => ({
+        "Sr No": index + 1,
+        "Lead ID": `CON-${l.id}`,
+        "Customer Name": l.name,
+        "Mobile Number": l.mobile,
+        "Email Address": l.email || "N/A",
+        "Preferred Location": l.locationName,
+        "Project Interest": l.projectName,
+        "Enquiry Type": l.typeName,
+        "Response Type": l.statusName,
+        "Is Hot Lead?": l.isHotLead ? "YES (Hot Lead)" : "Normal",
+        "Assigned Caller": l.callerName,
+        "Caller Contact": l.callerPhone,
+        "Call Status": l.callStatusName,
+        "Retry Count": l.retryCount,
+        "Enquiry Date & Time": new Date(l.createdAt).toLocaleString(),
+        "Requirement": l.description
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(excelRows);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Selected Period Leads");
+      XLSX.writeFile(workbook, `Concave_Leads_${startDateStr}_to_${endDateStr}.xlsx`);
+
+      return { success: true, count: filtered.length };
+    } catch (e) {
+      console.error("Date range export error:", e);
+      return { success: false, error: e.message };
+    }
+  },
+
+  // ==============================================================
+  // QUARTERLY CLEANUP ENGINE WITH QUEUE WORK & 30-DAY IMMUNITY
+  // 1. Strict 30-day immunity: Never touches data from past month to this month
+  // 2. Queue logic: cleans chronological 3-month batches of historical data (e.g. Jan-Mar, then Apr-Jun, or July-Oct)
+  // 3. Automatically downloads Excel backup of that specific batch before deleting
+  // 4. Deletes ONLY non-lead data (Not Interested: 5, Fake: 6, Okay: 3)
+  // 5. NEVER deletes Hot Lead (1), Lead (2, 7), or Pending Calls (4 or uncalled)
+  // ==============================================================
+  getQuarterlyQueueInfo() {
+    try {
+      this.init();
+      const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+      
+      const now = new Date();
+      // Strict 30-day protection cutoff: Past month to this month (recent 30 days) is 100% IMMUNE
+      const cutoffDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate(), 23, 59, 59, 999);
+      const cutoffTs = cutoffDate.getTime();
+
+      // Filter historical records that fall BEFORE the 30-day protection cutoff
+      const historicalLeads = rawLeads.filter(l => l.ts <= cutoffTs);
+
+      let batchStart, batchEnd, candidates = [];
+      let isOverdue = false;
+      let diffMonths = 0;
+
+      if (historicalLeads.length > 0) {
+        // Find the oldest historical record
+        const oldestTs = Math.min(...historicalLeads.map(l => l.ts));
+        const diffMonthsFromOldest = Math.floor((now.getTime() - oldestTs) / (30 * 24 * 3600 * 1000));
+        
+        // Queue batch starts at the oldest uncleaned historical record
+        batchStart = new Date(oldestTs);
+        // Batch spans 3 months (90 days) forward from the oldest record
+        const candidateEndTs = batchStart.getTime() + (90 * 24 * 3600 * 1000);
+        // But CANNOT exceed the 30-day protection cutoff (last month)
+        batchEnd = new Date(Math.min(candidateEndTs, cutoffTs));
+
+        // Non-lead disposable candidates in this batch window
+        candidates = rawLeads.filter(l => {
+          const inWindow = l.ts >= batchStart.getTime() && l.ts <= batchEnd.getTime();
+          const isDisposable = l.s === 5 || l.s === 6 || l.s === 3;
+          const isNotPending = l.s !== 4 && l.cs !== 2 && l.cs !== 3 && l.cs !== 0;
+          return inWindow && isDisposable && isNotPending;
+        });
+
+        isOverdue = diffMonthsFromOldest >= 6;
+        diffMonths = diffMonthsFromOldest;
+      } else {
+        // When all database records are within the recent 30-day protected window:
+        // Target historical window is 3 months ending at last month (never future dates!)
+        batchEnd = cutoffDate;
+        batchStart = new Date(batchEnd.getTime() - (90 * 24 * 3600 * 1000));
+        candidates = [];
+        isOverdue = false;
+        diffMonths = 0;
+      }
+
+      const batchStartStr = batchStart.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const batchEndStr = batchEnd.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+      return {
+        batchStartStr,
+        batchEndStr,
+        batchStartTs: batchStart.getTime(),
+        batchEndTs: batchEnd.getTime(),
+        cutoffStr: cutoffDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        candidatesCount: candidates.length,
+        isOverdue,
+        diffMonths,
+        totalRecords: rawLeads.length,
+        historicalRecordsCount: historicalLeads.length
+      };
+    } catch {
+      const now = new Date();
+      const cutoffDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+      const startDate = new Date(cutoffDate.getTime() - 90 * 86400000);
+      return {
+        batchStartStr: startDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        batchEndStr: cutoffDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        batchStartTs: startDate.getTime(),
+        batchEndTs: cutoffDate.getTime(),
+        candidatesCount: 0,
+        isOverdue: false,
+        diffMonths: 0
+      };
+    }
+  },
+
+  runQuarterlyCleanup() {
+    try {
+      this.init();
+      const queueInfo = this.getQuarterlyQueueInfo();
+      const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+      
+      const windowStart = queueInfo.batchStartTs;
+      const windowEnd = queueInfo.batchEndTs;
+
+      // Strict enforcement of 30-day immunity rule
+      const cutoffTs = Date.now() - (30 * 24 * 3600 * 1000);
+      const safeWindowEnd = Math.min(windowEnd, cutoffTs);
+
+      // Step 1: Backup all data in this 3-month queue window to Excel first
+      const windowLeads = this.getAllLeads().filter(l => l.createdAt >= windowStart && l.createdAt <= safeWindowEnd);
+      
+      if (windowLeads.length > 0) {
+        const excelRows = windowLeads.map((l, index) => ({
+          "Sr No": index + 1,
+          "Lead ID": `CON-${l.id}`,
+          "Customer Name": l.name,
+          "Mobile Number": l.mobile,
+          "Email Address": l.email || "N/A",
+          "Preferred Location": l.locationName,
+          "Project Interest": l.projectName,
+          "Response Type": l.statusName,
+          "Assigned Caller": l.callerName,
+          "Call Status": l.callStatusName,
+          "Enquiry Date": new Date(l.createdAt).toLocaleDateString()
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(excelRows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Quarterly Backup");
+        XLSX.writeFile(workbook, `Concave_Quarterly_Backup_${queueInfo.batchStartStr.replace(/ /g, '_')}_to_${queueInfo.batchEndStr.replace(/ /g, '_')}.xlsx`);
+      }
+
+      // Step 2: Delete ONLY non-lead data (Not Interested: 5, Fake: 6, Okay: 3).
+      // NEVER delete Leads (2, 7), Hot Leads (1), or Pending Calls (4 or uncalled cs === 0, 2, 3).
+      // NEVER delete any record from past month to today (ts > safeWindowEnd).
+      const eligibleForPurge = rawLeads.filter(l => {
+        const inWindow = l.ts >= windowStart && l.ts <= safeWindowEnd;
+        const isDisposable = l.s === 5 || l.s === 6 || l.s === 3;
+        const isNotPending = l.s !== 4 && l.cs !== 2 && l.cs !== 3 && l.cs !== 0;
+        return inWindow && isDisposable && isNotPending;
+      });
+
+      const remainingLeads = rawLeads.filter(l => {
+        const inWindow = l.ts >= windowStart && l.ts <= safeWindowEnd;
+        const isDisposable = l.s === 5 || l.s === 6 || l.s === 3;
+        const isNotPending = l.s !== 4 && l.cs !== 2 && l.cs !== 3 && l.cs !== 0;
+        return !(inWindow && isDisposable && isNotPending);
+      });
+
+      setRawData(DB_KEY, remainingLeads);
+
+      return {
+        success: true,
+        startDate: queueInfo.batchStartStr,
+        endDate: queueInfo.batchEndStr,
+        backedUpCount: windowLeads.length,
+        deletedCount: eligibleForPurge.length,
+        remainingCount: remainingLeads.length
+      };
+    } catch (e) {
+      console.error("Quarterly cleanup error:", e);
+      return { success: false, error: e.message };
     }
   },
 
