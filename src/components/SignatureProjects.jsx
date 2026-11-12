@@ -1,192 +1,561 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   MapPin, 
   Compass, 
-  Download, 
-  ExternalLink, 
   ArrowRight,
   Eye,
   PhoneCall,
-  Sparkles
+  Sparkles,
+  Building2,
+  CheckCircle2,
+  ShieldCheck,
+  Calendar,
+  Layers,
+  Search,
+  SlidersHorizontal,
+  X,
+  ChevronRight,
+  Home
 } from 'lucide-react';
-import { PROJECTS_DATA } from '../data/projectsData';
+import { PROJECTS_DATA, LOCATIONS_LIST, MARQUEE_IMAGES } from '../data/projectsData';
+
+// Fallback image in case any photo ever encounters an error
+const FALLBACK_IMG = '/projects/project_img_27.jpg';
+
+// Micro-market descriptors for attractive location cards
+const LOCATION_META = {
+  "Borivali": { subtitle: "West & Link Road", tag: "National Park" },
+  "Kandivali": { subtitle: "East & Reserve", tag: "Forest Living" },
+  "Malad": { subtitle: "Mindspace & West", tag: "Skyline Living" },
+  "Goregaon": { subtitle: "Aarey & Hub", tag: "Integrated Living" },
+  "Jogeshwari": { subtitle: "JVLR & Downtown", tag: "Metro Connected" },
+  "Andheri": { subtitle: "Versova & Coastal", tag: "Seafront Luxury" },
+  "Bandra": { subtitle: "BKC & Coast", tag: "Ultra Prime" },
+  "Lower Parel": { subtitle: "Midtown Towers", tag: "Sky Bungalows" }
+};
 
 export function SignatureProjects({ 
   onSelectProject, 
   onOpenTour, 
   onOpenEnquiry,
   filterLocation = 'All',
-  filterType = 'All'
+  filterType = 'All',
+  onNavigateHome
 }) {
-  const [selectedBhkTab, setSelectedBhkTab] = useState('All');
+  // Default selected location is Borivali
+  const [selectedLocation, setSelectedLocation] = useState('Borivali');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedBhk, setSelectedBhk] = useState('All');
 
-  const filteredProjects = PROJECTS_DATA.filter((proj) => {
-    if (filterLocation !== 'All' && proj.location.toLowerCase() !== filterLocation.toLowerCase()) {
-      return false;
+  // Synchronize when external filterLocation prop is passed
+  useEffect(() => {
+    if (filterLocation && filterLocation !== 'All') {
+      const match = LOCATIONS_LIST.find(loc => loc.toLowerCase() === filterLocation.toLowerCase());
+      if (match) {
+        setSelectedLocation(match);
+      }
     }
-    if (selectedBhkTab !== 'All') {
-      const hasConfig = proj.configurations.some(c => c.bhk.toLowerCase().includes(selectedBhkTab.toLowerCase()));
-      if (!hasConfig) return false;
-    }
-    return true;
-  });
+  }, [filterLocation]);
+
+  // Filter projects by location, search query, and BHK
+  const displayedProjects = useMemo(() => {
+    return PROJECTS_DATA.filter((proj) => {
+      // 1. Location filter
+      if (selectedLocation !== 'All Locations' && selectedLocation !== 'All') {
+        if (proj.location.toLowerCase() !== selectedLocation.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // 2. Search query filter
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchesName = proj.name.toLowerCase().includes(q);
+        const matchesBuilder = proj.builder.toLowerCase().includes(q);
+        const matchesLocality = (proj.locality || '').toLowerCase().includes(q);
+        const matchesLocation = proj.location.toLowerCase().includes(q);
+        const matchesOverview = (proj.overview || '').toLowerCase().includes(q);
+        if (!matchesName && !matchesBuilder && !matchesLocality && !matchesLocation && !matchesOverview) {
+          return false;
+        }
+      }
+
+      // 3. BHK filter
+      if (selectedBhk !== 'All') {
+        const hasBhk = proj.configurations?.some(cfg => 
+          cfg.bhk.toLowerCase().includes(selectedBhk.toLowerCase())
+        );
+        if (!hasBhk) return false;
+      }
+
+      return true;
+    });
+  }, [selectedLocation, searchQuery, selectedBhk]);
+
+  // Smoothly scroll down to the projects section when a location is clicked
+  const handleLocationClick = (loc) => {
+    setSelectedLocation(loc);
+    setTimeout(() => {
+      const showcaseSection = document.getElementById('projects-showcase-section');
+      if (showcaseSection) {
+        const navOffset = 85; // offset for the glassmorphism navbar
+        const targetY = showcaseSection.getBoundingClientRect().top + window.pageYOffset - navOffset;
+        window.scrollTo({
+          top: targetY,
+          behavior: 'smooth'
+        });
+      }
+    }, 50);
+  };
+
+  // Duplicated marquee images for infinite seamless scrolling
+  const marqueeItems = [...MARQUEE_IMAGES, ...MARQUEE_IMAGES];
 
   return (
-    <section id="signature-projects" className="py-24 bg-[#FAF9F6] text-[#14221F]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+    <div id="signature-projects-page" className="min-h-screen bg-[#FAF9F6] text-[#14221F]">
+      
+      {/* ============================================================== */}
+      {/* HERO BANNER – MARQUEE BACKGROUND + ANIMATED GOLD HEADING       */}
+      {/* ============================================================== */}
+      <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden border-b border-[#EAE6DF] flex items-center justify-center group shadow-md">
         
-        {/* Lodha Editorial Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs uppercase tracking-[0.3em] text-[#C59B4E] font-semibold block">
-            OUR PROMISE
-          </span>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#14221F] tracking-tight">
-            Creators of Extraordinary Developments
-          </h2>
-          <p className="text-gray-600 text-sm font-light leading-relaxed">
-            Concave Realty unites discerning homebuyers with Mumbai’s most iconic addresses. Impeccable architecture, panoramic views, and enduring craftsmanship.
-          </p>
+        {/* Background Scrolling Architectural Image Marquee */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto">
+          {/* Subtle horizontal fade masks on sides */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-black/60 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-black/60 to-transparent z-10" />
 
-          {/* Minimal Filter Tabs */}
-          <div className="flex justify-center gap-6 pt-4 text-xs uppercase tracking-widest text-gray-500 font-medium">
-            {['All', '3 BHK', '4 BHK', 'Jodi'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setSelectedBhkTab(tab)}
-                className={`pb-1 transition-all ${
-                  selectedBhkTab === tab
-                    ? 'text-[#14221F] font-bold border-b-2 border-[#C59B4E]'
-                    : 'hover:text-[#14221F]'
-                }`}
+          {/* Marquee Track fitting the exact field height */}
+          <div className="animate-marquee flex gap-4 h-full">
+            {marqueeItems.map((item, idx) => (
+              <div
+                key={idx}
+                className="h-full w-72 sm:w-84 md:w-96 flex-shrink-0 relative overflow-hidden cursor-pointer"
+                onClick={() => {
+                  const found = PROJECTS_DATA.find(p => p.name.toLowerCase() === item.title.toLowerCase());
+                  if (found) onSelectProject(found);
+                }}
               >
-                {tab}
-              </button>
+                <img
+                  src={item.url}
+                  alt={item.title}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
+                  className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.05] transition-transform duration-700 ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
+
+                {/* Subtle location & title watermark */}
+                <div className="absolute bottom-3 left-3 right-3 text-white/80 pointer-events-none">
+                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-[#DFBE79] block truncate">
+                    {item.location} • {item.title}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
+
+          {/* Transparent Frosted Glass Blur Overlay across the marquee field */}
+          <div className="pointer-events-none absolute inset-0 bg-black/30 backdrop-blur-[2px] z-10" />
         </div>
 
-        {/* Editorial Project Showcase (Lodha split-screen style) */}
-        <div className="space-y-16">
-          {filteredProjects.map((project, idx) => {
-            const isReversed = idx % 2 === 1;
-
-            return (
-              <div 
-                key={project.id}
-                className={`bg-white rounded-xl overflow-hidden border border-[#EAE6DF] shadow-subtle hover:shadow-luxury-light transition-all duration-300 flex flex-col ${
-                  isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row'
-                }`}
-              >
-                {/* Visual Half */}
-                <div className="lg:w-1/2 relative min-h-[380px] lg:min-h-[460px] overflow-hidden group">
-                  <img
-                    src={project.coverImage}
-                    alt={project.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60" />
-                  
-                  {/* Location badge on photo */}
-                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md px-3 py-1 rounded text-xs uppercase tracking-wider font-semibold text-[#14221F] shadow-sm">
-                    {project.location}
-                  </div>
-
-                  {/* 360 Tour Button on photo if available */}
-                  {project.virtualTourUrl && (
-                    <button
-                      onClick={() => onOpenTour(project.id)}
-                      className="absolute bottom-4 right-4 bg-[#1D3530]/90 backdrop-blur-md text-white hover:bg-[#C59B4E] transition-colors px-3 py-1.5 rounded text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 shadow-md"
-                    >
-                      <Compass className="w-3.5 h-3.5 text-[#DFBE79]" />
-                      <span>360° Virtual Tour</span>
-                    </button>
-                  )}
-                </div>
-
-                {/* Content Half (Clean, spacious, Lodha-inspired typography) */}
-                <div className="lg:w-1/2 p-8 sm:p-12 flex flex-col justify-between space-y-6">
-                  
-                  <div className="space-y-4">
-                    {/* Subheading */}
-                    <div className="flex items-center justify-between text-xs uppercase tracking-widest text-gray-500">
-                      <span>{project.builder}</span>
-                      <span className="text-[#C59B4E] font-medium">{project.status}</span>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="font-serif text-3xl sm:text-4xl font-bold text-[#14221F]">
-                      {project.name}
-                    </h3>
-
-                    <p className="text-sm text-gray-600 font-light leading-relaxed">
-                      {project.overview}
-                    </p>
-
-                    {/* Key Specifications Strip */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-3 border-t border-[#EAE6DF] text-xs">
-                      <div>
-                        <span className="text-[10px] uppercase text-gray-400 block tracking-wider">Starting Price</span>
-                        <span className="font-serif text-lg font-bold text-[#14221F]">{project.priceDisplay}</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] uppercase text-gray-400 block tracking-wider">Land & Towers</span>
-                        <span className="font-medium text-[#14221F]">{project.landParcel.split(' ')[0]} {project.landParcel.split(' ')[1]} • {project.towers.split(' ')[0]} Twr</span>
-                      </div>
-                      <div>
-                        <span className="text-[10px] uppercase text-gray-400 block tracking-wider">Possession</span>
-                        <span className="font-medium text-[#14221F]">{project.possession.split('(')[0]}</span>
-                      </div>
-                    </div>
-
-                    {/* Festive offer / Jodi callout */}
-                    {project.festiveOffer && (
-                      <div className="bg-[#FAF9F6] border-l-2 border-[#C59B4E] p-2.5 text-xs text-[#14221F]">
-                        <strong>Special Privilege:</strong> {project.festiveOffer}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Clean Action Buttons (Using user's #245348 button) */}
-                  <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#EAE6DF]">
-                    <button
-                      onClick={() => onSelectProject(project)}
-                      className="px-5 py-2.5 rounded lodha-btn-outline text-xs uppercase tracking-widest font-semibold"
-                    >
-                      Know More
-                    </button>
-
-                    <button
-                      onClick={() => onOpenEnquiry({
-                        projectName: project.name,
-                        location: project.location,
-                        project: project
-                      })}
-                      className="px-5 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm"
-                    >
-                      Book Site Visit
-                    </button>
-
-                    {project.digitalKitUrl && (
-                      <a
-                        href={project.digitalKitUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs uppercase tracking-widest text-[#C59B4E] hover:text-[#14221F] font-semibold inline-flex items-center gap-1 transition-colors pl-2"
-                      >
-                        <span>Digital Kit</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                  </div>
-
-                </div>
-
-              </div>
-            );
-          })}
+        {/* Animated Golden Heading centered in the field */}
+        <div className="relative z-20 max-w-5xl mx-auto text-center px-4 pointer-events-none select-none">
+          <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight animated-gold-heading">
+            Mumbai's Signature Addresses
+          </h1>
         </div>
 
       </div>
-    </section>
+
+      {/* ============================================================== */}
+      {/* SECTION B: LOCATION SELECTION & INTERACTIVE FILTERS            */}
+      {/* ============================================================== */}
+      <section className="py-12 bg-[#FAF9F6]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#14221F] tracking-tight">
+              Explore Location
+            </h2>
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
+          </div>
+
+          {/* Attractive & Animated Location Cards Grid – Balanced Medium Size Layout */}
+          <div className="pt-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5">
+              
+              {/* All Locations Master Card */}
+              <button
+                type="button"
+                onClick={() => handleLocationClick('All Locations')}
+                className={`group relative p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[92px] ${
+                  selectedLocation === 'All Locations' || selectedLocation === 'All'
+                    ? 'bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] text-white border-[#C59B4E] shadow-[0_8px_20px_-3px_rgba(36,83,72,0.45)] ring-2 ring-[#C59B4E]/60 scale-[1.02]'
+                    : 'bg-white text-[#14221F] border-[#EAE6DF] hover:border-[#C59B4E] hover:shadow-md hover:-translate-y-1'
+                }`}
+              >
+                <div className="flex items-center justify-between w-full mb-2">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                    selectedLocation === 'All Locations' || selectedLocation === 'All'
+                      ? 'bg-[#284F45] text-[#DFBE79] shadow-xs'
+                      : 'bg-[#FAF9F6] text-[#245348] group-hover:bg-[#245348] group-hover:text-[#DFBE79]'
+                  }`}>
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full font-bold transition-colors ${
+                    selectedLocation === 'All Locations' || selectedLocation === 'All'
+                      ? 'bg-[#14221F] text-[#DFBE79] border border-[#C59B4E]/40'
+                      : 'bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] group-hover:border-[#C59B4E]/40'
+                  }`}>
+                    {PROJECTS_DATA.length} Projects
+                  </span>
+                </div>
+
+                <div className="space-y-0.5">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-serif text-sm sm:text-base font-bold tracking-tight">
+                      All Locations
+                    </h4>
+                    <span className={`text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                      selectedLocation === 'All Locations' || selectedLocation === 'All'
+                        ? 'bg-white/10 text-[#DFBE79]'
+                        : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      Portfolio
+                    </span>
+                  </div>
+                  <p className={`text-[11px] font-light truncate ${
+                    selectedLocation === 'All Locations' || selectedLocation === 'All'
+                      ? 'text-gray-300'
+                      : 'text-gray-500'
+                  }`}>
+                    All 8 micro-markets
+                  </p>
+                </div>
+
+                {/* Active Gold Indicator Bar */}
+                {(selectedLocation === 'All Locations' || selectedLocation === 'All') && (
+                  <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent rounded-full animate-pulse" />
+                )}
+              </button>
+
+              {/* 8 Required Location Cards */}
+              {LOCATIONS_LIST.map((loc) => {
+                const isSelected = selectedLocation.toLowerCase() === loc.toLowerCase();
+                const projectCount = PROJECTS_DATA.filter(p => p.location.toLowerCase() === loc.toLowerCase()).length;
+                const meta = LOCATION_META[loc] || { subtitle: "Western Suburbs", tag: "Signature Living" };
+
+                return (
+                  <button
+                    key={loc}
+                    type="button"
+                    onClick={() => handleLocationClick(loc)}
+                    className={`group relative p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[92px] ${
+                      isSelected
+                        ? 'bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] text-white border-[#C59B4E] shadow-[0_8px_20px_-3px_rgba(36,83,72,0.45)] ring-2 ring-[#C59B4E]/60 scale-[1.02]'
+                        : 'bg-white text-[#14221F] border-[#EAE6DF] hover:border-[#C59B4E] hover:shadow-md hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between w-full mb-2">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                        isSelected
+                          ? 'bg-[#284F45] text-[#DFBE79] shadow-xs'
+                          : 'bg-[#FAF9F6] text-[#245348] group-hover:bg-[#245348] group-hover:text-[#DFBE79]'
+                      }`}>
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full font-bold transition-colors ${
+                        isSelected
+                          ? 'bg-[#14221F] text-[#DFBE79] border border-[#C59B4E]/40'
+                          : 'bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] group-hover:border-[#C59B4E]/40'
+                      }`}>
+                        {projectCount} {projectCount === 1 ? 'Project' : 'Projects'}
+                      </span>
+                    </div>
+
+                    <div className="space-y-0.5">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-serif text-sm sm:text-base font-bold tracking-tight">
+                          {loc}
+                        </h4>
+                        {meta.tag && (
+                          <span className={`text-[9px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                            isSelected
+                              ? 'bg-white/10 text-[#DFBE79]'
+                              : 'bg-gray-100 text-gray-500'
+                          }`}>
+                            {meta.tag}
+                          </span>
+                        )}
+                      </div>
+                      <p className={`text-[11px] font-light truncate ${
+                        isSelected ? 'text-gray-300' : 'text-gray-500'
+                      }`}>
+                        {meta.subtitle}
+                      </p>
+                    </div>
+
+                    {/* Active Gold Indicator Bar */}
+                    {isSelected && (
+                      <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent rounded-full animate-pulse" />
+                    )}
+                  </button>
+                );
+              })}
+
+            </div>
+          </div>
+
+          {/* Search & Quick Filter Controls Bar */}
+          <div id="projects-showcase-section" className="bg-white p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 scroll-mt-24">
+            
+            {/* Search Input */}
+            <div className="relative w-full md:w-96">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search project, builder, or micro-market..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl pl-10 pr-9 py-2.5 text-xs text-[#14221F] focus:outline-none transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* BHK Filter Badges */}
+            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
+              <span className="text-[11px] uppercase tracking-wider text-gray-500 font-mono mr-1 hidden sm:inline">
+                Typology:
+              </span>
+              {['All', '2 BHK', '3 BHK', '4 BHK', 'Jodi'].map((bhk) => (
+                <button
+                  key={bhk}
+                  type="button"
+                  onClick={() => setSelectedBhk(bhk)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
+                    selectedBhk === bhk
+                      ? 'bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] text-[#DFBE79] border border-[#C59B4E]/60 shadow-sm font-semibold scale-105'
+                      : 'bg-[#FAF9F6] text-gray-600 hover:bg-white hover:text-[#14221F] border border-[#EAE6DF] hover:border-[#C59B4E]/40'
+                  }`}
+                >
+                  {bhk}
+                </button>
+              ))}
+            </div>
+
+          </div>
+
+          {/* Selected Location Summary Strip */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-1 pb-1 border-b border-[#EAE6DF] text-xs text-gray-600 font-mono">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#245348] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#245348]" />
+              </span>
+              <span>
+                Showing <strong className="text-[#14221F]">{displayedProjects.length}</strong> premium developments in <strong className="text-[#245348]">{selectedLocation}</strong>
+                {selectedBhk !== 'All' && <span> • Typology: <strong className="text-[#14221F]">{selectedBhk}</strong></span>}
+                {searchQuery && <span> • Matching: "<strong className="text-[#C59B4E]">{searchQuery}</strong>"</span>}
+              </span>
+            </div>
+            <span className="text-gray-400 text-[11px]">
+              *Prices mentioned are indicative quoted prices
+            </span>
+          </div>
+
+          {/* ============================================================== */}
+          {/* SECTION C & D: LOCATION-WISE PROJECT INFORMATION CARDS GRID    */}
+          {/* ============================================================== */}
+          {displayedProjects.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-[#EAE6DF] p-12 text-center space-y-4">
+              <Building2 className="w-12 h-12 text-gray-400 mx-auto" />
+              <h3 className="font-serif text-xl font-bold text-[#14221F]">
+                No developments matched your current criteria
+              </h3>
+              <p className="text-xs text-gray-500 max-w-md mx-auto">
+                Try resetting your search query or switching to "All Locations" to view our complete Mumbai portfolio.
+              </p>
+              <button
+                onClick={() => {
+                  setSelectedLocation('All Locations');
+                  setSearchQuery('');
+                  setSelectedBhk('All');
+                }}
+                className="px-6 py-2.5 rounded-xl bg-[#245348] text-white text-xs uppercase tracking-wider font-semibold hover:bg-[#1B3F37] transition-all"
+              >
+                Reset All Filters
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayedProjects.map((project) => {
+                const hasVirtualTour = Boolean(project.virtualTourUrl);
+
+                return (
+                  <div 
+                    key={project.id}
+                    className="relative bg-white rounded-2xl overflow-hidden border border-[#EAE6DF] shadow-sm hover:shadow-[0_15px_35px_rgba(20,34,31,0.12)] hover:border-[#C59B4E] transition-all duration-300 flex flex-col group hover:-translate-y-1.5"
+                  >
+                    {/* 1. Main Project Image with subtle zoom on hover */}
+                    <div 
+                      className="relative h-48 sm:h-52 overflow-hidden bg-gray-900 cursor-pointer"
+                      onClick={() => onSelectProject(project)}
+                    >
+                      <img
+                        src={project.coverImage}
+                        alt={project.name}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
+                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+                      
+                      {/* Top Header Row: Location Badge & Developer Badge - perfectly aligned across all boxes */}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
+                        {/* Location badge */}
+                        <div 
+                          title={project.locality || project.location}
+                          className="bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider font-semibold text-[#14221F] shadow-sm flex items-center gap-1.5 max-w-[58%] truncate"
+                        >
+                          <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0" />
+                          <span className="truncate">{project.locality || project.location}</span>
+                        </div>
+
+                        {/* Developer badge */}
+                        <div 
+                          title={project.builder}
+                          className="bg-[#1D3530]/95 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 px-2.5 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider font-semibold shadow-sm max-w-[40%] truncate text-right shrink-0"
+                        >
+                          <span className="truncate">{project.builder}</span>
+                        </div>
+                      </div>
+
+                      {/* Bottom Right: 360° Virtual Tour button - strictly conditional */}
+                      {hasVirtualTour && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenTour(project.id);
+                          }}
+                          className="absolute bottom-2.5 right-2.5 bg-[#245348] hover:bg-[#1B3F37] text-white px-3 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
+                        >
+                          <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
+                          <span>360° Virtual Tour</span>
+                        </button>
+                      )}
+
+                      {/* Bottom Left: Multiple photos count pill */}
+                      <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1.5">
+                        <Eye className="w-3 h-3 text-[#DFBE79]" />
+                        <span>{project.images?.length || 1} Photos</span>
+                      </div>
+                    </div>
+
+                    {/* Card Content Body */}
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3.5">
+                      <div className="space-y-2.5">
+                        
+                        {/* Status & Developer Header */}
+                        <div className="flex items-center justify-between text-xs h-5">
+                          <span className="text-[11px] font-semibold text-[#245348] uppercase tracking-wider font-mono truncate max-w-[62%]">
+                            {project.builder}
+                          </span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold shadow-xs shrink-0">
+                            {project.status || 'Verified Project'}
+                          </span>
+                        </div>
+
+                        {/* Project Name & 1-Line Tagline */}
+                        <div>
+                          <h3 
+                            onClick={() => onSelectProject(project)}
+                            className="font-serif text-lg sm:text-xl font-bold text-[#14221F] group-hover:text-[#245348] transition-colors cursor-pointer truncate"
+                            title={project.name}
+                          >
+                            {project.name}
+                          </h3>
+                          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1 font-light min-h-[16px]" title={project.tagline || project.overview}>
+                            {project.tagline || project.overview}
+                          </p>
+                        </div>
+
+                        {/* Available BHK Configurations */}
+                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 min-h-[28px]">
+                          {project.configurations.map((cfg, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-0.5 rounded-md bg-[#FAF9F6] border border-[#EAE6DF] text-[11px] font-semibold text-[#14221F] group-hover:border-[#C59B4E]/40 transition-colors"
+                            >
+                              {cfg.bhk.split(' ')[0]} BHK
+                            </span>
+                          ))}
+                        </div>
+
+                      </div>
+
+                      {/* Pricing & Dual CTA Action Buttons */}
+                      <div className="pt-3 border-t border-[#EAE6DF] space-y-3">
+                        <div className="flex items-baseline justify-between">
+                          <div>
+                            <span className="text-[9px] uppercase text-gray-400 block font-mono tracking-wider">
+                              Indicative Quoted Price*
+                            </span>
+                            <div className="font-sans text-lg sm:text-xl font-semibold text-[#14221F] tracking-tight group-hover:text-[#245348] transition-colors mt-0.5">
+                              {project.priceRange || project.priceDisplay}
+                            </div>
+                          </div>
+                          <span className="text-[9px] text-gray-400 italic font-mono">
+                            *Indicative
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => onSelectProject(project)}
+                            className="w-full py-2 px-2.5 rounded-lg border border-[#14221F] hover:bg-[#14221F] hover:text-white text-xs uppercase tracking-wider font-semibold transition-all duration-200 text-center cursor-pointer shadow-xs hover:scale-[1.02]"
+                          >
+                            Details
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => onOpenEnquiry({
+                              projectName: project.name,
+                              location: project.location,
+                              project: project
+                            })}
+                            className="w-full py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#245348] to-[#1B3F37] hover:from-[#C59B4E] hover:to-[#B3883B] text-white hover:text-[#14221F] text-xs uppercase tracking-wider font-semibold transition-all duration-300 shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer hover:scale-[1.02]"
+                          >
+                            <PhoneCall className="w-3.5 h-3.5" />
+                            <span>Enquire</span>
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+        </div>
+      </section>
+
+    </div>
   );
 }

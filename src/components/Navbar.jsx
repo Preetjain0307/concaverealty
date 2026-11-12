@@ -19,7 +19,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
   const [portalDropdownOpen, setPortalDropdownOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-[#1D3530] text-white border-b border-[#284F45] transition-all">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-gradient-to-r from-[#14221F]/85 via-[#1D3530]/80 to-[#14221F]/85 backdrop-blur-xl text-white border-b border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.25)] transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
 
@@ -107,7 +107,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
               {portalDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-2 w-56 bg-[#1D3530] border border-[#284F45] rounded-lg shadow-xl p-2 z-50 text-xs space-y-1"
+                  className="absolute right-0 mt-2 w-56 bg-[#14221F]/95 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl p-2 z-50 text-xs space-y-1"
                   onMouseLeave={() => setPortalDropdownOpen(false)}
                 >
                   <div className="px-3 py-1.5 text-[10px] text-gray-400 uppercase tracking-widest border-b border-white/10 font-mono">
@@ -176,7 +176,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#1D3530] border-b border-[#284F45] px-4 pt-3 pb-6 space-y-2 text-xs uppercase tracking-wider">
+        <div className="lg:hidden bg-[#14221F]/95 backdrop-blur-2xl border-b border-white/10 px-4 pt-3 pb-6 space-y-2 text-xs uppercase tracking-wider shadow-2xl">
           <button
             onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
             className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-gray-200"

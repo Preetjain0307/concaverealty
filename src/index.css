@@ -176,3 +176,61 @@
   -webkit-text-fill-color: transparent;
   animation: diagonalChampagneShine 1.8s linear infinite;
 }
+
+/* ── Premium Animated Gold Gradient for Hero Heading ── */
+@keyframes goldGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gold-heading {
+  display: inline-block;
+  background: linear-gradient(
+    135deg,
+    #DFBE79 0%,
+    #FFF4D6 20%,
+    #C59B4E 40%,
+    #FFFFFF 55%,
+    #DFBE79 75%,
+    #B3883B 100%
+  );
+  background-size: 250% 250%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldGradientFlow 4s ease infinite;
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 25px rgba(197, 155, 78, 0.55));
+}
+
+/* ── Infinite Project Image Marquee ── */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 50s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (max-width: 768px) {
+  .animate-marquee {
+    animation-duration: 40s;
+  }
+}

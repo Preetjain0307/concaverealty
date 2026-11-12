@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
@@ -9,6 +10,7 @@ import { AmenitiesSection } from './components/AmenitiesSection';
 import { ProjectDetailModal } from './components/ProjectDetailModal';
 import { VirtualTourModal } from './components/VirtualTourModal';
 import { EnquiryModal } from './components/EnquiryModal';
+import { EnquiryPage } from './components/EnquiryPage';
 import { CallerPortal } from './components/CallerPortal';
 import { AdminPortal } from './components/AdminPortal';
 import { Footer } from './components/Footer';
@@ -17,7 +19,7 @@ import { dbStore } from './data/dbStore';
 
 export function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'projects', 'locations', 'amenities', 'caller', 'admin'
+  const [currentView, setCurrentView] = useState('home'); // 'home', 'projects', 'locations', 'amenities', 'enquiry', 'caller', 'admin'
 
   const [selectedProject, setSelectedProject] = useState(null);
   const [tourModalOpen, setTourModalOpen] = useState(false);
@@ -43,21 +45,20 @@ export function App() {
 
   const handleOpenEnquiry = (initialData = {}) => {
     setEnquiryInitialData(initialData);
-    setEnquiryModalOpen(true);
+    setCurrentView('enquiry');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSearch = (filters) => {
     setSearchFilter(filters);
     setCurrentView('projects');
-    const el = document.getElementById('signature-projects');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectLocation = (locName) => {
     setSearchFilter(prev => ({ ...prev, location: locName }));
     setCurrentView('projects');
-    const el = document.getElementById('signature-projects');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleLogout = () => {
@@ -76,7 +77,7 @@ export function App() {
 
       {/* Light aesthetic Lodha-grade canvas */}
       <div className="min-h-screen flex flex-col bg-[#FAF9F6] text-[#14221F] selection:bg-[#245348] selection:text-white">
-        
+
         {/* Navigation Bar (Header: #1D3530, Sign in button: #245348) */}
         <Navbar
           onNavigate={(view) => {
@@ -93,27 +94,16 @@ export function App() {
         <main className="flex-1">
           {currentView === 'home' && (
             <>
-              {/* Fullscreen Video Hero matching Lodha */}
+              {/* Fullscreen Video Hero */}
               <ErrorBoundary>
                 <HeroSection
                   onSearch={handleSearch}
                   onExplore={() => {
-                    const el = document.getElementById('signature-projects');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    setCurrentView('projects');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   onOpenTour={handleOpenTour}
                   onOpenEnquiry={handleOpenEnquiry}
-                />
-              </ErrorBoundary>
-
-              {/* Minimal Editorial Signature Projects Showcase */}
-              <ErrorBoundary>
-                <SignatureProjects
-                  onSelectProject={setSelectedProject}
-                  onOpenTour={handleOpenTour}
-                  onOpenEnquiry={handleOpenEnquiry}
-                  filterLocation={searchFilter.location}
-                  filterType={searchFilter.type}
                 />
               </ErrorBoundary>
 
@@ -126,8 +116,52 @@ export function App() {
 
               {/* 50+ Curated World-Class Amenities */}
               <ErrorBoundary>
-                <AmenitiesSection />
+                <AmenitiesSection onOpenEnquiry={handleOpenEnquiry} />
               </ErrorBoundary>
+
+              {/* Attractive Animated Luxury Portfolio Teaser Banner (Positioned at bottom of Home Page) */}
+              <section className="py-20 bg-gradient-to-b from-[#FAF9F6] via-[#14221F] to-[#0E1715] border-t border-[#EAE6DF] relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+
+                  {/* Luxury Animated Card */}
+                  <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#14221F] p-8 sm:p-14 border border-[#C59B4E]/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] group hover:border-[#C59B4E] transition-all duration-500">
+
+                    {/* Animated Ambient Glows */}
+                    <div className="pointer-events-none absolute -top-24 -left-24 w-96 h-96 bg-[#C59B4E]/15 rounded-full blur-3xl animate-pulse" />
+                    <div className="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 bg-[#245348]/30 rounded-full blur-3xl" />
+
+                    {/* Interior diagonal subtle shimmer */}
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.04] to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+
+                    <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
+
+                      {/* Clean Heading */}
+                      <div className="space-y-2 max-w-2xl">
+                        <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white drop-shadow-md">
+                          Explore Our Curated Projects Portfolio
+                        </h2>
+                      </div>
+
+                      {/* Animated Luxury Action Button */}
+                      <div className="flex-shrink-0">
+                        <button
+                          onClick={() => {
+                            setCurrentView('projects');
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="relative px-8 sm:px-10 py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-[#245348] to-[#1B3F37] hover:from-[#C59B4E] hover:to-[#B3883B] text-white hover:text-[#14221F] text-xs uppercase tracking-widest font-semibold transition-all duration-300 shadow-xl flex items-center gap-3 group/btn border border-[#C59B4E]/40 hover:scale-105 active:scale-95 cursor-pointer"
+                        >
+                          <span>View All Projects</span>
+                          <ArrowRight className="w-4 h-4 text-[#DFBE79] group-hover/btn:text-[#14221F] group-hover/btn:translate-x-1.5 transition-all duration-300" />
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              </section>
             </>
           )}
 
@@ -158,9 +192,25 @@ export function App() {
           {currentView === 'amenities' && (
             <div className="pt-20">
               <ErrorBoundary>
-                <AmenitiesSection />
+                <AmenitiesSection onOpenEnquiry={handleOpenEnquiry} />
               </ErrorBoundary>
             </div>
+          )}
+
+          {currentView === 'enquiry' && (
+            <ErrorBoundary>
+              <EnquiryPage
+                initialData={enquiryInitialData}
+                onNavigateHome={() => {
+                  setCurrentView('home');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                onNavigateProjects={() => {
+                  setCurrentView('projects');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            </ErrorBoundary>
           )}
 
           {currentView === 'caller' && (
