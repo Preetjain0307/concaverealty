@@ -133,7 +133,7 @@ export function SplashIntro({ onFinish }) {
           onClick={handleSkip}
           className="group inline-flex items-center gap-2 text-xs text-[#1D3530] hover:text-[#1D3530] px-4 py-1.5 rounded-full border border-[#1D3530]/30 hover:border-[#1D3530] bg-[#E8D8C3]/80 hover:bg-[#E8D8C3] backdrop-blur-md shadow-sm transition-all font-medium"
         >
-          <span>Enter Portfolio</span>
+          <span>Skip</span>
           <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform text-[#1D3530]" />
         </button>
       </div>

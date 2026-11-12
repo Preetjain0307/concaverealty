@@ -36,19 +36,33 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES } from '../data/dbStore';
+import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy } from '../data/dbStore';
 
 export function AdminPortal({ currentUser, onLogin, onLogout }) {
   // Navigation tabs: 'overview' | 'performance' | 'callers' | 'storage'
   const [adminTab, setAdminTab] = useState('overview');
 
-  const [adminUsername, setAdminUsername] = useState('admin');
-  const [adminPassword, setAdminPassword] = useState('concave@2026');
-  const [adminOtpMobile, setAdminOtpMobile] = useState('98200 00000');
-  const [adminOtpSent, setAdminOtpSent] = useState(false);
-  const [adminGeneratedOtp, setAdminGeneratedOtp] = useState('');
-  const [adminEnteredOtp, setAdminEnteredOtp] = useState('');
-  const [adminLoginMethod, setAdminLoginMethod] = useState('password');
+  const adminCredsInitial = dbStore.getAdminCredentials();
+  const [adminUsername, setAdminUsername] = useState(adminCredsInitial.username || 'admin');
+  const [adminPassword, setAdminPassword] = useState(adminCredsInitial.password || 'concave@2026');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
+  const [adminLoginError, setAdminLoginError] = useState('');
+  const [adminFailedAttempts, setAdminFailedAttempts] = useState(0);
+  const [adminLockoutUntil, setAdminLockoutUntil] = useState(0);
+
+  // Forgot Password State (with automatic 6-digit OTP, 5-min expiry, max 3 attempts)
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: OTP, 2: New Password
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [enteredForgotOtp, setEnteredForgotOtp] = useState('');
+  const [otpExpiresAt, setOtpExpiresAt] = useState(0);
+  const [otpRemainingSeconds, setOtpRemainingSeconds] = useState(0);
+  const [wrongOtpAttempts, setWrongOtpAttempts] = useState(0);
+  const [newAdminPassword, setNewAdminPassword] = useState('');
+  const [confirmAdminPassword, setConfirmAdminPassword] = useState('');
+  const [showNewAdminPassword, setShowNewAdminPassword] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccessMsg, setForgotSuccessMsg] = useState('');
 
   const [leads, setLeads] = useState([]);
   const [callers, setCallers] = useState([]);
@@ -114,7 +128,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     phone: '',
     email: '',
     password: 'caller123',
-    role: 'Territory Specialist',
+    role: 'Location Specialist',
     assignedLocations: [1]
   });
 
@@ -148,37 +162,161 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     setEnquiryPage(1);
   }, [searchQuery, locationFilter, statusFilter]);
 
+  // 5-minute countdown timer for OTP
+  useEffect(() => {
+    let interval = null;
+    if (forgotPasswordMode && forgotStep === 1 && otpExpiresAt > 0) {
+      interval = setInterval(() => {
+        const remaining = Math.max(0, Math.floor((otpExpiresAt - Date.now()) / 1000));
+        setOtpRemainingSeconds(remaining);
+        if (remaining <= 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [forgotPasswordMode, forgotStep, otpExpiresAt]);
+
   const handleAdminPasswordLogin = (e) => {
     e.preventDefault();
-    if (adminUsername === 'admin' && adminPassword === 'concave@2026') {
+    setAdminLoginError('');
+
+    // 1. Check rate limiting lockout
+    if (adminLockoutUntil && Date.now() < adminLockoutUntil) {
+      const secsLeft = Math.ceil((adminLockoutUntil - Date.now()) / 1000);
+      setAdminLoginError(`Account temporarily locked due to consecutive failed attempts. Please retry in ${secsLeft}s.`);
+      return;
+    }
+
+    // 2. Security validation
+    if (detectSqlInjection(adminUsername) || detectSqlInjection(adminPassword)) {
+      setAdminLoginError('Invalid login credentials or unauthorized characters.');
+      return;
+    }
+
+    const cleanUser = sanitizeInput(adminUsername);
+    const adminCreds = dbStore.getAdminCredentials();
+
+    if (cleanUser.toLowerCase() === adminCreds.username.toLowerCase() && adminPassword === adminCreds.password) {
+      setAdminFailedAttempts(0);
+      setAdminLockoutUntil(0);
+      setAdminLoginError('');
       onLogin({
         id: 999,
         name: "Hemant (Super Administrator)",
         role: "admin",
-        email: "admin@concaverealty.com"
+        email: adminCreds.email || "concaverealtyindia@gmail.com"
       });
     } else {
-      alert("Invalid Admin Credentials. Default: admin / concave@2026");
+      const nextAttempts = adminFailedAttempts + 1;
+      setAdminFailedAttempts(nextAttempts);
+      if (nextAttempts >= 5) {
+        const lockTime = Date.now() + 5 * 60 * 1000;
+        setAdminLockoutUntil(lockTime);
+        setAdminLoginError('Too many failed login attempts. Account temporarily locked for 5 minutes for security.');
+      } else {
+        setAdminLoginError(`Invalid Admin ID or Password. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
+      }
     }
   };
 
-  const handleSendAdminOtp = () => {
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    setAdminGeneratedOtp(code);
-    setAdminOtpSent(true);
+  const handleStartForgotPassword = () => {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 5 * 60 * 1000;
+    setForgotOtp(code);
+    setOtpExpiresAt(expires);
+    setOtpRemainingSeconds(300);
+    setWrongOtpAttempts(0);
+    setEnteredForgotOtp('');
+    setForgotError('');
+    setForgotSuccessMsg('');
+    setForgotStep(1);
+    setForgotPasswordMode(true);
+    setFeedbackToast(`OTP sent to concaverealtyindia@gmail.com: ${code} (Valid for 5 mins)`);
+    setTimeout(() => setFeedbackToast(null), 8000);
   };
 
-  const handleVerifyAdminOtp = (e) => {
+  const handleResendForgotPasswordOtp = () => {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 5 * 60 * 1000;
+    setForgotOtp(code);
+    setOtpExpiresAt(expires);
+    setOtpRemainingSeconds(300);
+    setWrongOtpAttempts(0);
+    setEnteredForgotOtp('');
+    setForgotError('');
+    setFeedbackToast(`New OTP sent to concaverealtyindia@gmail.com: ${code}`);
+    setTimeout(() => setFeedbackToast(null), 8000);
+  };
+
+  const handleVerifyForgotOtp = (e) => {
     e.preventDefault();
-    if (adminEnteredOtp === adminGeneratedOtp || adminEnteredOtp === '1234') {
-      onLogin({
-        id: 999,
-        name: "Hemant (Super Administrator)",
-        role: "admin",
-        email: "admin@concaverealty.com"
-      });
+    setForgotError('');
+
+    if (detectSqlInjection(enteredForgotOtp)) {
+      setForgotError('Security Alert: Invalid characters detected.');
+      return;
+    }
+
+    if (Date.now() > otpExpiresAt) {
+      setForgotError('This OTP has expired (5-minute limit). Please click Resend OTP.');
+      return;
+    }
+
+    if (wrongOtpAttempts >= 3) {
+      setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP has been invalidated. Please request a new OTP.');
+      return;
+    }
+
+    if (enteredForgotOtp.trim() === forgotOtp) {
+      setForgotError('');
+      setForgotStep(2); // Set New Password step
     } else {
-      alert("Invalid Admin OTP! Enter generated code or 1234.");
+      const next = wrongOtpAttempts + 1;
+      setWrongOtpAttempts(next);
+      if (next >= 3) {
+        setForgotOtp('');
+        setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP has been invalidated. Please request a new OTP.');
+      } else {
+        setForgotError(`Incorrect OTP entered. You have ${3 - next} attempt(s) remaining.`);
+      }
+    }
+  };
+
+  const handleResetAdminPassword = (e) => {
+    e.preventDefault();
+    setForgotError('');
+
+    if (detectSqlInjection(newAdminPassword) || detectSqlInjection(confirmAdminPassword)) {
+      setForgotError('Security Alert: Malicious characters detected.');
+      return;
+    }
+
+    if (newAdminPassword !== confirmAdminPassword) {
+      setForgotError('Passwords do not match. Please verify both fields.');
+      return;
+    }
+
+    const policy = validatePasswordPolicy(newAdminPassword);
+    if (!policy.valid) {
+      setForgotError(policy.message);
+      return;
+    }
+
+    const res = dbStore.updateAdminPassword(newAdminPassword);
+    if (res.success) {
+      setAdminPassword(newAdminPassword);
+      setForgotSuccessMsg('Master Admin password updated successfully! Redirecting to login...');
+      setTimeout(() => {
+        setForgotPasswordMode(false);
+        setForgotStep(1);
+        setForgotSuccessMsg('');
+        setAdminLoginError('');
+      }, 1500);
+    } else {
+      setForgotError(res.error || 'Failed to update password.');
     }
   };
 
@@ -372,185 +510,297 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       phone: '',
       email: '',
       password: 'caller123',
-      role: 'Territory Specialist',
+      role: 'Location Specialist',
       assignedLocations: [1]
     });
-    setFeedbackToast('New territory caller created successfully.');
+    setFeedbackToast('New caller created successfully.');
     setTimeout(() => setFeedbackToast(null), 4000);
     refreshAdminData();
   };
 
   // =========================================================================
-  // VIEW 1: ADMIN LOGIN SCREEN
+  // VIEW 1: ADMIN LOGIN SCREEN (Single Centered Professional Card)
   // =========================================================================
   if (!currentUser || currentUser.role !== 'admin') {
     return (
       <div className="min-h-screen pt-28 pb-16 px-4 bg-[#FAF9F6] flex items-center justify-center">
-        <div className="w-full max-w-4xl bg-white rounded-2xl shadow-luxury border border-[#EAE6DF] overflow-hidden grid grid-cols-1 md:grid-cols-2 anim-fade-up">
+        <div className="w-full max-w-md bg-white rounded-2xl shadow-luxury border border-[#EAE6DF] p-8 sm:p-9 space-y-6 anim-fade-up">
           
-          {/* Left Form */}
-          <div className="p-8 sm:p-10 space-y-6">
-            <div className="space-y-1">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#245348] font-bold">
-                Executive Portal
+          {/* Company Logo & Header */}
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-[#C59B4E] p-0.5 bg-[#1D3530] shadow-md">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#245348] font-bold block">
+                EXECUTIVE PLATFORM
               </span>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-                Hemant's Dashboard
+                Admin Panel
               </h2>
-              <p className="text-xs text-gray-500">
-                Sign in with your master credentials to supervise territory dispatch and records.
+              <p className="text-xs text-gray-500 mt-1">
+                Concave Realty • Executive Master Console
               </p>
             </div>
+          </div>
 
-            {/* Login Method Tabs */}
-            <div className="flex border-b border-[#EAE6DF] text-xs">
-              <button
-                type="button"
-                onClick={() => setAdminLoginMethod('password')}
-                className={`flex-1 pb-2 font-medium transition-colors ${
-                  adminLoginMethod === 'password'
-                    ? 'border-b-2 border-[#245348] text-[#245348] font-semibold'
-                    : 'text-gray-400 hover:text-gray-700'
-                }`}
-              >
-                Password Login
-              </button>
-              <button
-                type="button"
-                onClick={() => setAdminLoginMethod('otp')}
-                className={`flex-1 pb-2 font-medium transition-colors ${
-                  adminLoginMethod === 'otp'
-                    ? 'border-b-2 border-[#245348] text-[#245348] font-semibold'
-                    : 'text-gray-400 hover:text-gray-700'
-                }`}
-              >
-                Director Mobile OTP
-              </button>
-            </div>
-
-            {adminLoginMethod === 'password' ? (
-              <form onSubmit={handleAdminPasswordLogin} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Administrator Username</label>
-                  <input
-                    type="text"
-                    required
-                    value={adminUsername}
-                    onChange={(e) => setAdminUsername(e.target.value)}
-                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none transition-all duration-200"
-                  />
+          {/* NORMAL LOGIN FORM */}
+          {!forgotPasswordMode && (
+            <form onSubmit={handleAdminPasswordLogin} className="space-y-4 text-xs">
+              {adminLoginError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                  <span>{adminLoginError}</span>
                 </div>
+              )}
 
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Master Password</label>
+              {/* Admin ID / Username */}
+              <div className="space-y-1">
+                <label className="text-gray-700 font-semibold block text-xs">Admin ID *</label>
+                <input
+                  type="text"
+                  required
+                  value={adminUsername}
+                  onChange={(e) => setAdminUsername(e.target.value)}
+                  placeholder="Enter Admin ID (e.g. admin)"
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
+                />
+              </div>
+
+              {/* Password with View Toggle */}
+              <div className="space-y-1">
+                <label className="text-gray-700 font-semibold block text-xs">Password *</label>
+                <div className="relative">
                   <input
-                    type="password"
+                    type={showAdminPassword ? "text" : "password"}
                     required
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none transition-all duration-200"
+                    placeholder="••••••••"
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 pr-10 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowAdminPassword(!showAdminPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                    title={showAdminPassword ? "Hide password" : "Show password"}
+                  >
+                    {showAdminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
+                {/* Forgot Password Link Under Password Field */}
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    onClick={handleStartForgotPassword}
+                    className="text-[11px] text-[#245348] hover:text-[#C59B4E] font-medium transition-colors"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-semibold text-xs uppercase tracking-wider transition-all duration-200 shadow-sm"
-                >
-                  Sign In to Hemant's Dashboard
-                </button>
-              </form>
-            ) : (
-              <div className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Director Mobile</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="tel"
-                      value={adminOtpMobile}
-                      onChange={(e) => setAdminOtpMobile(e.target.value)}
-                      className="flex-1 bg-[#FAF9F6] border border-[#EAE6DF] rounded px-3 py-2 text-[#14221F] font-mono focus:border-[#245348] focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSendAdminOtp}
-                      className="px-3 py-2 bg-[#284F45] hover:bg-[#1B3F37] text-white rounded font-medium transition-colors"
-                    >
-                      Send OTP
-                    </button>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-3"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#DFBE79]" />
+                <span>Sign In to Admin Panel</span>
+              </button>
+            </form>
+          )}
+
+          {/* FORGOT PASSWORD FLOW */}
+          {forgotPasswordMode && (
+            <div className="space-y-4 text-xs">
+              {/* Step 1: OTP Verification */}
+              {forgotStep === 1 && (
+                <form onSubmit={handleVerifyForgotOtp} className="space-y-4">
+                  <div className="p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl space-y-1.5 text-xs text-amber-950">
+                    <span className="font-bold flex items-center gap-1.5 text-amber-900">
+                      <Mail className="w-4 h-4 text-amber-700" />
+                      <span>Admin Verification Code Dispatched</span>
+                    </span>
+                    <p className="text-[11px] text-amber-800 leading-relaxed">
+                      A 6-digit verification code has been dispatched automatically to your registered executive email:
+                      <strong className="block font-mono text-amber-950 mt-1">concaverealtyindia@gmail.com</strong>
+                    </p>
                   </div>
-                </div>
 
-                {adminOtpSent && (
-                  <form onSubmit={handleVerifyAdminOtp} className="space-y-3 anim-fade-scale">
-                    <div className="p-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex justify-between rounded">
-                      <span>Admin OTP:</span>
-                      <strong className="font-mono text-sm">{adminGeneratedOtp}</strong>
+                  {/* Timer & Attempts Meter */}
+                  <div className="flex items-center justify-between text-xs px-1">
+                    <span className={`font-mono text-[11px] font-semibold flex items-center gap-1 ${otpRemainingSeconds < 60 ? 'text-red-700' : 'text-gray-600'}`}>
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Valid for: {Math.floor(otpRemainingSeconds / 60)}:{('0' + (otpRemainingSeconds % 60)).slice(-2)} (5 mins)</span>
+                    </span>
+                    <span className="text-[11px] text-gray-500 font-medium">
+                      Attempts: <strong className="text-red-700">{3 - wrongOtpAttempts}</strong>/3 left
+                    </span>
+                  </div>
+
+                  {forgotError && (
+                    <div className="p-2.5 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                      <span>{forgotError}</span>
                     </div>
+                  )}
 
+                  {/* OTP Input */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">Enter 6-Digit OTP *</label>
                     <input
                       type="text"
-                      maxLength={4}
-                      value={adminEnteredOtp}
-                      onChange={(e) => setAdminEnteredOtp(e.target.value)}
-                      placeholder="1234"
-                      className="w-full bg-[#FAF9F6] border border-[#245348] rounded px-3 py-2 text-center text-base font-mono tracking-widest text-[#14221F] focus:outline-none"
+                      required
+                      maxLength={6}
+                      autoFocus
+                      value={enteredForgotOtp}
+                      onChange={(e) => setEnteredForgotOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="e.g. 123456"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-center font-bold tracking-widest text-lg focus:outline-none transition-all"
                     />
+                  </div>
 
+                  {/* Action Buttons */}
+                  <div className="space-y-2 pt-1">
                     <button
                       type="submit"
-                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-semibold text-xs uppercase tracking-wider transition-all"
+                      disabled={wrongOtpAttempts >= 3 || otpRemainingSeconds <= 0}
+                      className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md disabled:opacity-50"
                     >
-                      Authenticate Admin
+                      Verify OTP Code
                     </button>
-                  </form>
-                )}
-              </div>
-            )}
 
-            <div className="text-[11px] text-gray-500 font-mono">
-              Default: <strong className="text-[#14221F]">admin</strong> / <strong className="text-[#14221F]">concave@2026</strong>
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={handleResendForgotPasswordOtp}
+                        className="text-[11px] text-[#245348] hover:underline font-semibold"
+                      >
+                        Resend Code
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForgotPasswordMode(false);
+                          setForgotStep(1);
+                          setForgotError('');
+                        }}
+                        className="text-[11px] text-gray-500 hover:text-black font-medium"
+                      >
+                        ← Back to Login
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+
+              {/* Step 2: Set New Master Password */}
+              {forgotStep === 2 && (
+                <form onSubmit={handleResetAdminPassword} className="space-y-4">
+                  <div className="space-y-1 text-center pb-1">
+                    <h3 className="font-serif text-lg font-bold text-[#14221F]">
+                      Create New Master Password
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Must contain 8+ characters, uppercase, lowercase, number & symbol.
+                    </p>
+                  </div>
+
+                  {forgotError && (
+                    <div className="p-2.5 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                      <span>{forgotError}</span>
+                    </div>
+                  )}
+
+                  {forgotSuccessMsg && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2 font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+                      <span>{forgotSuccessMsg}</span>
+                    </div>
+                  )}
+
+                  {/* New Password */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">New Password *</label>
+                    <div className="relative">
+                      <input
+                        type={showNewAdminPassword ? "text" : "password"}
+                        required
+                        value={newAdminPassword}
+                        onChange={(e) => setNewAdminPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 pr-10 text-[#14221F] font-mono text-xs focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewAdminPassword(!showNewAdminPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                      >
+                        {showNewAdminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm New Password */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">Re-enter New Password *</label>
+                    <input
+                      type="password"
+                      required
+                      value={confirmAdminPassword}
+                      onChange={(e) => setConfirmAdminPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Dynamic Password Policy Checklist */}
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-1 text-[11px]">
+                    <div className={`flex items-center gap-1.5 ${newAdminPassword.length >= 8 ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>Minimum 8 characters</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[A-Z]/.test(newAdminPassword) && /[a-z]/.test(newAdminPassword) ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>At least 1 uppercase & 1 lowercase letter</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[0-9]/.test(newAdminPassword) && /[!@#$%^&*(),.?":{}|<>]/.test(newAdminPassword) ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>At least 1 number (0-9) & 1 special character</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${newAdminPassword && newAdminPassword === confirmAdminPassword ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>Passwords match</span>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md"
+                  >
+                    Confirm & Update Password
+                  </button>
+
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForgotPasswordMode(false);
+                        setForgotStep(1);
+                        setForgotError('');
+                      }}
+                      className="text-[11px] text-gray-500 hover:text-black font-medium"
+                    >
+                      ← Back to Login
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-          </div>
-
-          {/* Right Panel */}
-          <div className="bg-[#284F45] text-white p-8 sm:p-10 flex flex-col justify-between space-y-6">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10 anim-glow-gold">
-                <img src="/logo.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
-              </div>
-
-              <h3 className="font-serif text-3xl font-bold">
-                Hemant's Executive Console
-              </h3>
-
-              <p className="font-serif italic text-base text-[#DFBE79]">
-                “Where Legacy Meets Luxury”
-              </p>
-
-              <p className="text-xs text-gray-200 font-light leading-relaxed pt-2">
-                Executive platform for territory caller management, inquiry records, customer tracking, and storage governance.
-              </p>
-            </div>
-
-            <div className="space-y-2 pt-6 border-t border-white/10 text-xs text-gray-300">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>Real-time customer inquiry surveillance</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>Specialized caller territory routing</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>1-Click Excel master export & quarterly cleanup</span>
-              </div>
-            </div>
-
-            <div className="text-[10px] text-gray-400 font-mono">
-              CONCAVE REALTY • EXECUTIVE GOVERNANCE
-            </div>
-          </div>
+          )}
 
         </div>
       </div>
@@ -1130,7 +1380,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                     <tr key={caller.id} className="hover:bg-[#FAF8F5] transition-colors">
                       <td className="py-4 px-4">
                         <p className="font-bold text-[#14221F] text-sm">{caller.name}</p>
-                        <span className="text-[10px] text-gray-400 font-mono">{caller.role || "Territory Specialist"}</span>
+                        <span className="text-[10px] text-gray-400 font-mono">{caller.role || "Location Specialist"}</span>
                       </td>
 
                       <td className="py-4 px-4">
@@ -1540,7 +1790,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                     {selectedCallerModal.name}
                   </h3>
                   <span className="font-mono text-xs text-[#245348] font-semibold">
-                    {selectedCallerModal.callerCode} • {selectedCallerModal.role || 'Territory Specialist'}
+                    {selectedCallerModal.callerCode} • {selectedCallerModal.role || 'Location Specialist'}
                   </span>
                 </div>
               </div>
@@ -1597,7 +1847,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
             {/* Allocated Locations */}
             <div className="space-y-1.5">
-              <span className="text-xs font-semibold text-gray-700 block">Allocated Territory Locations:</span>
+              <span className="text-xs font-semibold text-gray-700 block">Allocated Locations:</span>
               <div className="flex flex-wrap gap-1.5">
                 {selectedCallerModal.assignedLocations && selectedCallerModal.assignedLocations.length > 0 ? (
                   selectedCallerModal.assignedLocations.map(locId => (
@@ -2178,7 +2428,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   })}
                 </div>
                 <p className="text-[10px] text-gray-400">
-                  Select one or multiple territories for this caller. Inquiries will balance equally if multiple callers share a territory.
+                  Select one or multiple locations for this caller. Inquiries will balance equally if multiple callers share a location.
                 </p>
               </div>
 

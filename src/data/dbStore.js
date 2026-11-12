@@ -8,33 +8,47 @@ import * as XLSX from 'xlsx';
 export const STATUS_CODES = {
   1: "Hot Lead",
   2: "Lead",
-  3: "Okay / Follow Up",
-  4: "Not Picking Up",
+  3: "Interested",
+  4: "Not Answered",
   5: "Not Interested",
   6: "Fake / Spam",
-  7: "Lead"
+  7: "Lead",
+  8: "Interested",
+  9: "Call Back",
+  10: "Busy"
 };
 
 export const REVERSE_STATUS_CODES = {
   "hot_lead": 1,
+  "hot lead": 1,
   "more_interested": 1,
   "lead": 2,
-  "interested": 2,
+  "interested": 8,
   "okay": 3,
   "not_picking": 4,
   "not_picking_up": 4,
+  "not_answered": 4,
+  "not answered": 4,
   "not_interested": 5,
+  "not interested": 5,
+  "busy": 10,
+  "call_back": 9,
+  "call back": 9,
   "fake": 6,
+  "fake / spam": 6,
+  "fake/spam": 6,
   "new": 2
 };
 
 export const CALL_STATUS_CODES = {
   0: "Uncalled",
   1: "Connected & Discussed",
-  2: "Not Picking Up (4hr Pending)",
+  2: "Not Answered (4hr Pending)",
   3: "Daily Retry Pending",
   4: "Ongoing Retry (Up to 10 Days)",
-  5: "10-Day Exhausted (Archived)"
+  5: "10-Day Exhausted (Archived)",
+  6: "Call Back Scheduled",
+  7: "Line Busy (Pending Retry)"
 };
 
 export const LOCATION_CODES = {
@@ -457,6 +471,56 @@ export const dbStore = {
     }
   },
 
+  // Get admin credentials from storage or default
+  getAdminCredentials() {
+    try {
+      const stored = localStorage.getItem('concave_admin_auth');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed && parsed.password) return parsed;
+      }
+    } catch (e) {
+      console.warn("Error reading admin auth:", e);
+    }
+    return {
+      username: 'admin',
+      password: 'concave@2026',
+      email: 'concaverealtyindia@gmail.com'
+    };
+  },
+
+  // Update admin password
+  updateAdminPassword(newPassword) {
+    try {
+      const current = this.getAdminCredentials();
+      const updated = { ...current, password: newPassword, updatedAt: Date.now() };
+      localStorage.setItem('concave_admin_auth', JSON.stringify(updated));
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  // Update caller password by id or callerCode
+  updateCallerPassword(callerIdOrCode, newPassword) {
+    try {
+      this.init();
+      const callers = this.getCallers();
+      const idx = callers.findIndex(c => 
+        c.id === callerIdOrCode || 
+        c.callerCode.toUpperCase() === String(callerIdOrCode).trim().toUpperCase()
+      );
+      if (idx !== -1) {
+        callers[idx].password = newPassword;
+        setRawData(CALLERS_KEY, callers);
+        return { success: true, caller: callers[idx] };
+      }
+      return { success: false, error: "Caller not found" };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  },
+
   // Automatic Lead Router by Location with EQUAL LOAD BALANCING
   // If multiple callers are assigned to the same location, divides enquiries equally
   findCallerForLocation(locId) {
@@ -571,7 +635,7 @@ export const dbStore = {
           {
             by: "System Lead Router",
             at: Date.now(),
-            txt: `Auto-routed to Caller #${assignedCallerId} for territory [${LOCATION_CODES[locId]}].`
+            txt: `Auto-routed to Caller #${assignedCallerId} for location [${LOCATION_CODES[locId]}].`
           }
         ]
       };
@@ -664,28 +728,35 @@ export const dbStore = {
 
       const now = Date.now();
 
-      // Check if "Not Picking Up" (Code 4)
+      // Check Disposition type
       if (codeNum === 4) {
+        // Not Answered: Auto 4-Hour / Daily Retry
         lead.rc = (lead.rc || 0) + 1;
-
         if (lead.rc === 1) {
-          // 1st time not picking up: Retry after 4 HOURS
-          lead.cs = 2; // Not Picking Up (4hr Pending)
+          lead.cs = 2; // Not Answered (4hr Pending)
           lead.na = now + (4 * 3600 * 1000); // 4 hours later
-          var retryMessage = "Call Attempt 1: Customer didn't pick up. Scheduled for 4-HOUR automatic retry.";
+          var retryMessage = "Call Attempt 1: Customer didn't answer. Scheduled for 4-HOUR automatic retry.";
         } else if (lead.rc >= 2 && lead.rc < 10) {
-          // 2nd through 9th time: Retry after 1 DAY (24 Hours)
           lead.cs = 3; // Daily Retry Pending
           lead.na = now + (24 * 3600 * 1000); // 1 day later
-          var retryMessage = `Call Attempt ${lead.rc}: Still no answer. Scheduled for 24-HOUR daily retry (Day ${lead.rc} of 10).`;
+          var retryMessage = `Call Attempt ${lead.rc}: No answer. Scheduled for 24-HOUR daily retry (Day ${lead.rc} of 10).`;
         } else {
-          // 10th time failed: 10-Day Exhausted -> Removed from active queue
           lead.cs = 5; // 10-Day Exhausted
           lead.na = null;
           var retryMessage = "Call Attempt 10: 10-day retry cycle completed with no response. Lead closed/archived.";
         }
+      } else if (codeNum === 10) {
+        // Busy: Retry in 2 hours
+        lead.cs = 7; // Line Busy (Pending Retry)
+        lead.na = now + (2 * 3600 * 1000);
+        var retryMessage = "Customer line was busy. Scheduled for 2-hour retry.";
+      } else if (codeNum === 9) {
+        // Call Back: Call Back scheduled
+        lead.cs = 6; // Call Back Scheduled
+        lead.na = now + (4 * 3600 * 1000);
+        var retryMessage = "Customer requested a call back. Added to Call Back queue.";
       } else {
-        // Connected or completed
+        // Connected or completed (Hot Lead: 1, Lead: 2, Interested: 8/3, Not Interested: 5, Fake/Spam: 6)
         lead.cs = 1; // Connected & Discussed
         lead.na = null; // Clear pending retry timer
       }
@@ -1118,4 +1189,44 @@ export const dbStore = {
     }
   }
 };
+
+// =========================================================================
+// SECURITY & AUTHENTICATION UTILITIES
+// Prevents SQL Injection, brute-force attacks, and enforces password policy
+// =========================================================================
+
+export function sanitizeInput(str) {
+  if (typeof str !== 'string') return '';
+  return str.trim();
+}
+
+export function detectSqlInjection(str) {
+  if (!str || typeof str !== 'string') return false;
+  // Detect SQL injection meta-characters, UNION SELECT, drop, comment sequences, tautology payloads
+  const sqlInjectionRegex = /('|"|;|--|\/\*|\*\/|\b(OR\s+['"\d\w]+=['"\d\w]+|UNION\s+SELECT|DROP\s+TABLE|INSERT\s+INTO|DELETE\s+FROM|UPDATE\s+[\w\d]+\s+SET|ALTER\s+TABLE|EXEC\s*\(|xp_)\b)/i;
+  return sqlInjectionRegex.test(str);
+}
+
+// Password Policy: Minimum 8 characters, at least 1 uppercase, 1 lowercase, 1 number, 1 special character
+export function validatePasswordPolicy(password) {
+  if (!password || typeof password !== 'string') {
+    return { valid: false, message: "Password cannot be empty." };
+  }
+  if (password.length < 8) {
+    return { valid: false, message: "Password must be at least 8 characters long." };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, message: "Password must contain at least 1 uppercase letter (A-Z)." };
+  }
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, message: "Password must contain at least 1 lowercase letter (a-z)." };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, message: "Password must contain at least 1 numeric digit (0-9)." };
+  }
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    return { valid: false, message: "Password must contain at least 1 special character (!@#$%^&* etc.)." };
+  }
+  return { valid: true };
+}
 

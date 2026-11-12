@@ -21,27 +21,47 @@ import {
   Sparkles,
   LogOut,
   RefreshCw,
-  ArrowRight
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  Check,
+  AlertTriangle
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy } from '../data/dbStore';
 
 export function CallerPortal({ currentUser, onLogin, onLogout }) {
   const [callers, setCallers] = useState([]);
-  const [loginMethod, setLoginMethod] = useState('credentials'); // 'credentials' or 'otp'
   
   // Credentials login state
   const [callerCode, setCallerCode] = useState('CALLER-101');
   const [password, setPassword] = useState('caller123');
+  const [showPassword, setShowPassword] = useState(false);
+  const [callerLoginError, setCallerLoginError] = useState('');
+  const [callerFailedAttempts, setCallerFailedAttempts] = useState(0);
+  const [callerLockoutUntil, setCallerLockoutUntil] = useState(0);
 
-  // OTP login state
-  const [otpMobile, setOtpMobile] = useState('98201 12345');
-  const [otpSent, setOtpSent] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState('');
-  const [enteredOtp, setEnteredOtp] = useState('');
+  // Forgot Password state for Caller
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: Caller ID & OTP, 2: New Password
+  const [forgotCallerIdInput, setForgotCallerIdInput] = useState('');
+  const [targetCaller, setTargetCaller] = useState(null);
+  const [targetEmail, setTargetEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [enteredForgotOtp, setEnteredForgotOtp] = useState('');
+  const [otpExpiresAt, setOtpExpiresAt] = useState(0);
+  const [otpRemainingSeconds, setOtpRemainingSeconds] = useState(0);
+  const [wrongOtpAttempts, setWrongOtpAttempts] = useState(0);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccessMsg, setForgotSuccessMsg] = useState('');
 
   // Portal view state
   const [leads, setLeads] = useState([]);
-  const [activeTab, setActiveTab] = useState('active'); // 'active', 'retries', 'hot', 'all'
+  const [activeTab, setActiveTab] = useState('pending'); // 'pending', 'callback', 'hot', 'history'
   const [searchQuery, setSearchQuery] = useState('');
 
   // Direct Call Dialer Modal State
@@ -82,34 +102,181 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
     return () => clearInterval(interval);
   }, [callActive]);
 
+  // 5-minute countdown timer for OTP
+  useEffect(() => {
+    let interval = null;
+    if (forgotMode && forgotStep === 1 && otpExpiresAt > 0) {
+      interval = setInterval(() => {
+        const remaining = Math.max(0, Math.floor((otpExpiresAt - Date.now()) / 1000));
+        setOtpRemainingSeconds(remaining);
+        if (remaining <= 0) {
+          clearInterval(interval);
+        }
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [forgotMode, forgotStep, otpExpiresAt]);
+
   // Login Handlers
   const handleCredentialsLogin = (e) => {
     e.preventDefault();
-    const found = callers.find(c => c.callerCode.toUpperCase() === callerCode.trim().toUpperCase() && c.password === password);
-    if (found) {
-      onLogin({ ...found, role: 'caller' });
-    } else {
-      alert("Invalid Caller ID or Password. Try 'CALLER-101' with password 'caller123'.");
-    }
-  };
+    setCallerLoginError('');
 
-  const handleSendOtp = () => {
-    if (!otpMobile || otpMobile.length < 5) {
-      alert("Please enter a valid mobile number.");
+    // 1. Rate limiting lockout check
+    if (callerLockoutUntil && Date.now() < callerLockoutUntil) {
+      const secsLeft = Math.ceil((callerLockoutUntil - Date.now()) / 1000);
+      setCallerLoginError(`Account temporarily locked due to consecutive failed attempts. Please retry in ${secsLeft}s.`);
       return;
     }
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    setGeneratedOtp(code);
-    setOtpSent(true);
-  };
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    if (enteredOtp === generatedOtp || enteredOtp === '1234') {
-      const found = callers.find(c => c.phone.replace(/\s+/g, '') === otpMobile.replace(/\s+/g, '')) || callers[0];
+    // 2. Security check
+    if (detectSqlInjection(callerCode) || detectSqlInjection(password)) {
+      setCallerLoginError('Invalid Caller ID or Password.');
+      return;
+    }
+
+    const cleanCode = sanitizeInput(callerCode);
+    const allCallers = dbStore.getCallers();
+    const found = allCallers.find(c => c.callerCode.toUpperCase() === cleanCode.toUpperCase() && c.password === password);
+    
+    if (found) {
+      setCallerFailedAttempts(0);
+      setCallerLockoutUntil(0);
+      setCallerLoginError('');
       onLogin({ ...found, role: 'caller' });
     } else {
-      alert("Invalid OTP! Use the generated OTP shown on screen or 1234.");
+      const nextAttempts = callerFailedAttempts + 1;
+      setCallerFailedAttempts(nextAttempts);
+      if (nextAttempts >= 5) {
+        const lockTime = Date.now() + 5 * 60 * 1000;
+        setCallerLockoutUntil(lockTime);
+        setCallerLoginError('Too many failed login attempts. Account temporarily locked for 5 minutes for security.');
+      } else {
+        setCallerLoginError(`Invalid Caller ID or Password. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
+      }
+    }
+  };
+
+  const handleStartForgotCallerPassword = () => {
+    const allCallers = dbStore.getCallers();
+    // Default to callerCode if already typed, or first caller
+    const candidateCode = callerCode.trim() || 'CALLER-101';
+    const found = allCallers.find(c => c.callerCode.toUpperCase() === candidateCode.toUpperCase()) || allCallers[0];
+    
+    setForgotCallerIdInput(found ? found.callerCode : 'CALLER-101');
+    setTargetCaller(found);
+    const email = found && found.email ? found.email : 'concaverealtyindia@gmail.com';
+    setTargetEmail(email);
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 5 * 60 * 1000;
+    setForgotOtp(code);
+    setOtpExpiresAt(expires);
+    setOtpRemainingSeconds(300);
+    setWrongOtpAttempts(0);
+    setEnteredForgotOtp('');
+    setForgotError('');
+    setForgotSuccessMsg('');
+    setForgotStep(1);
+    setForgotMode(true);
+  };
+
+  const handleResendCallerForgotOtp = () => {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = Date.now() + 5 * 60 * 1000;
+    setForgotOtp(code);
+    setOtpExpiresAt(expires);
+    setOtpRemainingSeconds(300);
+    setWrongOtpAttempts(0);
+    setEnteredForgotOtp('');
+    setForgotError('');
+  };
+
+  const handleCallerLookup = (codeStr) => {
+    setForgotCallerIdInput(codeStr);
+    const allCallers = dbStore.getCallers();
+    const found = allCallers.find(c => c.callerCode.toUpperCase() === codeStr.trim().toUpperCase());
+    if (found) {
+      setTargetCaller(found);
+      setTargetEmail(found.email || 'concaverealtyindia@gmail.com');
+    }
+  };
+
+  const handleVerifyCallerForgotOtp = (e) => {
+    e.preventDefault();
+    setForgotError('');
+
+    if (detectSqlInjection(enteredForgotOtp)) {
+      setForgotError('Security Alert: Invalid characters detected.');
+      return;
+    }
+
+    if (Date.now() > otpExpiresAt) {
+      setForgotError('This OTP has expired (5-minute limit). Please click Resend OTP.');
+      return;
+    }
+
+    if (wrongOtpAttempts >= 3) {
+      setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP is invalidated. Request a new OTP.');
+      return;
+    }
+
+    if (enteredForgotOtp.trim() === forgotOtp) {
+      setForgotError('');
+      setForgotStep(2); // Set New Password
+    } else {
+      const next = wrongOtpAttempts + 1;
+      setWrongOtpAttempts(next);
+      if (next >= 3) {
+        setForgotOtp('');
+        setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP has been invalidated. Please request a new OTP.');
+      } else {
+        setForgotError(`Incorrect OTP entered. You have ${3 - next} attempt(s) remaining.`);
+      }
+    }
+  };
+
+  const handleResetCallerPassword = (e) => {
+    e.preventDefault();
+    setForgotError('');
+
+    if (!targetCaller) {
+      setForgotError('No target caller selected.');
+      return;
+    }
+
+    if (detectSqlInjection(newPassword) || detectSqlInjection(confirmNewPassword)) {
+      setForgotError('Security Alert: Malicious characters detected.');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setForgotError('Passwords do not match. Please verify both fields.');
+      return;
+    }
+
+    const policy = validatePasswordPolicy(newPassword);
+    if (!policy.valid) {
+      setForgotError(policy.message);
+      return;
+    }
+
+    // Update in database (both in memory and localStorage for Admin Dashboard visibility)
+    const res = dbStore.updateCallerPassword(targetCaller.id, newPassword);
+    if (res.success) {
+      setPassword(newPassword);
+      setCallers(dbStore.getCallers());
+      setForgotSuccessMsg(`Password for ${targetCaller.name} updated successfully! Redirecting to login...`);
+      setTimeout(() => {
+        setForgotMode(false);
+        setForgotStep(1);
+        setForgotSuccessMsg('');
+        setCallerLoginError('');
+      }, 1500);
+    } else {
+      setForgotError(res.error || 'Failed to update caller password.');
     }
   };
 
@@ -145,6 +312,30 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const isCallBackLead = (l) => 
+    l.statusCode === 9 || 
+    l.callStatusCode === 6 || 
+    (l.notes && l.notes.some(n => n.txt && n.txt.toLowerCase().includes('call back')));
+
+  const isHotOrLead = (l) => 
+    l.statusCode === 1 || 
+    l.statusCode === 2 || 
+    l.statusCode === 7 || 
+    l.statusCode === 8 || 
+    l.statusName === 'Hot Lead' || 
+    l.statusName === 'Lead' || 
+    l.statusName === 'Interested';
+
+  const isPendingLead = (l) => {
+    if (isCallBackLead(l)) return false;
+    if (l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 5 || l.statusCode === 6 || l.statusCode === 8) return false;
+    return true;
+  };
+
+  const isHistoryLead = (l) => {
+    return (l.callStatusCode && l.callStatusCode > 0) || (l.notes && l.notes.length > 0) || l.statusCode !== 7;
+  };
+
   const displayedLeads = leads.filter(l => {
     const matchesSearch = 
       l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -154,196 +345,309 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
     
     if (!matchesSearch) return false;
 
-    if (activeTab === 'retries') return l.statusCode === 4 && l.callStatusCode !== 5;
-    if (activeTab === 'hot') return l.statusCode === 1;
-    if (activeTab === 'active') return l.statusCode !== 6 && l.callStatusCode !== 5;
+    if (activeTab === 'pending') return isPendingLead(l);
+    if (activeTab === 'callback') return isCallBackLead(l);
+    if (activeTab === 'hot') return isHotOrLead(l);
+    if (activeTab === 'history') return isHistoryLead(l);
     return true;
   });
 
   // =========================================================================
-  // VIEW 1: LOGIN SCREEN (Using user's exact #284F45 panel & #245348 button)
+  // VIEW 1: CALLER LOGIN SCREEN (Single Centered Professional Card)
   // =========================================================================
   if (!currentUser) {
     return (
       <div className="min-h-screen pt-28 pb-16 px-4 bg-[#FAF9F6] flex items-center justify-center">
-        <div className="w-full max-w-4xl bg-white border border-[#EAE6DF] rounded-2xl shadow-luxury-light overflow-hidden grid grid-cols-1 md:grid-cols-2">
+        <div className="w-full max-w-md bg-white border border-[#EAE6DF] rounded-2xl shadow-luxury p-8 sm:p-9 space-y-6 anim-fade-up">
           
-          {/* Left Form Panel (Light, aesthetic, minimal) */}
-          <div className="p-8 sm:p-10 space-y-6 flex flex-col justify-between">
-            <div className="space-y-2">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#C59B4E] block">
-                CONCAVE SALES DESK
+          {/* Company Logo & Header */}
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-[#C59B4E] p-0.5 bg-[#1D3530] shadow-md">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#C59B4E] font-bold block">
+                SALES & CALLER OPERATIONS
               </span>
-              <h2 className="font-serif text-3xl font-bold text-[#14221F]">
-                Caller Workspace
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
+                Caller Panel
               </h2>
-              <p className="text-xs text-gray-500">
-                Log in to view leads routed specifically to your assigned territory.
+              <p className="text-xs text-gray-500 mt-1">
+                Concave Realty
               </p>
             </div>
+          </div>
 
-            {/* Mode switch */}
-            <div className="flex bg-[#FAF9F6] p-1 rounded-lg border border-[#EAE6DF] text-xs">
-              <button
-                onClick={() => setLoginMethod('credentials')}
-                className={`flex-1 py-1.5 rounded font-medium transition-all ${
-                  loginMethod === 'credentials' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'
-                }`}
-              >
-                ID & Password
-              </button>
-              <button
-                onClick={() => setLoginMethod('otp')}
-                className={`flex-1 py-1.5 rounded font-medium transition-all ${
-                  loginMethod === 'otp' ? 'bg-[#245348] text-white shadow-sm' : 'text-gray-500 hover:text-black'
-                }`}
-              >
-                Mobile OTP
-              </button>
-            </div>
-
-            {loginMethod === 'credentials' ? (
-              <form onSubmit={handleCredentialsLogin} className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Caller ID</label>
-                  <input
-                    type="text"
-                    required
-                    value={callerCode}
-                    onChange={(e) => setCallerCode(e.target.value)}
-                    placeholder="CALLER-101"
-                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none"
-                  />
+          {/* NORMAL LOGIN FORM */}
+          {!forgotMode && (
+            <form onSubmit={handleCredentialsLogin} className="space-y-4 text-xs">
+              {callerLoginError && (
+                <div className="p-3 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                  <span>{callerLoginError}</span>
                 </div>
+              )}
 
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Password</label>
+              {/* Caller ID */}
+              <div className="space-y-1">
+                <label className="text-gray-700 font-semibold block text-xs">Caller ID *</label>
+                <input
+                  type="text"
+                  required
+                  value={callerCode}
+                  onChange={(e) => setCallerCode(e.target.value)}
+                  placeholder="e.g. CALLER-101"
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all uppercase"
+                />
+              </div>
+
+              {/* Password with View Toggle */}
+              <div className="space-y-1">
+                <label className="text-gray-700 font-semibold block text-xs">Password *</label>
+                <div className="relative">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none"
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 pr-10 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                    title={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
-
-                {/* Requested "Sign in" button color: #245348 */}
-                <button
-                  type="submit"
-                  className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm"
-                >
-                  Sign In
-                </button>
-              </form>
-            ) : (
-              <div className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Mobile Number</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="tel"
-                      value={otpMobile}
-                      onChange={(e) => setOtpMobile(e.target.value)}
-                      className="flex-1 bg-[#FAF9F6] border border-[#EAE6DF] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSendOtp}
-                      className="px-3 py-2 bg-[#284F45] text-white rounded font-medium"
-                    >
-                      {otpSent ? 'Resend' : 'Send OTP'}
-                    </button>
-                  </div>
+                {/* Forgot Password Link Under Password Field */}
+                <div className="flex justify-end pt-1">
+                  <button
+                    type="button"
+                    onClick={handleStartForgotCallerPassword}
+                    className="text-[11px] text-[#245348] hover:text-[#C59B4E] font-medium transition-colors"
+                  >
+                    Forgot Password?
+                  </button>
                 </div>
+              </div>
 
-                {otpSent && (
-                  <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <div className="p-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex justify-between rounded">
-                      <span>Demo Code:</span>
-                      <strong className="font-mono text-sm">{generatedOtp}</strong>
-                    </div>
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-3"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#DFBE79]" />
+                <span>Sign In to Caller Panel</span>
+              </button>
+            </form>
+          )}
 
+          {/* FORGOT PASSWORD FLOW */}
+          {forgotMode && (
+            <div className="space-y-4 text-xs">
+              {/* Step 1: Caller ID & OTP */}
+              {forgotStep === 1 && (
+                <form onSubmit={handleVerifyCallerForgotOtp} className="space-y-4">
+                  {/* Caller ID Identification */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">Your Caller ID *</label>
                     <input
                       type="text"
-                      maxLength={4}
-                      value={enteredOtp}
-                      onChange={(e) => setEnteredOtp(e.target.value)}
-                      placeholder="Enter 4-digit OTP"
-                      className="w-full bg-[#FAF9F6] border border-[#245348] rounded px-3 py-2 text-center text-base font-mono tracking-widest text-[#14221F]"
+                      required
+                      value={forgotCallerIdInput}
+                      onChange={(e) => handleCallerLookup(e.target.value)}
+                      placeholder="e.g. CALLER-101"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2 text-[#14221F] font-mono text-xs uppercase"
                     />
+                  </div>
 
-                    {/* Requested "Sign in" button: #245348 */}
+                  <div className="p-3.5 bg-amber-50/90 border border-amber-200 rounded-xl space-y-1 text-xs text-amber-950">
+                    <span className="font-bold flex items-center gap-1.5 text-amber-900">
+                      <Mail className="w-4 h-4 text-amber-700" />
+                      <span>Caller Verification OTP Dispatched</span>
+                    </span>
+                    <p className="text-[11px] text-amber-800 leading-relaxed">
+                      A 6-digit OTP code has been dispatched to:
+                      <strong className="block font-mono text-amber-950 mt-1">{targetEmail || 'concaverealtyindia@gmail.com'}</strong>
+                    </p>
+                  </div>
+
+                  {/* Timer & Attempts Meter */}
+                  <div className="flex items-center justify-between text-xs px-1">
+                    <span className={`font-mono text-[11px] font-semibold flex items-center gap-1 ${otpRemainingSeconds < 60 ? 'text-red-700' : 'text-gray-600'}`}>
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Valid for: {Math.floor(otpRemainingSeconds / 60)}:{('0' + (otpRemainingSeconds % 60)).slice(-2)} (5 mins)</span>
+                    </span>
+                    <span className="text-[11px] text-gray-500 font-medium">
+                      Attempts: <strong className="text-red-700">{3 - wrongOtpAttempts}</strong>/3 left
+                    </span>
+                  </div>
+
+                  {forgotError && (
+                    <div className="p-2.5 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                      <span>{forgotError}</span>
+                    </div>
+                  )}
+
+                  {/* OTP Input */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">Enter 6-Digit OTP *</label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={6}
+                      autoFocus
+                      value={enteredForgotOtp}
+                      onChange={(e) => setEnteredForgotOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="e.g. 123456"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-center font-bold tracking-widest text-lg focus:outline-none transition-all"
+                    />
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="space-y-2 pt-1">
                     <button
                       type="submit"
-                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider"
+                      disabled={wrongOtpAttempts >= 3 || otpRemainingSeconds <= 0}
+                      className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md disabled:opacity-50"
                     >
-                      Sign In with OTP
+                      Verify OTP Code
                     </button>
-                  </form>
-                )}
-              </div>
-            )}
 
-            {/* Quick Territory Switchers */}
-            <div className="pt-3 border-t border-[#EAE6DF] space-y-1.5">
-              <span className="text-[10px] uppercase font-mono text-gray-400 block">
-                ⚡ 1-Click Territory Switch:
-              </span>
-              <div className="grid grid-cols-2 gap-1.5">
-                {callers.slice(0, 4).map(c => (
+                    <div className="flex items-center justify-between pt-1">
+                      <button
+                        type="button"
+                        onClick={handleResendCallerForgotOtp}
+                        className="text-[11px] text-[#245348] hover:underline font-semibold"
+                      >
+                        Resend Code
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setForgotMode(false);
+                          setForgotStep(1);
+                          setForgotError('');
+                        }}
+                        className="text-[11px] text-gray-500 hover:text-black font-medium"
+                      >
+                        ← Back to Login
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+
+              {/* Step 2: Set New Password */}
+              {forgotStep === 2 && (
+                <form onSubmit={handleResetCallerPassword} className="space-y-4">
+                  <div className="space-y-1 text-center pb-1">
+                    <h3 className="font-serif text-lg font-bold text-[#14221F]">
+                      Create New Caller Password
+                    </h3>
+                    <p className="text-[11px] text-gray-500">
+                      Updating password for: <strong>{targetCaller ? targetCaller.name : forgotCallerIdInput}</strong>
+                    </p>
+                  </div>
+
+                  {forgotError && (
+                    <div className="p-2.5 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-red-700 flex-shrink-0" />
+                      <span>{forgotError}</span>
+                    </div>
+                  )}
+
+                  {forgotSuccessMsg && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2 font-medium">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 flex-shrink-0" />
+                      <span>{forgotSuccessMsg}</span>
+                    </div>
+                  )}
+
+                  {/* New Password */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">New Password *</label>
+                    <div className="relative">
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        required
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 pr-10 text-[#14221F] font-mono text-xs focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                      >
+                        {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm New Password */}
+                  <div className="space-y-1">
+                    <label className="text-gray-700 font-semibold block text-xs">Re-enter New Password *</label>
+                    <input
+                      type="password"
+                      required
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      placeholder="Confirm new password"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Dynamic Password Policy Checklist */}
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-1 text-[11px]">
+                    <div className={`flex items-center gap-1.5 ${newPassword.length >= 8 ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>Minimum 8 characters</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>At least 1 uppercase & 1 lowercase letter</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${/[0-9]/.test(newPassword) && /[!@#$%^&*(),.?":{}|<>]/.test(newPassword) ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>At least 1 number (0-9) & 1 special character</span>
+                    </div>
+                    <div className={`flex items-center gap-1.5 ${newPassword && newPassword === confirmNewPassword ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+                      <Check className="w-3 h-3" />
+                      <span>Passwords match</span>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
                   <button
-                    key={c.id}
-                    onClick={() => handleQuickLoginAs(c)}
-                    className="p-1.5 rounded bg-[#FAF9F6] hover:bg-[#EFECE6] border border-[#EAE6DF] text-left text-[11px] truncate"
+                    type="submit"
+                    className="w-full py-3 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md"
                   >
-                    <strong className="text-[#14221F] block">{c.name.split(' ')[0]}</strong>
-                    <span className="text-gray-500 text-[10px]">{c.assignedLocations.map(l => LOCATION_CODES[l]).join(', ')}</span>
+                    Confirm & Update Password
                   </button>
-                ))}
-              </div>
-            </div>
-          </div>
 
-          {/* Right-side "Welcome back" panel: User requested #284F45 */}
-          <div className="bg-[#284F45] text-white p-8 sm:p-10 flex flex-col justify-between space-y-6">
-            <div className="space-y-3">
-              <div className="w-16 h-16 rounded-full overflow-hidden border border-[#C59B4E] p-0.5 bg-white/10">
-                <img src="/logo_icon.jpg" alt="Concave" className="w-full h-full object-cover rounded-full" />
-              </div>
-              
-              <h3 className="font-serif text-3xl font-bold">
-                Welcome Back
-              </h3>
-              
-              <p className="font-serif italic text-base text-[#DFBE79]">
-                “Where Legacy Meets Luxury”
-              </p>
-
-              <p className="text-xs text-gray-200 font-light leading-relaxed pt-2">
-                Automated location routing instantly pairs every buyer inquiry with local territory specialists across Mumbai micro-markets.
-              </p>
+                  <div className="text-center pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForgotMode(false);
+                        setForgotStep(1);
+                        setForgotError('');
+                      }}
+                      className="text-[11px] text-gray-500 hover:text-black font-medium"
+                    >
+                      ← Back to Login
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-
-            <div className="space-y-2 pt-6 border-t border-white/10 text-xs text-gray-300">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>Automated 4-hour & 10-day retry engine</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>Integrated direct web dialer</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#DFBE79]" />
-                <span>Single-click call disposition logging</span>
-              </div>
-            </div>
-
-            <div className="text-[10px] text-gray-400 font-mono">
-              CONCAVE REALTY • CALLER OPERATIONS V2.0
-            </div>
-          </div>
+          )}
 
         </div>
       </div>
@@ -353,8 +657,31 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
   // =========================================================================
   // VIEW 2: AUTHENTICATED CALLER WORKSPACE (Light, clean, deployment-ready)
   // =========================================================================
-  const pendingRetriesCount = leads.filter(l => l.statusCode === 4 && l.callStatusCode !== 5).length;
-  const hotLeadsCount = leads.filter(l => l.statusCode === 1).length;
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startMs = startOfToday.getTime();
+
+  // 1. Today's Total Calls
+  const todaysTotalCalls = leads.reduce((acc, lead) => {
+    if (!lead.notes) return acc;
+    const callsToday = lead.notes.filter(n => 
+      n.at >= startMs && 
+      (n.by === currentUser.name || n.by === currentUser.callerCode || n.by === 'Caller' || (n.txt && n.txt.includes('Status:')) || (n.txt && n.txt.includes('Rated as:')))
+    );
+    return acc + callsToday.length;
+  }, 0);
+
+  // 2. Total Leads
+  const totalLeads = leads.length;
+
+  // 3. Today's Total Leads
+  const todaysTotalLeads = leads.filter(l => (l.createdAt || 0) >= startMs).length;
+
+  // 4. Pending Calls and category counts
+  const pendingCallsCount = leads.filter(isPendingLead).length;
+  const callBackCount = leads.filter(isCallBackLead).length;
+  const hotLeadsCount = leads.filter(isHotOrLead).length;
+  const historyCount = leads.filter(isHistoryLead).length;
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 bg-[#FAF9F6]">
@@ -374,7 +701,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
             </div>
             <p className="text-xs text-[#DFBE79] font-medium">{currentUser.callerCode} • {currentUser.role}</p>
             <div className="flex flex-wrap gap-1.5 mt-2">
-              <span className="text-[10px] text-gray-300 font-mono">Territories:</span>
+              <span className="text-[10px] text-gray-300 font-mono">Locations:</span>
               {currentUser.assignedLocations && currentUser.assignedLocations.map(lid => (
                 <span key={lid} className="px-2 py-0.5 rounded text-[10px] font-semibold bg-[#284F45] text-white">
                   {LOCATION_CODES[lid]}
@@ -403,23 +730,21 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
 
       {/* KPI Stats Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle">
-          <span className="text-[10px] uppercase font-mono text-gray-500 block">Territory Leads</span>
-          <span className="text-2xl font-bold font-serif text-[#14221F] mt-1 block">{leads.length}</span>
+        <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-gray-500 block font-semibold">Today's Total Calls</span>
+          <span className="text-3xl font-bold font-sans text-[#14221F] mt-1.5 block">{todaysTotalCalls}</span>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle">
-          <span className="text-[10px] uppercase font-mono text-gray-500 block">Pending Retries (4h / 10d)</span>
-          <span className="text-2xl font-bold font-serif text-amber-600 mt-1 block">{pendingRetriesCount}</span>
+        <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-gray-500 block font-semibold">Total Leads</span>
+          <span className="text-3xl font-bold font-sans text-[#14221F] mt-1.5 block">{totalLeads}</span>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle">
-          <span className="text-[10px] uppercase font-mono text-gray-500 block">Hot Leads Identified</span>
-          <span className="text-2xl font-bold font-serif text-emerald-700 mt-1 block">{hotLeadsCount}</span>
+        <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-gray-500 block font-semibold">Today's Total Leads</span>
+          <span className="text-3xl font-bold font-sans text-emerald-700 mt-1.5 block">{todaysTotalLeads}</span>
         </div>
-        <div className="bg-white p-4 rounded-lg border border-[#EAE6DF] shadow-subtle">
-          <span className="text-[10px] uppercase font-mono text-gray-500 block">Web Calling System</span>
-          <span className="text-xs font-semibold text-[#245348] mt-2 block">
-            ● Direct Web Dialer Ready
-          </span>
+        <div className="bg-white p-5 rounded-xl border border-[#EAE6DF] shadow-subtle">
+          <span className="text-[11px] uppercase font-mono tracking-wider text-gray-500 block font-semibold">Pending Calls</span>
+          <span className="text-3xl font-bold font-sans text-amber-600 mt-1.5 block">{pendingCallsCount}</span>
         </div>
       </div>
 
@@ -427,36 +752,36 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-4">
         <div className="flex flex-wrap gap-2 text-xs">
           <button
-            onClick={() => setActiveTab('active')}
-            className={`px-3.5 py-1.5 rounded font-medium transition-all ${
-              activeTab === 'active' ? 'bg-[#245348] text-white' : 'bg-white text-gray-600 border border-[#EAE6DF]'
+            onClick={() => setActiveTab('pending')}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              activeTab === 'pending' ? 'bg-[#245348] text-white shadow-sm font-semibold' : 'bg-white text-gray-700 border border-[#EAE6DF] hover:border-gray-400'
             }`}
           >
-            Active Territory Queue ({leads.length})
+            Pending Calls ({pendingCallsCount})
           </button>
           <button
-            onClick={() => setActiveTab('retries')}
-            className={`px-3.5 py-1.5 rounded font-medium transition-all ${
-              activeTab === 'retries' ? 'bg-amber-600 text-white font-bold' : 'bg-white text-amber-700 border border-amber-200'
+            onClick={() => setActiveTab('callback')}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              activeTab === 'callback' ? 'bg-amber-600 text-white shadow-sm font-semibold' : 'bg-white text-amber-700 border border-amber-200 hover:border-amber-400'
             }`}
           >
-            Not Picking Up Retries ({pendingRetriesCount})
+            Call Back ({callBackCount})
           </button>
           <button
             onClick={() => setActiveTab('hot')}
-            className={`px-3.5 py-1.5 rounded font-medium transition-all ${
-              activeTab === 'hot' ? 'bg-emerald-700 text-white font-bold' : 'bg-white text-emerald-700 border border-emerald-200'
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              activeTab === 'hot' ? 'bg-emerald-700 text-white shadow-sm font-semibold' : 'bg-white text-emerald-700 border border-emerald-200 hover:border-emerald-400'
             }`}
           >
             Hot Leads ({hotLeadsCount})
           </button>
           <button
-            onClick={() => setActiveTab('all')}
-            className={`px-3.5 py-1.5 rounded font-medium transition-all ${
-              activeTab === 'all' ? 'bg-[#245348] text-white' : 'bg-white text-gray-600 border border-[#EAE6DF]'
+            onClick={() => setActiveTab('history')}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              activeTab === 'history' ? 'bg-[#245348] text-white shadow-sm font-semibold' : 'bg-white text-gray-700 border border-[#EAE6DF] hover:border-gray-400'
             }`}
           >
-            All History
+            History ({historyCount})
           </button>
         </div>
 
@@ -547,21 +872,15 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
                     )}
                   </div>
 
-                  {/* Direct Call Button (User requested #245348) */}
-                  <div className="flex flex-row lg:flex-col gap-2 justify-end">
+                  {/* Single Prominent Direct Call Button */}
+                  <div className="flex justify-end">
                     <button
                       onClick={() => handleStartCall(lead)}
-                      className="px-4 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="px-5 py-2.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
                     >
                       <PhoneCall className="w-4 h-4" />
                       <span>Direct Call</span>
                     </button>
-                    <a
-                      href={`tel:${lead.mobile.replace(/\s+/g, '')}`}
-                      className="px-3 py-1.5 rounded border border-[#EAE6DF] hover:border-black text-gray-700 text-center text-xs"
-                    >
-                      Native Phone
-                    </a>
                   </div>
                 </div>
               </div>
@@ -589,19 +908,21 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
               </div>
             </div>
 
-            {/* Rate Disposition */}
+            {/* Rate Disposition - 8 Exact Options */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-700 block">
-                Call Disposition / Rating:
+                Call Disposition / Feedback:
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 {[
-                  { code: 1, label: "Hot Lead (1)", desc: "Ready to book" },
-                  { code: 2, label: "Interested (2)", desc: "Schedule visit" },
-                  { code: 4, label: "Not Picking (4)", desc: "Auto 4h/10d retry" },
-                  { code: 3, label: "Okay (3)", desc: "Follow up" },
-                  { code: 5, label: "Not Interested", desc: "No interest" },
-                  { code: 6, label: "Fake / Spam", desc: "Invalid" },
+                  { code: 8, label: "Interested", desc: "Customer showed interest" },
+                  { code: 5, label: "Not Interested", desc: "Declined / No interest" },
+                  { code: 1, label: "Hot Lead", desc: "Ready to book / high intent" },
+                  { code: 2, label: "Lead", desc: "Qualified prospect" },
+                  { code: 4, label: "Not Answered", desc: "Auto 4h/10d retry" },
+                  { code: 10, label: "Busy", desc: "Line busy (retry scheduled)" },
+                  { code: 9, label: "Call Back", desc: "Requested call back" },
+                  { code: 6, label: "Fake/Spam", desc: "Invalid / spam inquiry" },
                 ].map(disp => (
                   <button
                     key={disp.code}
@@ -609,7 +930,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
                     onClick={() => setSelectedDisposition(disp.code)}
                     className={`p-2 rounded border text-left transition-all ${
                       selectedDisposition === disp.code
-                        ? 'bg-[#245348] text-white border-[#245348]'
+                        ? 'bg-[#245348] text-white border-[#245348] ring-2 ring-[#C59B4E]'
                         : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-black'
                     }`}
                   >

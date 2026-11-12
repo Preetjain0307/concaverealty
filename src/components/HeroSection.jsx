@@ -74,25 +74,6 @@ export function HeroSection({ onSearch, onExplore, onOpenTour, onOpenEnquiry }) 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-black/40" />
       </div>
 
-      {/* Video Audio & Playback Controls Floating Bar */}
-      <div className="absolute bottom-6 right-6 z-20 flex items-center gap-3 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 text-xs text-white">
-        <button 
-          onClick={togglePlay}
-          className="hover:text-[#C59B4E] transition-colors"
-          title={isPlaying ? "Pause video" : "Play video"}
-        >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-        </button>
-        <span className="h-3 w-px bg-white/20" />
-        <button 
-          onClick={toggleMute}
-          className="hover:text-[#C59B4E] transition-colors"
-          title={isMuted ? "Unmute sound" : "Mute sound"}
-        >
-          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5 text-[#C59B4E]" />}
-        </button>
-      </div>
-
       {/* Hero Typography & Search */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6">
 

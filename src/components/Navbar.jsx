@@ -60,12 +60,6 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               Our Projects
             </button>
             <button
-              onClick={() => onNavigate('locations')}
-              className={`hover:text-[#C59B4E] transition-colors ${currentView === 'locations' ? 'text-[#C59B4E] border-b border-[#C59B4E] pb-1' : ''}`}
-            >
-              Locations
-            </button>
-            <button
               onClick={() => onNavigate('amenities')}
               className={`hover:text-[#C59B4E] transition-colors ${currentView === 'amenities' ? 'text-[#C59B4E] border-b border-[#C59B4E] pb-1' : ''}`}
             >
@@ -188,12 +182,6 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
             className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-gray-200"
           >
             Our Projects
-          </button>
-          <button
-            onClick={() => { onNavigate('locations'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2 px-3 rounded hover:bg-[#284F45] text-gray-200"
-          >
-            Locations
           </button>
           <button
             onClick={() => { onNavigate('amenities'); setMobileMenuOpen(false); }}

@@ -10,13 +10,13 @@ export function PromotedLocations({ onSelectLocation }) {
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs uppercase tracking-[0.3em] text-[#C59B4E] font-semibold block">
-            PRIME TERRITORIES
+            PRIME LOCATIONS
           </span>
           <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight">
             Mumbai's Most Desired Addresses
           </h2>
           <p className="text-xs text-gray-500 font-light">
-            Select a micro-market to explore curated residential developments and connect with our dedicated territory consultants.
+            Select a micro-market to explore curated residential developments and connect with our dedicated location consultants.
           </p>
         </div>
 
