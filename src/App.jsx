@@ -4,6 +4,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
+import { AboutUs } from './components/AboutUs';
 import { SignatureProjects } from './components/SignatureProjects';
 import { PromotedLocations } from './components/PromotedLocations';
 import { AmenitiesSection } from './components/AmenitiesSection';
@@ -107,11 +108,9 @@ export function App() {
                 />
               </ErrorBoundary>
 
-              {/* Promoted Locations */}
+              {/* About Us, Mission & Vision Showcase */}
               <ErrorBoundary>
-                <PromotedLocations
-                  onSelectLocation={handleSelectLocation}
-                />
+                <AboutUs />
               </ErrorBoundary>
 
               {/* 50+ Curated World-Class Amenities */}
