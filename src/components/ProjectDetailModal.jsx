@@ -328,23 +328,60 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
           </div>
 
-          {/* Section: Location & Connectivity */}
-          {project.connectivity && project.connectivity.length > 0 && (
-            <div className="space-y-2.5 pt-2 border-t border-[#EAE6DF]">
-              <h4 className="font-serif text-base font-bold text-[#14221F] flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-[#245348]" />
-                <span>Location & Connectivity</span>
-              </h4>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                {project.connectivity.map((conn, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <span className="w-1 h-1 rounded-full bg-[#C59B4E]" />
-                    <span>{conn}</span>
-                  </li>
-                ))}
-              </ul>
+          {/* Section: Accurate Location & Map View */}
+          <div className="space-y-3 pt-3 border-t border-[#EAE6DF]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h4 className="font-serif text-base font-bold text-[#14221F] flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#245348]" />
+                  <span>Location & Map View</span>
+                </h4>
+                <p className="text-xs text-gray-500 font-light mt-0.5">
+                  {project.locality ? `${project.locality}, ` : ''}{project.location}, Mumbai, Maharashtra
+                </p>
+              </div>
+
+              {project.mapUrl && (
+                <a
+                  href={project.mapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#245348]/10 hover:bg-[#245348] text-[#245348] hover:text-white border border-[#245348]/20 text-xs font-mono font-semibold transition-all self-start sm:self-auto"
+                >
+                  <span>Open in Google Maps</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
             </div>
-          )}
+
+            {/* Interactive Embedded Google Map for Exact Project Location */}
+            <div className="relative w-full h-64 sm:h-72 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-inner bg-slate-100">
+              <iframe
+                title={`${project.name} Google Map Location`}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(`${project.name} ${project.locality || ''} ${project.location} Mumbai`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                className="w-full h-full border-0"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
+
+            {/* Key Transit & Vicinity Connectivity */}
+            {project.connectivity && project.connectivity.length > 0 && (
+              <div className="pt-1.5">
+                <span className="text-[11px] font-mono uppercase text-gray-500 font-semibold tracking-wider block mb-1.5">
+                  Key Transit & Vicinity Connectivity:
+                </span>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                  {project.connectivity.map((conn, idx) => (
+                    <li key={idx} className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#C59B4E] shrink-0" />
+                      <span>{conn}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
 
           {/* Bottom Action Footer */}
           <div className="pt-4 border-t border-[#EAE6DF] flex flex-wrap items-center justify-between gap-3">

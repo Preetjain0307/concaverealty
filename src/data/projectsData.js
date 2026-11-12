@@ -68,7 +68,7 @@ export const MARQUEE_IMAGES = [
     tag: "Bespoke Luxury"
   },
   {
-    url: "/projects/sunteck_city_official.webp",
+    url: "/projects/project_20_user_1.png",
     title: "SunteckCity",
     location: "Jogeshwari / Goregaon",
     tag: "Integrated Township"
@@ -122,7 +122,7 @@ export const PROJECTS_DATA = [
       { bhk: "Palatial Jodi Residence", carpetArea: "2,510 - 3,154 sq.ft CA", price: "Price on Request*", floorPlanLabel: "Custom Jodi Layout", possessionDate: "Nov 2028" }
     ],
     virtualTourUrl: "https://view.pixeldo.com/KalpataruAdvay/",
-    mapUrl: "https://maps.google.com/?q=New+Link+Road+Borivali+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Kalpataru+Advay+Jairaj+Nagar%2C+New+Link+Road%2C+Borivali+West+Mumbai",
     overview: "Kalpataru Advay is an iconic multi-tower residential landmark sprawled across 6.12 acres in Borivali West. Featuring an eco-deck level, 50+ hand-picked lifestyle amenities, and unobstructed panoramic green and sea views.",
     highlights: [
       "Prime location on New Link Road, Jairaj Nagar, Borivali West",
@@ -161,7 +161,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxe", carpetArea: "1,050 sq.ft CA", price: "₹3.90 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2028" },
       { bhk: "4 BHK Grande", carpetArea: "1,520 sq.ft CA", price: "₹5.75 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Borivali+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Altus+Western+Express+Highway%2C+Borivali+West+Mumbai",
     overview: "Lodha Altus brings Saint Amand hospitality and signature architecture to Borivali, offering thoughtfully planned expansive homes with lavish balconies and forest views.",
     highlights: [
       "Low density tower with only 3 residences per floor",
@@ -199,7 +199,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxury", carpetArea: "1,310 sq.ft CA", price: "₹4.90 Cr*", floorPlanLabel: "Tower E", possessionDate: "Dec 2025" },
       { bhk: "3 BHK Sky Suite", carpetArea: "1,425 sq.ft CA", price: "₹6.50 Cr*", floorPlanLabel: "Tower F", possessionDate: "Dec 2025" }
     ],
-    mapUrl: "https://maps.google.com/?q=Oberoi+Sky+City+Borivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Oberoi+Sky+City+Western+Express+Highway%2C+Borivali+East+Mumbai",
     overview: "Spanning 25 acres, Oberoi Sky City redefines luxury living in Borivali East with a seamlessly integrated high-street mall, grand landscape decks, and direct metro connectivity.",
     highlights: [
       "Direct entry from Western Express Highway and Devipada Metro",
@@ -236,7 +236,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Smart", carpetArea: "640 sq.ft CA", price: "₹1.95 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
       { bhk: "3 BHK Comfort", carpetArea: "910 sq.ft CA", price: "₹3.10 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Borivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Chandak+GreenAir+National+Park%2C+Borivali+East+Mumbai",
     overview: "Overlooking pristine national park greenery, Chandak GreenAir blends serenity with rapid urban transit in Borivali East.",
     highlights: [
       "Walking distance to Sanjay Gandhi National Park gate",
@@ -277,7 +277,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxe Canopy", carpetArea: "1,050 - 1,220 sq.ft CA", price: "₹3.55 Cr*", floorPlanLabel: "Type 3C Grand", possessionDate: "June 2027" },
       { bhk: "4 BHK Royal Deck", carpetArea: "1,600 sq.ft CA", price: "₹4.95 Cr*", floorPlanLabel: "Type 4R Forest", possessionDate: "June 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kandivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Reserve+Akurli+Road%2C+Kandivali+East+Mumbai",
     overview: "Nestled in Kandivali East, Godrej Reserve brings nature right to your balcony with an expansive 18.5-acre green habitat and modern amenities designed for multi-generational luxury.",
     highlights: [
       "Connected directly to Western Express Highway and upcoming metro line",
@@ -317,7 +317,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxury", carpetArea: "1,080 sq.ft CA", price: "₹3.35 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2028" },
       { bhk: "4 BHK Grande", carpetArea: "1,550 sq.ft CA", price: "₹4.50 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kandivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Mahindra+Vista+Akurli+Road%2C+Kandivali+East+Mumbai",
     overview: "Mahindra Vista presents biophilic luxury homes crafted with green building principles, panoramic hillside vistas, and zero-compromise community infrastructure.",
     highlights: [
       "IGBC Platinum pre-certified sustainable design",
@@ -355,7 +355,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Urban", carpetArea: "680 sq.ft CA", price: "₹1.99 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
       { bhk: "3 BHK Grand", carpetArea: "980 sq.ft CA", price: "₹3.40 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lokhandwala+Kandivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Bliss+Lokhandwala+Township%2C+Kandivali+East+Mumbai",
     overview: "Located in the established Lokhandwala Township, Godrej Bliss offers resort-style amenities, private sundecks, and effortless connectivity.",
     highlights: [
       "Surrounded by established social infrastructure & top schools",
@@ -393,7 +393,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Forest Deck", carpetArea: "710 sq.ft CA", price: "₹2.10 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Mid 2025" },
       { bhk: "3 BHK Sky Deck", carpetArea: "1,040 sq.ft CA", price: "₹3.85 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Mid 2025" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kandivali+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Woods+Western+Express+Highway%2C+Kandivali+East+Mumbai",
     overview: "Lodha Woods sits directly adjacent to the tranquil foliage of Sanjay Gandhi National Park, blending urban comfort with clean air and scenic vistas.",
     highlights: [
       "Direct frontage to national park green buffer",
@@ -434,7 +434,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Malad+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Naring+Naring+Link+Road+%2C+Malad+West+Mumbai",
     overview: "An upcoming luxury development by Naring in the vibrant heart of Malad West, designed to deliver high-quality contemporary residences.",
     highlights: [
       "Strategic location near commercial and entertainment hubs",
@@ -471,7 +471,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Elegant", carpetArea: "670 sq.ft CA", price: "₹1.85 Cr*", floorPlanLabel: "Type 2E", possessionDate: "Dec 2028" },
       { bhk: "3 BHK Grand", carpetArea: "990 sq.ft CA", price: "₹3.60 Cr*", floorPlanLabel: "Type 3G", possessionDate: "Dec 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Malad+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Runwal+Runwal+Inorbit+Mall%2C+Malad+West+Mumbai",
     overview: "Crafted by Runwal Group, this Malad development blends modern lifestyle conveniences with rapid access to Mindspace IT Park and Link Road retail avenues.",
     highlights: [
       "Moments away from Inorbit Mall and Malad railway station",
@@ -507,7 +507,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Malad+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Link+Road%2C+Malad+West+Mumbai",
     overview: "Lodha's landmark residential vision for Malad West, featuring grand club facilities, Saint Amand hospitality services, and bespoke finishing.",
     highlights: [
       "Reputed brand pedigree with world-class landscaping",
@@ -543,7 +543,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Boutique", carpetArea: "630 sq.ft CA", price: "₹1.70 Cr*", floorPlanLabel: "Type 2B", possessionDate: "March 2027" },
       { bhk: "3 BHK Elegance", carpetArea: "920 sq.ft CA", price: "₹2.95 Cr*", floorPlanLabel: "Type 3E", possessionDate: "March 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Malad+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Enchante+Point+S.V.+Road%2C+Malad+West+Mumbai",
     overview: "Enchante Point delivers boutique luxury living with private decks, serene open layouts, and effortless access to business districts.",
     highlights: [
       "Low density boutique building with private community feel",
@@ -583,7 +583,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Goregaon+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Naring+Naring+Link+Road+%2C+Goregaon+West+Mumbai",
     overview: "A prestigious development by Naring in Goregaon West offering state-of-the-art residences connected to Mumbai's primary lifestyle and transit arteries.",
     highlights: [
       "Surrounded by elite retail hubs including Inorbit & Oberoi Mall",
@@ -621,7 +621,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Premium", carpetArea: "720 sq.ft CA", price: "₹2.10 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
       { bhk: "3 BHK Royale", carpetArea: "1,060 sq.ft CA", price: "₹3.75 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Goregaon+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Kalpataru+Elara+Inorbit+Mall%2C+Goregaon+West+Mumbai",
     overview: "Kalpataru Elara embodies thoughtful luxury with expansive cross-ventilated homes, landscaped podium greens, and seamless metro access.",
     highlights: [
       "5 minutes from Goregaon West Metro Station and Link Road",
@@ -656,7 +656,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan 2", possessionDate: "2028" },
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan 3", possessionDate: "2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Goregaon+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Kolte-Patil+Kolte-Patil+Link+Road+%2C+Goregaon+West+Mumbai",
     overview: "Kolte-Patil presents an exquisite residential project in Goregaon West, blending intelligent spatial planning with signature lifestyle amenities.",
     highlights: [
       "Convenient access to Western Express Highway & SV Road",
@@ -692,7 +692,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Goregaon+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Rustomjee+S.V.+Road+%2F+Link+Road%2C+Goregaon+West+Mumbai",
     overview: "Rustomjee brings its hallmark community-centric design to Goregaon, featuring thoughtfully planned spaces that bring families closer to nature.",
     highlights: [
       "Renowned Rustomjee thoughtful architectural planning",
@@ -732,7 +732,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "700 sq.ft CA", price: "₹2.15 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
       { bhk: "3 BHK Premium", carpetArea: "1,020 sq.ft CA", price: "₹3.90 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Jogeshwari+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Sovrano+S.V.+Road%2C+Jogeshwari+West+Mumbai",
     overview: "Lodha Sovrano brings luxury residential excellence to Jogeshwari West with grand entrance lobbies, private decks, and seamless access to Western Express Highway and JVLR.",
     highlights: [
       "Minutes from Jogeshwari railway station & Western Express Highway",
@@ -769,7 +769,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Urban", carpetArea: "610 sq.ft CA", price: "₹1.65 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2026" },
       { bhk: "3 BHK Grand", carpetArea: "890 sq.ft CA", price: "₹2.85 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2026" }
     ],
-    mapUrl: "https://maps.google.com/?q=Jogeshwari+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Paradigm+Downtown+102+S.V.+Road%2C+Jogeshwari+West+Mumbai",
     overview: "Paradigm Downtown 102 offers smartly engineered urban residences on SV Road, combining rapid connectivity with premium clubhouse amenities.",
     highlights: [
       "Prime frontage on SV Road with rapid transit access",
@@ -805,7 +805,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Jogeshwari+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Roseworld+Jogeshwari+West+Mumbai",
     overview: "Roseworld presents a boutique residential development in Jogeshwari, designed for tranquil living with immediate proximity to JVLR and highway corridors.",
     highlights: [
       "Boutique low-density living with private family feel",
@@ -835,13 +835,13 @@ export const PROJECTS_DATA = [
     coverImage: "/projects/project_20_user_1.png",
     images: [
       "/projects/project_20_user_1.png",
-      "/projects/sunteck_city_official.webp"
+      "/projects/project_img_20.webp"
     ],
     configurations: [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Jogeshwari+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Sunteck+Realty+Sunteck+JVLR+Junction%2C+Jogeshwari+West+Mumbai",
     overview: "Sunteck brings its high-end residential pedigree to Jogeshwari, offering curated sky residences with expansive views and world-class club recreation.",
     highlights: [
       "Direct transit connectivity to BKC and SEEPZ via JVLR",
@@ -883,7 +883,7 @@ export const PROJECTS_DATA = [
       { bhk: "5 Bed Duplex Penthouse", carpetArea: "3,800 - 4,600 sq.ft CA", price: "₹24.50 Cr*", floorPlanLabel: "Presidential Seafront Duplex", possessionDate: "Dec 2028" }
     ],
     virtualTourUrl: "https://view.pixeldo.com/GodrejSkyShore/",
-    mapUrl: "https://maps.google.com/?q=Versova+Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Skyshore+(Versova)+Versova%2C+Andheri+West+Mumbai",
     overview: "A home where breathtaking sea views meet spectacular sunrises, mesmerising sunsets and the glittering Mumbai skyline. Presenting an opportunity to own an exclusive Sky Bungalow at Godrej Skyshore, Versova.",
     highlights: [
       "Unobstructed 270° Arabian Sea and coastal mangroves views",
@@ -922,7 +922,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Urban", carpetArea: "710 sq.ft CA", price: "₹2.40 Cr*", floorPlanLabel: "Type 2A", possessionDate: "June 2028" },
       { bhk: "3 BHK Grand", carpetArea: "1,030 sq.ft CA", price: "₹4.10 Cr*", floorPlanLabel: "Type 3A", possessionDate: "June 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Kalpataru+Vian+Western+Express+Highway%2C+Andheri+East+Mumbai",
     overview: "Kalpataru Vian combines executive connectivity with resort amenities, located just minutes from international airport transit and metro corridors.",
     highlights: [
       "5 minutes from Western Express Highway and Andheri Metro",
@@ -959,7 +959,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Royale", carpetArea: "1,120 sq.ft CA", price: "₹4.20 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" },
       { bhk: "4 BHK Presidential", carpetArea: "1,650 sq.ft CA", price: "₹5.60 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=DN+Nagar+Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Adani+Linkbay+DN+Nagar+Metro%2C+Andheri+West+Mumbai",
     overview: "Adani Linkbay offers sprawling residential towers overlooking lush mangroves and creek views in Andheri West, featuring expansive private sun decks.",
     highlights: [
       "Direct connectivity to DN Nagar Metro interchange (Lines 1 & 2A)",
@@ -996,7 +996,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Puravankara+Puravankara+Andheri+Mumbai",
     overview: "Puravankara brings its nationally celebrated architectural planning and luxury finishes to Andheri, offering refined urban sanctuaries.",
     highlights: [
       "Strategically situated for quick transit to airport and BKC",
@@ -1032,7 +1032,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2027" },
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Gurukrupa+Realcon+Andheri+East+Mumbai",
     overview: "Gurukrupa Realcon presents modern urban residences in Andheri East, offering practical layouts and rapid airport road connectivity.",
     highlights: [
       "Proximity to metro and commercial business district",
@@ -1067,7 +1067,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Executive", carpetArea: "680 sq.ft CA", price: "₹2.20 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
       { bhk: "3 BHK Presidential", carpetArea: "990 sq.ft CA", price: "₹3.80 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Chakala+Andheri+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Naman+58+Chakala%2C+Andheri+East+Mumbai",
     overview: "Naman 58 delivers executive luxury residences in Chakala, tailored for corporate leaders seeking walking access to metro and commercial hubs.",
     highlights: [
       "2 minutes from Chakala Metro Station",
@@ -1103,7 +1103,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2028" },
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Kolte-Patil+Kolte-Patil+Andheri+Mumbai",
     overview: "Kolte-Patil brings thoughtfully designed homes to Andheri, prioritizing natural ventilation, smart room ergonomics, and family recreational spaces.",
     highlights: [
       "Prime central location with fast highway connectivity",
@@ -1139,7 +1139,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Neoclassical", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
       { bhk: "3 BHK Royale", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Hiranandani+Hiranandani+Andheri+Mumbai",
     overview: "A neoclassical architectural landmark in Andheri by Hiranandani, showcasing grand stone masonry, high ceilings, and landscaped piazzas.",
     highlights: [
       "Signature Hiranandani neoclassical aesthetic",
@@ -1175,7 +1175,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2027" },
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Bharat+Infrastructure+Bharat+Andheri+West+Mumbai",
     overview: "Bharat Infrastructure presents thoughtfully engineered homes in Andheri West, placing residents moments away from premier dining, entertainment, and transit.",
     highlights: [
       "Walking proximity to Andheri West metro corridor",
@@ -1211,7 +1211,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Rustomjee+Andheri+Mumbai",
     overview: "Rustomjee's celebrated approach to thoughtful community living in Andheri, featuring expansive family decks and children's activity zones.",
     highlights: [
       "Holistic community living with dedicated learning zones",
@@ -1248,7 +1248,7 @@ export const PROJECTS_DATA = [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Andheri+West+Mumbai",
     overview: "Lodha brings its legendary hospitality standards and architectural grandeur to Andheri, offering discerning residents private high-rise sanctuaries.",
     highlights: [
       "Saint Amand 5-star residential hospitality management",
@@ -1284,7 +1284,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Presidential", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
       { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=DLF+DLF+Andheri+West+Mumbai",
     overview: "DLF enters Mumbai with an ultra-luxury residential landmark in Andheri West, featuring grand scale club amenities and bespoke international finishes.",
     highlights: [
       "Iconic DLF ultra-luxury development standards",
@@ -1326,7 +1326,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Seafront", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
       { bhk: "4 BHK Penthouse", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Godrej+Pali+Hill+%2F+Bandra+West+Mumbai",
     overview: "Godrej Properties presents a marquee ultra-luxury development in prestigious Bandra West, delivering unobstructed views of the Arabian Sea and bespoke Italian interiors.",
     highlights: [
       "Prime Bandra West address in Mumbai's most coveted neighborhood",
@@ -1362,7 +1362,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Hiranandani+Hiranandani+Bandra+West+Mumbai",
     overview: "Hiranandani's neoclassical architectural signature arrives in Bandra, offering palatial ceiling heights, marble foyers, and elite club facilities.",
     highlights: [
       "Distinctive neoclassical design and craftsmanship",
@@ -1399,7 +1399,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2027" },
       { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+East+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Raymond+Realty+Raymond+Bandra+East+%2F+BKC+Gateway+Mumbai",
     overview: "The Address by GS by Raymond Realty in Bandra combines bespoke sartorial luxury with swift connectivity to Bandra-Kurla Complex (BKC).",
     highlights: [
       "3 minutes from Bandra-Kurla Complex (BKC)",
@@ -1426,17 +1426,17 @@ export const PROJECTS_DATA = [
     towerDetails: "Private residences overlooking Arabian Sea",
     elevators: "Private Elevators",
     amenitiesCount: "World-Class Amenities",
-    coverImage: "/projects/sunteck_city_official.webp",
+    coverImage: "/projects/project_img_4.jpg",
     images: [
-      "/projects/sunteck_city_official.webp",
       "/projects/project_img_4.jpg",
-      "/projects/project_img_1.jpg"
+      "/projects/project_img_1.jpg",
+      "/projects/project_img_36.jpg"
     ],
     configurations: [
       { bhk: "4 BHK Palatial", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2028" },
       { bhk: "5 BHK Sky Villa", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 5", possessionDate: "2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Sunteck+Realty+Sunteck+Bandra+West+%2F+Mount+Mary+Mumbai",
     overview: "Sunteck's ultra-luxury residences in Bandra West offer unmatched exclusivity, soaring ceilings, and mesmerizing Arabian Sea vistas.",
     highlights: [
       "Elite address with high celebrity and business profile neighbors",
@@ -1473,7 +1473,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Oberoi+Realty+Oberoi+Realty+Carter+Road+%2F+Bandra+West+Mumbai",
     overview: "Oberoi Realty brings its celebrated architectural precision and engineering perfection to Bandra West, creating timeless high-rise homes.",
     highlights: [
       "Unrivaled location near Bandra promenade and Carter Road",
@@ -1511,7 +1511,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
       { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Adani+Realty+Adani+Realty+Bandra+West+Mumbai",
     overview: "Adani Realty's prime residential offering in Bandra West, presenting panoramic urban views, spacious floor plates, and modern luxury.",
     highlights: [
       "Direct connectivity to Bandra-Worli Sea Link and Western Express Highway",
@@ -1547,7 +1547,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Boutique", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2027" },
       { bhk: "4 BHK Presidential", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bandra+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=DLH+DLH+Bandra+West+Mumbai",
     overview: "DLH Group delivers boutique, low-density residences in Bandra West, tailored for residents who value refined privacy and timeless style.",
     highlights: [
       "Only 1 to 2 residences per floor for maximum privacy",
@@ -1588,7 +1588,7 @@ export const PROJECTS_DATA = [
       { bhk: "4 BHK Sea View", carpetArea: "2,450 sq.ft CA", price: "₹14.50 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2026" },
       { bhk: "5 BHK Duplex Sky Mansion", carpetArea: "4,800 sq.ft CA", price: "₹25.00 Cr*", floorPlanLabel: "Type 5A", possessionDate: "Dec 2026" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lower+Parel+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Lower+Parel+%2F+Parkside+Mumbai",
     overview: "Soaring into the South Mumbai skyline, Lodha's Lower Parel developments represent the pinnacle of architectural luxury with 7-acre private parks and Italian interior design.",
     highlights: [
       "Overlooks the Mahalaxmi Racecourse and Arabian Sea",
@@ -1625,7 +1625,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxe", carpetArea: "1,420 sq.ft CA", price: "₹7.25 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" },
       { bhk: "4 BHK Royal", carpetArea: "2,150 sq.ft CA", price: "₹12.80 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2027" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lower+Parel+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Piramal+Realty+Piramal+Lower+Parel+Commercial+%26+Residential+Mumbai",
     overview: "Piramal Realty presents an enclave of architectural serenity in Lower Parel, offering dual-aspect views of the Eastern Harbour and Arabian Sea.",
     highlights: [
       "Minutes from Palladium Mall, High Street Phoenix & corporate HQs",
@@ -1662,7 +1662,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2028" },
       { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lower+Parel+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Prestige+Prestige+Group+Senapati+Bapat+Marg%2C+Lower+Parel+Mumbai",
     overview: "Prestige Group brings its celebrated luxury hospitality standards to Lower Parel with landmark high-rise towers designed for Mumbai's top business leaders.",
     highlights: [
       "Center of Mumbai's financial and fine dining epicenter",
@@ -1699,7 +1699,7 @@ export const PROJECTS_DATA = [
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lower+Parel+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Godrej+Lower+Parel+Mumbai",
     overview: "Godrej Properties presents a marquee luxury residential project in Lower Parel, blending green architecture with breathtaking urban skyline vistas.",
     highlights: [
       "Direct highway and sea link connectivity",
@@ -1711,19 +1711,123 @@ export const PROJECTS_DATA = [
 ];
 
 export const AMENITIES_LIST = [
-  { id: 1, name: "Swimming Pool", icon: "Waves", desc: "Temperature-controlled Olympic lap pool with sun loungers" },
-  { id: 2, name: "Fully-equipped Gymnasium", icon: "Dumbbell", desc: "State-of-the-art cardio & strength training zones" },
-  { id: 3, name: "Landscaped Gardens", icon: "Trees", desc: "Zen meditation pavilions, reflexology path & fragrant flora" },
-  { id: 4, name: "Kids' Play Area", icon: "Gamepad2", desc: "Rubberized child-safe zones with adventure obstacle course" },
-  { id: 5, name: "Clubhouse", icon: "Building2", desc: "Multi-level private lifestyle lounge with concierge" },
-  { id: 6, name: "24x7 Security & CCTV", icon: "ShieldCheck", desc: "Multi-tier biometric access, RFID gates & perimeter patrol" },
-  { id: 7, name: "Infinity Pool", icon: "Sparkles", desc: "Rooftop horizon pool with breathtaking sunset views" },
-  { id: 8, name: "Private Theatre", icon: "Film", desc: "Acoustically tuned 24-seater Dolby Atmos screening room" },
-  { id: 9, name: "Spa & Sauna", icon: "Flame", desc: "Herbal steam rooms, unisex salons & wellness therapy" },
-  { id: 10, name: "Concierge Desk", icon: "ConciergeBell", desc: "White-glove 24/7 personal assistance and hospitality" },
-  { id: 11, name: "Co-working Lounge", icon: "Laptop", desc: "High-speed fiber workstations & soundproof meeting pods" },
-  { id: 12, name: "EV Charging Bays", icon: "Zap", desc: "Dedicated high-voltage electric vehicle charging points" },
-  { id: 13, name: "Rooftop Sky Deck", icon: "Sun", desc: "Panoramic telescope viewpoint and star-gazing deck" }
+  {
+    id: 1,
+    name: "Swimming Pool",
+    category: "Wellness",
+    tag: "Temperature Controlled",
+    icon: "Waves",
+    image: "/amenities/swimming_pool.jpg",
+    desc: "Olympic-dimension temperature controlled lap pool with submerged sun loungers and cabana deck."
+  },
+  {
+    id: 2,
+    name: "Fully-equipped Gymnasium",
+    category: "Wellness",
+    tag: "Technogym Studio",
+    icon: "Dumbbell",
+    image: "/amenities/gymnasium.jpg",
+    desc: "State-of-the-art cardiovascular and strength training equipment with dedicated personal coaching studio."
+  },
+  {
+    id: 3,
+    name: "Landscaped Gardens",
+    category: "Nature",
+    tag: "Zen Sanctuary",
+    icon: "Trees",
+    image: "/amenities/gardens.jpg",
+    desc: "Zen meditation pavilions, manicured reflexology walking trails, and fragrant botanical flora."
+  },
+  {
+    id: 4,
+    name: "Kids' Play Area",
+    category: "Nature",
+    tag: "Adventure Zone",
+    icon: "Gamepad2",
+    image: "/amenities/kids_play_v2.jpg",
+    desc: "Rubberized child-safe outdoor obstacle courses, creative soft-play arenas, and climbing towers."
+  },
+  {
+    id: 5,
+    name: "Grand Clubhouse",
+    category: "Leisure",
+    tag: "Private Club",
+    icon: "Building2",
+    image: "/amenities/clubhouse.jpg",
+    desc: "Multi-level private lifestyle lounge with banquet salon, billiards room, and residents' library."
+  },
+  {
+    id: 6,
+    name: "24x7 Security & CCTV",
+    category: "Services",
+    tag: "Biometric AI",
+    icon: "ShieldCheck",
+    image: "/amenities/security.jpg",
+    desc: "Multi-tier biometric facial recognition access, RFID gated boom barriers, and perimeter patrol."
+  },
+  {
+    id: 7,
+    name: "Rooftop Infinity Pool",
+    category: "Wellness",
+    tag: "Skyline Horizon",
+    icon: "Sparkles",
+    image: "/amenities/infinity_pool.jpg",
+    desc: "Cantilevered sky horizon pool with breathtaking sunset views of the Arabian Sea and city skyline."
+  },
+  {
+    id: 8,
+    name: "Banquets Hall",
+    category: "Leisure",
+    tag: "Celebration Venue",
+    icon: "Crown",
+    image: "/amenities/banquet_hall.jpg",
+    desc: "Grand celebratory ballroom with crystal chandeliers, banquet seating, and bespoke catering lounge."
+  },
+  {
+    id: 9,
+    name: "Spa & Hydrotherapy Sauna",
+    category: "Wellness",
+    tag: "Thermal Wellness",
+    icon: "Flame",
+    image: "/amenities/spa_sauna.jpg",
+    desc: "Aromatherapy steam rooms, Finnish sauna chambers, unisex salon suites, and therapeutic Jacuzzis."
+  },
+  {
+    id: 10,
+    name: "White-Glove Concierge",
+    category: "Services",
+    tag: "24/7 Hospitality",
+    icon: "ConciergeBell",
+    image: "/amenities/concierge.jpg",
+    desc: "Five-star personal assistance for travel reservations, guest management, and parcel handling."
+  },
+  {
+    id: 11,
+    name: "Co-working & Business Lounge",
+    category: "Services",
+    tag: "High-Speed Pods",
+    icon: "Laptop",
+    image: "/amenities/coworking.jpg",
+    desc: "High-speed fiber connectivity, private video conference rooms, and acoustic phone pods."
+  },
+  {
+    id: 12,
+    name: "EV Fast Charging Bays",
+    category: "Services",
+    tag: "Eco Mobility",
+    icon: "Zap",
+    image: "/amenities/ev_charging.jpg",
+    desc: "Dedicated high-voltage rapid charging stations compatible with all major EV automobile models."
+  },
+  {
+    id: 13,
+    name: "Rooftop Sky Observatory",
+    category: "Leisure",
+    tag: "360° Panorama",
+    icon: "Sun",
+    image: "/amenities/sky_deck.jpg",
+    desc: "High-power celestial telescopes, open-air stargazing amphitheater, and sunset cocktail terrace."
+  }
 ];
 
 export const PROMOTED_LOCATIONS = [

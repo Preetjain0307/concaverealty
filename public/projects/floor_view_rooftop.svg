@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <pattern id="grid_rt" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.7"/>
+    </pattern>
+    <pattern id="terrace_hatch" width="8" height="8" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="8" y2="8" stroke="#cbd5e1" stroke-width="0.75" />
+    </pattern>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect width="100%" height="100%" fill="url(#grid_rt)"/>
+
+  <!-- Outer Architectural Boundary -->
+  <rect x="35" y="35" width="730" height="530" rx="8" fill="#ffffff" stroke="#1e293b" stroke-width="4"/>
+
+  <!-- 360° Viewing Deck & Cocktail Terrace -->
+  <rect x="50" y="50" width="700" height="120" fill="#e0f2fe" stroke="#0284c7" stroke-width="3"/>
+  <rect x="50" y="50" width="700" height="120" fill="url(#terrace_hatch)" opacity="0.4"/>
+  <text x="400" y="105" text-anchor="middle" fill="#0369a1" font-size="16" font-family="sans-serif" font-weight="bold" letter-spacing="2">360° ARABIAN SEA SKY DECK &amp; CABANA LOUNGE</text>
+  <text x="400" y="128" text-anchor="middle" fill="#0284c7" font-size="11" font-family="monospace">15,000 SQ.FT TERRACE • CROWN OBSERVATORY</text>
+
+  <!-- Celestial Telescope Stargazing Amphitheater Dome -->
+  <circle cx="240" cy="330" r="130" fill="#ede9fe" stroke="#7c3aed" stroke-width="3"/>
+  <circle cx="240" cy="330" r="95" fill="#ddd6fe" stroke="#6d28d9" stroke-width="2"/>
+  <circle cx="240" cy="330" r="50" fill="#c4b5fd" stroke="#5b21b6" stroke-width="2"/>
+  <text x="240" y="325" text-anchor="middle" fill="#4c1d95" font-size="12" font-family="sans-serif" font-weight="bold">STARGAZING</text>
+  <text x="240" y="342" text-anchor="middle" fill="#5b21b6" font-size="11" font-family="sans-serif" font-weight="bold">TELESCOPE DOME</text>
+
+  <!-- Open-Air Sunset Amphitheatre & BBQ Lawn -->
+  <rect x="420" y="190" width="330" height="180" fill="#fef3c7" stroke="#f59e0b" stroke-width="2.5"/>
+  <text x="585" y="270" text-anchor="middle" fill="#92400e" font-size="14" font-family="sans-serif" font-weight="bold">SUNSET AMPHITHEATRE &amp; BBQ LAWN</text>
+  <text x="585" y="295" text-anchor="middle" fill="#b45309" font-size="10" font-family="monospace">Outdoor Screening &amp; Cocktail Cabanas</text>
+
+  <!-- Sky Lounge & Bar Deck -->
+  <rect x="420" y="390" width="330" height="150" fill="#fdf4ff" stroke="#c084fc" stroke-width="2.5"/>
+  <text x="585" y="460" text-anchor="middle" fill="#7e22ce" font-size="14" font-family="sans-serif" font-weight="bold">SKYLINE BAR &amp; CONVERSATION CABANAS</text>
+  <text x="585" y="485" text-anchor="middle" fill="#9333ea" font-size="10" font-family="monospace">Dedicated Service Pantry &amp; Restrooms</text>
+
+  <!-- Blueprint Title Label -->
+  <rect x="260" y="535" width="280" height="25" fill="#1e293b" rx="4"/>
+  <text x="400" y="552" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#ffffff">LEVEL 48 CROWN SKY TERRACE &amp; OBSERVATORY</text>
+</svg>

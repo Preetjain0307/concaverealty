@@ -423,19 +423,23 @@ export function SignatureProjects({
                       
                       {/* Top Header Row: Location Badge & Developer Badge - perfectly aligned across all boxes */}
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
-                        {/* Location badge */}
-                        <div 
-                          title={project.locality || project.location}
-                          className="bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider font-semibold text-[#14221F] shadow-sm flex items-center gap-1.5 max-w-[58%] truncate"
+                        {/* Clickable Location Map Badge with Tooltip */}
+                        <a 
+                          href={project.mapUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          title={`View ${project.name} on Google Maps (${project.locality || project.location})`}
+                          className="bg-white/95 hover:bg-white backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider font-semibold text-[#14221F] hover:text-[#245348] shadow-sm flex items-center gap-1.5 max-w-[62%] truncate transition-all pointer-events-auto hover:shadow-md border border-transparent hover:border-[#245348]/40 group/loc"
                         >
-                          <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0" />
+                          <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0 group-hover/loc:scale-110 transition-transform" />
                           <span className="truncate">{project.locality || project.location}</span>
-                        </div>
+                        </a>
 
                         {/* Developer badge */}
                         <div 
                           title={project.builder}
-                          className="bg-[#1D3530]/95 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 px-2.5 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider font-semibold shadow-sm max-w-[40%] truncate text-right shrink-0"
+                          className="bg-[#1D3530]/95 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 px-2.5 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider font-semibold shadow-sm max-w-[38%] truncate text-right shrink-0"
                         >
                           <span className="truncate">{project.builder}</span>
                         </div>

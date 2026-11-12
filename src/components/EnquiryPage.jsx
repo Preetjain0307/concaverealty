@@ -289,11 +289,15 @@ export function EnquiryPage({ initialData = {}, onNavigateHome, onNavigateProjec
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="w-4 h-4 text-[#245348] flex-shrink-0" />
-                    <span>Direct: +91 98200 12345 / +91 22 6123 4567</span>
+                    <a href="https://wa.me/918291090155" target="_blank" rel="noopener noreferrer" className="hover:text-[#245348] transition-colors">
+                      WhatsApp Business: <strong className="text-gray-900 font-semibold">+91 8291090155</strong>
+                    </a>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="w-4 h-4 text-[#245348] flex-shrink-0" />
-                    <span>advisory@concaverealty.com</span>
+                    <a href="mailto:concaverealtyindia@gmail.com" className="hover:text-[#245348] transition-colors">
+                      Email: <strong className="text-gray-900 font-semibold">concaverealtyindia@gmail.com</strong>
+                    </a>
                   </div>
                   <div className="flex items-center gap-3">
                     <Clock className="w-4 h-4 text-[#245348] flex-shrink-0" />

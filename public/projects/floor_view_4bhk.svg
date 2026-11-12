@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <pattern id="grid_4bhk" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e2e8f0" stroke-width="0.7"/>
+    </pattern>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="100%" height="100%" fill="#f8fafc"/>
+  <rect width="100%" height="100%" fill="url(#grid_4bhk)"/>
+
+  <!-- Outer Architectural Boundary -->
+  <rect x="35" y="35" width="730" height="530" rx="6" fill="#ffffff" stroke="#1e293b" stroke-width="4"/>
+
+  <!-- Entrance Foyer -->
+  <rect x="50" y="50" width="160" height="130" fill="#f1f5f9" stroke="#1e293b" stroke-width="2"/>
+  <text x="130" y="110" text-anchor="middle" fill="#0f172a" font-size="12" font-family="sans-serif" font-weight="bold">ENTRANCE FOYER</text>
+  <text x="130" y="130" text-anchor="middle" fill="#64748b" font-size="10" font-family="monospace">12'-0" × 8'-6"</text>
+
+  <!-- Expansive Living & Formal Dining Salon -->
+  <rect x="225" y="50" width="340" height="230" fill="#fffbeb" stroke="#f59e0b" stroke-width="3"/>
+  <text x="395" y="145" text-anchor="middle" fill="#92400e" font-size="16" font-family="serif" font-weight="bold">GRAND LIVING &amp; DINING</text>
+  <text x="395" y="170" text-anchor="middle" fill="#b45309" font-size="11" font-family="monospace">28'-0" × 18'-0" • HIGH CEILING</text>
+  <rect x="290" y="200" width="210" height="60" rx="4" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="395" y="235" text-anchor="middle" fill="#78350f" font-size="11" font-family="sans-serif">8-SEATER DINING DECK</text>
+
+  <!-- Private Viewing Sun Deck -->
+  <rect x="580" y="50" width="170" height="150" fill="#e0f2fe" stroke="#0284c7" stroke-width="2.5"/>
+  <text x="665" y="120" text-anchor="middle" fill="#0369a1" font-size="13" font-family="sans-serif" font-weight="bold">PANORAMIC SUNDECK</text>
+  <text x="665" y="142" text-anchor="middle" fill="#0284c7" font-size="10" font-family="monospace">16'-0" × 7'-0"</text>
+
+  <!-- Modular Island Kitchen & Utility Area -->
+  <rect x="580" y="215" width="170" height="175" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="665" y="295" text-anchor="middle" fill="#991b1b" font-size="13" font-family="sans-serif" font-weight="bold">MODULAR KITCHEN</text>
+  <text x="665" y="318" text-anchor="middle" fill="#dc2626" font-size="10" font-family="monospace">14'-0" × 11'-0"</text>
+  <rect x="595" y="335" width="140" height="40" fill="#fee2e2" stroke="#ef4444" stroke-width="1"/>
+  <text x="665" y="360" text-anchor="middle" fill="#b91c1c" font-size="9" font-family="sans-serif">UTILITY &amp; DRY YARD</text>
+
+  <!-- Master Presidential Bedroom Suite -->
+  <rect x="50" y="300" width="280" height="250" fill="#f0fdf4" stroke="#16a34a" stroke-width="3"/>
+  <text x="190" y="390" text-anchor="middle" fill="#166534" font-size="15" font-family="serif" font-weight="bold">MASTER PRESIDENTIAL SUITE</text>
+  <text x="190" y="415" text-anchor="middle" fill="#15803d" font-size="11" font-family="monospace">20'-0" × 14'-6"</text>
+  <rect x="70" y="445" width="115" height="85" fill="#dcfce7" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="127" y="490" text-anchor="middle" fill="#14532d" font-size="10" font-family="sans-serif" font-weight="bold">WALK-IN CLOSET</text>
+  <rect x="195" y="445" width="120" height="85" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="255" y="490" text-anchor="middle" fill="#14532d" font-size="10" font-family="sans-serif" font-weight="bold">SPA 5-FIXTURE BATH</text>
+
+  <!-- Bedroom 02 -->
+  <rect x="345" y="300" width="220" height="150" fill="#faf5ff" stroke="#9333ea" stroke-width="2"/>
+  <text x="455" y="370" text-anchor="middle" fill="#6b21a8" font-size="13" font-family="sans-serif" font-weight="bold">BEDROOM 02</text>
+  <text x="455" y="392" text-anchor="middle" fill="#7e22ce" font-size="10" font-family="monospace">15'-0" × 12'-6"</text>
+
+  <!-- Bedroom 03 -->
+  <rect x="345" y="465" width="220" height="85" fill="#fdf4ff" stroke="#c084fc" stroke-width="2"/>
+  <text x="455" y="510" text-anchor="middle" fill="#7e22ce" font-size="12" font-family="sans-serif" font-weight="bold">BEDROOM 03 (CHILDREN'S ROOM)</text>
+  <text x="455" y="530" text-anchor="middle" fill="#9333ea" font-size="9" font-family="monospace">13'-6" × 11'-0"</text>
+
+  <!-- Bedroom 04 (Guest Suite) -->
+  <rect x="580" y="405" width="170" height="145" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="665" y="470" text-anchor="middle" fill="#065f46" font-size="12" font-family="sans-serif" font-weight="bold">GUEST BEDROOM 04</text>
+  <text x="665" y="492" text-anchor="middle" fill="#047857" font-size="9" font-family="monospace">13'-0" × 11'-6"</text>
+
+  <!-- Blueprint Title Label -->
+  <rect x="260" y="540" width="280" height="25" fill="#1e293b" rx="4"/>
+  <text x="400" y="557" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle" fill="#ffffff">PRESIDENTIAL 4 BHK • 1,895 SQ.FT</text>
+</svg>
