@@ -256,42 +256,41 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
     <div className="min-h-screen bg-[#FAF9F6] text-[#14221F]">
       
       {/* ============================================================== */}
-      {/* 1. HERO SECTION (Matches Seek & Settle luxury reference)       */}
+      {/* 1. HERO SECTION (Light Luxury Aesthetic Matching Concave Theme) */}
       {/* ============================================================== */}
-      <section className="relative pt-24 sm:pt-28 pb-16 sm:pb-24 bg-[#14221F] text-white overflow-hidden border-b border-[#C59B4E]/30">
+      <section className="relative pt-24 sm:pt-28 pb-16 sm:pb-24 bg-gradient-to-b from-[#F7F5F0] via-[#FAF9F6] to-[#F3EFE6] text-[#14221F] overflow-hidden border-b border-[#EAE6DF]">
         
-        {/* Ambient Luxury Lighting */}
-        <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 bg-[#C59B4E]/15 rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-[#245348]/25 rounded-full blur-3xl" />
+        {/* Ambient Subtle Luxury Lighting */}
+        <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 bg-[#C59B4E]/10 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute top-1/2 -right-32 w-96 h-96 bg-[#245348]/5 rounded-full blur-3xl" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
           
           {/* Statutory MahaRERA Tag */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32] border border-[#C59B4E]/50 text-[10px] sm:text-[11px] font-mono text-[#DFBE79] shadow-sm">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#DFBE79]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#C59B4E]/40 text-[10px] sm:text-[11px] font-mono text-[#8C6B28] shadow-xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#C59B4E]" />
             <span>MahaRERA Registered Agent: A51900045781</span>
           </div>
 
           {/* Main Title & Slogan */}
           <div className="space-y-4 max-w-4xl mx-auto">
-            <span className="text-xs uppercase tracking-[0.3em] text-[#DFBE79] font-semibold block font-mono">
+            <span className="text-xs uppercase tracking-[0.3em] text-[#C59B4E] font-semibold block font-mono">
               CAREERS AT CONCAVE REALTY
             </span>
             <h1 
-              className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#F7F3EB] uppercase leading-tight"
-              style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
+              className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#14221F] uppercase leading-tight font-serif"
             >
               JOIN A TEAM WHERE YOU BELONG
             </h1>
-            <p className="font-serif italic text-base sm:text-2xl text-[#D0C5B4] font-light max-w-2xl mx-auto">
+            <p className="font-serif italic text-base sm:text-2xl text-[#5A6B66] font-light max-w-2xl mx-auto">
               “We don’t just find homes; we build careers.”
             </p>
           </div>
 
-          {/* We Are Hiring Bar (Matches Reference Screenshot) */}
-          <div className="max-w-3xl mx-auto rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 text-left shadow-lg">
+          {/* We Are Hiring Bar (Light Theme) */}
+          <div className="max-w-3xl mx-auto rounded-2xl bg-white border border-[#EAE6DF] shadow-luxury p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 text-left">
             <div className="space-y-2 w-full md:w-auto">
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#DFBE79] font-bold block">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#C59B4E] font-bold block">
                 WE ARE HIRING
               </span>
               <div className="flex flex-wrap items-center gap-2">
@@ -299,7 +298,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                   <button
                     key={pos.id}
                     onClick={() => handleApplyRole(pos.title)}
-                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-[#DFBE79] text-gray-200 hover:text-[#14221F] border border-white/10 hover:border-[#DFBE79] text-[11px] font-medium transition-all cursor-pointer"
+                    className="px-3.5 py-1.5 rounded-lg bg-[#FAF9F6] hover:bg-[#F4EEE1] text-[#14221F] border border-[#EAE6DF] hover:border-[#C59B4E] text-xs font-medium transition-all cursor-pointer shadow-2xs"
                   >
                     {pos.title}
                   </button>
@@ -312,64 +311,64 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                 const el = document.getElementById('open-positions-card');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-[#14221F] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-md flex items-center justify-center gap-2"
+              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-[#183C32] hover:bg-[#245348] text-white font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-md flex items-center justify-center gap-2"
             >
               <span>VIEW OPENINGS</span>
               <span className="text-sm">↓</span>
             </button>
           </div>
 
-          {/* Careers at Concave Realty Overview Card (Matches Seek & Settle Reference Screenshot 1) */}
-          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-black/50 border border-white/10 backdrop-blur-md p-6 sm:p-8 space-y-5 shadow-2xl">
-            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <div className="w-10 h-10 rounded-xl bg-[#183C32] border border-[#C59B4E]/40 text-[#DFBE79] flex items-center justify-center shadow-inner shrink-0">
+          {/* Careers at Concave Realty Overview Card (Light Theme) */}
+          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-white border border-[#EAE6DF] shadow-luxury p-6 sm:p-8 space-y-5">
+            <div className="flex items-center gap-3 border-b border-[#EAE6DF] pb-4">
+              <div className="w-11 h-11 rounded-xl bg-[#F5EFE3] border border-[#C59B4E]/40 text-[#C59B4E] flex items-center justify-center shadow-xs shrink-0">
                 <Briefcase className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                <h3 className="text-lg sm:text-xl font-bold text-[#14221F] tracking-wide font-serif">
                   Careers at Concave Realty
                 </h3>
-                <span className="text-[11px] font-mono text-[#DFBE79]">
+                <span className="text-[11px] font-mono text-[#8C6B28]">
                   MahaRERA: A51900045781 • Mumbai, India
                 </span>
               </div>
             </div>
 
-            <div className="space-y-3.5 text-xs sm:text-sm text-gray-300 leading-relaxed font-light">
+            <div className="space-y-3.5 text-xs sm:text-sm text-[#4A5D56] leading-relaxed font-light">
               <p>
-                <strong className="text-white font-medium">Transparency First:</strong> Secure your financial future with documented commission payouts and a clear path to high earnings.
+                <strong className="text-[#14221F] font-semibold">Transparency First:</strong> Secure your financial future with documented commission payouts and a clear path to high earnings.
               </p>
               <p>
-                <strong className="text-white font-medium">Smart Lead Flow:</strong> We handle the marketing so you can handle the deals. Get access to vetted real estate leads in Mumbai's most sought-after luxury developments.
+                <strong className="text-[#14221F] font-semibold">Smart Lead Flow:</strong> We handle the marketing so you can handle the deals. Get access to vetted real estate leads in Mumbai's most sought-after luxury developments.
               </p>
               <p>
-                <strong className="text-white font-medium">Fully Licensed & Compliant:</strong> Build your personal brand as a MahaRERA-certified professional under the Concave Realty umbrella.
+                <strong className="text-[#14221F] font-semibold">Fully Licensed & Compliant:</strong> Build your personal brand as a MahaRERA-certified professional under the Concave Realty umbrella.
               </p>
               <p>
-                <strong className="text-white font-medium">Supported Growth:</strong> Work within a team that recognizes your hustle and provides the tools you need to scale your portfolio.
+                <strong className="text-[#14221F] font-semibold">Supported Growth:</strong> Work within a team that recognizes your hustle and provides the tools you need to scale your portfolio.
               </p>
-              <p className="pt-2 text-white/90 italic font-serif text-sm sm:text-base border-t border-white/5">
+              <p className="pt-2 text-[#183C32] italic font-serif text-sm sm:text-base border-t border-[#EAE6DF]">
                 “Launch your journey in Mumbai’s most exciting real estate market with Concave Realty.”
               </p>
             </div>
           </div>
 
-          {/* Leadership / Founder's Message Card (Matches Seek & Settle Reference Screenshot 2) */}
-          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-gradient-to-r from-[#183C32]/90 to-[#14221F]/90 border border-[#C59B4E]/30 backdrop-blur-md p-6 sm:p-7 shadow-xl">
+          {/* Leadership / Founder's Message Card (Light Theme) */}
+          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-gradient-to-br from-white via-[#FAF9F6] to-[#F5EFE3] border border-[#C59B4E]/35 shadow-luxury p-6 sm:p-7 space-y-3">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] uppercase font-mono tracking-widest text-[#DFBE79] font-bold">
+                <span className="text-[10px] uppercase font-mono tracking-widest text-[#C59B4E] font-bold">
                   LEADERSHIP
                 </span>
               </div>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide">
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#14221F] tracking-wide">
                 Founder's Message
               </h3>
-              <div className="p-4 rounded-xl bg-black/25 border border-white/5 space-y-2">
-                <p className="text-sm sm:text-base text-[#DFBE79] font-serif italic">
+              <div className="p-4 sm:p-5 rounded-xl bg-white border border-[#EAE6DF] space-y-2 shadow-2xs">
+                <p className="text-sm sm:text-base text-[#183C32] font-serif italic border-l-2 border-[#C59B4E] pl-3 py-0.5">
                   “Welcome to Concave Realty, where you truly belong.”
                 </p>
-                <p className="text-xs text-gray-300 leading-relaxed font-light">
+                <p className="text-xs text-[#5A6B66] leading-relaxed font-light pl-3">
                   Real estate in Mumbai is built on long-term relationships, trust, and absolute market precision. We are building an advisory culture where associates are provided with verified inventory, qualified buyer appointments, and institutional backing to thrive.
                 </p>
               </div>
@@ -377,90 +376,90 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
           </div>
 
           {/* ============================================================== */}
-          {/* 2. OPEN POSITIONS SECTION (Exact Match to User Screenshots)     */}
+          {/* 2. OPEN POSITIONS SECTION (Light Theme Matching Brand Palette) */}
           {/* ============================================================== */}
           <div id="open-positions-card" className="mt-12 sm:mt-16 text-left max-w-4xl mx-auto">
-            <div className="relative rounded-2xl bg-[#183C32]/95 backdrop-blur-md border border-[#C59B4E]/40 p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.35)] space-y-8">
+            <div className="relative rounded-3xl bg-white border border-[#EAE6DF] p-6 sm:p-10 shadow-luxury space-y-8">
               
               {/* Top Eyebrow & Title */}
               <div className="space-y-2">
-                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase font-mono tracking-[0.25em] text-[#DFBE79] font-bold">
-                  <Star className="w-3.5 h-3.5 fill-[#DFBE79] text-[#DFBE79]" />
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold">
+                  <Star className="w-3.5 h-3.5 fill-[#C59B4E] text-[#C59B4E]" />
                   <span>WE ARE HIRING</span>
                 </div>
-                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white font-serif">
+                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-[#14221F] font-serif">
                   Open Positions
                 </h2>
-                <p className="text-xs sm:text-sm text-[#D0C5B4] font-light max-w-2xl leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#5A6B66] font-light max-w-2xl leading-relaxed">
                   We're expanding our team! If you are a motivated real estate professional with a track record of driving sales in Mumbai, this is for you.
                 </p>
               </div>
 
-              {/* Package Card (Matches Screenshot 1) */}
+              {/* Package Card (Light Luxury Design) */}
               <div className="space-y-2">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-[#DFBE79] font-semibold flex items-center gap-1.5">
+                <span className="text-[10px] uppercase font-mono tracking-wider text-[#C59B4E] font-semibold flex items-center gap-1.5">
                   <span>💰</span>
                   <span>PACKAGE</span>
                 </span>
 
-                <div className="rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1 sm:border-r border-white/10 sm:pr-4">
-                    <span className="text-[10px] uppercase tracking-wider font-mono text-gray-400 block font-semibold">
+                <div className="rounded-2xl border border-[#EAE6DF] bg-gradient-to-br from-[#FAF9F6] via-[#FAF9F6] to-[#F4EEE1] p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4 shadow-2xs">
+                  <div className="space-y-1 sm:border-r border-[#EAE6DF] sm:pr-4">
+                    <span className="text-[10px] uppercase tracking-wider font-mono text-[#8C6B28] block font-semibold">
                       BASE SALARY
                     </span>
-                    <strong className="text-sm sm:text-base text-white font-sans font-bold block">
+                    <strong className="text-base sm:text-lg text-[#14221F] font-sans font-bold block">
                       Competitive Fixed Base / Month
                     </strong>
-                    <span className="text-[11px] text-gray-400 block">
+                    <span className="text-xs text-[#5A6B66] block">
                       Commensurate with experience & track record
                     </span>
                   </div>
 
                   <div className="space-y-1 sm:pl-2">
-                    <span className="text-[10px] uppercase tracking-wider font-mono text-gray-400 block font-semibold">
+                    <span className="text-[10px] uppercase tracking-wider font-mono text-[#8C6B28] block font-semibold">
                       INCENTIVES
                     </span>
-                    <strong className="text-sm sm:text-base text-[#DFBE79] font-sans font-bold block">
+                    <strong className="text-base sm:text-lg text-[#183C32] font-sans font-bold block">
                       Performance Commission + Milestone Rewards
                     </strong>
-                    <span className="text-[11px] text-gray-400 block">
+                    <span className="text-xs text-[#5A6B66] block">
                       On-time disbursements on closed deals
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* The 4 Open Positions List (Matches Screenshot 1 & 2) */}
-              <div className="space-y-3 pt-2">
+              {/* The 4 Open Positions List (Light Theme Cards) */}
+              <div className="space-y-3.5 pt-2">
                 {OPEN_POSITIONS_LIST.map((pos) => (
                   <div
                     key={pos.id}
-                    className="group rounded-xl border border-white/10 bg-black/20 hover:bg-black/40 hover:border-[#C59B4E]/60 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300"
+                    className="group rounded-2xl border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] hover:border-[#C59B4E] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 shadow-2xs hover:shadow-md"
                   >
                     {/* Left: Number + Title + Location */}
                     <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
-                      <span className="font-mono text-sm sm:text-base font-bold text-gray-400 shrink-0 mt-0.5 sm:mt-0">
+                      <span className="font-mono text-xs sm:text-sm font-bold text-[#C59B4E] bg-[#FAF9F6] border border-[#EAE6DF] px-2.5 py-1 rounded-lg shrink-0 mt-0.5 sm:mt-0">
                         {pos.num}
                       </span>
                       <div className="space-y-1 min-w-0">
-                        <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-[#DFBE79] transition-colors leading-snug">
+                        <h3 className="text-base sm:text-lg font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug">
                           {pos.title}
                         </h3>
-                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-400">
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-[#5A6B66]">
                           <span className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3 text-[#DFBE79]" />
+                            <MapPin className="w-3.5 h-3.5 text-[#C59B4E]" />
                             <span>{pos.location}</span>
                           </span>
-                          <span className="text-white/20 hidden sm:inline">•</span>
-                          <span className="text-gray-400 font-mono">Exp: {pos.exp}</span>
+                          <span className="text-gray-300 hidden sm:inline">•</span>
+                          <span className="font-mono text-[#4A5D56]">Exp: {pos.exp}</span>
                         </div>
                       </div>
                     </div>
 
-                    {/* Right: Apply Now Button (Matches Screenshot Border Button) */}
+                    {/* Right: Apply Now Button */}
                     <button
                       onClick={() => handleApplyRole(pos.title)}
-                      className="self-start sm:self-center px-5 py-2.5 rounded-lg border border-white/30 hover:border-[#DFBE79] bg-white/5 hover:bg-[#DFBE79] text-white hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0 shadow-xs"
+                      className="self-start sm:self-center px-5 py-2.5 rounded-xl bg-[#183C32] hover:bg-[#245348] text-white hover:text-[#DFBE79] text-xs uppercase tracking-wider font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0 shadow-xs hover:shadow group-hover:scale-[1.02]"
                     >
                       <span>APPLY NOW</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -470,63 +469,63 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
               </div>
 
               {/* ============================================================== */}
-              {/* WHY CONCAVE REALTY? (Matches Screenshot 2 Cards)              */}
+              {/* WHY CONCAVE REALTY? (Light Theme 4 Cards)                      */}
               {/* ============================================================== */}
-              <div className="pt-6 border-t border-white/10 space-y-4">
-                <span className="text-[10px] sm:text-xs uppercase font-mono tracking-widest text-[#DFBE79] font-bold flex items-center gap-1.5">
-                  <Flame className="w-3.5 h-3.5 fill-[#DFBE79] text-[#DFBE79]" />
+              <div className="pt-6 border-t border-[#EAE6DF] space-y-4">
+                <span className="text-[10px] sm:text-xs uppercase font-mono tracking-widest text-[#C59B4E] font-bold flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 fill-[#C59B4E] text-[#C59B4E]" />
                   <span>WHY CONCAVE REALTY?</span>
                 </span>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   
                   {/* Card 1 */}
-                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
-                      <Users className="w-4 h-4" />
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] hover:bg-white hover:border-[#C59B4E]/50 transition-all flex items-start gap-3.5 shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-[#EAE6DF] text-[#183C32] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <Users className="w-4 h-4 text-[#C59B4E]" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
-                      <h4 className="font-bold text-xs text-white">Smart Lead Flow</h4>
-                      <p className="text-[11px] text-gray-400 leading-snug">
+                      <h4 className="font-bold text-xs sm:text-sm text-[#14221F]">Smart Lead Flow</h4>
+                      <p className="text-xs text-[#5A6B66] leading-snug">
                         Vetted buyer inquiries provided for key Mumbai micro-markets.
                       </p>
                     </div>
                   </div>
 
                   {/* Card 2 */}
-                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
-                      <ShieldCheck className="w-4 h-4" />
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] hover:bg-white hover:border-[#C59B4E]/50 transition-all flex items-start gap-3.5 shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-[#EAE6DF] text-[#183C32] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <ShieldCheck className="w-4 h-4 text-[#C59B4E]" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
-                      <h4 className="font-bold text-xs text-white">Fully Compliant</h4>
-                      <p className="text-[11px] text-gray-400 leading-snug">
+                      <h4 className="font-bold text-xs sm:text-sm text-[#14221F]">Fully Compliant</h4>
+                      <p className="text-xs text-[#5A6B66] leading-snug">
                         Strong MahaRERA backing & complete transaction support.
                       </p>
                     </div>
                   </div>
 
                   {/* Card 3 */}
-                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
-                      <TrendingUp className="w-4 h-4" />
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] hover:bg-white hover:border-[#C59B4E]/50 transition-all flex items-start gap-3.5 shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-[#EAE6DF] text-[#183C32] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <TrendingUp className="w-4 h-4 text-[#C59B4E]" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
-                      <h4 className="font-bold text-xs text-white">Growth & Branding</h4>
-                      <p className="text-[11px] text-gray-400 leading-snug">
+                      <h4 className="font-bold text-xs sm:text-sm text-[#14221F]">Growth & Branding</h4>
+                      <p className="text-xs text-[#5A6B66] leading-snug">
                         In-house marketing, video tours & personal professional branding.
                       </p>
                     </div>
                   </div>
 
                   {/* Card 4 */}
-                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
-                      <Sparkles className="w-4 h-4" />
+                  <div className="p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] hover:bg-white hover:border-[#C59B4E]/50 transition-all flex items-start gap-3.5 shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-white border border-[#EAE6DF] text-[#183C32] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      <Sparkles className="w-4 h-4 text-[#C59B4E]" />
                     </div>
                     <div className="space-y-0.5 min-w-0">
-                      <h4 className="font-bold text-xs text-white">Transparency First</h4>
-                      <p className="text-[11px] text-gray-400 leading-snug">
+                      <h4 className="font-bold text-xs sm:text-sm text-[#14221F]">Transparency First</h4>
+                      <p className="text-xs text-[#5A6B66] leading-snug">
                         Timely commission payouts & a clear roadmap to high earnings.
                       </p>
                     </div>
