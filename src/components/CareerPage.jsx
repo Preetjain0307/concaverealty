@@ -1,11 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {
   Briefcase,
-  Award,
-  TrendingUp,
-  Users,
   ShieldCheck,
   Building2,
+  Users,
   Sparkles,
   MapPin,
   Clock,
@@ -18,144 +16,74 @@ import {
   FileText,
   X,
   ArrowRight,
-  ExternalLink,
-  ChevronRight,
   Send,
-  Compass
+  Compass,
+  Star,
+  Flame,
+  TrendingUp,
+  Check
 } from 'lucide-react';
 import { dbStore, sanitizeInput, checkRateLimit } from '../data/dbStore';
 
-const WHATSAPP_CAREERS_URL = "https://wa.me/918291090155?text=Hello%20Concave%20Realty%20HR%2C%20I%20am%20interested%20in%20career%20opportunities%20with%20your%20luxury%20real%20estate%20team.";
+const WHATSAPP_CAREERS_URL = "https://wa.me/918291090155?text=Hello%20Concave%20Realty%20Talent%20Acquisition%2C%20I%20have%20submitted%20my%20career%20application%20and%20would%20like%20to%20follow%20up.";
 const EMAIL_ADDRESS = "concaverealtyindia@gmail.com";
 const PHONE_NUMBER = "8291090155";
 
-export const OPEN_POSITIONS = [
+export const OPEN_POSITIONS_LIST = [
   {
-    id: "pos-luxury-consultant",
-    title: "Senior Luxury Real Estate Consultant",
-    department: "Sales & Client Advisory",
-    experience: "3 - 7 Years",
-    location: "Bandra / South Mumbai / Western Suburbs",
-    type: "Full-Time • On-Site",
-    packageNote: "Competitive Base + Performance Incentives",
-    tag: "High Priority",
-    overview: "Provide dedicated client advisory for residential properties, penthouses, and sky residences across South Mumbai and the Western Suburbs. Manage buyers professionally from initial consultation to registration.",
-    responsibilities: [
-      "Manage primary buyer consultations and project presentations for marquee residential developments.",
-      "Deliver organized site walkthroughs, presentation of floor plans, and developer payment schedules.",
-      "Cultivate enduring advisory relationships with corporate executives, business owners, and families.",
-      "Coordinate directly with developer sales teams (Lodha, Oberoi, Godrej, Kalpataru)."
-    ],
-    requirements: [
-      "Minimum 3+ years experience in primary luxury residential sales in Western Suburbs or South Mumbai.",
-      "Polished interpersonal presence with deep familiarity with Mumbai's premium real estate micro-markets.",
-      "Sound understanding of MahaRERA compliance, home loan structures, and legal property registration."
-    ]
+    num: "01",
+    id: "bda",
+    title: "Business Development Associate (BDA)",
+    location: "Mumbai (Western Suburbs & South Mumbai)",
+    exp: "1 - 3 Years",
+    type: "Full-Time • On-Site"
   },
   {
-    id: "pos-nri-specialist",
-    title: "NRI & Global Investor Portfolio Specialist",
-    department: "International Advisory Desk",
-    experience: "2 - 6 Years",
-    location: "Mumbai HQ (Global Desk / Hybrid)",
-    type: "Full-Time",
-    packageNote: "Competitive Base + Performance Incentives",
-    tag: "Global Desk",
-    overview: "Advise non-resident Indians and global expats across Dubai, Singapore, the US, and UK seeking prime residential properties and verified assets in Mumbai.",
-    responsibilities: [
-      "Conduct virtual video walkthroughs, digital portfolio presentations, and market briefings for NRIs.",
-      "Guide global buyers on NRE/NRO banking transactions, FEMA compliance, and repatriation norms.",
-      "Manage time-zone responsive communication across WhatsApp, video conferences, and correspondence.",
-      "Assist with document coordination, builder agreement review, and registration diligence."
-    ],
-    requirements: [
-      "2+ years experience handling cross-border or NRI real estate consultations.",
-      "Exceptional verbal and written communication with international client-handling acumen.",
-      "Comfort with digital presentation tools and remote closing workflows."
-    ]
+    num: "02",
+    id: "bdm",
+    title: "Business Development Manager (BDM)",
+    location: "Mumbai (Western Suburbs & South Mumbai)",
+    exp: "3 - 6 Years",
+    type: "Full-Time • On-Site"
   },
   {
-    id: "pos-builder-alliances",
-    title: "Channel Partner & Builder Alliances Lead",
-    department: "Strategic Developer Relations",
-    experience: "4 - 8 Years",
-    location: "Mumbai Corporate Office",
-    type: "Full-Time",
-    packageNote: "Competitive Base + Annual Performance Bonus",
-    tag: "Key Leadership",
-    overview: "Build and fortify relationships with Tier-1 developer marketing and sales teams (Lodha, Godrej, Rustomjee, Adani, Raymond, DLF). Coordinate priority project inventory access and pre-launch previews.",
-    responsibilities: [
-      "Serve as the primary liaison between Concave Realty and Tier-1 developer sales teams.",
-      "Coordinate verified inventory access, pricing updates, and authorized marketing collateral.",
-      "Track new project launches, RERA registration timelines, and micro-market supply pipelines.",
-      "Equip our advisory and caller teams with up-to-date pricing grids, payment plans, and promotional offers."
-    ],
-    requirements: [
-      "Proven track record of managing relationships with top Mumbai real estate developers.",
-      "Strong commercial coordination skills and professional industry network.",
-      "Deep analytical grasp of Mumbai real estate supply trends, absorption rates, and developer credibility."
-    ]
+    num: "03",
+    id: "sales-manager",
+    title: "Sales Manager",
+    location: "Mumbai (Western Suburbs & South Mumbai)",
+    exp: "4 - 8 Years",
+    type: "Full-Time • On-Site"
   },
   {
-    id: "pos-tele-advisory",
-    title: "Inbound Client Tele-Advisory Executive",
-    department: "Caller & Inbound Operations",
-    experience: "1 - 4 Years",
-    location: "Borivali / Goregaon Office",
-    type: "Full-Time",
-    packageNote: "Industry Standard Base + Site-Visit & Booking Incentives",
-    tag: "Immediate Hiring",
-    overview: "Engage with homebuyers submitting inquiries across Concave Realty's digital channels. Understand their lifestyle aspirations, budget criteria, and coordinate property site visits with our consultants.",
-    responsibilities: [
-      "Connect promptly with verified inbound property inquiries received through our platform.",
-      "Qualify buyer preferences: location choice (Borivali to Lower Parel), BHK configuration, and budget range.",
-      "Schedule and coordinate site visits between clients and our field portfolio managers.",
-      "Maintain real-time call disposition logs and CRM updates in our internal portal."
-    ],
-    requirements: [
-      "1+ years experience in real estate inside sales, tele-advisory, or premium banking voice processes.",
-      "Fluent communication in English, Hindi, and Marathi/Gujarati is an advantage.",
-      "Professional telephone etiquette and customer-centric mindset."
-    ]
-  },
-  {
-    id: "pos-digital-growth",
-    title: "Real Estate Digital Growth & Media Strategist",
-    department: "Brand & Performance Marketing",
-    experience: "2 - 5 Years",
-    location: "Mumbai HQ",
-    type: "Full-Time",
-    packageNote: "Competitive Base + Performance Milestone Bonuses",
-    tag: "Creative & Tech",
-    overview: "Drive the digital presence of Concave Realty. Lead real estate performance advertising, organic search visibility, and architectural video presentation to connect with verified buyers.",
-    responsibilities: [
-      "Manage Google Search, Meta, and professional acquisition funnels for Mumbai property inquiries.",
-      "Oversee architectural photography, video walkthrough editing, and informational social media content.",
-      "Optimize local SEO and relevant buyer search queries across Western Suburbs and South Mumbai.",
-      "Analyze campaign performance, conversion metrics, and optimize digital outreach."
-    ],
-    requirements: [
-      "Experience running digital campaigns in real estate or high-ticket consumer sectors.",
-      "Hands-on expertise with Meta Ads Manager, Google Ads, GA4, and search engine optimization.",
-      "Eye for premium design, typographic balance, and accurate architectural presentation."
-    ]
+    num: "04",
+    id: "sales-executive",
+    title: "Sales Executive",
+    location: "Mumbai (Western Suburbs & South Mumbai)",
+    exp: "1 - 4 Years",
+    type: "Full-Time • On-Site"
   }
 ];
 
+export const DOMAIN_OPTIONS = [
+  "Business Development Associate (BDA)",
+  "Business Development Manager (BDM)",
+  "Sales Manager",
+  "Sales Executive",
+  "General Candidature / Other Luxury Role"
+];
+
 export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
-  const [selectedDepartment, setSelectedDepartment] = useState('All');
-  const [selectedRoleForForm, setSelectedRoleForForm] = useState(OPEN_POSITIONS[0].title);
-  
   // Application Form State
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     mobile: '',
     city: 'Mumbai',
-    position: OPEN_POSITIONS[0].title,
-    experience: '3 - 5 Years',
+    position: DOMAIN_OPTIONS[0],
+    experience: '1 - 3 Years',
     currentCompany: '',
     currentRole: '',
+    currentCtc: '',
     expectedCtc: '',
     noticePeriod: '30 Days',
     linkedin: '',
@@ -169,19 +97,17 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
   const [formError, setFormError] = useState('');
   const [honeypot, setHoneypot] = useState('');
+  const [highlightRole, setHighlightRole] = useState(false);
 
   const formRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const departments = ['All', 'Sales & Client Advisory', 'International Advisory Desk', 'Strategic Developer Relations', 'Caller & Inbound Operations', 'Brand & Performance Marketing'];
-
-  const filteredPositions = selectedDepartment === 'All'
-    ? OPEN_POSITIONS
-    : OPEN_POSITIONS.filter(p => p.department === selectedDepartment);
-
-  const handleApplyClick = (roleTitle) => {
-    setSelectedRoleForForm(roleTitle);
+  // When clicking "APPLY NOW →" on an open position
+  const handleApplyRole = (roleTitle) => {
     setFormData(prev => ({ ...prev, position: roleTitle }));
+    setHighlightRole(true);
+    setTimeout(() => setHighlightRole(false), 2500);
+
     if (formRef.current) {
       formRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -192,16 +118,20 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
     if (!file) return;
 
     // Allowed extensions: pdf, doc, docx
-    const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const allowed = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
     if (!allowed.includes(file.type) && !/\.(pdf|doc|docx)$/i.test(file.name)) {
       setFileError('Please upload a valid PDF or Word document (.pdf, .doc, .docx).');
       setAttachedFile(null);
       return;
     }
 
-    // Size limit: 5 MB
+    // Size limit: 5MB
     if (file.size > 5 * 1024 * 1024) {
-      setFileError('File size exceeds 5 MB. Please upload a smaller document.');
+      setFileError('File size exceeds 5MB limit. Please upload a smaller file.');
       setAttachedFile(null);
       return;
     }
@@ -210,45 +140,59 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
     setAttachedFile(file);
   };
 
+  const handleRemoveFile = () => {
+    setAttachedFile(null);
+    setFileError('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setFormError('');
 
-    // Spam honeypot
-    if (honeypot) {
+    // Anti-bot honeypot check
+    if (honeypot.trim() !== '') {
+      return;
+    }
+
+    // Anti-spam sliding rate limit check
+    const rateCheck = checkRateLimit('career_form_submissions', 5, 300000);
+    if (!rateCheck.allowed) {
+      setFormError('Too many submissions in a short period. Please wait a few moments or contact our HR directly via WhatsApp.');
       return;
     }
 
     // Validation
     const cleanName = sanitizeInput(formData.name.trim(), 100);
     const cleanEmail = sanitizeInput(formData.email.trim(), 120);
-    const cleanMobile = formData.mobile.replace(/\D/g, '');
+    const cleanMobile = sanitizeInput(formData.mobile.replace(/\D/g, ''), 15);
+    const cleanCity = sanitizeInput(formData.city.trim(), 80);
 
-    if (!cleanName || cleanName.length < 2) {
-      setFormError('Please enter your full official name.');
+    if (!cleanName || cleanName.length < 3) {
+      setFormError('Please enter your full official name (minimum 3 characters).');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(cleanEmail)) {
-      setFormError('Please provide a valid corporate or personal email address.');
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+      setFormError('Please provide a valid official email address.');
       return;
     }
 
-    if (cleanMobile.length !== 10) {
-      setFormError('Please provide a valid 10-digit Indian mobile number.');
+    if (!cleanMobile || cleanMobile.length < 10) {
+      setFormError('Please enter a valid 10-digit Indian mobile number.');
+      return;
+    }
+
+    if (!formData.expectedCtc.trim()) {
+      setFormError('Please specify your expected CTC (e.g. ₹10 LPA or Negotiable).');
       return;
     }
 
     if (!formData.consent) {
-      setFormError('Please accept the data privacy declaration to proceed.');
-      return;
-    }
-
-    // Rate limiting: max 3 applications per hour
-    const rateCheck = checkRateLimit(cleanMobile, 'careers');
-    if (!rateCheck.allowed) {
-      setFormError(rateCheck.message);
+      setFormError('Please accept the declaration to submit your application.');
       return;
     }
 
@@ -256,458 +200,460 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
     setTimeout(() => {
       try {
-        const result = dbStore.addJobApplication({
+        const payload = {
           name: cleanName,
           email: cleanEmail,
           mobile: cleanMobile,
-          city: formData.city,
+          city: cleanCity || 'Mumbai',
           position: formData.position,
           experience: formData.experience,
-          currentCompany: formData.currentCompany,
-          currentRole: formData.currentRole,
-          expectedCtc: formData.expectedCtc,
+          currentCompany: sanitizeInput(formData.currentCompany.trim(), 100),
+          currentRole: sanitizeInput(formData.currentRole.trim(), 100),
+          currentCtc: sanitizeInput(formData.currentCtc.trim(), 50),
+          expectedCtc: sanitizeInput(formData.expectedCtc.trim(), 50),
           noticePeriod: formData.noticePeriod,
-          linkedin: formData.linkedin,
-          coverNote: formData.coverNote,
-          resumeName: attachedFile ? attachedFile.name : 'Candidate_Profile_Summary.pdf',
+          linkedin: sanitizeInput(formData.linkedin.trim(), 200),
+          coverNote: sanitizeInput(formData.coverNote.trim(), 1000),
+          resumeName: attachedFile ? attachedFile.name : 'Resume_Attached.pdf',
           resumeSize: attachedFile ? `${(attachedFile.size / (1024 * 1024)).toFixed(1)} MB` : '1.2 MB'
-        });
+        };
 
-        if (result && result.success) {
+        const result = dbStore.addJobApplication(payload);
+
+        if (result.success) {
           setSubmissionSuccess(result.application);
+          // Reset form data
+          setFormData({
+            name: '',
+            email: '',
+            mobile: '',
+            city: 'Mumbai',
+            position: DOMAIN_OPTIONS[0],
+            experience: '1 - 3 Years',
+            currentCompany: '',
+            currentRole: '',
+            currentCtc: '',
+            expectedCtc: '',
+            noticePeriod: '30 Days',
+            linkedin: '',
+            coverNote: '',
+            consent: false
+          });
+          setAttachedFile(null);
         } else {
-          setFormError(result.error || 'Failed to submit application. Please try again.');
+          setFormError('Failed to save application. Please try again or WhatsApp our HR team.');
         }
       } catch (err) {
-        console.error('Career application submission failed:', err);
-        setFormError('A system error occurred. Please reach out to our HR desk directly on WhatsApp.');
+        console.error("Career submission error:", err);
+        setFormError('A system error occurred. Please contact our HR desk directly.');
       } finally {
         setIsSubmitting(false);
       }
-    }, 600);
-  };
-
-  const handleResetForm = () => {
-    setSubmissionSuccess(null);
-    setFormData({
-      name: '',
-      email: '',
-      mobile: '',
-      city: 'Mumbai',
-      position: OPEN_POSITIONS[0].title,
-      experience: '3 - 5 Years',
-      currentCompany: '',
-      currentRole: '',
-      expectedCtc: '',
-      noticePeriod: '30 Days',
-      linkedin: '',
-      coverNote: '',
-      consent: false
-    });
-    setAttachedFile(null);
-    setFileError('');
+    }, 700);
   };
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#14221F]">
-
+      
       {/* ============================================================== */}
-      {/* 1. HERO BANNER: LUXURY BRANDING & CALL TO LEGACY               */}
+      {/* 1. HERO SECTION (Matches Seek & Settle luxury reference)       */}
       {/* ============================================================== */}
       <section className="relative pt-24 sm:pt-28 pb-16 sm:pb-24 bg-[#14221F] text-white overflow-hidden border-b border-[#C59B4E]/30">
-        {/* Subtle Ambient Background Gradients */}
+        
+        {/* Ambient Luxury Lighting */}
         <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 bg-[#C59B4E]/15 rounded-full blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-[#245348]/30 rounded-full blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-32 w-96 h-96 bg-[#245348]/25 rounded-full blur-3xl" />
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
           
           {/* Statutory MahaRERA Tag */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#183C32] border border-[#C59B4E]/50 text-[10px] sm:text-[11px] font-mono text-[#DFBE79] shadow-sm">
             <ShieldCheck className="w-3.5 h-3.5 text-[#DFBE79]" />
-            <span>MahaRERA: A51900045781 • Careers & Talent Acquisition</span>
+            <span>MahaRERA Registered Agent: A51900045781</span>
           </div>
 
-          {/* Heading */}
-          <div className="space-y-3 max-w-4xl mx-auto">
+          {/* Main Title & Slogan */}
+          <div className="space-y-4 max-w-4xl mx-auto">
             <span className="text-xs uppercase tracking-[0.3em] text-[#DFBE79] font-semibold block font-mono">
-              JOIN CONCAVE REALTY
+              CAREERS AT CONCAVE REALTY
             </span>
             <h1 
-              className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#F7F3EB] leading-tight"
+              className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#F7F3EB] uppercase leading-tight"
               style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
             >
-              Shape Mumbai's Skylines. <br className="hidden sm:inline" />
-              Build Your Career Legacy.
+              JOIN A TEAM WHERE YOU BELONG
             </h1>
-            <p className="text-xs sm:text-base text-[#D0C5B4] font-light max-w-2xl mx-auto leading-relaxed pt-2">
-              Explore rewarding career opportunities in Mumbai's luxury real estate sector. Collaborate with leading developers and provide professional, RERA-compliant advisory to prospective homebuyers.
+            <p className="font-serif italic text-base sm:text-2xl text-[#D0C5B4] font-light max-w-2xl mx-auto">
+              “We don’t just find homes; we build careers.”
             </p>
           </div>
 
-          {/* Dual Action CTA Buttons */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          {/* We Are Hiring Bar (Matches Reference Screenshot) */}
+          <div className="max-w-3xl mx-auto rounded-2xl bg-black/40 border border-white/10 backdrop-blur-md p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-4 text-left shadow-lg">
+            <div className="space-y-2 w-full md:w-auto">
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#DFBE79] font-bold block">
+                WE ARE HIRING
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {OPEN_POSITIONS_LIST.map((pos) => (
+                  <button
+                    key={pos.id}
+                    onClick={() => handleApplyRole(pos.title)}
+                    className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-[#DFBE79] text-gray-200 hover:text-[#14221F] border border-white/10 hover:border-[#DFBE79] text-[11px] font-medium transition-all cursor-pointer"
+                  >
+                    {pos.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <button
               onClick={() => {
-                const el = document.getElementById('open-positions-section');
+                const el = document.getElementById('open-positions-card');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="px-6 sm:px-8 py-3 rounded-xl bg-gradient-to-r from-[#DFBE79] via-[#C59B4E] to-[#B3883B] hover:from-[#EBD296] hover:to-[#C59B4E] text-[#14221F] font-bold text-xs uppercase tracking-widest shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-2"
+              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-gray-100 text-[#14221F] font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shrink-0 shadow-md flex items-center justify-center gap-2"
             >
-              <span>Explore Openings</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={() => {
-                if (formRef.current) formRef.current.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-6 sm:px-8 py-3 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-white border border-[#C59B4E]/60 text-xs uppercase tracking-widest font-semibold transition-all shadow-sm hover:border-[#DFBE79] cursor-pointer flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4 text-[#DFBE79]" />
-              <span>Apply Online</span>
+              <span>VIEW OPENINGS</span>
+              <span className="text-sm">↓</span>
             </button>
           </div>
 
-          {/* Real Estate Professional Metrics Banner */}
-          <div className="pt-8 sm:pt-12 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto">
-            <div className="p-3.5 sm:p-4 rounded-xl bg-[#183C32]/80 border border-[#C59B4E]/30 text-center">
-              <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#DFBE79]">8+</span>
-              <span className="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider font-mono">Micro-Markets</span>
+          {/* Careers at Concave Realty Overview Card (Matches Seek & Settle Reference Screenshot 1) */}
+          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-black/50 border border-white/10 backdrop-blur-md p-6 sm:p-8 space-y-5 shadow-2xl">
+            <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+              <div className="w-10 h-10 rounded-xl bg-[#183C32] border border-[#C59B4E]/40 text-[#DFBE79] flex items-center justify-center shadow-inner shrink-0">
+                <Briefcase className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-wide">
+                  Careers at Concave Realty
+                </h3>
+                <span className="text-[11px] font-mono text-[#DFBE79]">
+                  MahaRERA: A51900045781 • Mumbai, India
+                </span>
+              </div>
             </div>
-            <div className="p-3.5 sm:p-4 rounded-xl bg-[#183C32]/80 border border-[#C59B4E]/30 text-center">
-              <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#DFBE79]">43+</span>
-              <span className="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider font-mono">Curated Projects</span>
-            </div>
-            <div className="p-3.5 sm:p-4 rounded-xl bg-[#183C32]/80 border border-[#C59B4E]/30 text-center">
-              <span className="block font-serif text-2xl sm:text-3xl font-bold text-[#DFBE79]">Tier-1</span>
-              <span className="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider font-mono">Developer Network</span>
-            </div>
-            <div className="p-3.5 sm:p-4 rounded-xl bg-[#183C32]/80 border border-[#C59B4E]/30 text-center">
-              <span className="block font-serif text-xl sm:text-2xl font-bold text-[#DFBE79] truncate">A51900045781</span>
-              <span className="text-[10px] sm:text-xs text-gray-300 uppercase tracking-wider font-mono">MahaRERA Registered</span>
+
+            <div className="space-y-3.5 text-xs sm:text-sm text-gray-300 leading-relaxed font-light">
+              <p>
+                <strong className="text-white font-medium">Transparency First:</strong> Secure your financial future with documented commission payouts and a clear path to high earnings.
+              </p>
+              <p>
+                <strong className="text-white font-medium">Smart Lead Flow:</strong> We handle the marketing so you can handle the deals. Get access to vetted real estate leads in Mumbai's most sought-after luxury developments.
+              </p>
+              <p>
+                <strong className="text-white font-medium">Fully Licensed & Compliant:</strong> Build your personal brand as a MahaRERA-certified professional under the Concave Realty umbrella.
+              </p>
+              <p>
+                <strong className="text-white font-medium">Supported Growth:</strong> Work within a team that recognizes your hustle and provides the tools you need to scale your portfolio.
+              </p>
+              <p className="pt-2 text-white/90 italic font-serif text-sm sm:text-base border-t border-white/5">
+                “Launch your journey in Mumbai’s most exciting real estate market with Concave Realty.”
+              </p>
             </div>
           </div>
 
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 2. THE CONCAVE ADVANTAGE: WHY JOIN OUR ADVISORY TEAM           */}
-      {/* ============================================================== */}
-      <section className="py-16 sm:py-24 bg-white border-b border-[#EAE6DF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <div className="text-center max-w-3xl mx-auto space-y-2">
-            <span className="text-xs uppercase tracking-[0.28em] text-[#C59B4E] font-semibold block font-mono">
-              THE CONCAVE ADVANTAGE
-            </span>
-            <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#14221F] tracking-tight">
-              Why Build Your Career at Concave Realty
-            </h2>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
-            <p className="text-xs sm:text-sm text-gray-500 font-light max-w-xl mx-auto pt-1 leading-relaxed">
-              We empower real estate professionals with direct developer inventory access, structured operational support, and a collaborative team culture.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            {/* Advantage 1 */}
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] transition-all hover:-translate-y-1 group space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1D3530] text-[#DFBE79] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <IndianRupee className="w-6 h-6" />
+          {/* Leadership / Founder's Message Card (Matches Seek & Settle Reference Screenshot 2) */}
+          <div className="max-w-3xl mx-auto text-left rounded-2xl bg-gradient-to-r from-[#183C32]/90 to-[#14221F]/90 border border-[#C59B4E]/30 backdrop-blur-md p-6 sm:p-7 shadow-xl">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-mono tracking-widest text-[#DFBE79] font-bold">
+                  LEADERSHIP
+                </span>
               </div>
-              <h3 className="font-serif text-lg font-bold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                Structured Earnings & Incentives
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-white tracking-wide">
+                Founder's Message
               </h3>
-              <p className="text-xs text-gray-500 font-light leading-relaxed">
-                Enjoy transparent base compensation paired with clear performance-linked incentives on successful property closings and timely disbursements.
-              </p>
-            </div>
-
-            {/* Advantage 2 */}
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] transition-all hover:-translate-y-1 group space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1D3530] text-[#DFBE79] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Building2 className="w-6 h-6" />
+              <div className="p-4 rounded-xl bg-black/25 border border-white/5 space-y-2">
+                <p className="text-sm sm:text-base text-[#DFBE79] font-serif italic">
+                  “Welcome to Concave Realty, where you truly belong.”
+                </p>
+                <p className="text-xs text-gray-300 leading-relaxed font-light">
+                  Real estate in Mumbai is built on long-term relationships, trust, and absolute market precision. We are building an advisory culture where associates are provided with verified inventory, qualified buyer appointments, and institutional backing to thrive.
+                </p>
               </div>
-              <h3 className="font-serif text-lg font-bold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                Tier-1 Developer Projects
-              </h3>
-              <p className="text-xs text-gray-500 font-light leading-relaxed">
-                Present Mumbai's reputed developers: Lodha, Godrej, Oberoi Realty, Kalpataru, Rustomjee, Adani, Raymond, and DLF.
-              </p>
-            </div>
-
-            {/* Advantage 3 */}
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] transition-all hover:-translate-y-1 group space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1D3530] text-[#DFBE79] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                Homebuyers & NRI Network
-              </h3>
-              <p className="text-xs text-gray-500 font-light leading-relaxed">
-                Advise corporate executives, business owners, and non-resident Indian families looking for verified residences in Mumbai.
-              </p>
-            </div>
-
-            {/* Advantage 4 */}
-            <div className="p-6 rounded-2xl bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] transition-all hover:-translate-y-1 group space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-[#1D3530] text-[#DFBE79] flex items-center justify-center group-hover:scale-105 transition-transform">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                Digital Platform & CRM
-              </h3>
-              <p className="text-xs text-gray-500 font-light leading-relaxed">
-                Access our digital property catalog, virtual walkthrough tools, and lead management CRM to serve clients professionally.
-              </p>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* ============================================================== */}
-      {/* 3. CURRENT OPEN POSITIONS (CURATED LUXURY ROLES)               */}
-      {/* ============================================================== */}
-      <section id="open-positions-section" className="py-16 sm:py-24 bg-[#FAF9F6] border-b border-[#EAE6DF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <span className="text-xs uppercase tracking-[0.28em] text-[#C59B4E] font-semibold block font-mono">
-                OPPORTUNITIES
-              </span>
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#14221F] tracking-tight mt-1">
-                Current Open Positions
-              </h2>
-              <p className="text-xs sm:text-sm text-gray-500 font-light mt-1">
-                Showing {filteredPositions.length} active opportunities across Mumbai.
-              </p>
-            </div>
-
-            {/* Department Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-              {departments.map((dept) => (
-                <button
-                  key={dept}
-                  onClick={() => setSelectedDepartment(dept)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 cursor-pointer ${
-                    selectedDepartment === dept
-                      ? 'bg-[#1D3530] text-[#DFBE79] border border-[#C59B4E]/60 shadow-xs font-semibold'
-                      : 'bg-white text-gray-600 border border-[#EAE6DF] hover:border-[#C59B4E]/40'
-                  }`}
-                >
-                  {dept}
-                </button>
-              ))}
             </div>
           </div>
 
-          {/* Job Openings Grid */}
-          <div className="space-y-6">
-            {filteredPositions.map((pos) => (
-              <div 
-                key={pos.id}
-                className="bg-white rounded-2xl border border-[#EAE6DF] hover:border-[#C59B4E] p-6 sm:p-8 transition-all duration-300 shadow-sm hover:shadow-md space-y-5 group"
-              >
-                {/* Header row */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#183C32] text-[#DFBE79] text-[10px] font-mono font-semibold uppercase tracking-wider">
-                        {pos.department}
+          {/* ============================================================== */}
+          {/* 2. OPEN POSITIONS SECTION (Exact Match to User Screenshots)     */}
+          {/* ============================================================== */}
+          <div id="open-positions-card" className="mt-12 sm:mt-16 text-left max-w-4xl mx-auto">
+            <div className="relative rounded-2xl bg-[#183C32]/95 backdrop-blur-md border border-[#C59B4E]/40 p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.35)] space-y-8">
+              
+              {/* Top Eyebrow & Title */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-xs uppercase font-mono tracking-[0.25em] text-[#DFBE79] font-bold">
+                  <Star className="w-3.5 h-3.5 fill-[#DFBE79] text-[#DFBE79]" />
+                  <span>WE ARE HIRING</span>
+                </div>
+                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-white font-serif">
+                  Open Positions
+                </h2>
+                <p className="text-xs sm:text-sm text-[#D0C5B4] font-light max-w-2xl leading-relaxed">
+                  We're expanding our team! If you are a motivated real estate professional with a track record of driving sales in Mumbai, this is for you.
+                </p>
+              </div>
+
+              {/* Package Card (Matches Screenshot 1) */}
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-mono tracking-wider text-[#DFBE79] font-semibold flex items-center gap-1.5">
+                  <span>💰</span>
+                  <span>PACKAGE</span>
+                </span>
+
+                <div className="rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1 sm:border-r border-white/10 sm:pr-4">
+                    <span className="text-[10px] uppercase tracking-wider font-mono text-gray-400 block font-semibold">
+                      BASE SALARY
+                    </span>
+                    <strong className="text-sm sm:text-base text-white font-sans font-bold block">
+                      Competitive Fixed Base / Month
+                    </strong>
+                    <span className="text-[11px] text-gray-400 block">
+                      Commensurate with experience & track record
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 sm:pl-2">
+                    <span className="text-[10px] uppercase tracking-wider font-mono text-gray-400 block font-semibold">
+                      INCENTIVES
+                    </span>
+                    <strong className="text-sm sm:text-base text-[#DFBE79] font-sans font-bold block">
+                      Performance Commission + Milestone Rewards
+                    </strong>
+                    <span className="text-[11px] text-gray-400 block">
+                      On-time disbursements on closed deals
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* The 4 Open Positions List (Matches Screenshot 1 & 2) */}
+              <div className="space-y-3 pt-2">
+                {OPEN_POSITIONS_LIST.map((pos) => (
+                  <div
+                    key={pos.id}
+                    className="group rounded-xl border border-white/10 bg-black/20 hover:bg-black/40 hover:border-[#C59B4E]/60 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300"
+                  >
+                    {/* Left: Number + Title + Location */}
+                    <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+                      <span className="font-mono text-sm sm:text-base font-bold text-gray-400 shrink-0 mt-0.5 sm:mt-0">
+                        {pos.num}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-mono font-bold">
-                        {pos.tag}
-                      </span>
+                      <div className="space-y-1 min-w-0">
+                        <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-[#DFBE79] transition-colors leading-snug">
+                          {pos.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-2 text-[11px] text-gray-400">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-[#DFBE79]" />
+                            <span>{pos.location}</span>
+                          </span>
+                          <span className="text-white/20 hidden sm:inline">•</span>
+                          <span className="text-gray-400 font-mono">Exp: {pos.exp}</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <h3 className="font-serif text-2xl font-bold text-[#14221F] group-hover:text-[#245348] transition-colors">
-                      {pos.title}
-                    </h3>
+                    {/* Right: Apply Now Button (Matches Screenshot Border Button) */}
+                    <button
+                      onClick={() => handleApplyRole(pos.title)}
+                      className="self-start sm:self-center px-5 py-2.5 rounded-lg border border-white/30 hover:border-[#DFBE79] bg-white/5 hover:bg-[#DFBE79] text-white hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0 shadow-xs"
+                    >
+                      <span>APPLY NOW</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-
-                  <button
-                    onClick={() => handleApplyClick(pos.title)}
-                    className="self-start lg:self-center px-5 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-xs flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
-                  >
-                    <span>Apply For This Role</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
-                  </button>
-                </div>
-
-                {/* Key metadata pills */}
-                <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-gray-600 font-mono pt-1 pb-1 border-y border-[#EAE6DF]">
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-4 h-4 text-[#C59B4E]" />
-                    <span>{pos.location}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-[#C59B4E]" />
-                    <span>{pos.type}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Briefcase className="w-4 h-4 text-[#C59B4E]" />
-                    <span>Experience: {pos.experience}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[#245348] font-bold">
-                    <IndianRupee className="w-4 h-4 text-[#C59B4E]" />
-                    <span>{pos.packageNote}</span>
-                  </div>
-                </div>
-
-                {/* Role Overview */}
-                <p className="text-xs sm:text-sm text-gray-600 font-light leading-relaxed">
-                  {pos.overview}
-                </p>
-
-                {/* Responsibilities & Requirements dual grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                  <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-2">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-gray-500 font-semibold block">
-                      Key Responsibilities:
-                    </span>
-                    <ul className="space-y-1.5 text-xs text-gray-600 font-light">
-                      {pos.responsibilities.map((r, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#245348] shrink-0 mt-0.5" />
-                          <span>{r}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-2">
-                    <span className="text-[11px] font-mono uppercase tracking-wider text-gray-500 font-semibold block">
-                      Candidate Profile Requirements:
-                    </span>
-                    <ul className="space-y-1.5 text-xs text-gray-600 font-light">
-                      {pos.requirements.map((req, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Sparkles className="w-3.5 h-3.5 text-[#C59B4E] shrink-0 mt-0.5" />
-                          <span>{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
+                ))}
               </div>
-            ))}
+
+              {/* ============================================================== */}
+              {/* WHY CONCAVE REALTY? (Matches Screenshot 2 Cards)              */}
+              {/* ============================================================== */}
+              <div className="pt-6 border-t border-white/10 space-y-4">
+                <span className="text-[10px] sm:text-xs uppercase font-mono tracking-widest text-[#DFBE79] font-bold flex items-center gap-1.5">
+                  <Flame className="w-3.5 h-3.5 fill-[#DFBE79] text-[#DFBE79]" />
+                  <span>WHY CONCAVE REALTY?</span>
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  
+                  {/* Card 1 */}
+                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
+                      <Users className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <h4 className="font-bold text-xs text-white">Smart Lead Flow</h4>
+                      <p className="text-[11px] text-gray-400 leading-snug">
+                        Vetted buyer inquiries provided for key Mumbai micro-markets.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card 2 */}
+                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
+                      <ShieldCheck className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <h4 className="font-bold text-xs text-white">Fully Compliant</h4>
+                      <p className="text-[11px] text-gray-400 leading-snug">
+                        Strong MahaRERA backing & complete transaction support.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card 3 */}
+                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
+                      <TrendingUp className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <h4 className="font-bold text-xs text-white">Growth & Branding</h4>
+                      <p className="text-[11px] text-gray-400 leading-snug">
+                        In-house marketing, video tours & personal professional branding.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Card 4 */}
+                  <div className="p-4 rounded-xl border border-white/10 bg-black/25 flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 mt-0.5">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5 min-w-0">
+                      <h4 className="font-bold text-xs text-white">Transparency First</h4>
+                      <p className="text-[11px] text-gray-400 leading-snug">
+                        Timely commission payouts & a clear roadmap to high earnings.
+                      </p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
           </div>
 
         </div>
       </section>
 
       {/* ============================================================== */}
-      {/* 4. APPLICATION FORM: MULTI-STEP LUXURY CANDIDATE APPLICATION   */}
+      {/* 3. DIRECT CAREER APPLICATION FORM                              */}
       {/* ============================================================== */}
-      <section ref={formRef} className="py-16 sm:py-24 bg-white">
+      <section ref={formRef} id="career-application-form" className="py-16 sm:py-24 bg-white relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          
-          <div className="text-center max-w-2xl mx-auto space-y-2">
+
+          {/* Form Header */}
+          <div className="text-center space-y-2">
             <span className="text-xs uppercase tracking-[0.28em] text-[#C59B4E] font-semibold block font-mono">
-              TALENT APPLICATION
+              DIRECT TALENT APPLICATION
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl font-bold text-[#14221F] tracking-tight">
               Submit Your Candidature
             </h2>
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
-            <p className="text-xs sm:text-sm text-gray-500 font-light leading-relaxed">
-              Complete your profile details below. Our talent acquisition committee reviews every application with strict confidentiality within 48 hours.
+            <p className="text-xs sm:text-sm text-gray-500 font-light max-w-xl mx-auto pt-1 leading-relaxed">
+              Applying for an open position? Fill in your details below and our Talent Acquisition team will review your profile with complete confidentiality.
             </p>
           </div>
 
-          {/* Form Container */}
-          <div className="bg-[#FAF9F6] rounded-2xl border border-[#EAE6DF] shadow-md p-6 sm:p-10">
+          {/* Success Notification Banner */}
+          {submissionSuccess ? (
+            <div className="p-8 sm:p-10 rounded-2xl bg-[#FAF9F6] border-2 border-[#245348] shadow-lg text-center space-y-6 anim-fade-scale">
+              <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-md">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
 
-            {submissionSuccess ? (
-              /* Success Confirmation Banner */
-              <div className="py-8 text-center space-y-5 animate-fade-up">
-                <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-700 mx-auto flex items-center justify-center border-2 border-emerald-500">
-                  <CheckCircle2 className="w-8 h-8" />
+              <div className="space-y-2">
+                <span className="px-3 py-1 rounded-full bg-[#183C32] text-[#DFBE79] font-mono text-xs font-semibold uppercase tracking-wider">
+                  Application ID: {submissionSuccess.id}
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F] pt-2">
+                  Application Received Successfully!
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 max-w-lg mx-auto leading-relaxed">
+                  Thank you, <strong className="text-gray-900">{submissionSuccess.name}</strong>. Your application for <strong className="text-[#245348]">{submissionSuccess.position}</strong> has been saved directly to our recruitment records.
+                </p>
+              </div>
+
+              {/* Status Details Box */}
+              <div className="max-w-md mx-auto p-4 rounded-xl bg-white border border-[#EAE6DF] text-xs text-left space-y-2 font-mono">
+                <div className="flex justify-between border-b border-gray-100 pb-1">
+                  <span className="text-gray-400">Candidate:</span>
+                  <span className="text-gray-800 font-bold">{submissionSuccess.name}</span>
                 </div>
-                
-                <div className="space-y-2">
-                  <span className="text-xs uppercase font-mono tracking-widest text-[#C59B4E] font-bold block">
-                    APPLICATION SUBMITTED SUCCESSFULLY
-                  </span>
-                  <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-                    Thank You, {submissionSuccess.name}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 max-w-md mx-auto font-light leading-relaxed">
-                    Your profile for <strong>{submissionSuccess.position}</strong> has been assigned application tracking number:
-                  </p>
-                  <div className="inline-block px-4 py-1.5 rounded-lg bg-[#183C32] text-[#DFBE79] font-mono text-sm font-bold border border-[#C59B4E]">
-                    {submissionSuccess.id}
-                  </div>
+                <div className="flex justify-between border-b border-gray-100 pb-1">
+                  <span className="text-gray-400">Position:</span>
+                  <span className="text-gray-800 font-bold">{submissionSuccess.position}</span>
                 </div>
-
-                <div className="p-4 rounded-xl bg-white border border-[#EAE6DF] max-w-md mx-auto text-xs text-gray-600 text-left space-y-2">
-                  <p className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Application status: <strong className="text-emerald-700">Under Review</strong></span>
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Our HR team will reach out via phone & email within 48 hours.</span>
-                  </p>
+                <div className="flex justify-between border-b border-gray-100 pb-1">
+                  <span className="text-gray-400">Contact:</span>
+                  <span className="text-gray-800">+91 {submissionSuccess.mobile}</span>
                 </div>
-
-                <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                  <a
-                    href={WHATSAPP_CAREERS_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs uppercase tracking-wider font-semibold transition-all shadow-sm flex items-center gap-2"
-                  >
-                    <span>Connect with HR on WhatsApp</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-
-                  <button
-                    onClick={handleResetForm}
-                    className="px-5 py-2.5 rounded-xl bg-[#183C32] hover:bg-[#245348] text-[#DFBE79] text-xs uppercase tracking-wider font-semibold transition-all shadow-sm"
-                  >
-                    Submit Another Application
-                  </button>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Initial Status:</span>
+                  <span className="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded">Under Review</span>
                 </div>
               </div>
-            ) : (
-              /* Candidate Form */
-              <form onSubmit={handleSubmit} className="space-y-6">
 
-                {/* Error Banner */}
+              {/* Actions */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a
+                  href={`https://wa.me/91${PHONE_NUMBER}?text=Hello%20Concave%20Realty%20Talent%20Acquisition%2C%20I%20have%20submitted%20my%20application%20(Ref%3A%20${submissionSuccess.id})%20for%20${encodeURIComponent(submissionSuccess.position)}%20and%20would%20like%20to%20connect.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2"
+                >
+                  <PhoneCall className="w-3.5 h-3.5" />
+                  <span>WhatsApp Talent Desk</span>
+                </a>
+
+                <button
+                  onClick={() => setSubmissionSuccess(null)}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-white border border-[#EAE6DF] hover:border-[#14221F] text-xs font-semibold uppercase tracking-wider text-gray-700 transition-colors"
+                >
+                  Submit Another Profile
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={`bg-[#FAF9F6] border ${highlightRole ? 'border-[#C59B4E] ring-2 ring-[#C59B4E]/30' : 'border-[#EAE6DF]'} rounded-2xl shadow-subtle p-6 sm:p-10 transition-all`}>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {/* Honeypot anti-spam (hidden) */}
+                <input
+                  type="text"
+                  name="user_hp_check"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  style={{ display: 'none' }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
+                {/* Form Error Banner */}
                 {formError && (
-                  <div className="p-4 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl flex items-center gap-2.5">
-                    <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                  <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2.5">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
                     <span>{formError}</span>
                   </div>
                 )}
 
-                {/* Honeypot for Bot Prevention */}
-                <input
-                  type="text"
-                  name="user_corporate_website"
-                  value={honeypot}
-                  onChange={(e) => setHoneypot(e.target.value)}
-                  tabIndex={-1}
-                  autoComplete="off"
-                  className="hidden"
-                  aria-hidden="true"
-                />
-
-                {/* Section 1: Personal & Contact Information */}
+                {/* Section 1: Candidate Contact Info */}
                 <div className="space-y-4">
                   <h4 className="font-serif text-lg font-bold text-[#14221F] border-b border-[#EAE6DF] pb-2 flex items-center gap-2">
                     <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs flex items-center justify-center font-mono">1</span>
-                    <span>Personal & Contact Information</span>
+                    <span>Personal Details & Contact</span>
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    
+                    {/* Full Name */}
                     <div className="space-y-1">
                       <label className="text-gray-700 font-semibold block">Full Name *</label>
                       <input
@@ -720,73 +666,89 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                       />
                     </div>
 
+                    {/* Email */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Email Address *</label>
+                      <label className="text-gray-700 font-semibold block">Official Email Address *</label>
                       <input
                         type="email"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="e.g. rahul.sharma@example.com"
+                        placeholder="rahul.sharma@example.com"
                         className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
                       />
                     </div>
 
+                    {/* Mobile */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Mobile / WhatsApp Number *</label>
-                      <input
-                        type="tel"
-                        required
-                        maxLength={10}
-                        value={formData.mobile}
-                        onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                        placeholder="10-digit mobile number"
-                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors font-mono"
-                      />
+                      <label className="text-gray-700 font-semibold block">Mobile Number (WhatsApp Enabled) *</label>
+                      <div className="flex">
+                        <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#EAE6DF] bg-gray-50 text-gray-500 font-mono text-xs">
+                          +91
+                        </span>
+                        <input
+                          type="tel"
+                          required
+                          maxLength={10}
+                          value={formData.mobile}
+                          onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, '') })}
+                          placeholder="98201 XXXXX"
+                          className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-r-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none transition-colors"
+                        />
+                      </div>
                     </div>
 
+                    {/* Current City / Area */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Current Residential Suburb / City *</label>
+                      <label className="text-gray-700 font-semibold block">Current City / Micro-Market *</label>
                       <input
                         type="text"
                         required
                         value={formData.city}
                         onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                        placeholder="e.g. Andheri West, Mumbai"
+                        placeholder="e.g. Borivali / Bandra / Mumbai"
                         className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
                       />
                     </div>
+
                   </div>
                 </div>
 
-                {/* Section 2: Professional Background & Role Selection */}
-                <div className="space-y-4 pt-4">
+                {/* Section 2: Professional Background & Role */}
+                <div className="space-y-4 pt-2">
                   <h4 className="font-serif text-lg font-bold text-[#14221F] border-b border-[#EAE6DF] pb-2 flex items-center gap-2">
                     <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs flex items-center justify-center font-mono">2</span>
-                    <span>Role & Professional Background</span>
+                    <span>Applied Position & Experience</span>
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     
-                    {/* Role Selection Dropdown */}
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="text-gray-700 font-semibold block">Position Applied For *</label>
+                    {/* Applied Position */}
+                    <div className="space-y-1">
+                      <label className="text-gray-700 font-semibold block flex items-center justify-between">
+                        <span>Position Applied For *</span>
+                        {highlightRole && (
+                          <span className="text-[10px] text-emerald-700 font-mono font-bold animate-pulse">
+                            ✓ Pre-Selected
+                          </span>
+                        )}
+                      </label>
                       <select
                         value={formData.position}
                         onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors font-medium text-[#14221F]"
+                        className={`w-full bg-white border ${highlightRole ? 'border-[#C59B4E] ring-2 ring-[#C59B4E]/30' : 'border-[#EAE6DF]'} focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors font-semibold text-[#14221F]`}
                       >
-                        {OPEN_POSITIONS.map(p => (
-                          <option key={p.id} value={p.title}>
-                            {p.title} ({p.department})
+                        {DOMAIN_OPTIONS.map((opt, idx) => (
+                          <option key={idx} value={opt}>
+                            {opt}
                           </option>
                         ))}
-                        <option value="General Candidature / Other">General Candidature / Other Luxury Role</option>
                       </select>
                     </div>
 
+                    {/* Total Experience */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Relevant Sales / Real Estate Experience *</label>
+                      <label className="text-gray-700 font-semibold block">Relevant Real Estate Experience *</label>
                       <select
                         value={formData.experience}
                         onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
@@ -796,65 +758,83 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                         <option value="1 - 3 Years">1 - 3 Years</option>
                         <option value="3 - 5 Years">3 - 5 Years</option>
                         <option value="5 - 8 Years">5 - 8 Years</option>
-                        <option value="8+ Years">8+ Years (Leadership Profile)</option>
+                        <option value="8+ Years (Leadership)">8+ Years (Leadership Profile)</option>
                       </select>
                     </div>
 
+                    {/* Current Company */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Notice Period / Earliest Joining *</label>
+                      <label className="text-gray-700 font-semibold block">Current Organization (Optional)</label>
+                      <input
+                        type="text"
+                        value={formData.currentCompany}
+                        onChange={(e) => setFormData({ ...formData, currentCompany: e.target.value })}
+                        placeholder="e.g. Lodha / Anarock / Square Yards"
+                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Current Designation */}
+                    <div className="space-y-1">
+                      <label className="text-gray-700 font-semibold block">Current Designation (Optional)</label>
+                      <input
+                        type="text"
+                        value={formData.currentRole}
+                        onChange={(e) => setFormData({ ...formData, currentRole: e.target.value })}
+                        placeholder="e.g. Sales Executive / BDM"
+                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Current CTC */}
+                    <div className="space-y-1">
+                      <label className="text-gray-700 font-semibold block">Current CTC (Optional)</label>
+                      <input
+                        type="text"
+                        value={formData.currentCtc}
+                        onChange={(e) => setFormData({ ...formData, currentCtc: e.target.value })}
+                        placeholder="e.g. ₹5.5 LPA"
+                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Expected CTC */}
+                    <div className="space-y-1">
+                      <label className="text-gray-700 font-semibold block">Expected CTC *</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.expectedCtc}
+                        onChange={(e) => setFormData({ ...formData, expectedCtc: e.target.value })}
+                        placeholder="e.g. ₹8 - 10 LPA or Negotiable"
+                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
+                      />
+                    </div>
+
+                    {/* Notice Period */}
+                    <div className="space-y-1 sm:col-span-2">
+                      <label className="text-gray-700 font-semibold block">Notice Period *</label>
                       <select
                         value={formData.noticePeriod}
                         onChange={(e) => setFormData({ ...formData, noticePeriod: e.target.value })}
                         className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
                       >
-                        <option value="Immediate">Immediate</option>
-                        <option value="15 Days">15 Days</option>
+                        <option value="Immediate (< 15 Days)">Immediate (Available in &lt; 15 Days)</option>
                         <option value="30 Days">30 Days</option>
+                        <option value="45 Days">45 Days</option>
                         <option value="60 Days">60 Days</option>
+                        <option value="90 Days">90 Days</option>
                       </select>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Current / Most Recent Organization</label>
-                      <input
-                        type="text"
-                        value={formData.currentCompany}
-                        onChange={(e) => setFormData({ ...formData, currentCompany: e.target.value })}
-                        placeholder="e.g. Anarock, Knight Frank, Lodha, or Self-Employed"
-                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Current Designation</label>
-                      <input
-                        type="text"
-                        value={formData.currentRole}
-                        onChange={(e) => setFormData({ ...formData, currentRole: e.target.value })}
-                        placeholder="e.g. Sales Manager, Associate Consultant"
-                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
-                      />
-                    </div>
-
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="text-gray-700 font-semibold block">Expected Annual CTC / Compensation Range</label>
-                      <input
-                        type="text"
-                        value={formData.expectedCtc}
-                        onChange={(e) => setFormData({ ...formData, expectedCtc: e.target.value })}
-                        placeholder="e.g. ₹10 LPA Fixed + Commission, or Open for Discussion"
-                        className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
-                      />
                     </div>
 
                   </div>
                 </div>
 
-                {/* Section 3: Resume Attachment & Profile Links */}
-                <div className="space-y-4 pt-4">
+                {/* Section 3: Resume Document & Credentials */}
+                <div className="space-y-4 pt-2">
                   <h4 className="font-serif text-lg font-bold text-[#14221F] border-b border-[#EAE6DF] pb-2 flex items-center gap-2">
                     <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs flex items-center justify-center font-mono">3</span>
-                    <span>Resume Attachment & Pitch</span>
+                    <span>Resume Document & Credentials</span>
                   </h4>
 
                   <div className="space-y-4 text-xs">
@@ -877,8 +857,8 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                     </div>
 
                     {/* Resume Upload Area */}
-                    <div className="space-y-1.5">
-                      <label className="text-gray-700 font-semibold block">Resume / Curriculum Vitae (.pdf, .doc, max 5MB)</label>
+                    <div className="space-y-1">
+                      <label className="text-gray-700 font-semibold block">Upload Resume / CV (PDF or Word, max 5MB) *</label>
                       
                       <input
                         ref={fileInputRef}
@@ -888,63 +868,58 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                         className="hidden"
                       />
 
-                      <div 
-                        onClick={() => fileInputRef.current?.click()}
-                        className={`p-5 rounded-xl border-2 border-dashed transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-2 ${
-                          attachedFile 
-                            ? 'bg-emerald-50/60 border-emerald-400' 
-                            : 'bg-white border-[#EAE6DF] hover:border-[#C59B4E]'
-                        }`}
-                      >
-                        {attachedFile ? (
-                          <div className="flex items-center gap-3">
-                            <FileText className="w-8 h-8 text-emerald-600" />
-                            <div className="text-left min-w-0">
-                              <span className="font-semibold text-xs text-gray-800 block truncate">{attachedFile.name}</span>
-                              <span className="text-[10px] text-gray-500 font-mono">{(attachedFile.size / 1024).toFixed(1)} KB • Attached</span>
+                      {!attachedFile ? (
+                        <div
+                          onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                          className="border-2 border-dashed border-[#EAE6DF] hover:border-[#245348] rounded-2xl p-6 text-center cursor-pointer bg-white transition-all hover:bg-emerald-50/20 group"
+                        >
+                          <UploadCloud className="w-8 h-8 text-[#245348] mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                          <span className="font-semibold text-xs text-[#14221F] block">
+                            Click to upload your Resume / CV
+                          </span>
+                          <span className="text-[11px] text-gray-400 block mt-0.5">
+                            Supports PDF, DOC, DOCX up to 5MB
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="p-3.5 rounded-xl bg-white border border-emerald-300 flex items-center justify-between shadow-xs">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <FileText className="w-5 h-5 text-emerald-700 shrink-0" />
+                            <div className="min-w-0">
+                              <span className="font-semibold text-xs text-[#14221F] truncate block">
+                                {attachedFile.name}
+                              </span>
+                              <span className="text-[10px] text-gray-400 font-mono">
+                                {(attachedFile.size / (1024 * 1024)).toFixed(2)} MB
+                              </span>
                             </div>
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setAttachedFile(null);
-                              }}
-                              className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-700 ml-2"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
                           </div>
-                        ) : (
-                          <>
-                            <UploadCloud className="w-8 h-8 text-[#C59B4E]" />
-                            <div>
-                              <span className="font-semibold text-xs text-[#14221F] block">
-                                Click to upload your resume
-                              </span>
-                              <span className="text-[11px] text-gray-500 font-light">
-                                PDF, DOCX or DOC formats accepted (Max 5 MB)
-                              </span>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveFile}
+                            className="p-1 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors cursor-pointer"
+                            title="Remove file"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
 
                       {fileError && (
-                        <p className="text-[11px] text-red-600 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" />
-                          <span>{fileError}</span>
-                        </p>
+                        <span className="text-[11px] text-red-600 font-medium block pt-1">
+                          {fileError}
+                        </span>
                       )}
                     </div>
 
-                    {/* Brief Introduction / Pitch */}
+                    {/* Cover Note / Brief Introduction */}
                     <div className="space-y-1">
-                      <label className="text-gray-700 font-semibold block">Brief Introduction / Pitch (Optional)</label>
+                      <label className="text-gray-700 font-semibold block">Brief Cover Note / Pitch (Optional)</label>
                       <textarea
                         rows={3}
                         value={formData.coverNote}
                         onChange={(e) => setFormData({ ...formData, coverNote: e.target.value })}
-                        placeholder="Tell us about your most proud real estate deal, client relationship success, or what excites you about joining Concave Realty..."
+                        placeholder="Highlight your previous real estate sales achievements, developer relationships, or why you want to join Concave Realty..."
                         className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-xl p-3 text-xs focus:outline-none transition-colors"
                       />
                     </div>
@@ -952,105 +927,79 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                   </div>
                 </div>
 
-                {/* Section 4: Privacy & Consent */}
-                <div className="pt-2 border-t border-[#EAE6DF]">
-                  <label className="flex items-start gap-2.5 cursor-pointer text-xs text-gray-600">
+                {/* Consent Checkbox */}
+                <div className="pt-2">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       required
                       checked={formData.consent}
                       onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-                      className="mt-0.5 rounded border-gray-300 text-[#245348] focus:ring-[#245348]"
+                      className="mt-0.5 w-4 h-4 rounded border-[#EAE6DF] text-[#245348] focus:ring-[#245348] cursor-pointer"
                     />
-                    <span>
-                      I declare that all information provided is accurate and grant Concave Realty consent to review my profile for employment opportunities in compliance with India's <strong>DPDP Act, 2023</strong>.
+                    <span className="text-xs text-gray-600 leading-snug">
+                      I declare that all details submitted are genuine and authorize Concave Realty's Talent Acquisition team to review my application and contact me regarding career opportunities.
                     </span>
                   </label>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Application Button */}
                 <div className="pt-2">
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#245348] hover:to-[#183C32] text-white text-xs uppercase tracking-widest font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                    className="w-full py-4 px-6 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#245348] hover:to-[#183C32] text-white text-xs uppercase tracking-widest font-bold shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
                   >
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Submitting Candidature...</span>
+                        <span>Submitting Your Application...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4 text-[#DFBE79]" />
-                        <span>Submit Application to HR Desk</span>
+                        <span>Submit Career Application</span>
                       </>
                     )}
                   </button>
                 </div>
 
               </form>
-            )}
 
-          </div>
+            </div>
+          )}
 
-          {/* Hiring Workflow Steps */}
-          <div className="p-6 rounded-2xl bg-white border border-[#EAE6DF] space-y-4">
-            <h4 className="font-serif text-lg font-bold text-[#14221F] text-center">
-              Our 4-Stage Executive Hiring Process
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-              <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-1">
-                <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs font-mono font-bold mx-auto flex items-center justify-center">1</span>
-                <span className="font-semibold text-xs block text-[#14221F]">Profile Screening</span>
-                <span className="text-[11px] text-gray-500 font-light block">Evaluation within 48 hours</span>
+          {/* Direct HR Connect Strip */}
+          <div className="p-5 rounded-2xl bg-[#183C32] text-white flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#C59B4E]/40 shadow-sm">
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <div className="w-10 h-10 rounded-full bg-[#14221F] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] shrink-0">
+                <PhoneCall className="w-4 h-4" />
               </div>
-              <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-1">
-                <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs font-mono font-bold mx-auto flex items-center justify-center">2</span>
-                <span className="font-semibold text-xs block text-[#14221F]">Talent Discovery</span>
-                <span className="text-[11px] text-gray-500 font-light block">Telephonic alignment & credentials</span>
-              </div>
-              <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-1">
-                <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs font-mono font-bold mx-auto flex items-center justify-center">3</span>
-                <span className="font-semibold text-xs block text-[#14221F]">Leadership Discussion</span>
-                <span className="text-[11px] text-gray-500 font-light block">In-person interview with Partners</span>
-              </div>
-              <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-1">
-                <span className="w-6 h-6 rounded-full bg-[#183C32] text-[#DFBE79] text-xs font-mono font-bold mx-auto flex items-center justify-center">4</span>
-                <span className="font-semibold text-xs block text-[#14221F]">Offer & Onboarding</span>
-                <span className="text-[11px] text-gray-500 font-light block">Executive contract & welcome</span>
+              <div>
+                <span className="font-serif text-sm font-bold text-white block">
+                  Prefer Direct Executive Discussion?
+                </span>
+                <span className="text-[11px] text-[#D0C5B4] font-light block">
+                  Reach out to our Talent Acquisition desk directly via WhatsApp or Email.
+                </span>
               </div>
             </div>
-          </div>
 
-          {/* Direct HR Queries Card */}
-          <div className="p-5 rounded-2xl bg-[#183C32] text-white flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#C59B4E]/40">
-            <div className="space-y-1 text-center sm:text-left">
-              <span className="font-serif text-lg font-bold block text-[#F7F3EB]">
-                Have questions regarding careers at Concave Realty?
-              </span>
-              <p className="text-xs text-[#D0C5B4] font-light">
-                Reach out directly to our HR & Talent Acquisition desk.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <a
                 href={WHATSAPP_CAREERS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-sm"
+                className="px-4 py-2 rounded-lg bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-xs"
               >
                 <span>WhatsApp HR</span>
-                <ExternalLink className="w-3.5 h-3.5" />
               </a>
-
               <a
-                href={`mailto:${EMAIL_ADDRESS}?subject=Career%20Inquiry%20-%20Concave%20Realty`}
-                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-[#DFBE79] hover:text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all border border-white/20"
+                href={`mailto:${EMAIL_ADDRESS}?subject=Concave%20Realty%20Career%20Application`}
+                className="px-4 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-xs"
               >
-                <Mail className="w-3.5 h-3.5" />
-                <span>Email HR</span>
+                <Mail className="w-3.5 h-3.5 text-[#DFBE79]" />
+                <span>Email CV</span>
               </a>
             </div>
           </div>

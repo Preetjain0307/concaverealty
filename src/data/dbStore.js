@@ -1426,6 +1426,7 @@ export const dbStore = {
         experience: sanitizeInput(appData.experience || 'Fresher', 50),
         currentCompany: sanitizeInput(appData.currentCompany || 'Not Disclosed', 100),
         currentRole: sanitizeInput(appData.currentRole || 'N/A', 100),
+        currentCtc: sanitizeInput(appData.currentCtc || 'Not Disclosed', 50),
         noticePeriod: sanitizeInput(appData.noticePeriod || 'Immediate', 50),
         expectedCtc: sanitizeInput(appData.expectedCtc || 'Negotiable', 50),
         linkedin: sanitizeInput(appData.linkedin || '', 200),
@@ -1510,6 +1511,76 @@ export const dbStore = {
       return { success: false, error: 'Application not found' };
     } catch (e) {
       return { success: false, error: e.message };
+    }
+  },
+
+  deleteJobApplication(appId) {
+    try {
+      const apps = this.getJobApplications().filter(a => a.id !== appId);
+      localStorage.setItem('concave_career_applications_v1', JSON.stringify(apps));
+      return { success: true };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
+  },
+
+  exportJobApplicationsToExcel() {
+    try {
+      if (typeof XLSX === 'undefined') return false;
+      const apps = this.getJobApplications();
+      const excelRows = apps.map((a, index) => ({
+        "Sr No": index + 1,
+        "Application ID": a.id,
+        "Applicant Name": a.name,
+        "Mobile Number": a.mobile,
+        "Email Address": a.email,
+        "City / Area": a.city || "Mumbai",
+        "Position / Domain": a.position,
+        "Experience": a.experience,
+        "Current Organization": a.currentCompany || "N/A",
+        "Current Designation": a.currentRole || "N/A",
+        "Current CTC": a.currentCtc || "N/A",
+        "Expected CTC": a.expectedCtc || "Negotiable",
+        "Notice Period": a.noticePeriod || "Immediate",
+        "Resume Document": a.resumeName || "Resume.pdf",
+        "LinkedIn URL": a.linkedin || "N/A",
+        "Cover Note": a.coverNote || "None provided",
+        "Hiring Status": a.status || "Under Review",
+        "Application Date": new Date(a.appliedAt).toLocaleString()
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(excelRows);
+      const colWidths = [
+        { wch: 6 },
+        { wch: 14 },
+        { wch: 22 },
+        { wch: 15 },
+        { wch: 26 },
+        { wch: 18 },
+        { wch: 28 },
+        { wch: 16 },
+        { wch: 22 },
+        { wch: 20 },
+        { wch: 14 },
+        { wch: 16 },
+        { wch: 16 },
+        { wch: 22 },
+        { wch: 30 },
+        { wch: 35 },
+        { wch: 18 },
+        { wch: 22 }
+      ];
+      worksheet['!cols'] = colWidths;
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Job Enquiries");
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(workbook, `Concave_Realty_Job_Enquiries_${todayStr}.xlsx`);
+      return true;
+    } catch (e) {
+      console.error("Export job applications failed:", e);
+      return false;
     }
   }
 };

@@ -36,7 +36,8 @@ import {
   Eye,
   EyeOff,
   Briefcase,
-  FileText
+  FileText,
+  ExternalLink
 } from 'lucide-react';
 import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs } from '../data/dbStore';
 
@@ -128,6 +129,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   const [careerRoleFilter, setCareerRoleFilter] = useState('All');
   const [careerStatusFilter, setCareerStatusFilter] = useState('All');
   const [careerSearch, setCareerSearch] = useState('');
+  const [selectedCandidateModal, setSelectedCandidateModal] = useState(null);
+  const [isExportingCareers, setIsExportingCareers] = useState(false);
 
   // Add caller modal state with multiple locations support
   const [showAddCallerModal, setShowAddCallerModal] = useState(false);
@@ -1059,7 +1062,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           }`}
         >
           <Briefcase className="w-4 h-4 text-[#DFBE79]" />
-          <span>Job Applications</span>
+          <span>Job Enquiries</span>
           <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
             {jobApplications.length}
           </span>
@@ -1993,14 +1996,34 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               <Briefcase className="w-5 h-5 text-[#245348]" />
               <div>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-                  Talent Acquisition & Job Applications
+                  Job Enquiries & Candidate Applications
                 </h2>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Review incoming candidate profiles, update hiring pipeline status, and connect directly via WhatsApp or Phone.
+                  Review incoming job applications, download resume documents, update hiring status, or export enquiries to Excel.
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setIsExportingCareers(true);
+                  setTimeout(() => {
+                    const ok = dbStore.exportJobApplicationsToExcel();
+                    setIsExportingCareers(false);
+                    if (ok) {
+                      setFeedbackToast('Job enquiries exported to Excel successfully.');
+                    } else {
+                      alert('Could not generate Excel file.');
+                    }
+                  }, 400);
+                }}
+                disabled={isExportingCareers}
+                className="px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+              >
+                <Download className="w-3.5 h-3.5 text-[#DFBE79]" />
+                <span>{isExportingCareers ? 'Exporting...' : 'Export to Excel'}</span>
+              </button>
+
               <button
                 onClick={() => {
                   const apps = dbStore.getJobApplications();
@@ -2049,7 +2072,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search candidate, role, mobile..."
+                placeholder="Search candidate, role, mobile, city..."
                 value={careerSearch}
                 onChange={(e) => setCareerSearch(e.target.value)}
                 className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg pl-9 pr-3 py-1.5 text-xs text-[#14221F] focus:outline-none"
@@ -2062,12 +2085,12 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 onChange={(e) => setCareerRoleFilter(e.target.value)}
                 className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-1.5 text-xs text-[#14221F] focus:outline-none"
               >
-                <option value="All">All Roles</option>
-                <option value="Senior Luxury Real Estate Consultant">Senior Consultant</option>
-                <option value="NRI & Global Investor Sales Specialist">NRI Specialist</option>
-                <option value="Channel Partner & Builder Alliances Lead">Developer Alliances</option>
-                <option value="Inbound Client Tele-Advisory Executive">Tele-Advisory</option>
-                <option value="Real Estate Digital Growth & Media Strategist">Digital Growth</option>
+                <option value="All">All Positions</option>
+                <option value="BDA">Business Development Associate (BDA)</option>
+                <option value="BDM">Business Development Manager (BDM)</option>
+                <option value="Sales Manager">Sales Manager</option>
+                <option value="Sales Executive">Sales Executive</option>
+                <option value="General">General Candidature</option>
               </select>
 
               <select
@@ -2098,6 +2121,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                     <th className="py-3 px-4">Current Org & CTC</th>
                     <th className="py-3 px-4">Resume Document</th>
                     <th className="py-3 px-4">Hiring Status</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAE6DF]">
@@ -2112,6 +2136,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                           app.mobile.includes(q) ||
                           app.email.toLowerCase().includes(q) ||
                           app.position.toLowerCase().includes(q) ||
+                          (app.city && app.city.toLowerCase().includes(q)) ||
                           (app.currentCompany && app.currentCompany.toLowerCase().includes(q));
                         if (!match) return false;
                       }
@@ -2119,8 +2144,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                     })
                     .length === 0 ? (
                       <tr>
-                        <td colSpan="6" className="py-10 text-center text-gray-400 text-xs">
-                          No candidate applications matching current filters.
+                        <td colSpan="7" className="py-12 text-center text-gray-400 text-xs">
+                          No candidate job enquiries matching current filters.
                         </td>
                       </tr>
                     ) : (
@@ -2135,6 +2160,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                               app.mobile.includes(q) ||
                               app.email.toLowerCase().includes(q) ||
                               app.position.toLowerCase().includes(q) ||
+                              (app.city && app.city.toLowerCase().includes(q)) ||
                               (app.currentCompany && app.currentCompany.toLowerCase().includes(q));
                             if (!match) return false;
                           }
@@ -2144,8 +2170,13 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                           <tr key={app.id} className="hover:bg-gray-50/80 transition-colors">
                             <td className="py-3 px-4">
                               <span className="font-mono text-[10px] text-[#C59B4E] font-bold block">{app.id}</span>
-                              <strong className="text-[#14221F] text-xs block">{app.name}</strong>
-                              <span className="text-[10px] text-gray-400 font-mono">Applied: {new Date(app.appliedAt).toLocaleDateString()}</span>
+                              <button
+                                onClick={() => setSelectedCandidateModal(app)}
+                                className="text-[#14221F] font-bold text-xs hover:text-[#245348] hover:underline text-left cursor-pointer"
+                              >
+                                {app.name}
+                              </button>
+                              <span className="text-[10px] text-gray-400 font-mono block">Applied: {new Date(app.appliedAt).toLocaleDateString()}</span>
                             </td>
 
                             <td className="py-3 px-4">
@@ -2157,7 +2188,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                                   +91 {app.mobile}
                                 </a>
                                 <a
-                                  href={`https://wa.me/91${app.mobile}?text=Hello%20${encodeURIComponent(app.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20application%20for%20${encodeURIComponent(app.position)}.`}
+                                  href={`https://wa.me/91${app.mobile}?text=Hello%20${encodeURIComponent(app.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(app.position)}.`}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   title="WhatsApp Candidate"
@@ -2181,13 +2212,14 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                             </td>
 
                             <td className="py-3 px-4 text-xs">
-                              <span className="text-gray-700 block">{app.currentCompany || 'N/A'}</span>
+                              <span className="text-gray-700 block truncate max-w-[140px]">{app.currentCompany || 'Not Disclosed'}</span>
                               <span className="text-[10px] text-gray-500 block">{app.currentRole || ''}</span>
-                              {app.expectedCtc && (
-                                <span className="text-[10px] text-[#245348] font-mono block mt-0.5">
-                                  Exp CTC: {app.expectedCtc}
-                                </span>
-                              )}
+                              <div className="mt-0.5 space-y-0.2 font-mono text-[10px]">
+                                {app.currentCtc && app.currentCtc !== 'Not Disclosed' && (
+                                  <span className="text-gray-500 block">Cur: {app.currentCtc}</span>
+                                )}
+                                <span className="text-[#245348] font-semibold block">Exp: {app.expectedCtc || 'Negotiable'}</span>
+                              </div>
                             </td>
 
                             <td className="py-3 px-4">
@@ -2205,7 +2237,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                                   rel="noopener noreferrer"
                                   className="text-[10px] text-[#0A66C2] hover:underline flex items-center gap-1 mt-0.5 pl-5"
                                 >
-                                  <span>LinkedIn Profile</span>
+                                  <span>LinkedIn</span>
                                   <ExternalLink className="w-2.5 h-2.5" />
                                 </a>
                               )}
@@ -2230,12 +2262,211 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                                 <option value="Archived / Rejected">Archived</option>
                               </select>
                             </td>
+
+                            <td className="py-3 px-4 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  onClick={() => setSelectedCandidateModal(app)}
+                                  className="px-2.5 py-1 rounded bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#245348] text-[11px] font-semibold text-gray-700 transition-colors"
+                                  title="View full candidate details"
+                                >
+                                  View
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    if (window.confirm(`Delete job enquiry for ${app.name} (${app.id})?`)) {
+                                      dbStore.deleteJobApplication(app.id);
+                                      setJobApplications(dbStore.getJobApplications());
+                                      setFeedbackToast(`Job enquiry ${app.id} removed.`);
+                                    }
+                                  }}
+                                  className="p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                                  title="Delete enquiry"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
                           </tr>
                         ))
                     )}
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── JOB CANDIDATE FULL DETAILS MODAL ── */}
+      {selectedCandidateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#C59B4E]/40 anim-fade-scale">
+            
+            {/* Header */}
+            <div className="px-6 py-4 bg-[#183C32] text-white flex items-center justify-between border-b border-[#C59B4E]/30">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#245348] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79]">
+                  <Briefcase className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-white">
+                    {selectedCandidateModal.name}
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#DFBE79]">
+                    Ref: {selectedCandidateModal.id} • Applied: {new Date(selectedCandidateModal.appliedAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedCandidateModal(null)}
+                className="p-1.5 rounded-full hover:bg-white/10 text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content Body */}
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-xs text-[#14221F]">
+              
+              {/* Contact & Status Bar */}
+              <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 block">Candidate Contact</span>
+                  <div className="flex items-center gap-2">
+                    <strong className="font-mono text-xs">+91 {selectedCandidateModal.mobile}</strong>
+                    <a
+                      href={`https://wa.me/91${selectedCandidateModal.mobile}?text=Hello%20${encodeURIComponent(selectedCandidateModal.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(selectedCandidateModal.position)}.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold flex items-center gap-1 hover:bg-emerald-200"
+                    >
+                      <PhoneCall className="w-2.5 h-2.5" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+                  <span className="text-gray-500 block">{selectedCandidateModal.email}</span>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 block">Hiring Status</span>
+                  <select
+                    value={selectedCandidateModal.status}
+                    onChange={(e) => {
+                      const newStat = e.target.value;
+                      dbStore.updateJobApplicationStatus(selectedCandidateModal.id, newStat);
+                      setSelectedCandidateModal({ ...selectedCandidateModal, status: newStat });
+                      setJobApplications(dbStore.getJobApplications());
+                      setFeedbackToast(`Status updated to ${newStat}`);
+                    }}
+                    className="mt-1 bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2.5 py-1 text-xs font-semibold text-[#14221F] focus:outline-none"
+                  >
+                    <option value="Under Review">Under Review</option>
+                    <option value="Shortlisted for Interview">Shortlisted</option>
+                    <option value="Interview Scheduled">Interview Scheduled</option>
+                    <option value="Offer Extended">Offer Extended</option>
+                    <option value="Hired">Hired</option>
+                    <option value="Archived / Rejected">Archived</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Grid of Profile Details */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Applied Position</span>
+                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.position}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Location / City</span>
+                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.city || 'Mumbai'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Total Experience</span>
+                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.experience}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Current Company</span>
+                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.currentCompany || 'N/A'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Current CTC</span>
+                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.currentCtc || 'Not Disclosed'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Expected CTC</span>
+                  <span className="font-semibold text-[#245348] block mt-0.5">{selectedCandidateModal.expectedCtc || 'Negotiable'}</span>
+                </div>
+              </div>
+
+              {/* Notice Period & Resume */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Notice Period</span>
+                  <span className="font-semibold text-amber-800 block mt-0.5">{selectedCandidateModal.noticePeriod || 'Immediate'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono block">Resume File</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
+                    <span className="font-semibold text-gray-800 truncate">{selectedCandidateModal.resumeName || 'Resume.pdf'}</span>
+                    <span className="text-[10px] text-gray-400 font-mono">({selectedCandidateModal.resumeSize || '1.2 MB'})</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* LinkedIn URL */}
+              {selectedCandidateModal.linkedin && (
+                <div className="p-3 rounded-lg bg-blue-50/50 border border-blue-100 flex items-center justify-between">
+                  <span className="text-gray-600 font-medium">LinkedIn Profile:</span>
+                  <a
+                    href={selectedCandidateModal.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#0A66C2] font-semibold hover:underline flex items-center gap-1"
+                  >
+                    <span>{selectedCandidateModal.linkedin}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              )}
+
+              {/* Cover Note / Pitch */}
+              {selectedCandidateModal.coverNote && (
+                <div className="space-y-1 pt-1">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Candidate Note / Background</span>
+                  <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] text-gray-700 leading-relaxed italic">
+                    "{selectedCandidateModal.coverNote}"
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3.5 bg-gray-50 border-t border-[#EAE6DF] flex items-center justify-between">
+              <button
+                onClick={() => {
+                  if (window.confirm(`Delete job enquiry for ${selectedCandidateModal.name}?`)) {
+                    dbStore.deleteJobApplication(selectedCandidateModal.id);
+                    setJobApplications(dbStore.getJobApplications());
+                    setSelectedCandidateModal(null);
+                    setFeedbackToast('Application removed.');
+                  }
+                }}
+                className="text-xs text-red-600 hover:text-red-800 font-semibold flex items-center gap-1 cursor-pointer"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Delete Enquiry</span>
+              </button>
+
+              <button
+                onClick={() => setSelectedCandidateModal(null)}
+                className="px-5 py-2 rounded-xl bg-[#245348] text-white font-semibold text-xs uppercase tracking-wider hover:bg-[#1B3F37] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+
           </div>
         </div>
       )}
