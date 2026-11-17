@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   X,
   MapPin,
@@ -11,18 +11,107 @@ import {
   ExternalLink,
   Info,
   Lock,
-  Eye
+  Eye,
+  Navigation,
+  Sparkles,
+  CheckCircle2,
+  Train,
+  ShoppingBag,
+  Car,
+  Trees,
+  Waves,
+  Dumbbell,
+  Trophy,
+  Crown,
+  Film,
+  Flame,
+  ArrowUpRight,
+  Plane
 } from 'lucide-react';
+
+// Seamlessly try multiple extensions (1.jpg -> 1.png -> 1.webp -> 1.jpeg) when user adds photos
+const handleModalImgError = (e, fallback) => {
+  const currentSrc = e.currentTarget.src || '';
+  if (currentSrc.endsWith('.jpg')) {
+    e.currentTarget.src = currentSrc.replace(/\.jpg$/, '.png');
+  } else if (currentSrc.endsWith('.png')) {
+    e.currentTarget.src = currentSrc.replace(/\.png$/, '.webp');
+  } else if (currentSrc.endsWith('.webp')) {
+    e.currentTarget.src = currentSrc.replace(/\.webp$/, '.jpeg');
+  } else if (fallback && currentSrc !== fallback) {
+    e.currentTarget.src = fallback;
+  } else {
+    e.currentTarget.src = '/projects/project_img_27.jpg';
+  }
+};
+
+const getFeatureConfig = (feat = '') => {
+  const f = feat.toLowerCase();
+  if (/metro|railway|train|station|monorail/.test(f)) {
+    return { category: 'Transit & Metro', icon: Train };
+  }
+  if (/mall|retail|inorbit|infiniti|shopping|phoenix|market/.test(f)) {
+    return { category: 'Lifestyle & Retail', icon: ShoppingBag };
+  }
+  if (/highway|express|weh|road|jvlr|sea link|coastal|freeway/.test(f)) {
+    return { category: 'Arterial Corridor', icon: Car };
+  }
+  if (/park|forest|sea|beach|mountain|green|nature|promenade|racecourse/.test(f)) {
+    return { category: 'Scenic & Nature', icon: Trees };
+  }
+  if (/airport|bkc|sez|it park|commercial|corporate/.test(f)) {
+    return { category: 'Commercial Nexus', icon: Building2 };
+  }
+  return { category: 'Key Advantage', icon: Sparkles };
+};
+
+const getAmenityConfig = (amenity = '') => {
+  const a = amenity.toLowerCase();
+  if (/pool|lap|infinity|aquatic|splash|jacuzzi/.test(a)) {
+    return { category: 'Aquatics', icon: Waves };
+  }
+  if (/gym|fitness|crossfit|aerobics|workout/.test(a)) {
+    return { category: 'Fitness', icon: Dumbbell };
+  }
+  if (/spa|sauna|steam|hydrotherapy|wellness/.test(a)) {
+    return { category: 'Wellness', icon: Flame };
+  }
+  if (/tennis|squash|badminton|cricket|sports|court/.test(a)) {
+    return { category: 'Sports', icon: Trophy };
+  }
+  if (/park|garden|trail|tree|reflexology|nature/.test(a)) {
+    return { category: 'Nature', icon: Trees };
+  }
+  if (/lounge|deck|sky|stargazing|sundeck/.test(a)) {
+    return { category: 'Sky Living', icon: Crown };
+  }
+  if (/theatre|cineplex|screening|cinema/.test(a)) {
+    return { category: 'Entertainment', icon: Film };
+  }
+  if (/concierge|valet|security|biometric|access/.test(a)) {
+    return { category: 'Privilege', icon: ShieldCheck };
+  }
+  if (/club|banquet|ballroom|hall/.test(a)) {
+    return { category: 'Clubhouse', icon: Building2 };
+  }
+  return { category: 'Lifestyle', icon: Sparkles };
+};
 
 export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry }) {
   if (!project) return null;
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const modalRef = useRef(null);
 
   // Always reset to the primary official hero image when opening or changing projects
   useEffect(() => {
     setActiveImageIdx(0);
   }, [project?.id]);
+
+  // Auto-focus modal on open for keyboard accessibility
+  useEffect(() => {
+    modalRef.current?.focus();
+  }, []);
 
   const imagesList = (project.images && project.images.length > 0)
     ? project.images
@@ -32,51 +121,56 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
   return (
     <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="project-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col border border-gray-200"
+        ref={modalRef}
+        tabIndex="-1"
+        className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col border border-gray-200 focus:outline-none"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar using #1D3530 */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#1D3530] text-white">
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-serif text-2xl font-bold">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white gap-2">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <h3 id="project-modal-title" className="font-serif text-lg sm:text-2xl font-bold truncate">
                 {project.name}
               </h3>
               {project.status && (
-                <span className="text-[10px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40">
+                <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40 shrink-0">
                   {project.status}
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#DFBE79] mt-0.5">
+            <p className="text-[11px] sm:text-xs text-[#DFBE79] mt-0.5 truncate">
               {project.builder} • {project.locality || project.location}, {project.city || 'Mumbai'}
             </p>
           </div>
 
           <button
             onClick={onClose}
-            aria-label="Close modal"
-            className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+            aria-label="Close project details"
+            className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Modal Scrollable Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-[#14221F]">
+        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1 text-[#14221F]">
 
           {/* Section: Property Image Gallery */}
           <div className="space-y-3">
-            <div className="relative h-64 sm:h-84 md:h-96 rounded-lg overflow-hidden border border-[#EAE6DF] bg-gray-900 group">
+            <div className="relative h-52 xs:h-64 sm:h-84 md:h-96 rounded-lg overflow-hidden border border-[#EAE6DF] bg-gray-900 group">
               <img
                 src={currentImage}
-                alt={project.name}
+                alt={`${project.name} exterior view, ${project.location} Mumbai`}
                 referrerPolicy="no-referrer"
-                onError={(e) => { e.currentTarget.src = '/projects/project_img_27.jpg'; }}
+                onError={(e) => handleModalImgError(e, project.fallbackCover)}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
               />
 
@@ -94,6 +188,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                       onClose();
                       onOpenTour(project.id);
                     }}
+                    aria-label={`Open 360° virtual tour for ${project.name}`}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-semibold bg-[#245348] text-white shadow-md hover:bg-[#1B3F37] transition-colors"
                   >
                     <Compass className="w-4 h-4 text-[#DFBE79] animate-spin" style={{ animationDuration: '10s' }} />
@@ -115,9 +210,9 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   >
                     <img
                       src={img}
-                      alt={`${project.name} gallery view ${idx + 1}`}
+                      alt={`${project.name} - project photo ${idx + 1}`}
                       referrerPolicy="no-referrer"
-                      onError={(e) => { e.currentTarget.src = '/projects/project_img_27.jpg'; }}
+                      onError={(e) => handleModalImgError(e, project.fallbackCover)}
                       className="w-full h-full object-cover"
                     />
                   </button>
@@ -127,29 +222,29 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
 
           {/* Pricing & Quick Enquire Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF]">
             <div>
               <div className="text-[10px] uppercase tracking-wider text-gray-500 font-mono">
                 Indicative Quoted Price
               </div>
-              <div className="font-sans text-2xl sm:text-3xl font-semibold text-[#14221F] tracking-tight">
+              <div className="font-sans text-xl sm:text-3xl font-semibold text-[#14221F] tracking-tight">
                 {project.priceRange || project.priceDisplay}
               </div>
-              <div className="text-[11px] text-[#C59B4E] font-medium">
+              <div className="text-[10px] sm:text-[11px] text-[#C59B4E] font-medium">
                 *Subject to floor-rise, unit availability & developer confirmation
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
               {project.mapUrl && (
                 <a
                   href={project.mapUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded border border-[#EAE6DF] hover:border-black text-xs font-medium text-[#14221F] bg-white transition-colors"
+                  className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded border border-[#EAE6DF] hover:border-black text-xs font-medium text-[#14221F] bg-white transition-colors"
                 >
-                  <MapPin className="w-3.5 h-3.5 text-[#245348]" />
-                  <span>View on Map</span>
+                  <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0" />
+                  <span>Map</span>
                 </a>
               )}
 
@@ -162,41 +257,168 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     project
                   });
                 }}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm"
+                aria-label={`Enquire about ${project.name}`}
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm"
               >
-                <PhoneCall className="w-3.5 h-3.5" />
+                <PhoneCall className="w-3.5 h-3.5 shrink-0" />
                 <span>Enquire Now</span>
               </button>
             </div>
           </div>
 
           {/* Section: Project Specifications */}
-          <div>
-            <h4 className="font-serif text-base font-bold text-[#14221F] mb-2.5 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-[#245348]" />
-              <span>Project Specifications</span>
-            </h4>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-[#C59B4E]" />
+                <h4 
+                  className="text-lg sm:text-xl font-bold text-[#14221F] tracking-tight"
+                  style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
+                >
+                  Architectural Specifications
+                </h4>
+              </div>
+              <span className="text-[10px] font-mono tracking-widest uppercase text-gray-400 font-semibold">
+                Official Roster
+              </span>
+            </div>
+
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="p-3 rounded bg-[#FAF9F6] border border-[#EAE6DF]">
-                <span className="text-[10px] uppercase text-gray-400 block font-mono">Land Parcel</span>
-                <span className="font-semibold text-[#14221F] mt-0.5 block">{project.landParcel || 'On Request'}</span>
+              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+                <div className="flex items-center gap-1.5 text-gray-400 mb-1">
+                  <Layers className="w-3.5 h-3.5 text-[#C59B4E]" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Land Parcel</span>
+                </div>
+                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.landParcel || 'On Request'}</span>
               </div>
-              <div className="p-3 rounded bg-[#FAF9F6] border border-[#EAE6DF]">
-                <span className="text-[10px] uppercase text-gray-400 block font-mono">Towers & Structure</span>
-                <span className="font-semibold text-[#14221F] mt-0.5 block">{project.towers || 'High-Rise Tower'}</span>
+
+              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+                <div className="flex items-center gap-1.5 text-gray-400 mb-1">
+                  <Building2 className="w-3.5 h-3.5 text-[#C59B4E]" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Towers & Structure</span>
+                </div>
+                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.towers || 'High-Rise Tower'}</span>
               </div>
-              <div className="p-3 rounded bg-[#FAF9F6] border border-[#EAE6DF]">
-                <span className="text-[10px] uppercase text-gray-400 block font-mono">Elevators</span>
-                <span className="font-semibold text-[#14221F] mt-0.5 block">{project.elevators || 'High-Speed Elevators'}</span>
+
+              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+                <div className="flex items-center gap-1.5 text-gray-400 mb-1">
+                  <Navigation className="w-3.5 h-3.5 text-[#C59B4E]" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Elevators</span>
+                </div>
+                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.elevators || 'High-Speed Elevators'}</span>
               </div>
-              <div className="p-3 rounded bg-[#FAF9F6] border border-[#EAE6DF]">
-                <span className="text-[10px] uppercase text-gray-400 block font-mono">MahaRERA Registration</span>
-                <span className="font-semibold font-mono text-[#245348] mt-0.5 block break-all">
+
+              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+                <div className="flex items-center gap-1.5 text-gray-400 mb-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">MahaRERA Registered</span>
+                </div>
+                <span className="font-bold font-mono text-emerald-800 text-xs block break-all mt-0.5">
                   {project.rera || 'Verified / In Progress'}
                 </span>
               </div>
             </div>
           </div>
+
+          {/* Section: Key Connectivity & Strategic Features */}
+          {project.keyFeatures && project.keyFeatures.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
+                    Strategic Location Advantage
+                  </span>
+                  <h4 
+                    className="text-xl sm:text-2xl font-bold text-[#14221F] tracking-tight mt-0.5"
+                    style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
+                  >
+                    Key Connectivity & Prime Landmarks
+                  </h4>
+                </div>
+                <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#183C32]/10 border border-[#C59B4E]/30 text-[11px] text-[#183C32] font-semibold">
+                  <Navigation className="w-3.5 h-3.5 text-[#C59B4E]" />
+                  <span>Prime Micro-Market</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {project.keyFeatures.map((feat, idx) => {
+                  const meta = getFeatureConfig(feat);
+                  const IconComp = meta.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="relative flex items-center gap-3.5 p-3.5 rounded-xl bg-gradient-to-r from-[#FAF8F5] via-white to-[#FAF8F5] border border-[#E8E2D5] hover:border-[#C59B4E] hover:shadow-[0_8px_20px_rgba(20,34,31,0.08)] transition-all duration-300 group"
+                    >
+                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#183C32] to-[#245348] text-[#DFBE79] border border-[#C59B4E]/30 flex items-center justify-center shrink-0 shadow-sm group-hover:scale-108 group-hover:shadow-md transition-all duration-300">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C59B4E]" />
+                          <span className="text-[9px] uppercase font-mono font-bold tracking-wider text-[#8B6846]">
+                            {meta.category}
+                          </span>
+                        </div>
+                        <p className="text-xs sm:text-sm font-semibold text-[#183C32] leading-snug">
+                          {feat}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Section: Curated Lifestyle Amenities */}
+          {project.amenities && project.amenities.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
+                    World-Class Living
+                  </span>
+                  <h4 
+                    className="text-xl sm:text-2xl font-bold text-[#14221F] tracking-tight mt-0.5"
+                    style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
+                  >
+                    Curated Lifestyle & Wellness Amenities
+                  </h4>
+                </div>
+                <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs shrink-0">
+                  {project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {project.amenities.map((amenity, idx) => {
+                  const meta = getAmenityConfig(amenity);
+                  const IconComp = meta.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="relative flex flex-col justify-between p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] shadow-[0_2px_8px_rgba(20,34,31,0.03)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.16)] transition-all duration-300 group hover:-translate-y-0.5"
+                    >
+                      <div className="flex items-center justify-between mb-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-[#183C32]/10 text-[#183C32] group-hover:bg-[#183C32] group-hover:text-[#DFBE79] flex items-center justify-center transition-colors duration-300 shadow-2xs">
+                          <IconComp className="w-4 h-4" />
+                        </div>
+                        <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 group-hover:text-[#C59B4E] transition-colors font-semibold">
+                          {meta.category}
+                        </span>
+                      </div>
+                      <div>
+                        <h5 className="text-xs sm:text-[13px] font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug">
+                          {amenity}
+                        </h5>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Section: Available Configurations & Quotations */}
           <div className="space-y-3">
@@ -357,11 +579,12 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             {/* Interactive Embedded Google Map for Exact Project Location */}
             <div className="relative w-full h-64 sm:h-72 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-inner bg-slate-100">
               <iframe
-                title={`${project.name} Google Map Location`}
+                title={`${project.name} location on Google Maps`}
                 src={`https://maps.google.com/maps?q=${encodeURIComponent(`${project.name} ${project.locality || ''} ${project.location} Mumbai`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
                 className="w-full h-full border-0"
                 loading="lazy"
                 allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
 
@@ -384,14 +607,15 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
 
           {/* Bottom Action Footer */}
-          <div className="pt-4 border-t border-[#EAE6DF] flex flex-wrap items-center justify-between gap-3">
-            <div className="text-xs text-gray-500 font-mono">
-              Concave Realty Exclusive Portfolio
+          <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="text-[11px] sm:text-xs text-gray-500 font-mono text-center sm:text-left">
+              Concave Realty Curated Portfolio
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 w-full sm:w-auto">
               <button
                 onClick={onClose}
-                className="px-4 py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors"
+                aria-label="Close project details"
+                className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center"
               >
                 Close
               </button>
@@ -404,7 +628,8 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     project
                   });
                 }}
-                className="px-6 py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm"
+                aria-label={`Enquire about ${project.name}`}
+                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center"
               >
                 Enquire Now
               </button>

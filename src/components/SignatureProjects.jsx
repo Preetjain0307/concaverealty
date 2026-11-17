@@ -15,12 +15,29 @@ import {
   SlidersHorizontal,
   X,
   ChevronRight,
-  Home
+  Home,
+  Navigation
 } from 'lucide-react';
 import { PROJECTS_DATA, LOCATIONS_LIST, MARQUEE_IMAGES } from '../data/projectsData';
 
 // Fallback image in case any photo ever encounters an error
 const FALLBACK_IMG = '/projects/project_img_27.jpg';
+
+// Seamlessly try multiple extensions (1.jpg -> 1.png -> 1.webp -> 1.jpeg) when user adds photos
+const handleProjectImgError = (e, fallback) => {
+  const currentSrc = e.currentTarget.src || '';
+  if (currentSrc.endsWith('.jpg')) {
+    e.currentTarget.src = currentSrc.replace(/\.jpg$/, '.png');
+  } else if (currentSrc.endsWith('.png')) {
+    e.currentTarget.src = currentSrc.replace(/\.png$/, '.webp');
+  } else if (currentSrc.endsWith('.webp')) {
+    e.currentTarget.src = currentSrc.replace(/\.webp$/, '.jpeg');
+  } else if (fallback && currentSrc !== fallback) {
+    e.currentTarget.src = fallback;
+  } else {
+    e.currentTarget.src = FALLBACK_IMG;
+  }
+};
 
 // Micro-market descriptors for attractive location cards
 const LOCATION_META = {
@@ -42,18 +59,20 @@ export function SignatureProjects({
   filterType = 'All',
   onNavigateHome
 }) {
-  // Default selected location is Borivali
-  const [selectedLocation, setSelectedLocation] = useState('Borivali');
+  // Default selected location is All Locations
+  const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBhk, setSelectedBhk] = useState('All');
 
   // Synchronize when external filterLocation prop is passed
   useEffect(() => {
-    if (filterLocation && filterLocation !== 'All') {
+    if (filterLocation && filterLocation !== 'All' && filterLocation !== 'All Locations') {
       const match = LOCATIONS_LIST.find(loc => loc.toLowerCase() === filterLocation.toLowerCase());
       if (match) {
         setSelectedLocation(match);
       }
+    } else if (filterLocation === 'All' || filterLocation === 'All Locations') {
+      setSelectedLocation('All Locations');
     }
   }, [filterLocation]);
 
@@ -191,7 +210,7 @@ export function SignatureProjects({
               <button
                 type="button"
                 onClick={() => handleLocationClick('All Locations')}
-                className={`group relative p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[92px] ${
+                className={`group relative p-2.5 xs:p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[88px] sm:min-h-[92px] ${
                   selectedLocation === 'All Locations' || selectedLocation === 'All'
                     ? 'bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] text-white border-[#C59B4E] shadow-[0_8px_20px_-3px_rgba(36,83,72,0.45)] ring-2 ring-[#C59B4E]/60 scale-[1.02]'
                     : 'bg-white text-[#14221F] border-[#EAE6DF] hover:border-[#C59B4E] hover:shadow-md hover:-translate-y-1'
@@ -253,7 +272,7 @@ export function SignatureProjects({
                     key={loc}
                     type="button"
                     onClick={() => handleLocationClick(loc)}
-                    className={`group relative p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[92px] ${
+                    className={`group relative p-2.5 xs:p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[88px] sm:min-h-[92px] ${
                       isSelected
                         ? 'bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] text-white border-[#C59B4E] shadow-[0_8px_20px_-3px_rgba(36,83,72,0.45)] ring-2 ring-[#C59B4E]/60 scale-[1.02]'
                         : 'bg-white text-[#14221F] border-[#EAE6DF] hover:border-[#C59B4E] hover:shadow-md hover:-translate-y-1'
@@ -333,8 +352,8 @@ export function SignatureProjects({
             </div>
 
             {/* BHK Filter Badges */}
-            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto">
-              <span className="text-[11px] uppercase tracking-wider text-gray-500 font-mono mr-1 hidden sm:inline">
+            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 no-scrollbar">
+              <span className="text-[11px] uppercase tracking-wider text-gray-500 font-mono mr-1 hidden sm:inline shrink-0">
                 Typology:
               </span>
               {['All', '2 BHK', '3 BHK', '4 BHK', 'Jodi'].map((bhk) => (
@@ -342,7 +361,7 @@ export function SignatureProjects({
                   key={bhk}
                   type="button"
                   onClick={() => setSelectedBhk(bhk)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer shrink-0 ${
                     selectedBhk === bhk
                       ? 'bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] text-[#DFBE79] border border-[#C59B4E]/60 shadow-sm font-semibold scale-105'
                       : 'bg-[#FAF9F6] text-gray-600 hover:bg-white hover:text-[#14221F] border border-[#EAE6DF] hover:border-[#C59B4E]/40'
@@ -415,7 +434,7 @@ export function SignatureProjects({
                         src={project.coverImage}
                         alt={project.name}
                         referrerPolicy="no-referrer"
-                        onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
+                        onError={(e) => handleProjectImgError(e, project.fallbackCover)}
                         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
                         loading="lazy"
                       />
@@ -506,6 +525,16 @@ export function SignatureProjects({
                             </span>
                           ))}
                         </div>
+
+                        {/* Top Key Connectivity & Feature Highlight */}
+                        {project.keyFeatures && project.keyFeatures.length > 0 && (
+                          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-[#245348] font-medium truncate">
+                            <Navigation className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                            <span className="truncate" title={project.keyFeatures[0]}>
+                              {project.keyFeatures[0]}
+                            </span>
+                          </div>
+                        )}
 
                       </div>
 

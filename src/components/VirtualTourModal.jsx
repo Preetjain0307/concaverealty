@@ -63,10 +63,11 @@ export function VirtualTourModal({ isOpen, onClose, project }) {
           <iframe
             key={tourUrl}
             src={tourUrl}
-            title={`${project.name} 360° Tour`}
+            title={`${project.name} 360° Virtual Tour by Pixeldo`}
             className="w-full h-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; xr-spatial-tracking; fullscreen"
             allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
 

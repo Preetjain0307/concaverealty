@@ -20,33 +20,33 @@ const LUXURY_BANDS = [
     headingLine1: 'Where Every Address Begins a',
     headingLine2: 'Legacy',
     description:
-      "Mumbai's premier RERA-licensed real estate experts. We connect global investors and expats with luxury apartments, villas, and under-construction properties across India's most sought-after communities.",
+      "MahaRERA-registered real estate advisors in Mumbai. We assist homebuyers and NRI investors with verified apartments, sky residences, and under-construction properties across Mumbai's prime neighborhoods.",
     image: '/about/aboutus.jpg',
     imageAlt: 'Concave Realty Mumbai luxury residential towers',
-    badgeText: 'Bespoke Residences • Mumbai',
+    badgeText: 'MahaRERA: A51900045781 • Mumbai',
     badgePosition: 'left',
     imagePosition: 'left',
     flipBg: false,
     pillars: [
       {
         Icon: Scale,
-        title: 'MahaRERA Licensed Experts',
-        subtitle: '100% compliant advisory, clear legal titles & escrow-backed governance.',
+        title: 'MahaRERA Registered Advisory',
+        subtitle: 'Statutory compliance, verified project registrations & RERA disclosures (Reg: A51900045781).',
       },
       {
         Icon: Globe,
         title: 'Global NRI & Expat Desk',
-        subtitle: 'Bespoke cross-border acquisition across Dubai, Singapore, UK & USA.',
+        subtitle: 'Dedicated advisory desk for NRI and overseas buyers acquiring property in Mumbai.',
       },
       {
         Icon: Gem,
-        title: 'Curated Luxury Portfolio',
-        subtitle: 'Exclusive access to sea-facing penthouses, villas & premier developments.',
+        title: 'Curated Residential Portfolio',
+        subtitle: 'Access to sea-facing residences, premium towers & landmark developments.',
       },
       {
         Icon: ShieldCheck,
-        title: 'Generational Legacy Advisory',
-        subtitle: 'Capital preservation and blue-chip residential asset appreciation.',
+        title: 'Long-Term Lifestyle Advisory',
+        subtitle: 'Guidance tailored to your family aspirations and residential living preferences.',
       },
     ],
   },
@@ -57,7 +57,7 @@ const LUXURY_BANDS = [
     headingLine1: 'Making Every Property Journey',
     headingLine2: 'Exceptional',
     description:
-      'To make property search and acquisition seamless, transparent, and enjoyable for everyone — helping individuals and families find their perfect home with end-to-end RERA-compliant support.',
+      'To make property search and acquisition seamless, transparent, and enjoyable for everyone — helping individuals and families find their ideal home with end-to-end RERA-compliant support.',
     image: '/about/mission.jpg',
     imageAlt: 'Concave Realty Mission - Luxury residential tower at sunset',
     badgeText: 'Prime Architecture • RERA Compliant',
@@ -68,22 +68,22 @@ const LUXURY_BANDS = [
       {
         Icon: Search,
         title: 'Frictionless Acquisition',
-        subtitle: 'Smooth navigation from bespoke shortlisting to registration and key handover.',
+        subtitle: 'Smooth guidance from project shortlisting to site visits and registration.',
       },
       {
         Icon: Handshake,
         title: 'Uncompromising Transparency',
-        subtitle: 'Direct developer rates, zero hidden broker markups & clear financial schedules.',
+        subtitle: 'Direct developer pricing, clear payment schedules & honest consultation.',
       },
       {
         Icon: ShieldCheck,
-        title: 'End-to-End Legal Diligence',
-        subtitle: 'Independent title scrutiny, RERA approval checks & mortgage facilitation.',
+        title: 'RERA Compliance Checks',
+        subtitle: 'Verification of project registration, sanction numbers & official disclosures.',
       },
       {
         Icon: Users,
         title: 'Family-Centric Guidance',
-        subtitle: 'Curated neighborhoods matched to your lifestyle, schooling & aspirations.',
+        subtitle: 'Neighborhoods selected to match your lifestyle, commuting & schooling needs.',
       },
     ],
   },
@@ -94,7 +94,7 @@ const LUXURY_BANDS = [
     headingLine1: 'Shaping The Future Of',
     headingLine2: 'Luxury Living',
     description:
-      "To be Mumbai's most trusted real estate partner — leveraging technology and innovation to transform how global investors and families discover, acquire, and enjoy property in the Mumbai.",
+      "To be a dependable real estate advisory partner in Mumbai — leveraging technology and honest practices to help homebuyers and investors discover verified properties.",
     image: '/about/vision.jpg',
     imageAlt: 'Concave Realty Vision - Mumbai luxury skyscraper skyline',
     badgeText: 'Prime Architecture • RERA Compliant',
@@ -105,22 +105,22 @@ const LUXURY_BANDS = [
       {
         Icon: Cpu,
         title: 'Technology-Driven Discovery',
-        subtitle: 'Smart tools for a seamless property search experience.',
+        subtitle: 'Interactive project catalogs and digital tours for a modern property search.',
       },
       {
         Icon: Building2,
-        title: 'Iconic Landmark Developments',
-        subtitle: "World-class residences in Mumbai's most prestigious locations.",
+        title: 'Reputed Developer Projects',
+        subtitle: "Developments by Mumbai's leading and established real estate brands.",
       },
       {
         Icon: Globe,
-        title: 'Global Real Estate Standards',
-        subtitle: 'International best practices in every transaction.',
+        title: 'High Professional Standards',
+        subtitle: 'Ethical advisory and transparent communication in every interaction.',
       },
       {
         Icon: Gem,
-        title: 'Generational Wealth Creation',
-        subtitle: 'Building lasting value for generations.',
+        title: 'Enduring Living Value',
+        subtitle: 'Helping you select homes built for lasting satisfaction and quality.',
       },
     ],
   },
@@ -184,14 +184,10 @@ const LuxuryEditorialBand = ({ section, wrapRef, imageRef, textRef, isFirst, isL
 
           {/* Dark Forest-Green Pill Overlay */}
           <div
-            className={`absolute bottom-5 ${
-              section.badgePosition === 'center'
-                ? 'left-1/2 -translate-x-1/2 whitespace-nowrap'
-                : 'left-6'
-            } bg-[#183C32]/95 backdrop-blur-md px-5 py-2 rounded-full border border-[#B78A3F]/65 text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium text-[#F7F3EB] shadow-lg flex items-center gap-2 z-10`}
+            className="absolute bottom-4 left-3 right-3 sm:left-6 sm:right-auto sm:max-w-none bg-[#183C32]/95 backdrop-blur-md px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full border border-[#B78A3F]/65 text-[9px] sm:text-[11px] uppercase tracking-[0.15em] sm:tracking-[0.2em] font-medium text-[#F7F3EB] shadow-lg flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 z-10 truncate"
           >
-            <MapPin className="w-3.5 h-3.5 text-[#B78A3F] shrink-0" strokeWidth={2} />
-            <span>{section.badgeText}</span>
+            <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#B78A3F] shrink-0" strokeWidth={2} />
+            <span className="truncate">{section.badgeText}</span>
           </div>
         </div>
 

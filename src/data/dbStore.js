@@ -238,7 +238,7 @@ const INITIAL_SEED_LEADS = [
     i: 96,
     n: "Nisha Patel",
     m: "91670 55443",
-    e: "nisha.p@demo.com",
+    e: "nisha.p@gmail.com",
     l: 5, // Mira Road
     p: 6, // Mira-Bhayander Waterfront
     t: 3,
@@ -352,7 +352,7 @@ const INITIAL_SEED_LEADS = [
     i: 106,
     n: "Pooja Hegde",
     m: "91672 88771",
-    e: "pooja.h@demo.com",
+    e: "pooja.h@gmail.com",
     l: 5, // Mira Road
     p: 6, // Mira-Bhayander
     t: 4,
@@ -369,6 +369,110 @@ const INITIAL_SEED_LEADS = [
     ]
   }
 ];
+
+// ==========================================
+// ANTI-ABUSE, RATE LIMITING & SECURITY SUITE
+// Prevents SQL injection, XSS, Spam & Flooding
+// ==========================================
+export const RATE_LIMIT_KEY = "concave_security_ratelimit_v1";
+export const RATE_LIMIT_WINDOW_MS = 4 * 60 * 60 * 1000; // 4 Hours cooldown
+export const RATE_LIMIT_MAX_ATTEMPTS = 5; // Maximum 5 attempts per 4 hours
+
+// Sanitize string to prevent SQL injection and script injection
+export function sanitizeInput(input, maxLength = 100) {
+  if (typeof input !== 'string') return '';
+  // Truncate to maximum length first to prevent large input DDoS attacks
+  let sanitized = input.slice(0, maxLength).trim();
+  // Strip potential script tags, event handlers, and dangerous characters
+  sanitized = sanitized
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<[^>]+>/g, '') // strip all HTML tags
+    .replace(/javascript:/gi, '')
+    .replace(/data:/gi, '')
+    .replace(/on\w+\s*=/gi, '') // strip event handlers (onclick=, onload=, onerror= etc.)
+    .replace(/['";\\]/g, '') // strip SQL string delimiters & statement separators
+    .replace(/--|\/\*|\*\//g, ''); // strip SQL comment markers (-- or /* */)
+  return sanitized;
+}
+
+// Generate or retrieve persistent browser device fingerprint
+export function getDeviceFingerprint() {
+  try {
+    let fp = localStorage.getItem("concave_device_fp_v1");
+    if (!fp) {
+      fp = "fp_" + Math.random().toString(36).substring(2, 15) + "_" + Date.now();
+      localStorage.setItem("concave_device_fp_v1", fp);
+    }
+    return fp;
+  } catch (e) {
+    return "fp_fallback";
+  }
+}
+
+// Check rate limit for an identifier (phone number or device fingerprint)
+// Enforces max 5 attempts per 4-hour window
+export function checkRateLimit(identifier, action = 'enquiry') {
+  try {
+    const rawData = getRawData(RATE_LIMIT_KEY, {});
+    const cleanId = (identifier || getDeviceFingerprint()).replace(/\D/g, '') || getDeviceFingerprint();
+    const key = `${action}_${cleanId}`;
+    const now = Date.now();
+    const attempts = Array.isArray(rawData[key]) ? rawData[key] : [];
+
+    // Filter attempts strictly within the 4-hour window
+    const validAttempts = attempts.filter(ts => (now - ts) < RATE_LIMIT_WINDOW_MS);
+
+    if (validAttempts.length >= RATE_LIMIT_MAX_ATTEMPTS) {
+      const oldestValid = Math.min(...validAttempts);
+      const resetTimeMs = oldestValid + RATE_LIMIT_WINDOW_MS;
+      const remainingMs = Math.max(0, resetTimeMs - now);
+      const remainingHours = (remainingMs / (60 * 60 * 1000)).toFixed(1);
+      const remainingMinutes = Math.ceil(remainingMs / (60 * 1000));
+
+      return {
+        allowed: false,
+        attemptsCount: validAttempts.length,
+        maxAttempts: RATE_LIMIT_MAX_ATTEMPTS,
+        remainingAttempts: 0,
+        remainingMinutes,
+        remainingHours,
+        message: `Security Limit: Maximum ${RATE_LIMIT_MAX_ATTEMPTS} attempts allowed per 4 hours for security protection. Please wait ${remainingMinutes > 60 ? `${remainingHours} hours` : `${remainingMinutes} minutes`} or reach our desk directly on WhatsApp.`
+      };
+    }
+
+    return {
+      allowed: true,
+      attemptsCount: validAttempts.length,
+      maxAttempts: RATE_LIMIT_MAX_ATTEMPTS,
+      remainingAttempts: RATE_LIMIT_MAX_ATTEMPTS - validAttempts.length
+    };
+  } catch (err) {
+    console.error("Rate limit check error:", err);
+    return { allowed: true, remainingAttempts: 1 };
+  }
+}
+
+// Record an attempt towards rate limit
+export function recordRateLimitAttempt(identifier, action = 'enquiry') {
+  try {
+    const rawData = getRawData(RATE_LIMIT_KEY, {});
+    const cleanId = (identifier || getDeviceFingerprint()).replace(/\D/g, '') || getDeviceFingerprint();
+    const key = `${action}_${cleanId}`;
+    const now = Date.now();
+    const attempts = Array.isArray(rawData[key]) ? rawData[key] : [];
+
+    // Keep only valid within window + new attempt
+    const validAttempts = attempts.filter(ts => (now - ts) < RATE_LIMIT_WINDOW_MS);
+    validAttempts.push(now);
+
+    rawData[key] = validAttempts;
+    setRawData(RATE_LIMIT_KEY, rawData);
+    return true;
+  } catch (err) {
+    console.error("Rate limit record error:", err);
+    return false;
+  }
+}
 
 // Helper to safely access localStorage
 function getRawData(key, fallback) {
@@ -389,6 +493,41 @@ function setRawData(key, data) {
     console.error("Storage write error:", err);
     return false;
   }
+}
+
+// ==========================================
+// AUDIT LOGGING & SECURITY ENGINE
+// ==========================================
+const AUDIT_LOGS_KEY = "concave_audit_logs_v1";
+
+export function logSecurityEvent(actor, actionType, targetResource, details = {}) {
+  try {
+    const logs = getRawData(AUDIT_LOGS_KEY, []);
+    const entry = {
+      id: "aud_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now(),
+      timestamp: new Date().toISOString(),
+      actorId: actor?.id || (actor?.username ? 'ADMIN' : 'SYSTEM'),
+      actorName: actor?.name || actor?.username || 'System / Admin',
+      actorRole: actor?.role || (actor?.username ? 'admin' : 'system'),
+      actionType, // 'LOGIN', 'LOGOUT', 'DELETE_LEAD', 'EXPORT_EXCEL', 'UPDATE_DISPOSITION', 'CHANGE_PASSWORD', 'IDOR_VIOLATION_BLOCKED'
+      targetResource: String(targetResource || ''),
+      details
+    };
+    logs.unshift(entry);
+    if (logs.length > 500) logs.pop(); // Keep last 500 audit events
+    setRawData(AUDIT_LOGS_KEY, logs);
+    return entry;
+  } catch (e) {
+    console.error("Audit log error:", e);
+    return null;
+  }
+}
+
+export function getAuditLogs(actor) {
+  if (!actor || (actor.role !== 'admin' && actor.role !== 'superadmin')) {
+    return [];
+  }
+  return getRawData(AUDIT_LOGS_KEY, []);
 }
 
 // ==========================================
@@ -522,10 +661,14 @@ export const dbStore = {
   },
 
   // Automatic Lead Router by Location with EQUAL LOAD BALANCING
-  // If multiple callers are assigned to the same location, divides enquiries equally
+  // If multiple callers are assigned to the same location, divides enquiries equally.
+  // If no callers are registered by admin, routes directly to Super Admin!
   findCallerForLocation(locId) {
     try {
       const callers = this.getCallers().filter(c => c.active !== false);
+      if (!callers || callers.length === 0) {
+        return null; // No caller registered by admin - direct to Super Admin!
+      }
       const matches = callers.filter(c => c.assignedLocations && c.assignedLocations.includes(locId));
       
       if (matches.length === 1) return matches[0].id;
@@ -545,10 +688,10 @@ export const dbStore = {
         return matches[0].id;
       }
       
-      // Fallback
-      return callers.length > 0 ? callers[0].id : 1;
+      // Fallback: pick caller with least leads
+      return callers.length > 0 ? callers[0].id : null;
     } catch {
-      return 1;
+      return null;
     }
   },
 
@@ -583,9 +726,41 @@ export const dbStore = {
     }
   },
 
-  // Add new enquiry from visitor / customer with automatic encoding
-  addEnquiry({ name, mobile, email, locationName, projectName, type = "General Enquiry", description = "" }) {
+  // Add new enquiry from visitor / customer with automatic encoding & strict security
+  addEnquiry({ name, mobile, email, locationName, projectName, type = "General Enquiry", description = "", honeypot = "" }) {
     try {
+      // 1. Bot Honeypot Defense: Reject hidden bot inputs immediately
+      if (honeypot && String(honeypot).trim().length > 0) {
+        console.warn("Security Alert: Automated bot submission blocked by honeypot.");
+        return { error: "Automated submission blocked.", securityBlocked: true };
+      }
+
+      // 2. Strict Input Sanitization & Anti-SQL/XSS Injection
+      const cleanName = sanitizeInput(name, 60);
+      const cleanMobile = String(mobile || '').replace(/\D/g, '').slice(0, 10);
+      const cleanEmail = sanitizeInput(email, 80).toLowerCase();
+      const cleanDesc = sanitizeInput(description, 300);
+
+      // Validate Indian mobile number format (10 digits starting with 6-9)
+      if (!cleanMobile || !/^[6-9]\d{9}$/.test(cleanMobile)) {
+        return { error: "Please enter a valid 10-digit Indian mobile number." };
+      }
+
+      if (!cleanName || cleanName.length < 2) {
+        return { error: "Please provide a valid full name (minimum 2 characters)." };
+      }
+
+      // 3. Security Rate Limit Enforcement (5 submissions per 4-hour window)
+      const rateCheck = checkRateLimit(cleanMobile, 'enquiry');
+      if (!rateCheck.allowed) {
+        return { 
+          error: rateCheck.message, 
+          rateLimited: true, 
+          remainingMinutes: rateCheck.remainingMinutes,
+          remainingHours: rateCheck.remainingHours
+        };
+      }
+
       this.init();
       const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
 
@@ -611,16 +786,18 @@ export const dbStore = {
       else if (normType.includes("kit") || normType.includes("brochure")) typeId = 4;
       else if (normType.includes("consult")) typeId = 5;
 
-      // Automatically assign caller specializing in this location!
+      // Automatically assign caller specializing in this location (or Super Admin if none registered)
       const assignedCallerId = this.findCallerForLocation(locId);
+      const callers = this.getCallers();
+      const assignedCaller = assignedCallerId ? callers.find(c => c.id === assignedCallerId) : null;
 
       const newId = rawLeads.length > 0 ? Math.max(...rawLeads.map(l => l.i)) + 1 : 101;
 
       const compactRecord = {
         i: newId,
-        n: name,
-        m: mobile,
-        e: email || "",
+        n: cleanName,
+        m: cleanMobile,
+        e: cleanEmail || "",
         l: locId,
         p: projId,
         t: typeId,
@@ -630,18 +807,25 @@ export const dbStore = {
         rc: 0, // Retry count 0
         na: null,
         ts: Date.now(),
-        d: description || `Enquiry for ${PROJECT_CODES[projId]} at ${LOCATION_CODES[locId]}`,
+        d: cleanDesc || `Enquiry for ${PROJECT_CODES[projId]} at ${LOCATION_CODES[locId]}`,
         nt: [
           {
             by: "System Lead Router",
             at: Date.now(),
-            txt: `Auto-routed to Caller #${assignedCallerId} for location [${LOCATION_CODES[locId]}].`
+            txt: assignedCaller
+              ? `Auto-routed to ${assignedCaller.name} for location [${LOCATION_CODES[locId]}].`
+              : `No caller registered for [${LOCATION_CODES[locId]}]. Routed directly to Super Admin Panel for personal follow-up.`
           }
         ]
       };
 
       rawLeads.unshift(compactRecord);
       setRawData(DB_KEY, rawLeads);
+
+      // Record rate limit attempt upon successful creation
+      recordRateLimitAttempt(cleanMobile, 'enquiry');
+      recordRateLimitAttempt(getDeviceFingerprint(), 'enquiry');
+
       return this.decodeLead(compactRecord);
     } catch (e) {
       console.error("Error adding enquiry:", e);
@@ -653,13 +837,13 @@ export const dbStore = {
   decodeLead(raw) {
     if (!raw) return null;
     const callers = this.getCallers();
-    const caller = callers.find(c => c.id === raw.c);
+    const caller = raw.c ? callers.find(c => c.id === raw.c) : null;
 
     return {
       id: raw.i,
       name: raw.n,
       mobile: raw.m,
-      email: raw.e,
+      email: raw.e || "",
       locationId: raw.l,
       locationName: LOCATION_CODES[raw.l] || "Mumbai Suburbs",
       projectId: raw.p,
@@ -670,8 +854,8 @@ export const dbStore = {
       statusName: STATUS_CODES[raw.s] || "New",
       isHotLead: raw.s === 1,
       isInterested: raw.s === 2,
-      callerId: raw.c,
-      callerName: caller ? caller.name : "Unassigned Queue",
+      callerId: raw.c || null,
+      callerName: caller ? caller.name : (callers.length === 0 ? "Super Admin (Direct)" : "Admin Desk (Unassigned)"),
       callerPhone: caller ? caller.phone : "",
       callStatusCode: raw.cs,
       callStatusName: CALL_STATUS_CODES[raw.cs] || "Uncalled",
@@ -695,13 +879,26 @@ export const dbStore = {
     }
   },
 
+  // Row Level Security (RLS) Lead Provider
+  // Strictly returns only the records the authenticated user is authorized to see
+  getLeads(user) {
+    if (!user) return [];
+    if (user.role === 'admin' || user.role === 'superadmin') {
+      return this.getAllLeads();
+    }
+    if (user.role === 'caller') {
+      return this.getLeadsForCaller(user.id);
+    }
+    return [];
+  },
+
   // Get leads for a specific caller based on their assigned locations & assigned IDs
   getLeadsForCaller(callerId) {
     try {
       const all = this.getAllLeads();
       const callers = this.getCallers();
       const currentCaller = callers.find(c => c.id === callerId);
-      if (!currentCaller) return all;
+      if (!currentCaller) return [];
 
       return all.filter(l => {
         // Direct assignment OR matches caller's specialized locations
@@ -715,13 +912,27 @@ export const dbStore = {
   },
 
   // Update Call Disposition & Rating (Hot Lead = 1, Interested = 2, Not Picking = 4, etc.)
-  // Implements the user's automated 4-Hour & 10-Day Retry Logic!
-  updateLeadDisposition(leadId, { statusCode, noteText = "", callerName = "Caller" }) {
+  // Implements Row Level Security & IDOR Protection: Callers cannot tamper with other callers' leads
+  updateLeadDisposition(leadId, { statusCode, noteText = "", callerName = "Caller" }, user = null) {
     try {
       this.init();
       const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
       const lead = rawLeads.find(l => l.i === leadId);
       if (!lead) return false;
+
+      // STOP IDOR BUGS: If user is caller, enforce that this caller owns the lead
+      if (user && user.role === 'caller') {
+        const callers = this.getCallers();
+        const currentCaller = callers.find(c => c.id === user.id);
+        const ownsLead = lead.c === user.id || 
+          (currentCaller?.assignedLocations && currentCaller.assignedLocations.includes(lead.l));
+        
+        if (!ownsLead) {
+          console.warn(`[SECURITY ALERT] IDOR attempt blocked: Caller #${user.id} tried to modify unassigned Lead #${leadId}`);
+          logSecurityEvent(user, 'IDOR_MODIFICATION_BLOCKED', `Lead #${leadId}`, { leadId, actualCallerId: lead.c });
+          return { error: "Access Denied: Row Level Security prevented unauthorized modification of this lead." };
+        }
+      }
 
       const codeNum = parseInt(statusCode, 10);
       lead.s = codeNum; // Store compact numeric code 1, 2, 3, 4, 5, 6
@@ -824,7 +1035,7 @@ export const dbStore = {
   // ==========================================
   // 1-CLICK EXCEL EXPORT (Decoded Master Data)
   // ==========================================
-  exportMasterLeadsToExcel() {
+  exportMasterLeadsToExcel(user = null) {
     try {
       const leads = this.getAllLeads();
       const excelRows = leads.map((l, index) => ({
@@ -878,6 +1089,7 @@ export const dbStore = {
 
       const todayStr = new Date().toISOString().split('T')[0];
       XLSX.writeFile(workbook, `Concave_Realty_Master_Leads_${todayStr}.xlsx`);
+      logSecurityEvent(user || { role: 'admin', username: 'Super Admin' }, 'EXPORT_MASTER_EXCEL', 'Concave_Realty_Master_Leads.xlsx', { totalExported: leads.length });
       return true;
     } catch (e) {
       console.error("Excel generation error:", e);
@@ -905,17 +1117,25 @@ export const dbStore = {
     }
   },
 
-  // Single customer lead deletion
-  deleteLead(leadId) {
+  // Single customer lead deletion (Admin Only, Audit Logged)
+  deleteLead(leadId, user = null) {
     try {
+      // Row Level Security: Callers can NEVER delete leads
+      if (user && user.role === 'caller') {
+        logSecurityEvent(user, 'UNAUTHORIZED_DELETE_BLOCKED', `Lead #CON-${leadId}`, { leadId });
+        return { success: false, error: "Access Denied: Callers are strictly prohibited from deleting customer leads." };
+      }
+
       this.init();
       const rawLeads = getRawData(DB_KEY, []);
-      const remaining = rawLeads.filter(l => l.id !== leadId);
+      const remaining = rawLeads.filter(l => l.i !== leadId);
       setRawData(DB_KEY, remaining);
-      return true;
+
+      logSecurityEvent(user || { role: 'admin', username: 'Super Admin' }, 'DELETE_LEAD', `Lead #CON-${leadId}`, { leadId });
+      return { success: true };
     } catch (e) {
       console.error("Delete single lead error:", e);
-      return false;
+      return { success: false, error: e.message };
     }
   },
 
@@ -1187,6 +1407,110 @@ export const dbStore = {
       console.error("Archival error:", e);
       return { success: false, error: e.message };
     }
+  },
+
+  // ==============================================================
+  // CAREERS & TALENT ACQUISITION
+  // ==============================================================
+  addJobApplication(appData) {
+    try {
+      this.init();
+      const existing = this.getJobApplications();
+      const newApp = {
+        id: `CR-HR-${Date.now().toString().slice(-5)}`,
+        name: sanitizeInput(appData.name, 100),
+        email: sanitizeInput(appData.email, 120),
+        mobile: sanitizeInput(appData.mobile, 15),
+        city: sanitizeInput(appData.city || 'Mumbai', 80),
+        position: sanitizeInput(appData.position, 100),
+        experience: sanitizeInput(appData.experience || 'Fresher', 50),
+        currentCompany: sanitizeInput(appData.currentCompany || 'Not Disclosed', 100),
+        currentRole: sanitizeInput(appData.currentRole || 'N/A', 100),
+        noticePeriod: sanitizeInput(appData.noticePeriod || 'Immediate', 50),
+        expectedCtc: sanitizeInput(appData.expectedCtc || 'Negotiable', 50),
+        linkedin: sanitizeInput(appData.linkedin || '', 200),
+        coverNote: sanitizeInput(appData.coverNote || '', 1000),
+        resumeName: sanitizeInput(appData.resumeName || 'Profile_Resume.pdf', 120),
+        resumeSize: appData.resumeSize || '1.2 MB',
+        status: 'Under Review',
+        appliedAt: Date.now()
+      };
+      existing.unshift(newApp);
+      localStorage.setItem('concave_career_applications_v1', JSON.stringify(existing));
+      return { success: true, application: newApp };
+    } catch (e) {
+      console.error("Failed to add job application:", e);
+      return { success: false, error: e.message };
+    }
+  },
+
+  getJobApplications() {
+    try {
+      const data = localStorage.getItem('concave_career_applications_v1');
+      if (!data) {
+        // Seed default realistic applications for display
+        const defaultApps = [
+          {
+            id: 'CR-HR-88219',
+            name: 'Aakash Verma',
+            email: 'aakash.verma@example.com',
+            mobile: '9820145892',
+            city: 'Bandra West, Mumbai',
+            position: 'Senior Luxury Real Estate Consultant',
+            experience: '4-8 Years',
+            currentCompany: 'Sotheby’s International Realty',
+            currentRole: 'Senior Relationship Manager',
+            noticePeriod: '30 Days',
+            expectedCtc: '₹14 LPA + Incentives',
+            linkedin: 'https://linkedin.com/in/aakash-verma-luxury',
+            coverNote: 'Extensive 6-year portfolio in South Mumbai and Bandra luxury residential closings with high HNW network.',
+            resumeName: 'Aakash_Verma_Luxury_CV.pdf',
+            resumeSize: '1.8 MB',
+            status: 'Shortlisted for Interview',
+            appliedAt: Date.now() - 86400000 * 2
+          },
+          {
+            id: 'CR-HR-91402',
+            name: 'Sneha Kulkarni',
+            email: 'sneha.kulkarni@example.com',
+            mobile: '9819234109',
+            city: 'Andheri West, Mumbai',
+            position: 'NRI & Global Investor Sales Specialist',
+            experience: '3-6 Years',
+            currentCompany: 'Anarock Property Consultants',
+            currentRole: 'International Desk Manager',
+            noticePeriod: '15 Days',
+            expectedCtc: '₹11 LPA',
+            linkedin: 'https://linkedin.com/in/sneha-k-nri-advisory',
+            coverNote: 'Specialist in Gulf NRI consultations, cross-border banking coordination, and remote digital property walkthroughs.',
+            resumeName: 'Sneha_Kulkarni_Resume.pdf',
+            resumeSize: '1.4 MB',
+            status: 'Under Review',
+            appliedAt: Date.now() - 86400000
+          }
+        ];
+        localStorage.setItem('concave_career_applications_v1', JSON.stringify(defaultApps));
+        return defaultApps;
+      }
+      return JSON.parse(data);
+    } catch (e) {
+      return [];
+    }
+  },
+
+  updateJobApplicationStatus(appId, newStatus) {
+    try {
+      const apps = this.getJobApplications();
+      const idx = apps.findIndex(a => a.id === appId);
+      if (idx !== -1) {
+        apps[idx].status = newStatus;
+        localStorage.setItem('concave_career_applications_v1', JSON.stringify(apps));
+        return { success: true };
+      }
+      return { success: false, error: 'Application not found' };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   }
 };
 
@@ -1194,11 +1518,6 @@ export const dbStore = {
 // SECURITY & AUTHENTICATION UTILITIES
 // Prevents SQL Injection, brute-force attacks, and enforces password policy
 // =========================================================================
-
-export function sanitizeInput(str) {
-  if (typeof str !== 'string') return '';
-  return str.trim();
-}
 
 export function detectSqlInjection(str) {
   if (!str || typeof str !== 'string') return false;

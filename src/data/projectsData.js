@@ -1889,3 +1889,912 @@ export const PROMOTED_LOCATIONS = [
   }
 ];
 
+export const PROJECT_FOLDERS = {
+  1: "1 - Kalpataru Advay",
+  2: "2 - Lodha Altus",
+  3: "3 - Oberoi Sky City",
+  4: "4 - Chandak GreenAir",
+  5: "5 - Godrej Reserve",
+  6: "6 - Mahindra Vista",
+  7: "7 - Godrej Bliss",
+  8: "8 - Lodha Woods",
+  9: "9 - Naring (Malad)",
+  10: "10 - Runwal",
+  11: "11 - Lodha (Malad)",
+  12: "12 - Enchante Point",
+  13: "13 - Naring (Goregaon)",
+  14: "14 - Kalpataru Elara",
+  15: "15 - Kolte-Patil (Goregaon)",
+  16: "16 - Rustomjee (Goregaon)",
+  17: "17 - Lodha Sovrano",
+  18: "18 - Paradigm Downtown 102",
+  19: "19 - Roseworld",
+  20: "20 - Sunteck (Jogeshwari)",
+  21: "21 - Godrej Skyshore (Versova)",
+  22: "22 - Kalpataru Vian",
+  23: "23 - Adani Linkbay",
+  24: "24 - Puravankara",
+  25: "25 - Gurukrupa Realcon",
+  26: "26 - Naman 58",
+  27: "27 - Kolte-Patil (Andheri)",
+  28: "28 - Hiranandani (Andheri)",
+  29: "29 - Bharat",
+  30: "30 - Rustomjee (Andheri)",
+  31: "31 - Lodha (Andheri)",
+  32: "32 - DLF (Andheri)",
+  33: "33 - Godrej (Bandra)",
+  34: "34 - Hiranandani (Bandra)",
+  35: "35 - Raymond",
+  36: "36 - Sunteck (Bandra)",
+  37: "37 - Oberoi Realty",
+  38: "38 - Adani Realty",
+  39: "39 - DLH",
+  40: "40 - Lodha (Lower Parel)",
+  41: "41 - Piramal",
+  42: "42 - Prestige Group",
+  43: "43 - Godrej (Lower Parel)"
+};
+
+// Map each project's cover photo to file "1" inside its dedicated folder in public/project_photos/
+export const PROJECT_ENRICHMENTS = {
+  "1": {
+    "keyFeatures": [
+      "Direct access to New Link Road & upcoming Coastal Road",
+      "5 Mins to Eksar Metro Station (Line 2A)",
+      "7 Mins to Borivali Railway Station & S.V. Road",
+      "Near Apex Superspeciality Hospital & Don Bosco High School"
+    ],
+    "amenities": [
+      "Infinity Lap Pool",
+      "Grand 25,000 sq.ft Clubhouse",
+      "Rooftop Sky Lounge",
+      "Private Screening Theatre",
+      "Olympic-Grade Gymnasium",
+      "Kids Aquatic Zone",
+      "Zen Reflexology Gardens",
+      "24/7 Valet & Concierge"
+    ]
+  },
+  "2": {
+    "keyFeatures": [
+      "Direct off Western Express Highway (Borivali West)",
+      "3 Mins to Magathane / Borivali Metro Station",
+      "Overlooking 25,000-acre Sanjay Gandhi National Park",
+      "8 Mins to Borivali Terminus & S.V. Road"
+    ],
+    "amenities": [
+      "Heated Swimming Pool",
+      "Art Deco Grand Clubhouse",
+      "State-of-the-Art Fitness Center",
+      "Banquet & Ballrooms",
+      "Championship Tennis Court",
+      "Private Sunset Sundecks",
+      "Lush Forest Tree Court",
+      "Kids Play Area"
+    ]
+  },
+  "3": {
+    "keyFeatures": [
+      "Direct Integrated Skywalk to Sky City Mall",
+      "Directly Connected to Devipada Metro Station",
+      "Zero-Minute Access to Western Express Highway",
+      "Panoramic Unobstructed Views of Sanjay Gandhi National Park"
+    ],
+    "amenities": [
+      "Olympic-Length Lap Pool",
+      "Direct Mall Access",
+      "Multi-Sport Indoor Arena",
+      "Squash & Badminton Courts",
+      "Kids Adventure Forest",
+      "Luxury Spa & Hydrotherapy Sauna",
+      "Grand Banquet Lawn",
+      "Rooftop Jogging Track"
+    ]
+  },
+  "4": {
+    "keyFeatures": [
+      "Direct access off Western Express Highway",
+      "3 Mins to Rashtriya Udyan Metro Station",
+      "Bordering Sanjay Gandhi National Park Nature Corridor",
+      "5 Mins to Borivali East Station & Markets"
+    ],
+    "amenities": [
+      "Sky Infinity Pool",
+      "Designer Clubhouse",
+      "Crossfit & Aerobics Gym",
+      "Lush Landscaped Podium",
+      "Yoga & Meditation Pavilion",
+      "Children's Sensory Park",
+      "Senior Citizens Seating Plaza",
+      "Indoor Games Arcade"
+    ]
+  },
+  "5": {
+    "keyFeatures": [
+      "Direct access via Akurli Road, Kandivali East",
+      "3 Mins to Akurli Metro Station & Western Express Highway",
+      "5 Mins to Growel's 101 Mall & Kandivali Railway Station",
+      "Flanked by 100+ Acres of Protected Reserve Forest Greens"
+    ],
+    "amenities": [
+      "Resort-Style Swimming Pool",
+      "Grand Double-Height Entrance Lobby",
+      "Clubhouse with Steam & Sauna",
+      "Modern Gymnasium",
+      "Indoor Badminton Court",
+      "Reflexology & Jogging Trail",
+      "Terrace Sky Garden",
+      "24/7 Biometric Multi-Tier Security"
+    ]
+  },
+  "6": {
+    "keyFeatures": [
+      "Located on Akurli Road, Kandivali East",
+      "2 Mins to Western Express Highway & Metro Line 7",
+      "4 Mins to Growel's 101 Mall & Multiplex",
+      "7 Mins to Kandivali Railway Station & S.V. Road"
+    ],
+    "amenities": [
+      "Temperature-Controlled Pool",
+      "Club Vista Community Center",
+      "High-Tech Fitness Studio",
+      "Multipurpose Sports Court",
+      "Organic Community Farm",
+      "Sky Gazing Deck",
+      "Kids Learning Pod",
+      "Electric Vehicle Charging Stations"
+    ]
+  },
+  "7": {
+    "keyFeatures": [
+      "Prime Location in Lokhandwala Township, Kandivali East",
+      "3 Mins to Western Express Highway & Metro Station",
+      "5 Mins to Cambridge School & Sports Arena",
+      "Direct corridor to Kandivali & Malad East business hubs"
+    ],
+    "amenities": [
+      "Infinity-Edge Swimming Pool",
+      "Grand 40-Storey Sky Lounge",
+      "Fully Equipped Gymnasium",
+      "Jogging & Cycling Track",
+      "Indoor Games Room",
+      "Kids Splash Park",
+      "Banquet & Party Lawn",
+      "Private Work Pods / Business Center"
+    ]
+  },
+  "8": {
+    "keyFeatures": [
+      "Nestled off Western Express Highway, Kandivali East",
+      "2 Mins to Mahindra & Mahindra Metro Station",
+      "Surrounded by 25,000 Acres of National Park Greens",
+      "6 Mins to Thakur Village & Growel's 101 Mall"
+    ],
+    "amenities": [
+      "Heated Swimming Pool",
+      "20,000 sq.ft International Clubhouse",
+      "Woodland Nature Trails",
+      "Outdoor Tennis & Basketball Courts",
+      "Gymnasium by World-Class Trainers",
+      "Private Dining Terrace",
+      "Kids Adventure Forest",
+      "24/7 Concierge"
+    ]
+  },
+  "9": {
+    "keyFeatures": [
+      "Located on Link Road Corridor, Malad West",
+      "3 Mins to Inorbit Mall & Infiniti Mall Malad",
+      "4 Mins to Malad West Metro Station (Line 2A)",
+      "Rapid connection to Mindspace IT Park & S.V. Road"
+    ],
+    "amenities": [
+      "Rooftop Infinity Swimming Pool",
+      "Designer Sky Clubhouse",
+      "Hi-Tech Fitness Gym",
+      "Rooftop Party Deck",
+      "Children's Play Arena",
+      "Indoor Games Lounge",
+      "Multipurpose Banquet",
+      "24/7 CCTV & RFID Access"
+    ]
+  },
+  "10": {
+    "keyFeatures": [
+      "Adjacent to Inorbit Mall, Malad West",
+      "3 Mins to Malad West Metro Station",
+      "5 Mins to Mindspace IT & Commercial SEZ",
+      "8 Mins to S.V. Road & Western Express Highway via Flyover"
+    ],
+    "amenities": [
+      "Large Lap Pool & Kids Pool",
+      "Palatial Lifestyle Clubhouse",
+      "Advanced Fitness & Cardio Suite",
+      "Squash & Table Tennis Courts",
+      "Landscaped Podium Gardens",
+      "Banquet Hall with Kitchen",
+      "Jogging Loop",
+      "Co-Working Executive Lounge"
+    ]
+  },
+  "11": {
+    "keyFeatures": [
+      "Prime position on Link Road, Malad West",
+      "4 Mins to Mindspace & Western Metro Line 2A",
+      "5 Mins to Infiniti & Inorbit Malls",
+      "Direct connectivity to Coastal Road extension & S.V. Road"
+    ],
+    "amenities": [
+      "Signature Lodha Swimming Pool",
+      "Grand Entrance Lobby",
+      "World-Class Fitness Center",
+      "Indoor Games & Billiards Room",
+      "Private Meeting Rooms",
+      "Sky Deck with City Views",
+      "Children's Play Zone",
+      "24/7 Lodha Concierge"
+    ]
+  },
+  "12": {
+    "keyFeatures": [
+      "Off S.V. Road & Link Road, Malad West",
+      "4 Mins to Malad Railway Station",
+      "5 Mins to Inorbit Mall & Metro Line 2A",
+      "Easy bypass to Goregaon & Western Express Highway"
+    ],
+    "amenities": [
+      "Rooftop Horizon Swimming Pool",
+      "Boutique Sky Clubhouse",
+      "Fitness & Yoga Studio",
+      "Designer Landscaped Terraces",
+      "Indoor Games Arcade",
+      "Private Party Lounge",
+      "Multipurpose Community Hall",
+      "Hi-Speed Passenger Elevators"
+    ]
+  },
+  "13": {
+    "keyFeatures": [
+      "Located on Link Road Corridor, Goregaon West",
+      "3 Mins to Bangur Nagar Metro Station",
+      "5 Mins to Inorbit Mall & Goregaon Railway Station",
+      "Quick connection to Western Express Highway via Mrinal Tai Gore Flyover"
+    ],
+    "amenities": [
+      "Grand Porte-Coch\u00e8re Drop-off Lobby",
+      "Swimming Pool with Timber Sun Deck",
+      "State-of-the-Art Gymnasium",
+      "Landscaped Podium Gardens",
+      "Kids Fun Park",
+      "Banquet & Gathering Hall",
+      "Indoor Games Zone",
+      "High-Security Access Control"
+    ]
+  },
+  "14": {
+    "keyFeatures": [
+      "Near Inorbit Mall & Mindspace, Goregaon West",
+      "3 Mins to Bangur Nagar Metro Station",
+      "6 Mins to Goregaon Railway Station & S.V. Road",
+      "Direct arterial access to Western Express Highway"
+    ],
+    "amenities": [
+      "Curved Swimming Pool & Poolside Cabanas",
+      "Grand Double-Height Entrance Lobby",
+      "Fully Equipped Fitness Center",
+      "Badminton & Half Basketball Court",
+      "Jogging Path & Reflexology Walkway",
+      "Kids Play Area & Sandbox",
+      "Party Lawn with BBQ Station",
+      "24/7 Manned Security"
+    ]
+  },
+  "15": {
+    "keyFeatures": [
+      "Link Road Corridor, Goregaon West",
+      "3 Mins to Metro Station Line 2A",
+      "5 Mins to Inorbit Mall & Hypercity",
+      "10 Mins to Oberoi Mall via Goregaon-Mulund Link Road"
+    ],
+    "amenities": [
+      "Sky Swimming Pool",
+      "Fitness & Aerobics Center",
+      "Rooftop Sky Lounge",
+      "Landscaped Sit-out Gardens",
+      "Indoor Games & Card Room",
+      "Children's Play Arena",
+      "Grand Welcoming Lobby",
+      "24/7 Security & CCTV"
+    ]
+  },
+  "16": {
+    "keyFeatures": [
+      "Strategic position off S.V. Road & Link Road, Goregaon West",
+      "4 Mins to Goregaon Railway Station",
+      "5 Mins to Inorbit Mall & Metro Station",
+      "Direct flyover access to Western Express Highway"
+    ],
+    "amenities": [
+      "Full-Length Swimming Pool",
+      "Exclusive Rustomjee Clubhouse",
+      "Equipped Gymnasium & Yoga Deck",
+      "Tennis & Multipurpose Court",
+      "Amphitheatre & Performance Lawn",
+      "Children's Theme Park",
+      "Senior Citizens Pavilion",
+      "24/7 Concierge"
+    ]
+  },
+  "17": {
+    "keyFeatures": [
+      "Near S.V. Road & JVLR, Jogeshwari West",
+      "3 Mins to Jogeshwari Railway Station & Metro Line 6",
+      "5 Mins to Western Express Highway & Lokhandwala Link",
+      "8 Mins to Oberoi Mall & Nesco IT Park"
+    ],
+    "amenities": [
+      "Regal Swimming Pool with Sunken Loungers",
+      "Grand Art Deco Clubhouse",
+      "Fitness Center with Modern Cardio",
+      "Indoor Sports Room",
+      "Designer Tree-lined Gardens",
+      "Banquet Hall & Party Lawns",
+      "Kids Adventure Play Zone",
+      "24/7 Lodha Services"
+    ]
+  },
+  "18": {
+    "keyFeatures": [
+      "Directly on S.V. Road, Jogeshwari West",
+      "2 Mins to Jogeshwari Railway Station",
+      "5 Mins to JVLR & Western Express Highway",
+      "7 Mins to Andheri Station & Metro Line 1"
+    ],
+    "amenities": [
+      "Rooftop Infinity Lap Pool",
+      "Sky Lounge & Stargazing Deck",
+      "Technogym Fitness Studio",
+      "Rooftop Walking Track",
+      "Kids Play Zone",
+      "Indoor Games Pavilion",
+      "Modern Business Center",
+      "Multipurpose Community Hall"
+    ]
+  },
+  "19": {
+    "keyFeatures": [
+      "Directly on S.V. Road, Oshiwara, Jogeshwari West",
+      "2 Mins to Lower Oshiwara Metro Station",
+      "5 Mins to Infiniti Mall Andheri & Lokhandwala Complex",
+      "Quick access to JVLR & Western Express Highway"
+    ],
+    "amenities": [
+      "Podium Swimming Pool with Deck",
+      "High-Tech Gymnasium & Aerobics Room",
+      "Rooftop Sky Lounge",
+      "Landscaped Podium Gardens",
+      "Banquet & Celebration Hall",
+      "Children's Fun Zone",
+      "Indoor Sports Lounge",
+      "Multi-Tier Smart Security"
+    ]
+  },
+  "20": {
+    "keyFeatures": [
+      "Near JVLR Junction & Oshiwara, Jogeshwari West",
+      "2 Mins to Ram Mandir Railway Station & Metro",
+      "Direct access to Western Express Highway via JVLR",
+      "5 Mins to Nesco IT Park & Oberoi Commerz"
+    ],
+    "amenities": [
+      "Olympic-Style Swimming Pool",
+      "Integrated Township Clubhouse",
+      "Advanced Fitness Center",
+      "Squash & Tennis Courts",
+      "Lush Central Park Gardens",
+      "Boutique Retail & Cafes",
+      "Kids Aquatic Zone",
+      "24/7 Concierge & Valet"
+    ]
+  },
+  "21": {
+    "keyFeatures": [
+      "Direct Seafront Location in Versova, Andheri West",
+      "2 Mins to Versova Metro Station (Line 1)",
+      "5 Mins to Lokhandwala Complex & Juhu Beach",
+      "Direct access to upcoming Versova-Bandra Sea Link"
+    ],
+    "amenities": [
+      "Sea-Facing Infinity Lap Pool",
+      "Private Seafront Cabanas",
+      "Grand Porte-Coch\u00e8re Lobby",
+      "Modern Fitness & Pilates Studio",
+      "Rooftop Party Deck with Sunset Views",
+      "Private Movie Theatre",
+      "Kids Splash Pool",
+      "24/7 Luxury Concierge"
+    ]
+  },
+  "22": {
+    "keyFeatures": [
+      "Near Western Express Highway, Andheri East",
+      "3 Mins to Gundavali / Western Express Highway Metro",
+      "5 Mins to Andheri Railway Station & Hubtown SEZ",
+      "8 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)"
+    ],
+    "amenities": [
+      "Temperature-Controlled Pool",
+      "Designer Sky Clubhouse",
+      "Cardio & Weight Training Gym",
+      "Reflexology Walkway & Gardens",
+      "Indoor Badminton & Games",
+      "Kids Play Arena",
+      "Executive Meeting Lounge",
+      "24/7 Smart Security"
+    ]
+  },
+  "23": {
+    "keyFeatures": [
+      "Near D.N. Nagar Metro Interchange, Andheri West",
+      "2 Mins to Link Road & Juhu Circle",
+      "5 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "8 Mins to Versova Beach & Western Express Highway via JVLR"
+    ],
+    "amenities": [
+      "Skyline Lap Pool",
+      "Grand High-Ceiling Clubhouse",
+      "State-of-the-Art Fitness Center",
+      "Squash & Multi-Play Courts",
+      "Landscaped Eco Decks",
+      "Private Screening Cinema",
+      "Children's Interactive Playground",
+      "24/7 Valet Concierge"
+    ]
+  },
+  "24": {
+    "keyFeatures": [
+      "Prime Andheri Corridor Location",
+      "3 Mins to Western Metro Line & Highway Link",
+      "6 Mins to International Airport & Commercial Hubs",
+      "Proximity to Top International Schools & Hospitals"
+    ],
+    "amenities": [
+      "Resort-Style Swimming Pool",
+      "Clubhouse with Steam & Jacuzzi",
+      "Modern Gymnasium",
+      "Indoor Badminton Court",
+      "Yoga & Meditation Green Lawn",
+      "Kids Pool & Play Ground",
+      "Banquet Hall",
+      "24/7 CCTV Multi-Tier Security"
+    ]
+  },
+  "25": {
+    "keyFeatures": [
+      "Andheri East Corridor near Metro Line 1",
+      "5 Mins to Western Express Highway & Metro Station",
+      "8 Mins to International Airport Terminal 2",
+      "Proximity to MIDC & SEEPZ Commercial Hubs"
+    ],
+    "amenities": [
+      "Swimming Pool with Lounge Deck",
+      "Equipped Gymnasium",
+      "Rooftop Landscaped Garden",
+      "Indoor Games Room",
+      "Kids Play Arena",
+      "Grand Entrance Lobby",
+      "Senior Citizen Sit-out Zone",
+      "24/7 Security"
+    ]
+  },
+  "26": {
+    "keyFeatures": [
+      "Strategic Location in Chakala / JB Nagar, Andheri",
+      "2 Mins to Chakala Metro Station (Line 1)",
+      "4 Mins to Western Express Highway & Solitaire Corporate Park",
+      "7 Mins to Mumbai International Airport (T2)"
+    ],
+    "amenities": [
+      "Rooftop Infinity Pool",
+      "Sky Lounge with Panoramic Runway Views",
+      "High-Tech Gymnasium",
+      "Executive Business Pods & Boardroom",
+      "Landscaped Sky Terraces",
+      "Indoor Recreation Lounge",
+      "24/7 High-Speed Elevators",
+      "Biometric Access Security"
+    ]
+  },
+  "27": {
+    "keyFeatures": [
+      "Prime Andheri West Corridor",
+      "3 Mins to Metro Station & Link Road",
+      "5 Mins to Juhu Circle & Kokilaben Hospital",
+      "8 Mins to Andheri Railway Station"
+    ],
+    "amenities": [
+      "Sky Swimming Pool",
+      "Rooftop Fitness Pavilion",
+      "Open-Air Sky Lounge",
+      "Landscaped Podium Gardens",
+      "Kids Play Space",
+      "Indoor Games Arcade",
+      "Grand Designer Lobby",
+      "24/7 Security"
+    ]
+  },
+  "28": {
+    "keyFeatures": [
+      "Prime Andheri West Location near S.V. Road",
+      "3 Mins to Andheri Railway Station & Metro Interchange",
+      "6 Mins to Western Express Highway & Juhu",
+      "Surrounded by Top Educational & Healthcare Institutes"
+    ],
+    "amenities": [
+      "Neoclassical Architecture Swimming Pool",
+      "Luxury Hiranandani Clubhouse",
+      "World-Class Gymnasium",
+      "Squash & Badminton Courts",
+      "Landscaped Roman Gardens",
+      "Banquet & Ballrooms",
+      "Children's Adventure Area",
+      "24/7 Concierge"
+    ]
+  },
+  "29": {
+    "keyFeatures": [
+      "Upper Juhu / D.N. Nagar Corridor, Andheri West",
+      "2 Mins to D.N. Nagar Metro Station",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "6 Mins to Juhu Circle, PVR Dynamix & Juhu Beach"
+    ],
+    "amenities": [
+      "Sky Infinity Pool overlooking Arabian Sea",
+      "Exclusive Clubhouse with Spa",
+      "Modern Fitness & Aerobics Center",
+      "Squash Court & Indoor Sports",
+      "Zen Meditation Garden",
+      "Kids Fun Zone",
+      "Double-Height Designer Lobby",
+      "24/7 Valet Parking"
+    ]
+  },
+  "30": {
+    "keyFeatures": [
+      "Andheri Prime Belt near S.V. Road & Metro",
+      "3 Mins to Andheri Railway Station",
+      "5 Mins to Western Express Highway",
+      "7 Mins to International Airport"
+    ],
+    "amenities": [
+      "Rooftop Lap Pool",
+      "Thoughtful Clubhouse Spaces",
+      "Advanced Gymnasium",
+      "Sky Deck with City Views",
+      "Children's Creative Play Park",
+      "Indoor Games Zone",
+      "Multipurpose Hall",
+      "24/7 Concierge"
+    ]
+  },
+  "31": {
+    "keyFeatures": [
+      "Prime Andheri West Belt near Link Road",
+      "3 Mins to Metro Station & Retail Avenues",
+      "6 Mins to Kokilaben Hospital & Juhu Circle",
+      "Rapid connection to Western Express Highway via JVLR"
+    ],
+    "amenities": [
+      "Signature Lodha Pool",
+      "Art Deco Inspired Clubhouse",
+      "Fitness Studio with Trainers",
+      "Indoor Games Room",
+      "Landscaped Gardens",
+      "Banquet Facilities",
+      "Children's Play Arena",
+      "24/7 Lodha Services"
+    ]
+  },
+  "32": {
+    "keyFeatures": [
+      "Andheri West Corridor near Link Road",
+      "4 Mins to Metro Line 2A & D.N. Nagar Interchange",
+      "6 Mins to Kokilaben Hospital & Lokhandwala",
+      "10 Mins to Juhu Beach & Western Express Highway"
+    ],
+    "amenities": [
+      "Luxury Lap Pool with Sunbeds",
+      "High-End DLF Clubhouse",
+      "Crossfit & Cardio Gym",
+      "Private Screening Lounge",
+      "Lush Landscaped Central Court",
+      "Kids Play Arena",
+      "Grand Double-Height Lobby",
+      "24/7 Concierge"
+    ]
+  },
+  "33": {
+    "keyFeatures": [
+      "Exclusive Pali Hill / Bandra West Location",
+      "2 Mins to Bandra Promenade & Carter Road",
+      "5 Mins to Bandra-Worli Sea Link & Linking Road",
+      "10 Mins to BKC Financial District via Connector"
+    ],
+    "amenities": [
+      "Private Infinity Pool",
+      "Ultra-Luxury Bespoke Clubhouse",
+      "Technogym Fitness Suite",
+      "Private Screening Theatre",
+      "Zen Sky Lounge overlooking Arabian Sea",
+      "Fine Dining Banquet Room",
+      "Dedicated Valet & Concierge",
+      "Biometric Private Lift Lobby"
+    ]
+  },
+  "34": {
+    "keyFeatures": [
+      "Prime Bandra West Corridor near Turner Road",
+      "3 Mins to Bandra-Worli Sea Link",
+      "5 Mins to Bandra Railway Station & S.V. Road",
+      "Surrounded by Elite Cafes, Boutiques & Lilavati Hospital"
+    ],
+    "amenities": [
+      "Neoclassical Rooftop Pool",
+      "Hiranandani Luxury Club",
+      "State-of-the-Art Gymnasium",
+      "Landscaped Sky Terraces",
+      "Private Meeting Suites",
+      "Kids Play Area",
+      "Grand Entrance Foyer",
+      "24/7 White-Glove Concierge"
+    ]
+  },
+  "35": {
+    "keyFeatures": [
+      "Directly at BKC Gateway, Bandra East",
+      "2 Mins to Bandra Kurla Complex (BKC) Financial District",
+      "3 Mins to Western Express Highway & BKC Connector",
+      "5 Mins to Bandra-Worli Sea Link & Kalanagar Junction"
+    ],
+    "amenities": [
+      "Rooftop Infinity Pool overlooking BKC Skyline",
+      "Clubhouse Curated by GS",
+      "High-Tech Gymnasium & Aerobics",
+      "Squash & Badminton Courts",
+      "Exclusive Cigar & Reading Lounge",
+      "Private Screening Cinema",
+      "Kids Play Arena",
+      "24/7 Valet & Concierge"
+    ]
+  },
+  "36": {
+    "keyFeatures": [
+      "Prestigious Mount Mary / Bandstand, Bandra West",
+      "2 Mins to Taj Lands End & Bandra Fort",
+      "4 Mins to Bandra-Worli Sea Link",
+      "Panoramic Unobstructed Arabian Sea & Sunset Views"
+    ],
+    "amenities": [
+      "Sea-Facing Infinity Pool",
+      "Ultra-Luxury Private Clubhouse",
+      "World-Class Fitness Studio",
+      "Spa with Steam & Sauna",
+      "Rooftop Stargazing Lounge",
+      "Private Dining Room",
+      "Children's Creche & Play Zone",
+      "24/7 Dedicated Concierge"
+    ]
+  },
+  "37": {
+    "keyFeatures": [
+      "Iconic Carter Road Promenade, Bandra West",
+      "Direct Front-Row Arabian Sea Views",
+      "4 Mins to Bandra-Worli Sea Link & Western Express Highway",
+      "8 Mins to BKC via Kalanagar Flyover"
+    ],
+    "amenities": [
+      "Seafront Olympic-Length Lap Pool",
+      "Oberoi Signature Clubhouse",
+      "Gymnasium with Personal Trainers",
+      "Squash & Tennis Courts",
+      "Lush Landscaped Green Lawns",
+      "Private Wine & Dine Lounge",
+      "Kids Activity Pod",
+      "24/7 High-Security Protocols"
+    ]
+  },
+  "38": {
+    "keyFeatures": [
+      "Prime Bandra West Corridor near Linking Road",
+      "3 Mins to Bandra-Worli Sea Link",
+      "5 Mins to Bandra Terminus & Western Express Highway",
+      "10 Mins to BKC Financial Hub"
+    ],
+    "amenities": [
+      "Luxury Lap Pool with Sunken Decks",
+      "Grand Designer Clubhouse",
+      "Modern Fitness & Yoga Studio",
+      "Sky Deck with City Panorama",
+      "Children's Creative Play Park",
+      "Multipurpose Hall",
+      "Double-Height Porte-Coch\u00e8re",
+      "24/7 Valet Concierge"
+    ]
+  },
+  "39": {
+    "keyFeatures": [
+      "Near Bandra Reclamation & Lilavati Hospital, Bandra West",
+      "2 Mins to Bandra-Worli Sea Link Toll Plaza",
+      "4 Mins to S.V. Road & Bandra Station",
+      "7 Mins to BKC via Western Express Highway"
+    ],
+    "amenities": [
+      "Rooftop Infinity Swimming Pool",
+      "Boutique Luxury Clubhouse",
+      "High-Tech Gymnasium",
+      "Sky Lounge with Sea Views",
+      "Children's Play Arena",
+      "Indoor Games Lounge",
+      "Designer Entrance Lobby",
+      "24/7 Smart Security"
+    ]
+  },
+  "40": {
+    "keyFeatures": [
+      "At Parkside / Worli-Lower Parel Junction",
+      "Adjacent to High Street Phoenix & Phoenix Palladium Mall",
+      "3 Mins to Upcoming Coastal Road & Worli Sea Face",
+      "5 Mins to Lower Parel & Currey Road Railway Stations"
+    ],
+    "amenities": [
+      "7 Swimming Pools including Olympic Lap Pool",
+      "50,000 sq.ft Grand Clubhouse (The Jewel)",
+      "7-Acre Private Park within Estate",
+      "Evander Holyfield Boxing Ring",
+      "Full-Size Cricket Pitch & Football Turf",
+      "Luxury Spa by ESPA",
+      "Private Screening Theatre",
+      "24/7 Saint Amand Concierge"
+    ]
+  },
+  "41": {
+    "keyFeatures": [
+      "Direct Frontage to Mahalaxmi Racecourse & Arabian Sea",
+      "2 Mins to Mahalaxmi Railway Station & Monorail",
+      "4 Mins to Mumbai Coastal Road Interchange",
+      "6 Mins to Phoenix Palladium Mall & Lower Parel Business District"
+    ],
+    "amenities": [
+      "Infinity Lap Pool overlooking Racecourse",
+      "Grand 3-Level Luxury Clubhouse",
+      "Spa with Jacuzzi & Sauna",
+      "Modern Fitness Studio & Pilates",
+      "Squash & Badminton Courts",
+      "Private Screening Theatre",
+      "Kids Creative Learning Center",
+      "24/7 White-Glove Concierge"
+    ]
+  },
+  "42": {
+    "keyFeatures": [
+      "Off Senapati Bapat Marg, Lower Parel / Byculla",
+      "3 Mins to Lower Parel Commercial Hub (One World Center / Kamala Mills)",
+      "5 Mins to Eastern Express Highway & Coastal Road",
+      "6 Mins to Phoenix Palladium & High Street Phoenix"
+    ],
+    "amenities": [
+      "Infinity Swimming Pool & Kids Pool",
+      "Grand Double-Height Clubhouse",
+      "World-Class Gymnasium & Aerobics",
+      "Badminton & Squash Courts",
+      "Spa with Treatment Rooms",
+      "Private Banquet & Party Hall",
+      "Children's Play Park",
+      "24/7 Prestige Concierge"
+    ]
+  },
+  "43": {
+    "keyFeatures": [
+      "Prime Lower Parel / Wadala Corridor with Monorail & Metro",
+      "5 Mins to Eastern Freeway & Eastern Express Highway",
+      "7 Mins to Lower Parel Business District & Phoenix Palladium",
+      "10 Mins to BKC via Trans-Harbour Link / Freeway"
+    ],
+    "amenities": [
+      "5-Tier Sky Lounge & Infinity Pool",
+      "Grand 5-Storey Clubhouse",
+      "State-of-the-Art Fitness Center",
+      "Squash & Tennis Courts",
+      "Lush Landscaped Sky Podiums",
+      "Private Cineplex",
+      "Kids Play World",
+      "24/7 Biometric Multi-Tier Security"
+    ]
+  }
+};
+
+// Dedicated map of the highest quality full-building exterior facade photo for each project
+export const BEST_COVER_FILES = {
+  1: "3.jpg",              // Kalpataru Advay (Borivali W): 3 glowing high-rise towers in twilight
+  2: "tower_facade.jpg",   // Lodha Altus (Borivali W): Full high-rise skyscraper tower from JLL
+  3: "3.jpg",              // Oberoi Sky City (Borivali E): All 5 majestic towers in golden sunlight
+  4: "tower_facade.jpg",   // Chandak GreenAir (Borivali E): Chandak twin towers with commercial podium
+  5: "tower_facade.webp",  // Godrej Reserve (Kandivali E): Official multi-tower master render
+  6: "tower_facade.webp",  // Mahindra Vista (Kandivali E): All 4 high-rise towers from Mahindra Lifespaces
+  7: "2.jpg",              // Godrej Bliss (Kandivali E): All 4 high-rise towers
+  8: "1.jpg",              // Lodha Woods (Kandivali E): Wide estate building facade
+  9: "1.jpg",              // Naring Malad (Malad W): Full twin towers overlooking sports court
+  10: "3.jpg",             // Runwal Auris (Malad W): All 4 lit towers at dusk
+  11: "1.jpg",             // Lodha Malad (Malad W): Full high-rise towers with clubhouse
+  12: "3.jpg",             // Enchante Point (Malad W): Full high-rise tower at night
+  13: "2.jpg",             // Naring Goregaon (Goregaon W): Full twin towers with commercial podium
+  14: "1.jpg",             // Kalpataru Elara (Goregaon W): Grand high-rise towers overlooking city
+  15: "1.jpg",             // Kolte-Patil Goregaon (Goregaon W): Twin towers facade (NOT Buddha lawn)
+  16: "2.jpg",             // Rustomjee Goregaon (Goregaon W): 4-tower skyline (NOT swimming pool)
+  17: "1.jpg",             // Lodha Sovrano (Jogeshwari W): Full high-rise towers with commercial podium
+  18: "1.jpg",             // Paradigm Downtown 102 (Jogeshwari W): Tall skyscraper tower (NOT logo banner)
+  19: "3.jpg",             // Roseworld (Jogeshwari W): Glowing skyscraper twin towers at sunset
+  20: "tower_facade.jpg",  // Sunteck City (Jogeshwari W): 3K JLL full high-rise tower at night (NOT woman in dress)
+  21: "1.jpg",             // Godrej Skyshore (Versova): Full twin towers in sunset glow facing sea
+  22: "tower_facade.jpg",  // Kalpataru Vian (Andheri E): Magnificent multi-tower high-rise skyline
+  23: "2.jpg",             // Adani Linkbay (Andheri W): Full modern residential tower (NOT bedroom)
+  24: "2.jpg",             // Puravankara (Andheri): Full illuminated building at night
+  25: "1.jpg",             // Gurukrupa Realcon (Andheri E): Entire tower elevation (NOT gift box with couple)
+  26: "1.jpg",             // Naman 58 (Andheri E): Aerial tower elevation overlooking metro line
+  27: "1.jpg",             // Kolte-Patil (Andheri): 2-tower lit exterior next to metro line
+  28: "1.jpg",             // Hiranandani Vicino (Andheri): Full color glass tower (NOT black & white)
+  29: "4.jpg",             // Bharat (Andheri W): Full corporate & residential high-rise complex
+  30: "2.jpg",             // Rustomjee Stella (Andheri): Full tower at twilight
+  31: "1.jpg",             // Lodha Acenza (Andheri): Striking tower facade (NOT balcony)
+  32: "1.jpg",             // DLF (Andheri): DLF residential towers
+  33: "2.jpg",             // Godrej (Bandra W): Waterfront tower overlooking Bandra-Worli Sea Link
+  34: "1.jpg",             // Hiranandani (Bandra W): Entire luxury neoclassical skyscraper (NOT roof edge)
+  35: "1.jpg",             // Raymond (Bandra E): Illuminated residential towers
+  36: "1.jpg",             // Sunteck (Bandra W): Commercial glass towers (NOT woman with coffee cup)
+  37: "1.jpg",             // Oberoi Realty (Bandra W): Luxury towers overlooking greenery
+  38: "tower_facade.jpg",  // Adani Ten BKC (Bandra BKC): Illuminated night exterior from Adani Realty (NOT swimming pool)
+  39: "1.jpg",             // DLH (Bandra W): Sea-facing skyscraper tower (NOT rooftop lounge)
+  40: "1.jpg",             // Lodha Lower Parel (World Towers): Entire skyscraper tower (NOT woman in dress)
+  41: "1.jpg",             // Piramal Mahalaxmi (Lower Parel): Iconic 3-tower luxury skyline overlooking racecourse
+  42: "1.jpg",             // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
+  43: "3.jpg"              // Godrej Lower Parel (Lower Parel): Multi-tower master elevation (NOT balcony edge)
+};
+
+// Map each project's total photo count in public/project_photos/
+export const PROJECT_PHOTO_COUNTS = {
+  1: 3, 2: 4, 3: 3, 4: 3, 5: 5,
+  6: 4, 7: 4, 8: 4, 9: 3, 10: 3,
+  11: 4, 12: 5, 13: 3, 14: 4, 15: 3,
+  16: 3, 17: 4, 18: 3, 19: 3, 20: 3,
+  21: 3, 22: 4, 23: 3, 24: 3, 25: 3,
+  26: 4, 27: 3, 28: 3, 29: 4, 30: 3,
+  31: 3, 32: 3, 33: 4, 34: 3, 35: 3,
+  36: 3, 37: 3, 38: 4, 39: 3, 40: 5,
+  41: 3, 42: 3, 43: 3
+};
+
+PROJECTS_DATA.forEach(p => {
+  const enrich = PROJECT_ENRICHMENTS[p.id];
+  if (enrich) {
+    p.keyFeatures = enrich.keyFeatures || [];
+    if (enrich.amenities) p.amenities = enrich.amenities;
+  }
+  const folder = PROJECT_FOLDERS[p.id] || `${p.id} - ${p.name}`;
+  p.folder = folder;
+  p.fallbackCover = p.coverImage;
+
+  const bestCover = BEST_COVER_FILES[p.id] || '1.jpg';
+  p.coverImage = `/project_photos/${encodeURIComponent(folder)}/${bestCover}`;
+
+  // Assemble full photo gallery with best exterior facade as 1st photo
+  const count = PROJECT_PHOTO_COUNTS[p.id] || 3;
+  const otherImages = [];
+  for (let i = 1; i <= count; i++) {
+    const fileName = `${i}.jpg`;
+    if (fileName !== bestCover) {
+      otherImages.push(`/project_photos/${encodeURIComponent(folder)}/${fileName}`);
+    }
+  }
+  p.images = [p.coverImage, ...otherImages];
+});
+

@@ -9,11 +9,10 @@ import {
   Volume2, 
   VolumeX, 
   ArrowRight,
-  Compass,
-  ChevronDown
+  Compass
 } from 'lucide-react';
 
-export function HeroSection({ onSearch, onExplore, onOpenTour, onOpenEnquiry }) {
+export function HeroSection({ onSearch, onOpenTour, onOpenEnquiry }) {
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [propertyType, setPropertyType] = useState('All');
   const [budgetRange, setBudgetRange] = useState('All');
@@ -54,15 +53,15 @@ export function HeroSection({ onSearch, onExplore, onOpenTour, onOpenEnquiry }) 
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
       
       {/* Fullscreen Video Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 overflow-hidden">
         <video
           ref={videoRef}
           autoPlay
           loop
           muted={isMuted}
           playsInline
-          poster="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1920&q=80"
-          className="w-full h-full object-cover filter brightness-[0.7] contrast-[1.05]"
+          poster="/projects/project_img_1.jpg"
+          className="w-full h-full object-cover scale-[1.08] filter brightness-[0.7] contrast-[1.05]"
         >
           <source 
             src="/videos/concave-luxury-realestate.mp4" 
@@ -78,24 +77,13 @@ export function HeroSection({ onSearch, onExplore, onOpenTour, onOpenEnquiry }) 
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6">
 
         {/* Main Title & User Slogan */}
-        <div className="space-y-3">
-          <h1 className="font-serif text-5xl sm:text-7xl font-bold tracking-tight drop-shadow-md gold-shine-text">
+        <div className="space-y-2 sm:space-y-3 px-2">
+          <h1 className="font-serif text-3xl sm:text-6xl md:text-7xl font-bold tracking-tight drop-shadow-md gold-shine-text leading-tight">
             CONCAVE REALTY
           </h1>
-          <p className="font-serif italic text-2xl sm:text-3xl font-light drop-shadow gold-shine-text">
+          <p className="font-serif italic text-base sm:text-2xl md:text-3xl font-light drop-shadow gold-shine-text">
             Where Legacy Meets Luxury
           </p>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="pt-6 flex justify-center">
-          <button
-            onClick={onExplore}
-            className="text-xs uppercase tracking-widest text-white/80 hover:text-white transition-colors flex items-center gap-1 font-light"
-          >
-            <span>Explore Developments</span>
-            <ChevronDown className="w-4 h-4 animate-bounce" />
-          </button>
         </div>
 
       </div>
