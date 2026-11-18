@@ -367,6 +367,44 @@ const INITIAL_SEED_LEADS = [
       { by: "Priya Deshmukh", at: Date.now() - 3600 * 1000 * 28, txt: "Attempt 1: No answer." },
       { by: "Priya Deshmukh", at: Date.now() - 3600 * 1000 * 24, txt: "Attempt 2 (4h retry): Switched off. Moved to daily retry schedule (Day 2 of 10)." }
     ]
+  },
+  {
+    i: 107,
+    n: "Ananya Sharma",
+    m: "98201 55667",
+    e: "ananya.s@example.com",
+    l: 3, // Goregaon
+    p: 4, // Concave Signature
+    t: 1, // General Enquiry
+    s: 7, // New Lead / Enquiry record
+    c: 1, // Rahul Sharma
+    cs: 0, // Uncalled
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 2,
+    d: "Interested in 3 BHK high floor unit near Inorbit Mall.",
+    nt: [
+      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Goregaon." }
+    ]
+  },
+  {
+    i: 108,
+    n: "Vikramaditya Roy",
+    m: "98192 33445",
+    e: "v.roy@example.com",
+    l: 4, // Bhayander
+    p: 6, // Mira-Bhayander
+    t: 1, // General Enquiry
+    s: 7, // New Lead / Enquiry record
+    c: 1, // Rahul Sharma
+    cs: 0, // Uncalled
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 1,
+    d: "Enquiry for 2 BHK waterfront facing apartment.",
+    nt: [
+      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Bhayander." }
+    ]
   }
 ];
 
@@ -538,17 +576,18 @@ export const dbStore = {
   // Initialize storage if empty
   init() {
     try {
-      const stored = localStorage.getItem(DB_KEY);
-      if (!stored) {
+      const existing = getRawData(DB_KEY, null);
+      if (!existing || existing.length === 0) {
         setRawData(DB_KEY, INITIAL_SEED_LEADS);
       } else {
-        const parsed = JSON.parse(stored);
-        // Ensure historical seeds are present if current storage only has recent records
-        const hasHistorical = Array.isArray(parsed) && parsed.some(l => l.ts < Date.now() - 30 * 24 * 3600 * 1000);
-        if (!hasHistorical) {
-          const historicalSeeds = INITIAL_SEED_LEADS.filter(l => l.ts < Date.now() - 30 * 24 * 3600 * 1000);
-          setRawData(DB_KEY, [...historicalSeeds, ...parsed]);
-        }
+        let updated = false;
+        INITIAL_SEED_LEADS.forEach(seed => {
+          if (!existing.some(l => l.i === seed.i)) {
+            existing.push(seed);
+            updated = true;
+          }
+        });
+        if (updated) setRawData(DB_KEY, existing);
       }
       if (!localStorage.getItem(CALLERS_KEY)) {
         setRawData(CALLERS_KEY, DEFAULT_CALLERS);

@@ -6,7 +6,10 @@ import {
   MapPin,
   ArrowRight,
   ArrowLeft,
-  Sparkles
+  Sparkles,
+  ExternalLink,
+  Route,
+  Navigation
 } from 'lucide-react';
 
 const PHONE_NUMBER = "8291090155";
@@ -198,6 +201,71 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
             <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <div>
               <strong>Public Regulatory Verification:</strong> Concave Realty operates strictly as a certified real estate channel partner and advisory firm under <strong>MahaRERA Registration No. A51900045781</strong>. Clients can independently verify our registration and registered developer sanction details on the official government portal: <a href="https://maharera.maharashtra.gov.in" target="_blank" rel="noopener noreferrer" className="underline font-bold text-[#183C32]">maharera.maharashtra.gov.in</a>.
+            </div>
+          </div>
+        </div>
+
+        {/* Official Location & Interactive Advisory Map */}
+        <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#EAE6DF] shadow-sm space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#8B6846] font-semibold block">
+                HEADQUARTERS & ADVISORY DESK
+              </span>
+              <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#14221F] flex items-center gap-2 mt-0.5">
+                <MapPin className="w-5 h-5 text-[#245348]" />
+                <span>Prime Mumbai Advisory Hub</span>
+              </h3>
+              <p className="text-xs text-gray-500 font-light mt-0.5">
+                Bandra Kurla Complex (BKC) & Western Suburbs Advisory Desk, Mumbai, Maharashtra — 400051
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="https://www.google.com/maps/dir/?api=1&destination=19.0625,72.8545"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold shadow-xs transition-colors"
+              >
+                <Route className="w-3.5 h-3.5" />
+                <span>Get Directions</span>
+              </a>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=19.0625,72.8545"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF9F6] hover:bg-gray-100 border border-[#EAE6DF] text-xs font-mono text-gray-700 transition-colors"
+              >
+                <span>Google Maps</span>
+                <ExternalLink className="w-3.5 h-3.5 text-gray-500" />
+              </a>
+            </div>
+          </div>
+
+          <div className="relative w-full h-64 sm:h-72 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-inner bg-slate-100">
+            <iframe
+              title="Concave Realty Mumbai Advisory Desk Location"
+              src="https://maps.google.com/maps?q=19.0625,72.8545&hl=en&z=15&t=m&ie=UTF8&iwloc=near&output=embed"
+              className="w-full h-full border-0"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-gray-600">
+            <div className="p-3 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-[#C59B4E] shrink-0" />
+              <span><strong>BKC Metro Hub:</strong> 300m (Aqua Line 3)</span>
+            </div>
+            <div className="p-3 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-[#C59B4E] shrink-0" />
+              <span><strong>Highway:</strong> WEH & Sea Link Ramp 200m</span>
+            </div>
+            <div className="p-3 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-center gap-2">
+              <Navigation className="w-4 h-4 text-[#C59B4E] shrink-0" />
+              <span><strong>Airport:</strong> T1 & T2 within 15-20 mins</span>
             </div>
           </div>
         </div>

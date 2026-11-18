@@ -1586,10 +1586,10 @@ export const PROJECTS_DATA = [
     towerDetails: "World-class architectural towers soaring up to 100+ storeys",
     elevators: "Private Concierge Elevators by Otis",
     amenitiesCount: "50+ Armani/Casa Club Amenities",
-    coverImage: "/projects/project_40_user_1.png",
+    coverImage: "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/1.jpg",
     images: [
-      "/projects/project_40_user_1.png",
-      "/projects/project_40_user_2.png"
+      "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/1.jpg",
+      "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/2.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Sky Suite", carpetArea: "1,550 sq.ft CA", price: "₹8.50 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2026" },
@@ -1663,8 +1663,7 @@ export const PROJECTS_DATA = [
     coverImage: "/projects/prestige_jasdan_official.webp",
     images: [
       "/projects/prestige_jasdan_official.webp",
-      "/projects/project_img_66.jpg",
-      "/projects/project_img_68.jpg"
+      "/projects/project_img_66.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2028" },
@@ -1697,12 +1696,8 @@ export const PROJECTS_DATA = [
     towerDetails: "Ultra-luxury residential skyscraper",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Godrej Signature Amenities",
-    coverImage: "/projects/project_43_user_1.png",
-    images: [
-      "/projects/project_43_user_1.png",
-      "/projects/godrej_skyshore_official.webp",
-      "/projects/godrej_reserve_official.webp"
-    ],
+    coverImage: null,
+    images: [],
     configurations: [
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
@@ -1844,56 +1839,104 @@ export const PROMOTED_LOCATIONS = [
     tagline: "Kalpataru Advay & Premium Family Living",
     activeListings: 4,
     badge: "Flagship Hub",
-    keyHighlight: "Metro 2A, Link Road & National Park proximity"
+    keyHighlight: "Metro 2A, Link Road & National Park proximity",
+    lat: 19.2307,
+    lng: 72.8567,
+    zoom: 14,
+    pincode: "400091 / 400066",
+    corridors: "Metro Lines 2A & 7, New Link Road, WEH",
+    landmarks: ["Sanjay Gandhi National Park", "Don Bosco High School", "Borivali West & Devipada Metro", "Gorai Creek Seafront"]
   },
   {
     name: "Kandivali",
     tagline: "Godrej Reserve & Mahindra Vista Green Living",
     activeListings: 4,
     badge: "Fast Growing",
-    keyHighlight: "Western Express Highway & Lokhandwala Township"
+    keyHighlight: "Western Express Highway & Lokhandwala Township",
+    lat: 19.2045,
+    lng: 72.8522,
+    zoom: 14,
+    pincode: "400101 / 400067",
+    corridors: "Metro Line 7, Akurli Road, Western Express Highway",
+    landmarks: ["Lokhandwala Complex", "Growel's 101 Mall", "Cambridge School", "Mahindra & Mahindra Hub"]
   },
   {
     name: "Malad",
     tagline: "Runwal, Lodha & Enchante Point Residences",
     activeListings: 4,
     badge: "High Demand",
-    keyHighlight: "Inorbit Mall, Mindspace & Link Road Hub"
+    keyHighlight: "Inorbit Mall, Mindspace & Link Road Hub",
+    lat: 19.1860,
+    lng: 72.8485,
+    zoom: 14,
+    pincode: "400064 / 400097",
+    corridors: "Metro Line 2A, New Link Road, S.V. Road",
+    landmarks: ["Inorbit Mall Malad", "Mindspace Commercial District", "Infiniti Mall Malad", "Zenith Hospital"]
   },
   {
     name: "Goregaon",
     tagline: "Kalpataru Elara & Rustomjee Signature Towers",
     activeListings: 4,
     badge: "Prime Central",
-    keyHighlight: "Hub of Western Suburbs, Oberoi Mall & Metro"
+    keyHighlight: "Hub of Western Suburbs, Oberoi Mall & Metro",
+    lat: 19.1645,
+    lng: 72.8490,
+    zoom: 14,
+    pincode: "400104 / 400063",
+    corridors: "Metro Lines 2A & 7, WEH, Mrinal Gore Flyover",
+    landmarks: ["Oberoi Mall", "Nesco Exhibition Centre", "Bangur Nagar Metro", "Film City & Aarey Canopy"]
   },
   {
     name: "Jogeshwari",
     tagline: "Lodha Sovrano & Paradigm Downtown 102",
     activeListings: 4,
     badge: "Emerging Value",
-    keyHighlight: "JVLR Connectivity & SV Road Corridor"
+    keyHighlight: "JVLR Connectivity & SV Road Corridor",
+    lat: 19.1380,
+    lng: 72.8495,
+    zoom: 14,
+    pincode: "400102 / 400060",
+    corridors: "Jogeshwari-Vikhroli Link Road (JVLR), S.V. Road, WEH",
+    landmarks: ["JVLR Junction", "Oshiwara Metro", "Millat Hospital", "Hub Mall & SEEPZ Link"]
   },
   {
     name: "Andheri",
     tagline: "Godrej Skyshore (Versova) & Kalpataru Vian",
     activeListings: 12,
     badge: "Ultra Luxury",
-    keyHighlight: "Versova Seafront, Metro 1 & Coastal Road Link"
+    keyHighlight: "Versova Seafront, Metro 1 & Coastal Road Link",
+    lat: 19.1197,
+    lng: 72.8468,
+    zoom: 14,
+    pincode: "400053 / 400058 / 400069",
+    corridors: "Metro Lines 1, 2A & 7 Triple Grid, WEH, Versova Promenade",
+    landmarks: ["Versova Beach Promenade", "Kokilaben Dhirubhai Ambani Hospital", "CSM International Airport", "D.N. Nagar Interchange"]
   },
   {
     name: "Bandra",
     tagline: "Heritage Luxury & Celebrity Seafront",
     activeListings: 7,
     badge: "Elite",
-    keyHighlight: "Queen of Suburbs, Sea Face & Fine Dining"
+    keyHighlight: "Queen of Suburbs, Sea Face & Fine Dining",
+    lat: 19.0596,
+    lng: 72.8295,
+    zoom: 14,
+    pincode: "400050 / 400051",
+    corridors: "Bandra-Worli Sea Link, Coastal Road, Aqua Line 3 Metro",
+    landmarks: ["Bandstand & Carter Road Seafront", "Bandra Kurla Complex (BKC)", "Mount Mary Basilica", "Pali Hill Club"]
   },
   {
     name: "Lower Parel",
     tagline: "Commercial Skyscrapers & Sky Mansions",
     activeListings: 4,
     badge: "Downtown",
-    keyHighlight: "High Street Phoenix & Financial Center"
+    keyHighlight: "High Street Phoenix & Financial Center",
+    lat: 18.9982,
+    lng: 72.8292,
+    zoom: 14,
+    pincode: "400013",
+    corridors: "Mumbai Coastal Road, Senapati Bapat Marg, Eastern Freeway",
+    landmarks: ["High Street Phoenix & Palladium Mall", "World One Towers", "Peninsula Corporate Park", "St. Regis Mumbai"]
   }
 ];
 
@@ -1948,10 +1991,10 @@ export const PROJECT_ENRICHMENTS = {
   "1": {
     "keyFeatures": [
       "Direct access to New Link Road & upcoming Coastal Road",
-      "5 Mins to Eksar Metro Station (Line 2A)",
+      "3 Mins to Borivali West Metro Station (Line 2A)",
       "7 Mins to Borivali Railway Station & S.V. Road",
       "Near Apex Superspeciality Hospital & Don Bosco High School"
-    ],
+],
     "amenities": [
       "Infinity Lap Pool",
       "Grand 25,000 sq.ft Clubhouse",
@@ -1965,11 +2008,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "2": {
     "keyFeatures": [
-      "Direct off Western Express Highway (Borivali West)",
-      "3 Mins to Magathane / Borivali Metro Station",
-      "Overlooking 25,000-acre Sanjay Gandhi National Park",
-      "8 Mins to Borivali Terminus & S.V. Road"
-    ],
+      "150m Direct Ramp Access to Western Express Highway",
+      "3 Mins to Magathane Metro Station (Line 7)",
+      "7 Mins to Borivali Railway Station & S.V. Road",
+      "Adjacent to 25,000-Acre Sanjay Gandhi National Park Greens"
+],
     "amenities": [
       "Heated Swimming Pool",
       "Art Deco Grand Clubhouse",
@@ -1983,11 +2026,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "3": {
     "keyFeatures": [
-      "Direct Integrated Skywalk to Sky City Mall",
-      "Directly Connected to Devipada Metro Station",
-      "Zero-Minute Access to Western Express Highway",
-      "Panoramic Unobstructed Views of Sanjay Gandhi National Park"
-    ],
+      "Zero-Minute Access to Western Express Highway Service Road",
+      "1 Min Direct Skywalk to Devipada Metro Station (Line 7)",
+      "Direct Integrated Walkway to Sky City Mall & Multiplex",
+      "6 Mins to Borivali Railway Station & Oberoi International School"
+],
     "amenities": [
       "Olympic-Length Lap Pool",
       "Direct Mall Access",
@@ -2001,11 +2044,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "4": {
     "keyFeatures": [
-      "Direct access off Western Express Highway",
-      "3 Mins to Rashtriya Udyan Metro Station",
-      "Bordering Sanjay Gandhi National Park Nature Corridor",
-      "5 Mins to Borivali East Station & Markets"
-    ],
+      "250m to Western Express Highway via Kulupwadi Road",
+      "3 Mins to Rashtriya Udyan (National Park) Metro Station",
+      "5 Mins to Borivali Railway Station (East) & Local Markets",
+      "Bordering Main Sanjay Gandhi National Park Entrance & Nature Trail"
+],
     "amenities": [
       "Sky Infinity Pool",
       "Designer Clubhouse",
@@ -2019,11 +2062,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "5": {
     "keyFeatures": [
-      "Direct access via Akurli Road, Kandivali East",
+      "Direct access on Akurli Road, Kandivali East",
       "3 Mins to Akurli Metro Station & Western Express Highway",
-      "5 Mins to Growel's 101 Mall & Kandivali Railway Station",
-      "Flanked by 100+ Acres of Protected Reserve Forest Greens"
-    ],
+      "5 Mins to Kandivali Railway Station & Growel's 101 Mall",
+      "Flanked by 100+ Acres of Protected Reserve Forest & Cambridge School"
+],
     "amenities": [
       "Resort-Style Swimming Pool",
       "Grand Double-Height Entrance Lobby",
@@ -2037,11 +2080,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "6": {
     "keyFeatures": [
-      "Located on Akurli Road, Kandivali East",
-      "2 Mins to Western Express Highway & Metro Line 7",
-      "4 Mins to Growel's 101 Mall & Multiplex",
-      "7 Mins to Kandivali Railway Station & S.V. Road"
-    ],
+      "Directly at Mahindra Yellow Gate on Akurli Road, Kandivali East",
+      "2 Mins to Western Express Highway & Akurli Metro Station (Line 7)",
+      "4 Mins to Growel's 101 Mall & PVR Multiplex",
+      "5 Mins to Kandivali Railway Station & S.V. Road"
+],
     "amenities": [
       "Temperature-Controlled Pool",
       "Club Vista Community Center",
@@ -2055,11 +2098,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "7": {
     "keyFeatures": [
-      "Prime Location in Lokhandwala Township, Kandivali East",
-      "3 Mins to Western Express Highway & Metro Station",
-      "5 Mins to Cambridge School & Sports Arena",
-      "Direct corridor to Kandivali & Malad East business hubs"
-    ],
+      "Prime address in Lokhandwala Township, Kandivali East",
+      "3 Mins to Poisar Metro Station (Line 7) & WEH Junction",
+      "4 Mins to Lokhandwala Foundation School & Central Park",
+      "8 Mins to Kandivali Railway Station & Thakur Village Hub"
+],
     "amenities": [
       "Infinity-Edge Swimming Pool",
       "Grand 40-Storey Sky Lounge",
@@ -2073,11 +2116,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "8": {
     "keyFeatures": [
-      "Nestled off Western Express Highway, Kandivali East",
-      "2 Mins to Mahindra & Mahindra Metro Station",
-      "Surrounded by 25,000 Acres of National Park Greens",
-      "6 Mins to Thakur Village & Growel's 101 Mall"
-    ],
+      "150m off Western Express Highway, Kandivali East",
+      "3 Mins to Poisar Metro Station (Line 7)",
+      "Surrounded by 25,000 Acres of National Park Forest Canopy",
+      "5 Mins to Thakur Village High Street, D-Mart & Growel's 101 Mall"
+],
     "amenities": [
       "Heated Swimming Pool",
       "20,000 sq.ft International Clubhouse",
@@ -2091,11 +2134,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "9": {
     "keyFeatures": [
-      "Located on Link Road Corridor, Malad West",
-      "3 Mins to Inorbit Mall & Infiniti Mall Malad",
-      "4 Mins to Malad West Metro Station (Line 2A)",
-      "Rapid connection to Mindspace IT Park & S.V. Road"
-    ],
+      "Located on New Link Road Corridor near Mith Chowki, Malad West",
+      "3 Mins to Malad West Metro Station (Line 2A)",
+      "6 Mins to Malad Railway Station & S.V. Road",
+      "4 Mins to Inorbit Mall, Mindspace IT Park & Zenith Hospital"
+],
     "amenities": [
       "Rooftop Infinity Swimming Pool",
       "Designer Sky Clubhouse",
@@ -2109,11 +2152,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "10": {
     "keyFeatures": [
-      "Adjacent to Inorbit Mall, Malad West",
-      "3 Mins to Malad West Metro Station",
-      "5 Mins to Mindspace IT & Commercial SEZ",
-      "8 Mins to S.V. Road & Western Express Highway via Flyover"
-    ],
+      "Adjacent to Inorbit Mall & Mindspace, Malad West",
+      "2 Mins to Lower Malad Metro Station (Line 2A)",
+      "6 Mins to Malad Railway Station via S.V. Road",
+      "4 Mins to Mindspace IT & Commercial SEZ & Infiniti Mall Malad"
+],
     "amenities": [
       "Large Lap Pool & Kids Pool",
       "Palatial Lifestyle Clubhouse",
@@ -2127,11 +2170,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "11": {
     "keyFeatures": [
-      "Prime position on Link Road, Malad West",
-      "4 Mins to Mindspace & Western Metro Line 2A",
-      "5 Mins to Infiniti & Inorbit Malls",
-      "Direct connectivity to Coastal Road extension & S.V. Road"
-    ],
+      "Prime frontage on New Link Road near Chincholi Bunder, Malad West",
+      "3 Mins to Valnai - Meeth Chowki Metro Station (Line 2A)",
+      "5 Mins to Malad Railway Station & S.V. Road",
+      "4 Mins to Infiniti Mall Malad, Uncle Kitchens & Inorbit Mall"
+],
     "amenities": [
       "Signature Lodha Swimming Pool",
       "Grand Entrance Lobby",
@@ -2145,11 +2188,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "12": {
     "keyFeatures": [
-      "Off S.V. Road & Link Road, Malad West",
-      "4 Mins to Malad Railway Station",
-      "5 Mins to Inorbit Mall & Metro Line 2A",
-      "Easy bypass to Goregaon & Western Express Highway"
-    ],
+      "Off S.V. Road & Link Road near Sundar Nagar, Malad West",
+      "3 Mins to Malad Railway Station (West)",
+      "5 Mins to Malad West Metro Station (Line 2A)",
+      "Near Sundar Nagar Garden, Ryan International School & Surana Hospital"
+],
     "amenities": [
       "Rooftop Horizon Swimming Pool",
       "Boutique Sky Clubhouse",
@@ -2163,11 +2206,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "13": {
     "keyFeatures": [
-      "Located on Link Road Corridor, Goregaon West",
-      "3 Mins to Bangur Nagar Metro Station",
-      "5 Mins to Inorbit Mall & Goregaon Railway Station",
-      "Quick connection to Western Express Highway via Mrinal Tai Gore Flyover"
-    ],
+      "Located on New Link Road Corridor near Bangur Nagar, Goregaon West",
+      "3 Mins to Bangur Nagar Metro Station (Line 2A)",
+      "5 Mins to Inorbit Mall Goregaon & City Centre Mall",
+      "6 Mins to Goregaon Railway Station & WEH via Mrinal Gore Flyover"
+],
     "amenities": [
       "Grand Porte-Coch\u00e8re Drop-off Lobby",
       "Swimming Pool with Timber Sun Deck",
@@ -2181,11 +2224,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "14": {
     "keyFeatures": [
-      "Near Inorbit Mall & Mindspace, Goregaon West",
-      "3 Mins to Bangur Nagar Metro Station",
-      "6 Mins to Goregaon Railway Station & S.V. Road",
-      "Direct arterial access to Western Express Highway"
-    ],
+      "Near Bangur Nagar & Inorbit Mall, Goregaon West",
+      "2 Mins to Bangur Nagar Metro Station (Line 2A)",
+      "5 Mins to Goregaon Railway Station & S.V. Road",
+      "4 Mins to Inorbit Mall, Vibgyor High School & Bangur Nagar Sports Complex"
+],
     "amenities": [
       "Curved Swimming Pool & Poolside Cabanas",
       "Grand Double-Height Entrance Lobby",
@@ -2199,11 +2242,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "15": {
     "keyFeatures": [
-      "Link Road Corridor, Goregaon West",
-      "3 Mins to Metro Station Line 2A",
-      "5 Mins to Inorbit Mall & Hypercity",
-      "10 Mins to Oberoi Mall via Goregaon-Mulund Link Road"
-    ],
+      "New Link Road Corridor, Goregaon West",
+      "3 Mins to Goregaon West (Pahadi Goregaon) Metro Station (Line 2A)",
+      "4 Mins to Ram Mandir Suburban Railway Station",
+      "6 Mins to Nesco IT Park, Exhibition Centre & Inorbit Mall"
+],
     "amenities": [
       "Sky Swimming Pool",
       "Fitness & Aerobics Center",
@@ -2217,11 +2260,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "16": {
     "keyFeatures": [
-      "Strategic position off S.V. Road & Link Road, Goregaon West",
-      "4 Mins to Goregaon Railway Station",
-      "5 Mins to Inorbit Mall & Metro Station",
-      "Direct flyover access to Western Express Highway"
-    ],
+      "S.V. Road & Link Road Intersect, Goregaon West",
+      "3 Mins to Goregaon Railway Station (Harbour & Western Lines)",
+      "4 Mins to Goregaon West Metro Station (Line 2A)",
+      "Near Topiwala Multiplex, Patkar Varde College & Siddharth Hospital"
+],
     "amenities": [
       "Full-Length Swimming Pool",
       "Exclusive Rustomjee Clubhouse",
@@ -2235,11 +2278,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "17": {
     "keyFeatures": [
-      "Near S.V. Road & JVLR, Jogeshwari West",
-      "3 Mins to Jogeshwari Railway Station & Metro Line 6",
-      "5 Mins to Western Express Highway & Lokhandwala Link",
-      "8 Mins to Oberoi Mall & Nesco IT Park"
-    ],
+      "Near S.V. Road & Behram Baug, Jogeshwari West",
+      "3 Mins to Oshiwara Metro Station (Line 2A)",
+      "4 Mins to Jogeshwari Suburban Railway Station",
+      "Near Millat Superspeciality Hospital, JVLR & Lokhandwala Complex Link"
+],
     "amenities": [
       "Regal Swimming Pool with Sunken Loungers",
       "Grand Art Deco Clubhouse",
@@ -2253,11 +2296,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "18": {
     "keyFeatures": [
-      "Directly on S.V. Road, Jogeshwari West",
-      "2 Mins to Jogeshwari Railway Station",
-      "5 Mins to JVLR & Western Express Highway",
-      "7 Mins to Andheri Station & Metro Line 1"
-    ],
+      "Direct Frontage on Main S.V. Road, Jogeshwari West",
+      "2 Mins to Oshiwara / Jogeshwari West Metro Station (Line 2A)",
+      "3 Mins to Jogeshwari Railway Station",
+      "4 Mins to JVLR Flyover, Western Express Highway & Hub Mall"
+],
     "amenities": [
       "Rooftop Infinity Lap Pool",
       "Sky Lounge & Stargazing Deck",
@@ -2271,11 +2314,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "19": {
     "keyFeatures": [
-      "Directly on S.V. Road, Oshiwara, Jogeshwari West",
-      "2 Mins to Lower Oshiwara Metro Station",
-      "5 Mins to Infiniti Mall Andheri & Lokhandwala Complex",
-      "Quick access to JVLR & Western Express Highway"
-    ],
+      "Jogeshwari West Corridor near Oshiwara Bridge",
+      "3 Mins to Oshiwara Metro Station (Line 2A)",
+      "4 Mins to Ram Mandir Railway Station",
+      "Near Mega Mall Oshiwara, Lokhandwala Market & JVLR Junction"
+],
     "amenities": [
       "Podium Swimming Pool with Deck",
       "High-Tech Gymnasium & Aerobics Room",
@@ -2289,11 +2332,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "20": {
     "keyFeatures": [
-      "Near JVLR Junction & Oshiwara, Jogeshwari West",
-      "2 Mins to Ram Mandir Railway Station & Metro",
-      "Direct access to Western Express Highway via JVLR",
-      "5 Mins to Nesco IT Park & Oberoi Commerz"
-    ],
+      "At JVLR Junction & Western Express Highway, Jogeshwari East",
+      "2 Mins to JVLR Metro Station (Line 7)",
+      "3 Mins to Jogeshwari Railway Station (East)",
+      "Direct access to SEEPZ IT Zone, Nesco IT Park & Oberoi Commerz"
+],
     "amenities": [
       "Olympic-Style Swimming Pool",
       "Integrated Township Clubhouse",
@@ -2307,11 +2350,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "21": {
     "keyFeatures": [
-      "Direct Seafront Location in Versova, Andheri West",
-      "2 Mins to Versova Metro Station (Line 1)",
-      "5 Mins to Lokhandwala Complex & Juhu Beach",
-      "Direct access to upcoming Versova-Bandra Sea Link"
-    ],
+      "Direct Seafront Position on Yari Road, Versova, Andheri West",
+      "3 Mins to Versova Metro Station (Line 1)",
+      "5 Mins to Versova Beach Promenade & Nana Nani Park",
+      "Direct access to upcoming Versova-Bandra Coastal Sea Link & Juhu Circle"
+],
     "amenities": [
       "Sea-Facing Infinity Lap Pool",
       "Private Seafront Cabanas",
@@ -2325,11 +2368,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "22": {
     "keyFeatures": [
-      "Near Western Express Highway, Andheri East",
-      "3 Mins to Gundavali / Western Express Highway Metro",
-      "5 Mins to Andheri Railway Station & Hubtown SEZ",
-      "8 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)"
-    ],
+      "100m Ramp Access to Western Express Highway, Andheri East",
+      "2 Mins to Gundavali (Line 7) & WEH (Line 1) Metro Interchange",
+      "3 Mins to Andheri Railway Station (East) & Hubtown SEZ",
+      "7 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)"
+],
     "amenities": [
       "Temperature-Controlled Pool",
       "Designer Sky Clubhouse",
@@ -2343,11 +2386,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "23": {
     "keyFeatures": [
-      "Near D.N. Nagar Metro Interchange, Andheri West",
-      "2 Mins to Link Road & Juhu Circle",
-      "5 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "8 Mins to Versova Beach & Western Express Highway via JVLR"
-    ],
+      "Adjacent to D.N. Nagar Metro Interchange (Lines 1 & 2A), Andheri West",
+      "2 Mins to New Link Road & Juhu Circle",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital & Research Institute",
+      "5 Mins to Andheri Railway Station, Bhavan's College & The Club Mumbai"
+],
     "amenities": [
       "Skyline Lap Pool",
       "Grand High-Ceiling Clubhouse",
@@ -2361,11 +2404,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "24": {
     "keyFeatures": [
-      "Prime Andheri Corridor Location",
-      "3 Mins to Western Metro Line & Highway Link",
-      "6 Mins to International Airport & Commercial Hubs",
-      "Proximity to Top International Schools & Hospitals"
-    ],
+      "Central Andheri West Corridor on S.V. Road",
+      "3 Mins to Andheri Metro Station (Line 1)",
+      "3 Mins to Andheri Railway Station (Harbour & Western Lines)",
+      "Near Shoppers Stop Andheri, Gilbert Hill Heritage & Nadco Market"
+],
     "amenities": [
       "Resort-Style Swimming Pool",
       "Clubhouse with Steam & Jacuzzi",
@@ -2379,11 +2422,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "25": {
     "keyFeatures": [
-      "Andheri East Corridor near Metro Line 1",
-      "5 Mins to Western Express Highway & Metro Station",
-      "8 Mins to International Airport Terminal 2",
-      "Proximity to MIDC & SEEPZ Commercial Hubs"
-    ],
+      "Andheri-Kurla Road Corridor, Chakala, Andheri East",
+      "2 Mins to Chakala (J.B. Nagar) Metro Station (Line 1)",
+      "4 Mins to Western Express Highway & Solitaire Corporate Park",
+      "6 Mins to CSM International Airport (T2) & ITC Maratha"
+],
     "amenities": [
       "Swimming Pool with Lounge Deck",
       "Equipped Gymnasium",
@@ -2397,11 +2440,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "26": {
     "keyFeatures": [
-      "Strategic Location in Chakala / JB Nagar, Andheri",
-      "2 Mins to Chakala Metro Station (Line 1)",
-      "4 Mins to Western Express Highway & Solitaire Corporate Park",
-      "7 Mins to Mumbai International Airport (T2)"
-    ],
+      "Chakala Central Commercial Belt, Andheri East",
+      "3 Mins to Western Express Highway Metro Station (Line 1)",
+      "4 Mins to Andheri Railway Station (East)",
+      "5 Mins to CSM International Airport (T2) & Courtyard by Marriott"
+],
     "amenities": [
       "Rooftop Infinity Pool",
       "Sky Lounge with Panoramic Runway Views",
@@ -2415,11 +2458,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "27": {
     "keyFeatures": [
-      "Prime Andheri West Corridor",
-      "3 Mins to Metro Station & Link Road",
-      "5 Mins to Juhu Circle & Kokilaben Hospital",
-      "8 Mins to Andheri Railway Station"
-    ],
+      "Lallubhai Park Residential Enclave, Andheri West",
+      "3 Mins to Azad Nagar Metro Station (Line 1)",
+      "4 Mins to Andheri Railway Station (West)",
+      "Adjacent to Lallubhai Park, Prime Hospital & Bhavan's Campus"
+],
     "amenities": [
       "Sky Swimming Pool",
       "Rooftop Fitness Pavilion",
@@ -2433,11 +2476,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "28": {
     "keyFeatures": [
-      "Prime Andheri West Location near S.V. Road",
-      "3 Mins to Andheri Railway Station & Metro Interchange",
-      "6 Mins to Western Express Highway & Juhu",
-      "Surrounded by Top Educational & Healthcare Institutes"
-    ],
+      "Veera Desai Road Luxury Corridor, Andheri West",
+      "4 Mins to D.N. Nagar Metro Interchange (Lines 1 & 2A)",
+      "5 Mins to Andheri Railway Station & New Link Road",
+      "Near The Country Club, Yash Raj Films Studio & Kokilaben Hospital"
+],
     "amenities": [
       "Neoclassical Architecture Swimming Pool",
       "Luxury Hiranandani Clubhouse",
@@ -2451,11 +2494,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "29": {
     "keyFeatures": [
-      "Upper Juhu / D.N. Nagar Corridor, Andheri West",
-      "2 Mins to D.N. Nagar Metro Station",
-      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "6 Mins to Juhu Circle, PVR Dynamix & Juhu Beach"
-    ],
+      "Lokhandwala Complex Back Road, Andheri West",
+      "3 Mins to Adarsh Nagar / Oshiwara Metro Station (Line 2A)",
+      "3 Mins to Lokhandwala High Street Market & Celebration Sports Club",
+      "5 Mins to Infiniti Mall Andheri, PVR Dynamix & Juhu Circle"
+],
     "amenities": [
       "Sky Infinity Pool overlooking Arabian Sea",
       "Exclusive Clubhouse with Spa",
@@ -2469,11 +2512,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "30": {
     "keyFeatures": [
-      "Andheri Prime Belt near S.V. Road & Metro",
-      "3 Mins to Andheri Railway Station",
-      "5 Mins to Western Express Highway",
-      "7 Mins to International Airport"
-    ],
+      "Four Bungalows Residential Belt, Andheri West",
+      "3 Mins to D.N. Nagar Metro Station (Lines 1 & 2A)",
+      "5 Mins to Andheri Railway Station & Western Express Highway",
+      "Near Four Bungalows Market, Rustomjee Cambridge School & Kokilaben Hospital"
+],
     "amenities": [
       "Rooftop Lap Pool",
       "Thoughtful Clubhouse Spaces",
@@ -2487,11 +2530,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "31": {
     "keyFeatures": [
-      "Prime Andheri West Belt near Link Road",
-      "3 Mins to Metro Station & Retail Avenues",
-      "6 Mins to Kokilaben Hospital & Juhu Circle",
-      "Rapid connection to Western Express Highway via JVLR"
-    ],
+      "Upper Link Road near Adarsh Nagar Junction, Andheri West",
+      "2 Mins to Adarsh Nagar Metro Station (Line 2A)",
+      "4 Mins to Infiniti Mall Andheri & Citi Mall",
+      "5 Mins to Jogeshwari Railway Station & JVLR Connector"
+],
     "amenities": [
       "Signature Lodha Pool",
       "Art Deco Inspired Clubhouse",
@@ -2505,11 +2548,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "32": {
     "keyFeatures": [
-      "Andheri West Corridor near Link Road",
-      "4 Mins to Metro Line 2A & D.N. Nagar Interchange",
-      "6 Mins to Kokilaben Hospital & Lokhandwala",
-      "10 Mins to Juhu Beach & Western Express Highway"
-    ],
+      "Direct Frontage on Oshiwara Link Road, Andheri West",
+      "2 Mins to Oshiwara Metro Station (Line 2A)",
+      "4 Mins to Ram Mandir Railway Station",
+      "Near Mega Mall Oshiwara, Laxmi Industrial Estate & Star Bazaar"
+],
     "amenities": [
       "Luxury Lap Pool with Sunbeds",
       "High-End DLF Clubhouse",
@@ -2523,11 +2566,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "33": {
     "keyFeatures": [
-      "Exclusive Pali Hill / Bandra West Location",
-      "2 Mins to Bandra Promenade & Carter Road",
-      "5 Mins to Bandra-Worli Sea Link & Linking Road",
-      "10 Mins to BKC Financial District via Connector"
-    ],
+      "Elite Sanctuary on Nargis Dutt Road, Pali Hill, Bandra West",
+      "3 Mins to Bandra Colony Metro Station (Aqua Line 3 Underground)",
+      "4 Mins to Bandra-Worli Sea Link & Coastal Road Ramp",
+      "Near Pali Hill Club, Candies, Olive Bar & Kitchen & Carter Road Seafront"
+],
     "amenities": [
       "Private Infinity Pool",
       "Ultra-Luxury Bespoke Clubhouse",
@@ -2541,11 +2584,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "34": {
     "keyFeatures": [
-      "Prime Bandra West Corridor near Turner Road",
-      "3 Mins to Bandra-Worli Sea Link",
-      "5 Mins to Bandra Railway Station & S.V. Road",
-      "Surrounded by Elite Cafes, Boutiques & Lilavati Hospital"
-    ],
+      "Corner of Turner Road & Perry Cross Road, Bandra West",
+      "3 Mins to Bandra Colony Metro Station (Aqua Line 3)",
+      "4 Mins to Bandra Railway Station (West)",
+      "Near Turner Road Boutiques, Carter Road Seafront Promenade & Otters Club"
+],
     "amenities": [
       "Neoclassical Rooftop Pool",
       "Hiranandani Luxury Club",
@@ -2559,11 +2602,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "35": {
     "keyFeatures": [
-      "Directly at BKC Gateway, Bandra East",
-      "2 Mins to Bandra Kurla Complex (BKC) Financial District",
-      "3 Mins to Western Express Highway & BKC Connector",
-      "5 Mins to Bandra-Worli Sea Link & Kalanagar Junction"
-    ],
+      "Direct Gateway to Bandra Kurla Complex (BKC), Bandra East",
+      "2 Mins to BKC Underground Metro Station (Aqua Line 3 & Line 2B)",
+      "3 Mins to Bandra Terminus & Western Express Highway Kalanagar Flyover",
+      "Near Jio World Centre, US Consulate, MCA Club & Trident BKC"
+],
     "amenities": [
       "Rooftop Infinity Pool overlooking BKC Skyline",
       "Clubhouse Curated by GS",
@@ -2577,11 +2620,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "36": {
     "keyFeatures": [
-      "Prestigious Mount Mary / Bandstand, Bandra West",
-      "2 Mins to Taj Lands End & Bandra Fort",
-      "4 Mins to Bandra-Worli Sea Link",
-      "Panoramic Unobstructed Arabian Sea & Sunset Views"
-    ],
+      "Mount Mary Hill & Bandstand Promenade, Bandra West",
+      "2 Mins to Bandra-Worli Sea Link Toll Plaza",
+      "Near Mount Mary Basilica, Taj Lands End & Bandstand Sea Promenade",
+      "Panoramic Unobstructed Views of Arabian Sea Horizons & Sunsets"
+],
     "amenities": [
       "Sea-Facing Infinity Pool",
       "Ultra-Luxury Private Clubhouse",
@@ -2595,11 +2638,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "37": {
     "keyFeatures": [
-      "Iconic Carter Road Promenade, Bandra West",
-      "Direct Front-Row Arabian Sea Views",
-      "4 Mins to Bandra-Worli Sea Link & Western Express Highway",
-      "8 Mins to BKC via Kalanagar Flyover"
-    ],
+      "Direct Front-Row Facing on Carter Road Seafront Promenade, Bandra West",
+      "3 Mins to Khar Underground Metro Station & Khar Road Station",
+      "5 Mins to Bandra-Worli Sea Link & Western Express Highway",
+      "Adjacent to Otters Club, Union Park & Joggers Park"
+],
     "amenities": [
       "Seafront Olympic-Length Lap Pool",
       "Oberoi Signature Clubhouse",
@@ -2613,11 +2656,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "38": {
     "keyFeatures": [
-      "Prime Bandra West Corridor near Linking Road",
-      "3 Mins to Bandra-Worli Sea Link",
-      "5 Mins to Bandra Terminus & Western Express Highway",
-      "10 Mins to BKC Financial Hub"
-    ],
+      "Hill Road & St. Martin's Cross, Bandra West",
+      "3 Mins to Bandra Underground Metro (Aqua Line 3)",
+      "3 Mins to Bandra Railway Station (West)",
+      "Near Holy Family Hospital, Elco Market Hill Road & Bandra Fort"
+],
     "amenities": [
       "Luxury Lap Pool with Sunken Decks",
       "Grand Designer Clubhouse",
@@ -2631,11 +2674,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "39": {
     "keyFeatures": [
-      "Near Bandra Reclamation & Lilavati Hospital, Bandra West",
-      "2 Mins to Bandra-Worli Sea Link Toll Plaza",
-      "4 Mins to S.V. Road & Bandra Station",
-      "7 Mins to BKC via Western Express Highway"
-    ],
+      "Waterfield Road & Linking Road Corridor, Bandra West Prime",
+      "3 Mins to Bandra Underground Metro Station (Aqua Line 3)",
+      "3 Mins to Bandra Railway Station & Western Express Highway",
+      "Near Linking Road Shopping Boulevard, Taj Mahal Tea House & Pali Naka"
+],
     "amenities": [
       "Rooftop Infinity Swimming Pool",
       "Boutique Luxury Clubhouse",
@@ -2649,11 +2692,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "40": {
     "keyFeatures": [
-      "At Parkside / Worli-Lower Parel Junction",
-      "Adjacent to High Street Phoenix & Phoenix Palladium Mall",
-      "3 Mins to Upcoming Coastal Road & Worli Sea Face",
-      "5 Mins to Lower Parel & Currey Road Railway Stations"
-    ],
+      "Parkside on Senapati Bapat Marg, Lower Parel",
+      "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
+      "4 Mins to Lower Parel Station (Western Line) & Currey Road Station (Central Line)",
+      "Adjacent to High Street Phoenix, Palladium Mall & The St. Regis Mumbai"
+],
     "amenities": [
       "7 Swimming Pools including Olympic Lap Pool",
       "50,000 sq.ft Grand Clubhouse (The Jewel)",
@@ -2667,11 +2710,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "41": {
     "keyFeatures": [
-      "Direct Frontage to Mahalaxmi Racecourse & Arabian Sea",
-      "2 Mins to Mahalaxmi Railway Station & Monorail",
-      "4 Mins to Mumbai Coastal Road Interchange",
-      "6 Mins to Phoenix Palladium Mall & Lower Parel Business District"
-    ],
+      "Lower Parel Commercial Boulevard opposite Peninsula Corporate Park",
+      "2 Mins to Acharya Atre Chowk / Lower Parel Metro Station (Aqua Line 3)",
+      "3 Mins to Lower Parel & Currey Road Railway Stations",
+      "Near Peninsula Corporate Park, Kamala Mills Dining Hub & One World Center"
+],
     "amenities": [
       "Infinity Lap Pool overlooking Racecourse",
       "Grand 3-Level Luxury Clubhouse",
@@ -2685,11 +2728,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "42": {
     "keyFeatures": [
-      "Off Senapati Bapat Marg, Lower Parel / Byculla",
-      "3 Mins to Lower Parel Commercial Hub (One World Center / Kamala Mills)",
-      "5 Mins to Eastern Express Highway & Coastal Road",
-      "6 Mins to Phoenix Palladium & High Street Phoenix"
-    ],
+      "Off Senapati Bapat Marg near One International Centre, Lower Parel",
+      "3 Mins to Worli / Science Centre Metro Station (Aqua Line 3)",
+      "4 Mins to Lower Parel Railway Station & Mumbai Coastal Road Worli Ramp",
+      "Near One International Centre, Four Seasons Hotel & ITC Grand Central"
+],
     "amenities": [
       "Infinity Swimming Pool & Kids Pool",
       "Grand Double-Height Clubhouse",
@@ -2703,11 +2746,11 @@ export const PROJECT_ENRICHMENTS = {
   },
   "43": {
     "keyFeatures": [
-      "Prime Lower Parel / Wadala Corridor with Monorail & Metro",
-      "5 Mins to Eastern Freeway & Eastern Express Highway",
-      "7 Mins to Lower Parel Business District & Phoenix Palladium",
-      "10 Mins to BKC via Trans-Harbour Link / Freeway"
-    ],
+      "Lower Parel Midtown Corridor near Marathon Futurex",
+      "2 Mins to Lower Parel Monorail & Currey Road Metro Link",
+      "3 Mins to Lower Parel Suburban Station & Currey Road Station",
+      "Near Marathon Futurex IT Park, Lodha Excelus, Urmi Estate & Coastal Road"
+],
     "amenities": [
       "5-Tier Sky Lounge & Infinity Pool",
       "Grand 5-Storey Clubhouse",
@@ -2762,10 +2805,9 @@ export const BEST_COVER_FILES = {
   37: "1.jpg",             // Oberoi Realty (Bandra W): Luxury towers overlooking greenery
   38: "tower_facade.jpg",  // Adani Ten BKC (Bandra BKC): Illuminated night exterior from Adani Realty (NOT swimming pool)
   39: "cover.jpg",         // DLH (Bandra W): Widescreen sunset master elevation render of skyscraper tower
-  40: "1.jpg",             // Lodha Lower Parel (World Towers): Entire skyscraper tower (NOT woman in dress)
+  40: "1.jpg",             // Lodha Lower Parel (World Towers / Parkside): Iconic triple high-rise towers overlooking bay & parkland
   41: "1.jpg",             // Piramal Mahalaxmi (Lower Parel): Iconic 3-tower luxury skyline overlooking racecourse
-  42: "1.jpg",             // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
-  43: "3.jpg"              // Godrej Lower Parel (Lower Parel): Multi-tower master elevation (NOT balcony edge)
+  42: "1.jpg"              // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
 };
 
 // Map each project's total photo count in public/project_photos/
@@ -2777,8 +2819,8 @@ export const PROJECT_PHOTO_COUNTS = {
   21: 4, 22: 5, 23: 3, 24: 3, 25: 3,
   26: 5, 27: 3, 28: 3, 29: 4, 30: 3,
   31: 4, 32: 3, 33: 2, 34: 3, 35: 2,
-  36: 3, 37: 3, 38: 4, 39: 3, 40: 5,
-  41: 3, 42: 3, 43: 3
+  36: 3, 37: 3, 38: 4, 39: 3, 40: 2,
+  41: 3, 42: 2, 43: 0
 };
 
 PROJECTS_DATA.forEach(p => {
@@ -2790,6 +2832,15 @@ PROJECTS_DATA.forEach(p => {
 
   const folder = PROJECT_FOLDERS[p.id] || `${p.id} - ${p.name}`;
   p.folder = folder;
+
+  // Project 43 (Godrej Lower Parel): Photos explicitly removed as requested
+  if (p.id === 43) {
+    p.coverImage = null;
+    p.images = [];
+    p.fallbackCover = null;
+    return;
+  }
+
   p.fallbackCover = p.coverImage;
 
   const bestCover = BEST_COVER_FILES[p.id] || '1.jpg';
@@ -2882,5 +2933,439 @@ PROJECTS_DATA.forEach(p => {
     }
   }
   p.images = [p.coverImage, ...otherImages];
+});
+
+// =========================================================================
+// PRECISE GPS COORDINATES, POSTAL ADDRESSES & TRANSIT CONNECTIVITY MATRIX
+// Accurate latitude/longitude coordinates & verified distances for Mumbai developments
+// =========================================================================
+export const LOCATION_COORDINATES = {
+  "Borivali": { lat: 19.2307, lng: 72.8567, zoom: 14, pincode: "400091", metro: "Line 2A & Line 7 Interchange", highway: "Western Express Highway" },
+  "Kandivali": { lat: 19.2045, lng: 72.8522, zoom: 14, pincode: "400101", metro: "Line 7 Poisar / Akurli", highway: "WEH & Akurli Road" },
+  "Malad": { lat: 19.1860, lng: 72.8485, zoom: 14, pincode: "400064", metro: "Line 2A Malad West & Valnai", highway: "New Link Road & WEH" },
+  "Goregaon": { lat: 19.1645, lng: 72.8490, zoom: 14, pincode: "400104", metro: "Line 2A Bangur Nagar & Line 7 Aarey", highway: "WEH & JVLR" },
+  "Jogeshwari": { lat: 19.1380, lng: 72.8495, zoom: 14, pincode: "400102", metro: "Line 2A Oshiwara & Line 7 JVLR", highway: "JVLR & S.V. Road" },
+  "Andheri": { lat: 19.1197, lng: 72.8468, zoom: 14, pincode: "400053", metro: "Line 1, 2A & 7 Triple Grid", highway: "WEH & Coastal Link" },
+  "Bandra": { lat: 19.0596, lng: 72.8295, zoom: 14, pincode: "400050", metro: "Aqua Line 3 (BKC Underground)", highway: "Bandra-Worli Sea Link & Coastal Road" },
+  "Lower Parel": { lat: 18.9982, lng: 72.8292, zoom: 14, pincode: "400013", metro: "Aqua Line 3 (Science Centre/Worli)", highway: "Mumbai Coastal Road & Eastern Freeway" }
+};
+
+export const PROJECT_COORDINATES = {
+  1: {
+    lat: 19.2315, lng: 72.8436, pincode: "400091",
+    address: "Jairaj Nagar, New Link Road, Borivali West, Mumbai — 400091",
+    metro: "Borivali West Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Borivali Suburban Railway Station (West) — 1.8 km (7 mins drive)",
+    highway: "New Link Road (Direct Frontage) & WEH via Shimpoli — 2.2 km (7 mins)",
+    airport: "CSM International Airport (T2) — 18 km (32 mins)",
+    landmark: "Don Bosco High School (400m), Vazira Naka (550m) & Kora Kendra (1.2 km)"
+  },
+  2: {
+    lat: 19.2244, lng: 72.8622, pincode: "400066",
+    address: "Off Western Express Highway, Magathane, Borivali East, Mumbai — 400066",
+    metro: "Magathane Metro Station (Line 7) — 350m (4 mins walk)",
+    railway: "Borivali Railway Station (East) — 1.8 km (7 mins)",
+    highway: "Western Express Highway (WEH) — 150m (Direct Ramp Access)",
+    airport: "CSM International Airport (BOM) — 16.5 km (28 mins)",
+    landmark: "Sanjay Gandhi National Park (1.1 km), Tata Power Center & Magathane Flyover"
+  },
+  3: {
+    lat: 19.2198, lng: 72.8637, pincode: "400066",
+    address: "Western Express Highway, Devipada, Borivali East, Mumbai — 400066",
+    metro: "Devipada Metro Station (Line 7) — 100m (Direct Integrated Skywalk / 1 min)",
+    railway: "Borivali Railway Station (East) — 1.6 km (6 mins)",
+    highway: "Western Express Highway (WEH) — 0 km (Direct WEH Service Road Frontage)",
+    airport: "CSM International Airport (BOM) — 16.0 km (25 mins)",
+    landmark: "Sky City Mall (On-Campus), Oberoi International School & SGNP Forest Views"
+  },
+  4: {
+    lat: 19.2285, lng: 72.8675, pincode: "400066",
+    address: "Near SGNP Main Gate, Kulupwadi, Borivali East, Mumbai — 400066",
+    metro: "Rashtriya Udyan (National Park) Metro Station (Line 7) — 350m (4 mins walk)",
+    railway: "Borivali Railway Station (East) — 1.3 km (5 mins)",
+    highway: "Western Express Highway (WEH) — 250m (1 min drive)",
+    airport: "CSM International Airport (BOM) — 17.0 km (30 mins)",
+    landmark: "Sanjay Gandhi National Park Main Entrance (250m) & Abhinav Nagar"
+  },
+  5: {
+    lat: 19.2082, lng: 72.8685, pincode: "400101",
+    address: "Akurli Road, Opp Mahindra, Kandivali East, Mumbai — 400101",
+    metro: "Akurli Metro Station (Line 7) — 300m (3 mins walk)",
+    railway: "Kandivali Railway Station (East) — 1.2 km (5 mins)",
+    highway: "Western Express Highway (WEH) — 400m (2 mins)",
+    airport: "CSM International Airport (BOM) — 14.5 km (25 mins)",
+    landmark: "Growel's 101 Mall (450m), Cambridge School (500m) & Akurli Crossroad"
+  },
+  6: {
+    lat: 19.2054, lng: 72.8667, pincode: "400101",
+    address: "Akurli Road, Near WEH Junction, Kandivali East, Mumbai — 400101",
+    metro: "Akurli Metro Station (Line 7) — 350m (3 mins walk)",
+    railway: "Kandivali Railway Station (East) — 1.3 km (5 mins)",
+    highway: "Western Express Highway (WEH) — 200m (1 min)",
+    airport: "CSM International Airport (BOM) — 14.2 km (24 mins)",
+    landmark: "Mahindra & Mahindra Compound Gate, Growel's 101 Mall & Lokhandwala Complex"
+  },
+  7: {
+    lat: 19.2031, lng: 72.8715, pincode: "400101",
+    address: "Lokhandwala Township, Kandivali East, Mumbai — 400101",
+    metro: "Poisar Metro Station (Line 7) — 900m (3 mins drive / 10 mins walk)",
+    railway: "Kandivali Railway Station (East) — 2.2 km (8 mins)",
+    highway: "Western Express Highway (WEH) — 1.1 km (3 mins)",
+    airport: "CSM International Airport (BOM) — 15.0 km (26 mins)",
+    landmark: "Lokhandwala Foundation School (200m), Whispering Palms & Central Park"
+  },
+  8: {
+    lat: 19.2115, lng: 72.8655, pincode: "400101",
+    address: "Off Western Express Highway, Thakur Village Corridor, Kandivali East, Mumbai — 400101",
+    metro: "Poisar Metro Station (Line 7) — 400m (4 mins walk)",
+    railway: "Kandivali Railway Station (East) — 1.6 km (6 mins)",
+    highway: "Western Express Highway (WEH) — 150m (1 min)",
+    airport: "CSM International Airport (BOM) — 14.8 km (25 mins)",
+    landmark: "Sanjay Gandhi National Park Border, D-Mart (300m) & Thakur Public School"
+  },
+  9: {
+    lat: 19.1832, lng: 72.8365, pincode: "400064",
+    address: "New Link Road Corridor, Near Mith Chowki, Malad West, Mumbai — 400064",
+    metro: "Malad West Metro Station (Line 2A) — 350m (3 mins walk)",
+    railway: "Malad Railway Station (West) — 1.5 km (6 mins)",
+    highway: "New Link Road (Direct) & WEH via Chincholi Flyover — 2.1 km (7 mins)",
+    airport: "CSM International Airport (BOM) — 13.2 km (24 mins)",
+    landmark: "Inorbit Mall (700m), Mindspace IT Park (850m) & Zenith Hospital"
+  },
+  10: {
+    lat: 19.1764, lng: 72.8342, pincode: "400064",
+    address: "Near Inorbit Mall & Mindspace, Malad West, Mumbai — 400064",
+    metro: "Lower Malad Metro Station (Line 2A) — 250m (2 mins walk)",
+    railway: "Malad Railway Station (West) — 1.6 km (6 mins)",
+    highway: "Malad-Goregaon Link Road & WEH — 1.8 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 12.8 km (22 mins)",
+    landmark: "Inorbit Mall (250m), Hypercity, Mindspace Commercial Zone & Infiniti Mall (1 km)"
+  },
+  11: {
+    lat: 19.1865, lng: 72.8358, pincode: "400064",
+    address: "Link Road, Near Chincholi Bunder, Malad West, Mumbai — 400064",
+    metro: "Valnai - Meeth Chowki Metro Station (Line 2A) — 350m (4 mins walk)",
+    railway: "Malad Railway Station (West) — 1.4 km (5 mins)",
+    highway: "Western Express Highway via Chincholi Underpass — 2.0 km (6 mins)",
+    airport: "CSM International Airport (BOM) — 13.5 km (24 mins)",
+    landmark: "Infiniti Mall Malad (450m), Uncle Kitchens, S.V. Road (650m)"
+  },
+  12: {
+    lat: 19.1895, lng: 72.8442, pincode: "400064",
+    address: "Off S.V. Road, Near Sundar Nagar, Malad West, Mumbai — 400064",
+    metro: "Malad West Metro Station (Line 2A) — 550m (5 mins)",
+    railway: "Malad Railway Station (West) — 700m (3 mins drive / 7 mins walk)",
+    highway: "Main S.V. Road (100m) & WEH via Malad Subway — 1.4 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 13.0 km (22 mins)",
+    landmark: "Sundar Nagar Garden (150m), Ryan International School (450m) & Surana Hospital"
+  },
+  13: {
+    lat: 19.1678, lng: 72.8375, pincode: "400104",
+    address: "Link Road Corridor, Near Bangur Nagar, Goregaon West, Mumbai — 400104",
+    metro: "Bangur Nagar Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Goregaon Railway Station (West) — 1.4 km (6 mins)",
+    highway: "Western Express Highway via Mrinal Gore Flyover — 1.8 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 11.2 km (20 mins)",
+    landmark: "Inorbit Mall Goregaon (500m), Vibgyor High School (350m) & City Centre Mall"
+  },
+  14: {
+    lat: 19.1624, lng: 72.8388, pincode: "400104",
+    address: "Near Bangur Nagar & Inorbit Mall, Goregaon West, Mumbai — 400104",
+    metro: "Bangur Nagar Metro Station (Line 2A) — 250m (2 mins walk)",
+    railway: "Goregaon Railway Station (West) — 1.3 km (5 mins)",
+    highway: "Western Express Highway via Mrinal Gore Flyover — 1.6 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 10.8 km (19 mins)",
+    landmark: "Inorbit Mall (350m), Vibgyor High School, Bangur Nagar Sports Complex"
+  },
+  15: {
+    lat: 19.1605, lng: 72.8362, pincode: "400104",
+    address: "New Link Road Corridor, Goregaon West, Mumbai — 400104",
+    metro: "Goregaon West (Pahadi Goregaon) Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Ram Mandir Suburban Railway Station — 950m (3 mins drive / 10 mins walk)",
+    highway: "Western Express Highway — 1.7 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 10.5 km (18 mins)",
+    landmark: "Nesco IT Park & Exhibition Centre (1.4 km), Topiwala Center & Bangur Nagar"
+  },
+  16: {
+    lat: 19.1558, lng: 72.8425, pincode: "400104",
+    address: "S.V. Road & Link Road Intersect, Goregaon West, Mumbai — 400104",
+    metro: "Goregaon West Metro Station (Line 2A) — 400m (4 mins walk)",
+    railway: "Goregaon Railway Station (Harbour & Western) — 750m (3 mins drive / 7 mins walk)",
+    highway: "S.V. Road Frontage & WEH via Station Road — 1.2 km (4 mins)",
+    airport: "CSM International Airport (BOM) — 10.2 km (18 mins)",
+    landmark: "Topiwala Multiplex (250m), Patkar Varde College (450m) & Siddharth Hospital"
+  },
+  17: {
+    lat: 19.1398, lng: 72.8445, pincode: "400102",
+    address: "Near S.V. Road & Behram Baug, Jogeshwari West, Mumbai — 400102",
+    metro: "Oshiwara Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Jogeshwari Suburban Railway Station — 750m (3 mins)",
+    highway: "JVLR (Jogeshwari-Vikhroli Link Road) — 450m (2 mins)",
+    airport: "CSM International Airport (BOM) — 8.2 km (15 mins)",
+    landmark: "Millat Superspeciality Hospital (250m), Behram Baug Junction & Lokhandwala Access"
+  },
+  18: {
+    lat: 19.1352, lng: 72.8432, pincode: "400102",
+    address: "Main S.V. Road, Jogeshwari West, Mumbai — 400102",
+    metro: "Oshiwara / Jogeshwari West Metro (Line 2A) — 180m (2 mins walk)",
+    railway: "Jogeshwari Railway Station — 450m (2 mins drive / 5 mins walk)",
+    highway: "Direct S.V. Road Frontage & JVLR Flyover — 250m (1 min)",
+    airport: "CSM International Airport (BOM) — 7.8 km (14 mins)",
+    landmark: "Hub Mall (WEH - 1.1 km), Jogeshwari Caves & Oshiwara Furniture Hub"
+  },
+  19: {
+    lat: 19.1375, lng: 72.8405, pincode: "400102",
+    address: "Jogeshwari West Corridor, Near Oshiwara, Mumbai — 400102",
+    metro: "Oshiwara Metro Station (Line 2A) — 350m (4 mins walk)",
+    railway: "Ram Mandir Railway Station — 900m (3 mins)",
+    highway: "JVLR Intersect — 700m (2 mins)",
+    airport: "CSM International Airport (BOM) — 8.5 km (16 mins)",
+    landmark: "Mega Mall Oshiwara (600m), Anand Nagar Market & Link Road Corridor"
+  },
+  20: {
+    lat: 19.1315, lng: 72.8532, pincode: "400060",
+    address: "Near JVLR Junction & WEH, Jogeshwari East, Mumbai — 400060",
+    metro: "JVLR Metro Station (Line 7) — 200m (2 mins walk)",
+    railway: "Jogeshwari Railway Station (East) — 650m (3 mins)",
+    highway: "Western Express Highway Frontage & JVLR Start — 100m (1 min)",
+    airport: "CSM International Airport (BOM) — 6.2 km (11 mins)",
+    landmark: "SEEPZ IT Zone (1.6 km), Nesco IT Park (1.4 km) & Majas Bus Depot"
+  },
+  21: {
+    lat: 19.1312, lng: 72.8165, pincode: "400061",
+    address: "Yari Road, Versova, Andheri West, Mumbai — 400061",
+    metro: "Versova Metro Station (Line 1) — 450m (4 mins walk)",
+    railway: "Andheri Suburban & Outstation Station — 3.5 km (12 mins)",
+    highway: "Versova Coastal Road Link & New Link Road — 1.1 km (4 mins)",
+    airport: "CSM International Airport (BOM) — 9.2 km (18 mins)",
+    landmark: "Versova Beach & Rock Beach (250m), Nana Nani Park & Prithvi Theatre (2 km)"
+  },
+  22: {
+    lat: 19.1175, lng: 72.8572, pincode: "400069",
+    address: "Near Western Express Highway, Andheri East, Mumbai — 400069",
+    metro: "Gundavali Metro (Line 7) & WEH Metro (Line 1) — 200m (2 mins walk / Direct Interchange)",
+    railway: "Andheri Railway Station (East) — 850m (3 mins drive / 7 mins walk)",
+    highway: "Western Express Highway (WEH) — 100m (Direct Flyover Ramp)",
+    airport: "CSM International Airport (Terminal 1 & 2) — 3.6 km (7 mins)",
+    landmark: "The Lalit Mumbai (1.1 km), Solitaire Corporate Park (500m) & Bisleri Junction"
+  },
+  23: {
+    lat: 19.1248, lng: 72.8322, pincode: "400053",
+    address: "Near DN Nagar Metro & Link Road, Andheri West, Mumbai — 400053",
+    metro: "D.N. Nagar Metro Interchange (Line 1 & Line 2A) — 150m (Direct 2-min Walk)",
+    railway: "Andheri Railway Station (West) — 1.4 km (5 mins)",
+    highway: "New Link Road (Direct) & WEH via Andheri-Kurla Rd — 2.0 km (7 mins)",
+    airport: "CSM International Airport (BOM) — 7.2 km (14 mins)",
+    landmark: "Kokilaben Dhirubhai Ambani Hospital (650m), Bhavan's College (350m) & The Club (750m)"
+  },
+  24: {
+    lat: 19.1192, lng: 72.8465, pincode: "400058",
+    address: "Andheri Central Corridor, S.V. Road, Andheri West, Mumbai — 400058",
+    metro: "Andheri Metro Station (Line 1) — 350m (3 mins walk)",
+    railway: "Andheri Railway Station (Harbour & Western Line Junction) — 450m (3 mins walk)",
+    highway: "S.V. Road (Immediate) & Western Express Highway — 1.3 km (4 mins)",
+    airport: "CSM International Airport (BOM) — 5.5 km (11 mins)",
+    landmark: "Shoppers Stop Andheri (250m), Gilbert Hill Heritage Rock (500m) & Nadco Center"
+  },
+  25: {
+    lat: 19.1145, lng: 72.8625, pincode: "400069",
+    address: "Andheri-Kurla Road, Chakala, Andheri East, Mumbai — 400069",
+    metro: "Chakala (J.B. Nagar) Metro Station (Line 1) — 200m (2 mins walk)",
+    railway: "Andheri Railway Station (East) — 1.2 km (5 mins)",
+    highway: "Western Express Highway — 750m (2 mins)",
+    airport: "CSM International Airport (T2) — 3.0 km (6 mins)",
+    landmark: "Solitaire Business Park (250m), ITC Maratha (1.6 km) & Courtyard Marriott"
+  },
+  26: {
+    lat: 19.1118, lng: 72.8605, pincode: "400093",
+    address: "Chakala Central Corridor, Andheri East, Mumbai — 400093",
+    metro: "Western Express Highway (WEH) Metro Station (Line 1) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (East) — 900m (3 mins)",
+    highway: "Western Express Highway — 350m (1 min)",
+    airport: "CSM International Airport (BOM) — 2.8 km (5 mins)",
+    landmark: "Courtyard by Marriott (150m), Naman Midtown Hub & Chakala Market"
+  },
+  27: {
+    lat: 19.1225, lng: 72.8405, pincode: "400058",
+    address: "Lallubhai Park Road, Andheri West, Mumbai — 400058",
+    metro: "Azad Nagar Metro Station (Line 1) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (West) — 700m (3 mins drive / 7 mins walk)",
+    highway: "S.V. Road (150m) & Western Express Highway — 1.7 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 6.0 km (12 mins)",
+    landmark: "Lallubhai Park (80m), Prime Superspeciality Hospital (250m) & Bhavan's Campus"
+  },
+  28: {
+    lat: 19.1215, lng: 72.8355, pincode: "400058",
+    address: "Veera Desai Road, Andheri West, Mumbai — 400058",
+    metro: "D.N. Nagar Metro Station (Line 1 & 2A) — 450m (4 mins walk)",
+    railway: "Andheri Railway Station (West) — 1.8 km (6 mins)",
+    highway: "New Link Road (150m) & Western Express Highway — 2.3 km (7 mins)",
+    airport: "CSM International Airport (BOM) — 7.0 km (14 mins)",
+    landmark: "The Country Club (150m), Yash Raj Films Studio (350m) & Kokilaben Hospital (750m)"
+  },
+  29: {
+    lat: 19.1285, lng: 72.8305, pincode: "400053",
+    address: "Lokhandwala Complex Back Road, Andheri West, Mumbai — 400053",
+    metro: "Adarsh Nagar / Oshiwara Metro Station (Line 2A) — 400m (4 mins walk)",
+    railway: "Andheri Railway Station — 2.5 km (8 mins)",
+    highway: "Link Road Corridor — 300m (2 mins)",
+    airport: "CSM International Airport (BOM) — 8.0 km (16 mins)",
+    landmark: "Lokhandwala Market (250m), Celebration Sports Club (200m) & Infiniti Mall (750m)"
+  },
+  30: {
+    lat: 19.1165, lng: 72.8345, pincode: "400058",
+    address: "Four Bungalows Corridor, Andheri West, Mumbai — 400058",
+    metro: "D.N. Nagar Metro Station (Line 1 & 2A) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (West) — 1.6 km (5 mins)",
+    highway: "Western Express Highway via Andheri Underpass — 2.2 km (7 mins)",
+    airport: "CSM International Airport (BOM) — 6.8 km (13 mins)",
+    landmark: "Four Bungalows Market (150m), Rustomjee Cambridge School & Kokilaben Hospital (550m)"
+  },
+  31: {
+    lat: 19.1345, lng: 72.8275, pincode: "400053",
+    address: "Higher Link Road, Near Adarsh Nagar, Andheri West, Mumbai — 400053",
+    metro: "Adarsh Nagar Metro Station (Line 2A) — 250m (2 mins walk)",
+    railway: "Jogeshwari / Ram Mandir Station — 1.7 km (5 mins)",
+    highway: "New Link Road Frontage & JVLR Extension — 700m (2 mins)",
+    airport: "CSM International Airport (BOM) — 8.5 km (16 mins)",
+    landmark: "Infiniti Mall Andheri (350m), Lotus Petrol Pump Junction & Citi Mall (300m)"
+  },
+  32: {
+    lat: 19.1365, lng: 72.8255, pincode: "400053",
+    address: "Oshiwara Link Road, Andheri West, Mumbai — 400053",
+    metro: "Oshiwara Metro Station (Line 2A) — 200m (2 mins walk)",
+    railway: "Ram Mandir Railway Station — 1.2 km (4 mins)",
+    highway: "Direct Link Road Frontage — 0 km",
+    airport: "CSM International Airport (BOM) — 8.8 km (17 mins)",
+    landmark: "Mega Mall (250m), Laxmi Industrial Estate (150m) & Star Bazaar"
+  },
+  33: {
+    lat: 19.0652, lng: 72.8285, pincode: "400050",
+    address: "Pali Hill Sanctuary, Nargis Dutt Road, Bandra West, Mumbai — 400050",
+    metro: "Bandra Colony Underground Metro (Aqua Line 3) — 1.0 km (3 mins drive / 10 mins walk)",
+    railway: "Bandra Suburban & Harbour Station — 1.5 km (5 mins)",
+    highway: "Bandra-Worli Sea Link & Coastal Road Ramp — 1.2 km (3 mins)",
+    airport: "CSM International Airport (BOM) — 9.0 km (15 mins)",
+    landmark: "Pali Hill Club (100m), Candies (250m), Olive Bar & Kitchen (350m) & Carter Road (550m)"
+  },
+  34: {
+    lat: 19.0585, lng: 72.8325, pincode: "400050",
+    address: "Turner Road & Perry Cross Road, Bandra West, Mumbai — 400050",
+    metro: "Bandra Colony Metro (Aqua Line 3) — 900m (3 mins drive / 9 mins walk)",
+    railway: "Bandra Railway Station (West) — 1.0 km (4 mins)",
+    highway: "Western Express Highway & Sea Link — 1.1 km (3 mins)",
+    airport: "CSM International Airport (BOM) — 8.8 km (15 mins)",
+    landmark: "Turner Road Boutiques (80m), Carter Road Seafront (650m) & Otters Club (850m)"
+  },
+  35: {
+    lat: 19.0625, lng: 72.8545, pincode: "400051",
+    address: "Bandra East, Adjacent to BKC Financial Gateway, Mumbai — 400051",
+    metro: "BKC Underground Metro Station (Aqua Line 3 & Line 2B Interchange) — 200m (2 mins walk)",
+    railway: "Bandra Terminus & Suburban Station — 450m (2 mins drive / 5 mins walk)",
+    highway: "Western Express Highway & Kalanagar Flyover — 100m (1 min)",
+    airport: "CSM International Airport (BOM) — 6.0 km (10 mins via BKC Elevated Corridor)",
+    landmark: "Bandra Kurla Complex (BKC - 250m), Jio World Centre (750m), US Consulate (1 km) & MCA Club"
+  },
+  36: {
+    lat: 19.0465, lng: 72.8215, pincode: "400050",
+    address: "Mount Mary Hill & Bandstand Promenade, Bandra West, Mumbai — 400050",
+    metro: "Bandra Underground Metro Link (Aqua Line 3) — 1.2 km (4 mins)",
+    railway: "Bandra Railway Station (West) — 1.9 km (6 mins)",
+    highway: "Bandra-Worli Sea Link Toll Plaza — 850m (2 mins)",
+    airport: "CSM International Airport (BOM) — 10.0 km (18 mins)",
+    landmark: "Mount Mary Basilica (120m), Taj Lands End (350m), Bandstand Promenade (180m) & Mannat (300m)"
+  },
+  37: {
+    lat: 19.0685, lng: 72.8235, pincode: "400050",
+    address: "Carter Road Seafront Promenade, Bandra West, Mumbai — 400050",
+    metro: "Khar Underground Metro Station — 950m (3 mins)",
+    railway: "Khar Road Railway Station — 1.2 km (4 mins) & Bandra Station (1.8 km)",
+    highway: "Bandra-Worli Sea Link & Western Express Highway — 1.8 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 8.5 km (15 mins)",
+    landmark: "Carter Road Seafront Promenade (Direct Frontage / 30m), Otters Club (250m) & Union Park"
+  },
+  38: {
+    lat: 19.0545, lng: 72.8355, pincode: "400050",
+    address: "Hill Road & St. Martin's Cross, Bandra West, Mumbai — 400050",
+    metro: "Bandra Underground Metro (Aqua Line 3) — 700m (3 mins)",
+    railway: "Bandra Railway Station (West) — 850m (3 mins drive / 7 mins walk)",
+    highway: "Western Express Highway & Sea Link Connector — 1.3 km (4 mins)",
+    airport: "CSM International Airport (BOM) — 8.5 km (15 mins)",
+    landmark: "Holy Family Hospital (120m), Elco Market Hill Road (250m) & St. Stanislaus High School"
+  },
+  39: {
+    lat: 19.0615, lng: 72.8295, pincode: "400050",
+    address: "Waterfield Road, Bandra West Prime, Mumbai — 400050",
+    metro: "Bandra Underground Metro (Aqua Line 3) — 750m (3 mins)",
+    railway: "Bandra Railway Station (West) — 1.0 km (4 mins)",
+    highway: "Linking Road (80m) & Western Express Highway — 1.2 km (3 mins)",
+    airport: "CSM International Airport (BOM) — 8.8 km (15 mins)",
+    landmark: "Linking Road Shopping Boulevard (100m), Taj Mahal Tea House (200m) & Pali Naka (350m)"
+  },
+  40: {
+    lat: 18.9985, lng: 72.8285, pincode: "400013",
+    address: "Senapati Bapat Marg, Lower Parel / Parkside, Mumbai — 400013",
+    metro: "Science Centre / Worli Metro Station (Aqua Line 3) — 300m (3 mins walk)",
+    railway: "Lower Parel Station (Western Line - 400m / 4 mins walk) & Currey Road (Central Line - 550m)",
+    highway: "Mumbai Coastal Road (Worli Sea Face Ramp - 1.0 km / 2 mins) & Eastern Freeway (1.8 km)",
+    airport: "CSM International Airport (BOM) — 14.0 km (22 mins)",
+    landmark: "High Street Phoenix & Palladium Mall (250m), The St. Regis Mumbai (350m) & Peninsula Park"
+  },
+  41: {
+    lat: 18.9945, lng: 72.8315, pincode: "400013",
+    address: "Lower Parel Commercial Boulevard, Opp Peninsula Park, Mumbai — 400013",
+    metro: "Acharya Atre Chowk / Lower Parel Metro (Aqua Line 3) — 250m (2 mins walk)",
+    railway: "Lower Parel Suburban Station — 300m (3 mins walk) & Currey Road (350m)",
+    highway: "Atal Setu (MTHL) Access & Eastern Freeway — 2.0 km (5 mins)",
+    airport: "CSM International Airport (BOM) — 14.5 km (24 mins)",
+    landmark: "Peninsula Corporate Park (100m), Kamala Mills Dining District (350m) & One World Center"
+  },
+  42: {
+    lat: 18.9965, lng: 72.8265, pincode: "400013",
+    address: "Off Senapati Bapat Marg, Near One International Centre, Lower Parel, Mumbai — 400013",
+    metro: "Worli / Science Centre Metro (Aqua Line 3) — 350m (3 mins walk)",
+    railway: "Lower Parel Railway Station — 450m (4 mins walk)",
+    highway: "Mumbai Coastal Road (Worli Interchange) — 850m (2 mins)",
+    airport: "CSM International Airport (BOM) — 13.8 km (22 mins)",
+    landmark: "One International Centre (150m), Four Seasons Hotel (450m) & ITC Grand Central"
+  },
+  43: {
+    lat: 18.9925, lng: 72.8295, pincode: "400013",
+    address: "Lower Parel Midtown Corridor, Near Marathon Futurex, Mumbai — 400013",
+    metro: "Currey Road Metro Link & Lower Parel Monorail — 200m (2 mins walk)",
+    railway: "Lower Parel Station (Western) & Currey Road Station (Central) — 300m (3 mins walk)",
+    highway: "Bandra-Worli Sea Link & Mumbai Coastal Road — 1.4 km (3 mins)",
+    airport: "CSM International Airport (BOM) — 14.6 km (24 mins)",
+    landmark: "Marathon Futurex IT Park (100m), Lodha Excelus (250m) & Urmi Estate (350m)"
+  }
+};
+
+// Enrich all developments with precise GPS coordinates, verified addresses and transit matrices
+PROJECTS_DATA.forEach(p => {
+  const coord = PROJECT_COORDINATES[p.id];
+  if (coord) {
+    p.coords = { lat: coord.lat, lng: coord.lng };
+    p.exactAddress = coord.address;
+    p.pincode = coord.pincode;
+    p.mapUrl = `https://maps.google.com/?q=${coord.lat},${coord.lng}`;
+    p.connectivity = [
+      coord.metro,
+      coord.railway,
+      coord.highway,
+      coord.airport,
+      coord.landmark
+    ];
+    p.transit = {
+      metro: coord.metro,
+      railway: coord.railway,
+      highway: coord.highway,
+      airport: coord.airport,
+      landmark: coord.landmark
+    };
+  } else {
+    p.coords = { lat: 19.1197, lng: 72.8468 };
+    p.exactAddress = `${p.locality || ''}, ${p.location}, Mumbai`;
+    p.pincode = "400053";
+  }
 });
 

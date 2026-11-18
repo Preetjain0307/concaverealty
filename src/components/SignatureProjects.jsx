@@ -16,7 +16,8 @@ import {
   X,
   ChevronRight,
   Home,
-  Navigation
+  Navigation,
+  Train
 } from 'lucide-react';
 import { PROJECTS_DATA, LOCATIONS_LIST, MARQUEE_IMAGES } from '../data/projectsData';
 
@@ -139,28 +140,24 @@ export function SignatureProjects({
       <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden border-b border-[#EAE6DF] flex items-center justify-center group shadow-md">
         
         {/* Background Scrolling Architectural Image Marquee */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
           {/* Subtle horizontal fade masks on sides */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-black/60 to-transparent z-10" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-black/60 to-transparent z-10" />
 
           {/* Marquee Track fitting the exact field height */}
-          <div className="animate-marquee flex gap-4 h-full">
+          <div className="animate-marquee flex gap-4 h-full pointer-events-none">
             {marqueeItems.map((item, idx) => (
               <div
                 key={idx}
-                className="h-full w-72 sm:w-84 md:w-96 flex-shrink-0 relative overflow-hidden cursor-pointer"
-                onClick={() => {
-                  const found = PROJECTS_DATA.find(p => p.name.toLowerCase() === item.title.toLowerCase());
-                  if (found) onSelectProject(found);
-                }}
+                className="h-full w-72 sm:w-84 md:w-96 flex-shrink-0 relative overflow-hidden select-none pointer-events-none"
               >
                 <img
                   src={item.url}
                   alt={item.title}
                   referrerPolicy="no-referrer"
                   onError={(e) => { e.currentTarget.src = FALLBACK_IMG; }}
-                  className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.05] transition-transform duration-700 ease-out group-hover:scale-105"
+                  className="w-full h-full object-cover filter brightness-[0.75] contrast-[1.05]"
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/40" />
@@ -430,9 +427,9 @@ export function SignatureProjects({
                       className="relative h-52 sm:h-60 overflow-hidden bg-[#0E1715] flex items-center justify-center cursor-pointer"
                       onClick={() => onSelectProject(project)}
                     >
-                      {/* Ambient soft backdrop so full portrait towers fit beautifully without blank space */}
                       {project.coverImage ? (
                         <>
+                          {/* Ambient soft backdrop so full portrait towers fit beautifully without blank space */}
                           <img
                             src={project.coverImage}
                             alt=""
@@ -448,26 +445,31 @@ export function SignatureProjects({
                             className="relative z-10 w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                             loading="lazy"
                           />
+                          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                         </>
                       ) : (
-                        <div className="flex flex-col items-center justify-center text-center p-4 text-[#DFBE79]/80 space-y-2 z-10">
-                          <div className="w-12 h-12 rounded-full bg-[#1D3530] border border-[#DFBE79]/30 flex items-center justify-center text-[#DFBE79]">
-                            <Building2 className="w-6 h-6" />
+                        <div className="w-full h-full bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] flex flex-col items-center justify-center p-4 text-center select-none relative z-10">
+                          <div className="w-12 h-12 rounded-full bg-[#DFBE79]/15 border border-[#DFBE79]/30 flex items-center justify-center mb-2 shadow-inner">
+                            <Building2 className="w-6 h-6 text-[#DFBE79]" />
                           </div>
-                          <span className="text-xs font-mono tracking-wider uppercase text-white/80">Photos Updating</span>
+                          <span className="text-xs font-serif font-semibold text-[#DFBE79] tracking-wider uppercase">
+                            Exclusive Residence
+                          </span>
+                          <span className="text-[10px] text-gray-300 font-mono tracking-tight mt-0.5">
+                            Photos Available on Advisory Request
+                          </span>
                         </div>
                       )}
-                      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                       
                       {/* Top Header Row: Location Badge & Developer Badge - perfectly aligned across all boxes */}
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
                         {/* Clickable Location Map Badge with Tooltip */}
                         <a 
-                          href={project.mapUrl}
+                          href={project.coords ? `https://www.google.com/maps/search/?api=1&query=${project.coords.lat},${project.coords.lng}` : project.mapUrl}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          title={`View ${project.name} on Google Maps (${project.locality || project.location})`}
+                          title={`View exact location of ${project.name} on Google Maps (${project.locality || project.location})`}
                           className="bg-white/95 hover:bg-white backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider font-semibold text-[#14221F] hover:text-[#245348] shadow-sm flex items-center gap-1.5 max-w-[62%] truncate transition-all pointer-events-auto hover:shadow-md border border-transparent hover:border-[#245348]/40 group/loc"
                         >
                           <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0 group-hover/loc:scale-110 transition-transform" />
@@ -499,10 +501,12 @@ export function SignatureProjects({
                       )}
 
                       {/* Bottom Left: Multiple photos count pill */}
-                      <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1.5">
-                        <Eye className="w-3 h-3 text-[#DFBE79]" />
-                        <span>{project.images?.length > 0 ? `${project.images.length} Photos` : 'Photos Updating'}</span>
-                      </div>
+                      {project.images && project.images.length > 0 && (
+                        <div className="absolute bottom-2.5 left-2.5 z-20 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1.5">
+                          <Eye className="w-3 h-3 text-[#DFBE79]" />
+                          <span>{project.images.length} Photos</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Card Content Body */}
@@ -545,15 +549,33 @@ export function SignatureProjects({
                           ))}
                         </div>
 
-                        {/* Top Key Connectivity & Feature Highlight */}
-                        {project.keyFeatures && project.keyFeatures.length > 0 && (
-                          <div className="pt-1 flex items-center gap-1.5 text-[11px] text-[#245348] font-medium truncate">
-                            <Navigation className="w-3 h-3 text-[#C59B4E] shrink-0" />
-                            <span className="truncate" title={project.keyFeatures[0]}>
-                              {project.keyFeatures[0]}
-                            </span>
-                          </div>
-                        )}
+                        {/* Top Key Connectivity & Vicinity Landmarks */}
+                        <div className="pt-1.5 space-y-1">
+                          {project.transit?.metro && (
+                            <div className="flex items-center gap-1.5 text-[11px] text-[#245348] font-medium truncate">
+                              <Train className="w-3 h-3 text-[#245348] shrink-0" />
+                              <span className="truncate" title={project.transit.metro}>
+                                {project.transit.metro}
+                              </span>
+                            </div>
+                          )}
+
+                          {project.transit?.landmark ? (
+                            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-light truncate">
+                              <Building2 className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                              <span className="truncate" title={project.transit.landmark}>
+                                {project.transit.landmark}
+                              </span>
+                            </div>
+                          ) : project.keyFeatures && project.keyFeatures.length > 0 ? (
+                            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-light truncate">
+                              <Navigation className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                              <span className="truncate" title={project.keyFeatures[0]}>
+                                {project.keyFeatures[0]}
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
 
                       </div>
 

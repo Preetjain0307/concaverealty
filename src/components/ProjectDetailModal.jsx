@@ -27,7 +27,14 @@ import {
   Flame,
   ArrowUpRight,
   Plane,
-  Maximize2
+  Maximize2,
+  Copy,
+  Check,
+  ZoomIn,
+  ZoomOut,
+  LocateFixed,
+  Route,
+  Globe
 } from 'lucide-react';
 
 // Seamlessly try multiple extensions (1.jpg -> 1.png -> 1.webp -> 1.jpeg) when user adds photos
@@ -115,6 +122,27 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
     modalRef.current?.focus();
   }, []);
 
+  const [mapType, setMapType] = useState('roadmap'); // 'roadmap' | 'satellite'
+  const [mapZoom, setMapZoom] = useState(16);
+  const [copiedCoords, setCopiedCoords] = useState(false);
+
+  // Reset map zoom and mode when switching projects
+  useEffect(() => {
+    setMapZoom(16);
+    setMapType('roadmap');
+    setCopiedCoords(false);
+  }, [project?.id]);
+
+  const handleCopyCoords = (lat, lng) => {
+    if (!lat || !lng) return;
+    const text = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+    }
+    setCopiedCoords(true);
+    setTimeout(() => setCopiedCoords(false), 2200);
+  };
+
   const imagesList = (project.images && project.images.length > 0)
     ? project.images
     : (project.coverImage ? [project.coverImage] : []);
@@ -169,8 +197,8 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           <div className="space-y-3">
             <div 
               className="relative h-72 sm:h-96 md:h-[490px] rounded-xl overflow-hidden border border-[#EAE6DF] bg-[#0E1715] flex items-center justify-center group cursor-pointer"
-              onClick={() => setIsLightboxOpen(true)}
-              title="Click to view full photo"
+              onClick={() => currentImage && setIsLightboxOpen(true)}
+              title={currentImage ? "Click to view full photo" : ""}
             >
               {currentImage ? (
                 <>
@@ -190,14 +218,23 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     onError={(e) => handleModalImgError(e, project.fallbackCover)}
                     className="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
                   />
+                  <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 pointer-events-none" />
                 </>
               ) : (
-                <div className="flex flex-col items-center justify-center text-center p-6 text-white/70 space-y-3 z-10">
-                  <div className="w-16 h-16 rounded-full bg-[#1D3530] border border-[#DFBE79]/40 flex items-center justify-center text-[#DFBE79]">
-                    <Building2 className="w-8 h-8" />
+                <div className="w-full h-full bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] flex flex-col items-center justify-center p-6 text-center select-none relative z-10">
+                  <div className="w-16 h-16 rounded-full bg-[#DFBE79]/15 border border-[#DFBE79]/30 flex items-center justify-center mb-3 shadow-inner">
+                    <Building2 className="w-8 h-8 text-[#DFBE79]" />
                   </div>
-                  <p className="font-serif text-lg text-white font-medium">New Photos Being Curated</p>
-                  <p className="text-xs text-white/60 max-w-sm">All previous project visuals removed. Ready for new official photo uploads for {project.name}.</p>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#DFBE79] tracking-wide">
+                    {project.name} • {project.location}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-gray-200 font-light mt-1.5 max-w-md">
+                    Verified MahaRERA Registered Development ({project.rera || 'A51900045781'}). High-resolution architectural elevations, private floorplans and penthouses available upon advisory request.
+                  </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-mono font-medium px-4 py-1.5 rounded-full bg-[#DFBE79]/20 text-[#DFBE79] border border-[#DFBE79]/40">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Photography Available on Advisory Request
+                  </span>
                 </div>
               )}
 
@@ -596,60 +633,211 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
           </div>
 
-          {/* Section: Accurate Location & Map View */}
-          <div className="space-y-3 pt-3 border-t border-[#EAE6DF]">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <h4 className="font-serif text-base font-bold text-[#14221F] flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#245348]" />
-                  <span>Location & Map View</span>
-                </h4>
-                <p className="text-xs text-gray-500 font-light mt-0.5">
-                  {project.locality ? `${project.locality}, ` : ''}{project.location}, Mumbai, Maharashtra
+          {/* Section: Precision Location & Interactive Map View */}
+          <div className="space-y-4 pt-4 border-t border-[#EAE6DF]">
+            {/* Top Bar: Title, Address, MahaRERA & GPS Coordinates */}
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-md bg-[#245348]/10 text-[#245348] flex items-center justify-center">
+                    <MapPin className="w-3.5 h-3.5" />
+                  </span>
+                  <h4 className="font-serif text-base sm:text-lg font-bold text-[#14221F]">
+                    Precise Location & Connectivity
+                  </h4>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-semibold flex items-center gap-1">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>Verified Site</span>
+                  </span>
+                </div>
+
+                <p className="text-xs text-gray-600 font-normal leading-relaxed pl-8">
+                  {project.exactAddress || `${project.locality ? `${project.locality}, ` : ''}${project.location}, Mumbai, Maharashtra`}
                 </p>
               </div>
 
-              {project.mapUrl && (
+              {/* Coordinates Pill & Quick Actions */}
+              <div className="flex flex-wrap items-center gap-2 pl-8 sm:pl-0">
+                {project.coords && (
+                  <button
+                    type="button"
+                    onClick={() => handleCopyCoords(project.coords.lat, project.coords.lng)}
+                    title="Click to copy exact GPS coordinates"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FAF9F6] hover:bg-gray-100 border border-[#EAE6DF] text-[11px] font-mono text-gray-700 transition-colors shadow-2xs cursor-pointer group"
+                  >
+                    <LocateFixed className="w-3 h-3 text-[#C59B4E] group-hover:scale-110 transition-transform" />
+                    <span>{project.coords.lat.toFixed(4)}° N, {project.coords.lng.toFixed(4)}° E</span>
+                    {copiedCoords ? (
+                      <span className="inline-flex items-center gap-0.5 text-emerald-700 font-semibold text-[10px] ml-1">
+                        <Check className="w-3 h-3" />
+                        <span>Copied</span>
+                      </span>
+                    ) : (
+                      <Copy className="w-3 h-3 text-gray-400 group-hover:text-gray-600 ml-0.5" />
+                    )}
+                  </button>
+                )}
+
                 <a
-                  href={project.mapUrl}
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#245348]/10 hover:bg-[#245348] text-[#245348] hover:text-white border border-[#245348]/20 text-xs font-mono font-semibold transition-all self-start sm:self-auto"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs"
                 >
-                  <span>Open in Google Maps</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <Route className="w-3 h-3" />
+                  <span>Get Directions</span>
                 </a>
-              )}
+              </div>
             </div>
 
-            {/* Interactive Embedded Google Map for Exact Project Location */}
-            <div className="relative w-full h-64 sm:h-72 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-inner bg-slate-100">
+            {/* Interactive Embedded Google Map with Map Controls */}
+            <div className="relative w-full h-72 sm:h-84 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-md bg-slate-100 group">
               <iframe
-                title={`${project.name} location on Google Maps`}
-                src={`https://maps.google.com/maps?q=${encodeURIComponent(`${project.name} ${project.locality || ''} ${project.location} Mumbai`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                key={`${project.id}-${mapType}-${mapZoom}`}
+                title={`${project.name} precision location on Google Maps`}
+                src={`https://maps.google.com/maps?q=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}&hl=en&z=${mapZoom}${mapType === 'satellite' ? '&t=k' : '&t=m'}&ie=UTF8&iwloc=near&output=embed`}
                 className="w-full h-full border-0"
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
               />
+
+              {/* Floating Map Controls Bar */}
+              <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10 bg-white/95 backdrop-blur-md p-1 rounded-lg border border-gray-200 shadow-md">
+                {/* Roadmap / Satellite Toggle */}
+                <div className="flex items-center bg-gray-100 p-0.5 rounded-md text-[10px] font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setMapType('roadmap')}
+                    className={`px-2 py-0.5 rounded transition-all cursor-pointer ${mapType === 'roadmap' ? 'bg-white text-[#14221F] shadow-2xs font-bold' : 'text-gray-500 hover:text-black'}`}
+                  >
+                    Street
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setMapType('satellite')}
+                    className={`px-2 py-0.5 rounded transition-all cursor-pointer ${mapType === 'satellite' ? 'bg-[#245348] text-white shadow-2xs font-bold' : 'text-gray-500 hover:text-black'}`}
+                  >
+                    Satellite 3D
+                  </button>
+                </div>
+
+                <div className="w-[1px] h-4 bg-gray-200" />
+
+                {/* Zoom In & Out */}
+                <button
+                  type="button"
+                  onClick={() => setMapZoom(prev => Math.min(prev + 1, 18))}
+                  disabled={mapZoom >= 18}
+                  title="Zoom In"
+                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-gray-700 disabled:opacity-30 cursor-pointer"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapZoom(prev => Math.max(prev - 1, 13))}
+                  disabled={mapZoom <= 13}
+                  title="Zoom Out"
+                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-gray-100 text-gray-700 disabled:opacity-30 cursor-pointer"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+
+                <div className="w-[1px] h-4 bg-gray-200" />
+
+                {/* Direct Google Maps External Link */}
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Open in full Google Maps"
+                  className="w-6 h-6 flex items-center justify-center rounded hover:bg-[#245348] hover:text-white text-gray-700 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* Floating Bottom Left Badge on Map */}
+              <div className="absolute bottom-2.5 left-2.5 z-10 pointer-events-none">
+                <div className="bg-[#14221F]/90 backdrop-blur-md border border-[#C59B4E]/40 px-2.5 py-1.5 rounded-lg shadow-lg flex items-center gap-2 text-white">
+                  <span className="w-2 h-2 rounded-full bg-[#DFBE79] animate-pulse" />
+                  <div className="text-[10px] leading-tight">
+                    <strong className="block font-serif text-[#DFBE79]">{project.name}</strong>
+                    <span className="text-gray-300 font-mono text-[9px]">{project.locality || project.location}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Key Transit & Vicinity Connectivity */}
-            {project.connectivity && project.connectivity.length > 0 && (
-              <div className="pt-1.5">
-                <span className="text-[11px] font-mono uppercase text-gray-500 font-semibold tracking-wider block mb-1.5">
-                  Key Transit & Vicinity Connectivity:
-                </span>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                  {project.connectivity.map((conn, idx) => (
-                    <li key={idx} className="flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C59B4E] shrink-0" />
-                      <span>{conn}</span>
-                    </li>
-                  ))}
-                </ul>
+            {/* Structured Transit & Vicinity Matrix */}
+            <div className="pt-1 space-y-2">
+              <span className="text-[10px] font-mono uppercase text-gray-500 font-semibold tracking-wider block">
+                Verified Commute & Transit Proximities:
+              </span>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                {project.transit?.metro && (
+                  <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[#245348]/10 text-[#245348] flex items-center justify-center shrink-0 mt-0.5">
+                      <Train className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Metro Connectivity</span>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.metro}</p>
+                    </div>
+                  </div>
+                )}
+
+                {project.transit?.railway && (
+                  <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[#C59B4E]/15 text-[#8B6846] flex items-center justify-center shrink-0 mt-0.5">
+                      <Navigation className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Suburban Railway</span>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.railway}</p>
+                    </div>
+                  </div>
+                )}
+
+                {project.transit?.highway && (
+                  <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-blue-50 text-blue-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <Car className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Arterial Highway</span>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.highway}</p>
+                    </div>
+                  </div>
+                )}
+
+                {project.transit?.airport && (
+                  <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-purple-50 text-purple-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <Plane className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Airport Access</span>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.airport}</p>
+                    </div>
+                  </div>
+                )}
+
+                {project.transit?.landmark && (
+                  <div className="p-2.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] flex items-start gap-2.5 sm:col-span-2 lg:col-span-2">
+                    <div className="w-7 h-7 rounded-md bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 mt-0.5">
+                      <Building2 className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Prime Vicinity Landmark</span>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.landmark}</p>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
 
           {/* Bottom Action Footer */}
