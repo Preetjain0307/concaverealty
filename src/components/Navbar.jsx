@@ -9,6 +9,9 @@ import {
   Menu,
   X,
   ChevronDown,
+  ChevronRight,
+  Home,
+  Briefcase,
   Sparkles,
   MessageCircle,
   Search
@@ -40,11 +43,11 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               <span className="font-serif text-[14px] xs:text-[16px] sm:text-xl lg:text-2xl font-bold tracking-tight xs:tracking-normal sm:tracking-widest text-white whitespace-nowrap select-none">
                 CONCAVE REALTY
               </span>
-              <div className="flex items-center gap-2 -mt-0.5">
-                <span className="text-[8px] xs:text-[9px] sm:text-[10px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.25em] text-[#C59B4E] whitespace-nowrap block">
+              <div className="flex flex-col md:flex-row md:items-center md:gap-2 -mt-0.5">
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.25em] text-[#C59B4E] whitespace-nowrap block leading-tight">
                   Where Legacy Meets Luxury
                 </span>
-                <span className="text-[9px] font-mono tracking-wider text-emerald-300/80 hidden md:inline-block border-l border-white/20 pl-2">
+                <span className="text-[8px] xs:text-[9px] font-mono tracking-wider text-[#00D6A3] md:text-emerald-300/80 md:border-l md:border-white/20 md:pl-2 leading-tight mt-0.5 md:mt-0 whitespace-nowrap block">
                   MahaRERA: A51900045781
                 </span>
               </div>
@@ -155,78 +158,62 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#1D3530] border-b border-[#284F45] px-4 pt-3 pb-6 space-y-2 text-xs uppercase tracking-wider">
-          <button
-            onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
-          >
-            Home
-          </button>
-          <button
-            onClick={() => { onNavigate('projects'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
-          >
-            Our Projects
-          </button>
-          <button
-            onClick={() => { onNavigate('amenities'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
-          >
-            Amenities
-          </button>
-          <button
-            onClick={() => { onNavigate('careers'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
-          >
-            Careers and Hiring
-          </button>
-          <button
-            onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }}
-            className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
-          >
-            Contact Us
-          </button>
+        <div className="lg:hidden bg-gradient-to-b from-[#1A312C] via-[#152924] to-[#10201C] border-t border-[#C59B4E]/25 border-b border-[#C59B4E]/45 px-4 pt-3.5 pb-4 shadow-[0_20px_45px_rgba(8,20,17,0.55)]">
+          <div className="space-y-1.5">
+            {[
+              { id: 'home', label: 'Home', icon: Home },
+              { id: 'projects', label: 'Our Projects', icon: Building2 },
+              { id: 'amenities', label: 'Amenities', icon: Sparkles },
+              { id: 'careers', label: 'Careers and Hiring', icon: Briefcase },
+              { id: 'contact', label: 'Contact Us', icon: PhoneCall },
+            ].map((item) => {
+              const Icon = item.icon;
+              const isActive = currentView === item.id;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    onNavigate(item.id);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`group relative w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer active:scale-[0.99] ${
+                    isActive
+                      ? 'bg-gradient-to-r from-[#244940] via-[#1E3F37] to-[#19352E] border-[#C59B4E]/60 text-[#DFBE79] shadow-[0_6px_18px_rgba(0,0,0,0.22)]'
+                      : 'bg-white/[0.03] border-white/[0.06] text-[#F3EFE6] hover:bg-white/[0.07] hover:border-[#C59B4E]/35 hover:text-[#DFBE79]'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border transition-colors ${
+                        isActive
+                          ? 'bg-[#14221F]/70 border-[#DFBE79]/60 text-[#DFBE79] shadow-[0_0_10px_rgba(223,190,121,0.25)]'
+                          : 'bg-[#14221F]/50 border-white/10 text-[#C59B4E] group-hover:border-[#DFBE79]/40 group-hover:text-[#DFBE79]'
+                      }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                    </span>
+                    <span
+                      className="text-[18px] font-semibold tracking-[0.06em]"
+                      style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
 
-          <div className="pt-2 border-t border-white/10 space-y-2">
-            <button
-              onClick={() => {
-                onOpenEnquiry({ projectName: "Kalpataru Advay", location: "Borivali West" });
-                setMobileMenuOpen(false);
-              }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[#245348] border border-[#C59B4E]/50 text-[#DFBE79] hover:bg-[#1B3F37] font-semibold text-xs uppercase tracking-wider"
-            >
-              <PhoneCall className="w-4 h-4 text-[#DFBE79]" />
-              <span>Enquire / Book Consultation</span>
-            </button>
-
-            <a
-              href={WHATSAPP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] font-semibold text-xs uppercase tracking-wider"
-            >
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-              </svg>
-              <span>Chat on WhatsApp</span>
-            </a>
-          </div>
-
-          {/* Quick Staff Access on Mobile */}
-          <div className="pt-2 flex items-center justify-between text-[10px] text-gray-400 font-mono">
-            <button
-              onClick={() => { onNavigate('caller'); setMobileMenuOpen(false); }}
-              className="hover:text-[#DFBE79]"
-            >
-              • Caller Desk
-            </button>
-            <button
-              onClick={() => { onNavigate('admin'); setMobileMenuOpen(false); }}
-              className="hover:text-[#DFBE79]"
-            >
-              • Admin Portal
-            </button>
+                  <div className="flex items-center gap-2">
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#DFBE79] shadow-[0_0_8px_#DFBE79]" />
+                    )}
+                    <ChevronRight
+                      className={`w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 ${
+                        isActive ? 'text-[#DFBE79]' : 'text-[#C59B4E]/60 group-hover:text-[#DFBE79]'
+                      }`}
+                    />
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   MapPin, 
   Compass, 
@@ -15,6 +15,7 @@ import {
   SlidersHorizontal,
   X,
   ChevronRight,
+  ChevronDown,
   Home,
   Navigation,
   Train
@@ -38,6 +39,31 @@ const handleProjectImgError = (e, fallback) => {
   } else {
     e.currentTarget.src = FALLBACK_IMG;
   }
+};
+
+// Cleanly format & deduplicate BHK labels for card chips (avoids "3 BHK 3 BHK" or "Palatial BHK")
+const getCleanBhkChips = (configurations = []) => {
+  const seen = new Set();
+  const chips = [];
+  configurations.forEach((cfg) => {
+    const raw = (cfg?.bhk || '').trim();
+    if (!raw) return;
+    const match = raw.match(/(\d+(?:\.\d+)?\s*BHK)/i);
+    const label = match
+      ? match[1].toUpperCase().replace(/\s+/, ' ')
+      : /jodi/i.test(raw)
+        ? 'Jodi'
+        : /penthouse/i.test(raw)
+          ? 'Penthouse'
+          : /duplex/i.test(raw)
+            ? 'Duplex'
+            : raw.split(' ').slice(0, 2).join(' ');
+    if (!seen.has(label)) {
+      seen.add(label);
+      chips.push(label);
+    }
+  });
+  return chips;
 };
 
 // Micro-market descriptors for attractive location cards
@@ -64,6 +90,19 @@ export function SignatureProjects({
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBhk, setSelectedBhk] = useState('All');
+  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close mobile location dropdown when clicking outside
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setLocationDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
 
   // Synchronize when external filterLocation prop is passed
   useEffect(() => {
@@ -111,6 +150,56 @@ export function SignatureProjects({
       return true;
     });
   }, [selectedLocation, searchQuery, selectedBhk]);
+
+  // Scroll-reveal entrance + mobile center-focus lift animation for all project cards
+  const cardRefs = useRef([]);
+
+  useEffect(() => {
+    const cards = cardRefs.current.filter(Boolean);
+    if (cards.length === 0) return;
+
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+
+    // 1. Smooth fade-up reveal as each box enters the viewport
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+    );
+
+    // 2. Mobile active-card focus lift & subtle photo zoom as user scrolls through boxes
+    const focusObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('project-card--in-focus');
+          } else {
+            entry.target.classList.remove('project-card--in-focus');
+          }
+        });
+      },
+      { threshold: 0.45, rootMargin: '-18% 0px -18% 0px' }
+    );
+
+    cards.forEach((el) => {
+      revealObserver.observe(el);
+      focusObserver.observe(el);
+    });
+
+    return () => {
+      revealObserver.disconnect();
+      focusObserver.disconnect();
+    };
+  }, [displayedProjects]);
 
   // Smoothly scroll down to the projects section when a location is clicked
   const handleLocationClick = (loc) => {
@@ -199,9 +288,129 @@ export function SignatureProjects({
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
           </div>
 
-          {/* Attractive & Animated Location Cards Grid – Balanced Medium Size Layout */}
-          <div className="pt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5">
+          {/* Mobile View: Single Luxury Select Location Dropdown (with All Locations inside) */}
+          <div className="block md:hidden pt-1">
+            <div ref={dropdownRef} className="relative">
+              {(() => {
+                const isAllSelected = selectedLocation === 'All Locations' || selectedLocation === 'All';
+
+                return (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setLocationDropdownOpen(prev => !prev)}
+                      aria-expanded={locationDropdownOpen}
+                      className="group relative w-full px-4 py-3.5 rounded-2xl text-left transition-all duration-300 flex items-center justify-between gap-3 border cursor-pointer overflow-hidden bg-gradient-to-r from-[#122420] via-[#1B3831] to-[#122420] text-[#FFF7E2] border-[#C59B4E] shadow-[0_10px_28px_-4px_rgba(20,34,31,0.45)] ring-1 ring-[#DFBE79]/40"
+                    >
+                      <div className="flex items-center gap-3.5 min-w-0">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center border shrink-0 bg-[#244940] border-[#DFBE79]/60 text-[#DFBE79] shadow-[0_0_12px_rgba(223,190,121,0.3)]">
+                          <MapPin className="w-4 h-4" />
+                        </div>
+                        <span
+                          className="text-[19px] font-bold tracking-[0.06em] truncate"
+                          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                        >
+                          {isAllSelected ? 'Select Location' : selectedLocation}
+                        </span>
+                      </div>
+
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all border bg-white/10 border-[#DFBE79]/40 text-[#DFBE79]">
+                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${
+                          locationDropdownOpen ? 'rotate-180' : ''
+                        }`} />
+                      </div>
+
+                      <span className="pointer-events-none absolute bottom-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#DFBE79] to-transparent" />
+                    </button>
+
+                    {/* Boutique Luxury Dropdown Panel (All Locations + 8 Full Uncut Micro-Markets) */}
+                    {locationDropdownOpen && (
+                      <div className="mt-2.5 rounded-2xl overflow-hidden bg-gradient-to-b from-[#FAF4E7] via-[#FDFBF6] to-[#F5ECDA] border border-[#C59B4E]/60 shadow-[0_22px_48px_-8px_rgba(20,34,31,0.22)] ring-1 ring-inset ring-white/80 z-30 relative">
+                        {/* Signature Top Forest-to-Gold Hairline Bar */}
+                        <div className="h-[2.5px] w-full bg-gradient-to-r from-[#14221F] via-[#DFBE79] to-[#14221F]" />
+
+                        <div className="p-2.5 grid grid-cols-2 gap-2">
+                          {/* All Locations Option inside Select Location (centered luxury champagne-ivory tile, styled like Borivali) */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLocationDropdownOpen(false);
+                              handleLocationClick('All Locations');
+                            }}
+                            className={`col-span-2 group relative px-3 py-2.5 rounded-xl flex items-center justify-center gap-2.5 border transition-all duration-200 cursor-pointer active:scale-[0.98] overflow-hidden ${
+                              isAllSelected
+                                ? 'bg-gradient-to-r from-[#FFFDF7] via-[#FAF0D8] to-[#FFFDF7] text-[#14221F] border-[#C59B4E] shadow-[0_6px_16px_-4px_rgba(197,155,78,0.28)] ring-1 ring-[#DFBE79]/45'
+                                : 'bg-gradient-to-b from-white to-[#FBF7EE] text-[#14221F] border-[#E0D2B4] shadow-[0_3px_10px_-2px_rgba(20,34,31,0.06)] hover:border-[#C59B4E] hover:bg-[#FAF4E4]'
+                            }`}
+                          >
+                            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#C59B4E]/60 shrink-0" />
+                            <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all ${
+                              isAllSelected
+                                ? 'bg-gradient-to-br from-[#14221F] to-[#245348] border-[#DFBE79] text-[#DFBE79] shadow-[0_2px_8px_rgba(20,34,31,0.28)]'
+                                : 'bg-gradient-to-br from-[#F7EDD7] to-[#EAD8B2] border-[#C59B4E]/55 text-[#1B3831] group-hover:from-[#14221F] group-hover:to-[#245348] group-hover:text-[#DFBE79]'
+                            }`}>
+                              <Sparkles className="w-3 h-3" />
+                            </span>
+                            <span
+                              className="text-[16px] font-bold tracking-[0.04em] whitespace-nowrap"
+                              style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                            >
+                              All Locations
+                            </span>
+                            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#C59B4E]/60 shrink-0" />
+                            {isAllSelected && (
+                              <span className="pointer-events-none absolute bottom-0 left-8 right-8 h-[1.5px] bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent" />
+                            )}
+                          </button>
+
+                          {LOCATIONS_LIST.map((loc) => {
+                            const isSelected = selectedLocation.toLowerCase() === loc.toLowerCase();
+
+                            return (
+                              <button
+                                key={loc}
+                                type="button"
+                                onClick={() => {
+                                  setLocationDropdownOpen(false);
+                                  handleLocationClick(loc);
+                                }}
+                                className={`group relative px-2.5 py-2.5 rounded-xl text-left flex items-center gap-2 border transition-all duration-200 cursor-pointer active:scale-[0.97] overflow-hidden ${
+                                  isSelected
+                                    ? 'bg-gradient-to-br from-[#FFFDF7] via-[#FAF0D8] to-[#F3E3BE] text-[#14221F] border-[#C59B4E] shadow-[0_6px_16px_-4px_rgba(197,155,78,0.28)] ring-1 ring-[#DFBE79]/45'
+                                    : 'bg-gradient-to-b from-white to-[#FBF7EE] text-[#14221F] border-[#E0D2B4] shadow-[0_3px_10px_-2px_rgba(20,34,31,0.06)] hover:border-[#C59B4E] hover:from-[#FFFDF8] hover:to-[#F7EEDB]'
+                                }`}
+                              >
+                                <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all ${
+                                  isSelected
+                                    ? 'bg-gradient-to-br from-[#14221F] to-[#245348] border-[#DFBE79] text-[#DFBE79] shadow-[0_2px_8px_rgba(20,34,31,0.28)]'
+                                    : 'bg-gradient-to-br from-[#F7EDD7] to-[#EAD8B2] border-[#C59B4E]/55 text-[#1B3831] group-hover:from-[#14221F] group-hover:to-[#245348] group-hover:text-[#DFBE79]'
+                                }`}>
+                                  <MapPin className="w-3 h-3" />
+                                </span>
+                                <span
+                                  className="text-[15.5px] font-bold tracking-[0.02em] whitespace-nowrap"
+                                  style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                                >
+                                  {loc}
+                                </span>
+                                {isSelected && (
+                                  <span className="pointer-events-none absolute bottom-0 left-3 right-3 h-[1.5px] bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent" />
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Desktop View: Attractive & Animated Location Cards Grid – Balanced Medium Size Layout */}
+          <div className="hidden md:block pt-2">
+            <div className="grid md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5">
               
               {/* All Locations Master Card */}
               <button
@@ -326,22 +535,23 @@ export function SignatureProjects({
           </div>
 
           {/* Search & Quick Filter Controls Bar */}
-          <div id="projects-showcase-section" className="bg-white p-4 sm:p-5 rounded-2xl border border-[#EAE6DF] shadow-sm flex flex-col md:flex-row items-center justify-between gap-4 scroll-mt-24">
+          <div id="projects-showcase-section" className="relative overflow-hidden bg-gradient-to-b from-white via-[#FDFBF7] to-[#F8F3E6] p-3.5 sm:p-5 rounded-2xl border border-[#E2D5BC] shadow-[0_10px_28px_-8px_rgba(20,34,31,0.1)] flex flex-col md:flex-row items-center justify-between gap-3.5 sm:gap-4 scroll-mt-24">
+            <div className="pointer-events-none absolute top-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#DFBE79]/85 to-transparent" />
             
             {/* Search Input */}
             <div className="relative w-full md:w-96">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#9E7B42] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search project, builder, or micro-market..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl pl-10 pr-9 py-2.5 text-xs text-[#14221F] focus:outline-none transition-colors"
+                className="w-full bg-white/95 border border-[#DFD2B8] focus:border-[#C59B4E] focus:ring-2 focus:ring-[#DFBE79]/25 rounded-xl pl-10 pr-9 py-2.5 text-xs text-[#14221F] placeholder:text-[#8C8170] shadow-[inset_0_1px_3px_rgba(20,34,31,0.04)] focus:outline-none transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8C8170] hover:text-[#14221F] p-0.5"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -349,8 +559,8 @@ export function SignatureProjects({
             </div>
 
             {/* BHK Filter Badges */}
-            <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 no-scrollbar">
-              <span className="text-[11px] uppercase tracking-wider text-gray-500 font-mono mr-1 hidden sm:inline shrink-0">
+            <div className="flex items-center justify-between sm:justify-start gap-1.5 overflow-x-auto w-full md:w-auto pb-0.5 md:pb-0 no-scrollbar">
+              <span className="text-[11px] uppercase tracking-wider text-[#8B6846] font-mono mr-1 hidden sm:inline shrink-0">
                 Typology:
               </span>
               {['All', '2 BHK', '3 BHK', '4 BHK', 'Jodi'].map((bhk) => (
@@ -358,10 +568,10 @@ export function SignatureProjects({
                   key={bhk}
                   type="button"
                   onClick={() => setSelectedBhk(bhk)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer shrink-0 ${
+                  className={`px-2.5 sm:px-3.5 py-1.5 rounded-full text-[11px] sm:text-xs tracking-[0.02em] font-medium transition-all duration-200 cursor-pointer shrink-0 ${
                     selectedBhk === bhk
-                      ? 'bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] text-[#DFBE79] border border-[#C59B4E]/60 shadow-sm font-semibold scale-105'
-                      : 'bg-[#FAF9F6] text-gray-600 hover:bg-white hover:text-[#14221F] border border-[#EAE6DF] hover:border-[#C59B4E]/40'
+                      ? 'bg-gradient-to-r from-[#122420] via-[#1C3A33] to-[#245348] text-[#FCE9BE] border border-[#C59B4E] shadow-[0_4px_12px_-2px_rgba(20,34,31,0.35)] font-semibold'
+                      : 'bg-white text-[#3F4B47] hover:bg-[#FAF4E7] hover:text-[#14221F] border border-[#E2D6BE] hover:border-[#C59B4E]/70 shadow-[0_1px_3px_rgba(20,34,31,0.04)]'
                   }`}
                 >
                   {bhk}
@@ -372,19 +582,19 @@ export function SignatureProjects({
           </div>
 
           {/* Selected Location Summary Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-1 pb-1 border-b border-[#EAE6DF] text-xs text-gray-600 font-mono">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#FAF6EC]/85 via-white/75 to-[#FAF6EC]/85 border border-[#E6DACA]/80 text-xs text-[#4A5551]">
             <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#245348] opacity-75" />
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C59B4E] opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#245348]" />
               </span>
-              <span>
-                Showing <strong className="text-[#14221F]">{displayedProjects.length}</strong> premium developments in <strong className="text-[#245348]">{selectedLocation}</strong>
-                {selectedBhk !== 'All' && <span> • Typology: <strong className="text-[#14221F]">{selectedBhk}</strong></span>}
-                {searchQuery && <span> • Matching: "<strong className="text-[#C59B4E]">{searchQuery}</strong>"</span>}
+              <span className="tracking-[0.01em]">
+                Showing <strong className="text-[#14221F] font-semibold">{displayedProjects.length}</strong> curated developments in <strong className="text-[#245348] font-semibold">{selectedLocation}</strong>
+                {selectedBhk !== 'All' && <span> • Typology: <strong className="text-[#14221F] font-semibold">{selectedBhk}</strong></span>}
+                {searchQuery && <span> • Matching: "<strong className="text-[#9E7B42] font-semibold">{searchQuery}</strong>"</span>}
               </span>
             </div>
-            <span className="text-gray-400 text-[11px]">
+            <span className="text-[#8E8372] text-[10.5px] italic">
               *Prices mentioned are indicative quoted prices
             </span>
           </div>
@@ -413,41 +623,58 @@ export function SignatureProjects({
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayedProjects.map((project) => {
-                const hasVirtualTour = Boolean(project.virtualTourUrl);
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+              {(() => {
+                cardRefs.current = [];
+                return displayedProjects.map((project, cardIdx) => {
+                  const hasVirtualTour = Boolean(project.virtualTourUrl);
+                  const bhkChips = getCleanBhkChips(project.configurations);
+                  const hasConnectivity = Boolean(
+                    project.transit?.metro ||
+                    project.transit?.landmark ||
+                    (project.keyFeatures && project.keyFeatures.length > 0)
+                  );
 
-                return (
-                  <div 
-                    key={project.id}
-                    className="relative bg-white rounded-2xl overflow-hidden border border-[#EAE6DF] shadow-sm hover:shadow-[0_15px_35px_rgba(20,34,31,0.12)] hover:border-[#C59B4E] transition-all duration-300 flex flex-col group hover:-translate-y-1.5"
-                  >
-                    {/* 1. Main Project Image with subtle zoom on hover */}
-                    <div 
-                      className="relative h-52 sm:h-60 overflow-hidden bg-[#0E1715] flex items-center justify-center cursor-pointer"
-                      onClick={() => onSelectProject(project)}
+                  return (
+                    <div
+                      key={`${selectedLocation}-${selectedBhk}-${project.id}`}
+                      ref={(el) => {
+                        if (el) cardRefs.current[cardIdx] = el;
+                      }}
+                      style={{ '--card-delay': `${(cardIdx % 3) * 75}ms` }}
+                      className="project-card-reveal relative bg-gradient-to-b from-white via-white to-[#FCF9F3] rounded-[22px] overflow-hidden border border-[#E6DDCB] shadow-[0_10px_30px_-8px_rgba(20,34,31,0.10)] hover:shadow-[0_24px_50px_-12px_rgba(20,34,31,0.20)] hover:border-[#C59B4E] flex flex-col group"
                     >
-                      {project.coverImage ? (
-                        <>
-                          {/* Ambient soft backdrop so full portrait towers fit beautifully without blank space */}
-                          <img
-                            src={project.coverImage}
-                            alt=""
-                            aria-hidden="true"
-                            className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none"
-                          />
+                      {/* Signature Forest-Gold Luxury Top Bar */}
+                      <div className="h-[3px] w-full bg-gradient-to-r from-[#14221F] via-[#DFBE79] to-[#14221F]" />
 
-                          <img
-                            src={project.coverImage}
-                            alt={project.name}
-                            referrerPolicy="no-referrer"
-                            onError={(e) => handleProjectImgError(e, project.fallbackCover)}
-                            className="relative z-10 w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
-                        </>
-                      ) : (
+                      {/* 1. Main Project Image with subtle zoom on hover & mobile scroll focus */}
+                      <div
+                        className="relative h-44 sm:h-48 overflow-hidden bg-[#0E1715] flex items-center justify-center cursor-pointer"
+                        onClick={() => onSelectProject(project)}
+                      >
+                        {project.coverImage ? (
+                          <>
+                            {/* Ambient soft backdrop so full portrait towers fit beautifully without blank space */}
+                            <img
+                              src={project.coverImage}
+                              alt=""
+                              aria-hidden="true"
+                              className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none"
+                            />
+
+                            <img
+                              src={project.coverImage}
+                              alt={project.name}
+                              referrerPolicy="no-referrer"
+                              onError={(e) => handleProjectImgError(e, project.fallbackCover)}
+                              className="project-card-photo relative z-10 w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#0D1A17]/85 via-black/15 to-black/25 opacity-85 group-hover:opacity-70 transition-opacity" />
+                            {/* Subtle Champagne Light Sheen Sweep */}
+                            <div className="project-card-sheen z-10" />
+                          </>
+                        ) : (
                         <div className="w-full h-full bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] flex flex-col items-center justify-center p-4 text-center select-none relative z-10">
                           <div className="w-12 h-12 rounded-full bg-[#DFBE79]/15 border border-[#DFBE79]/30 flex items-center justify-center mb-2 shadow-inner">
                             <Building2 className="w-6 h-6 text-[#DFBE79]" />
@@ -460,28 +687,26 @@ export function SignatureProjects({
                           </span>
                         </div>
                       )}
-                      
-                      {/* Top Header Row: Location Badge & Developer Badge - perfectly aligned across all boxes */}
-                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
-                        {/* Clickable Location Map Badge with Tooltip */}
-                        <a 
+
+                      {/* Top Overlay Row: Frosted Location Badge & Status Pill */}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-20 pointer-events-none">
+                        {/* Clickable Location Map Pill */}
+                        <a
                           href={project.coords ? `https://www.google.com/maps/search/?api=1&query=${project.coords.lat},${project.coords.lng}` : project.mapUrl}
                           target="_blank"
                           rel="noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           title={`View exact location of ${project.name} on Google Maps (${project.locality || project.location})`}
-                          className="bg-white/95 hover:bg-white backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] uppercase tracking-wider font-semibold text-[#14221F] hover:text-[#245348] shadow-sm flex items-center gap-1.5 max-w-[62%] truncate transition-all pointer-events-auto hover:shadow-md border border-transparent hover:border-[#245348]/40 group/loc"
+                          className="bg-[#12221E]/80 hover:bg-[#12221E] backdrop-blur-md px-3 py-1 rounded-full text-[10.5px] uppercase tracking-wider font-semibold text-[#FFF7E2] shadow-md flex items-center gap-1.5 max-w-[58%] truncate transition-all pointer-events-auto border border-[#DFBE79]/35 hover:border-[#DFBE79] group/loc"
                         >
-                          <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0 group-hover/loc:scale-110 transition-transform" />
+                          <MapPin className="w-3 h-3 text-[#DFBE79] shrink-0 group-hover/loc:scale-110 transition-transform" />
                           <span className="truncate">{project.locality || project.location}</span>
                         </a>
 
-                        {/* Developer badge */}
-                        <div 
-                          title={project.builder}
-                          className="bg-[#1D3530]/95 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 px-2.5 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider font-semibold shadow-sm max-w-[38%] truncate text-right shrink-0"
-                        >
-                          <span className="truncate">{project.builder}</span>
+                        {/* Status Badge */}
+                        <div className="bg-white/95 backdrop-blur-md text-[#183C32] border border-[#DFBE79]/50 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wide font-semibold shadow-md max-w-[40%] truncate shrink-0 flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                          <span className="truncate">{project.status || 'Verified'}</span>
                         </div>
                       </div>
 
@@ -493,105 +718,115 @@ export function SignatureProjects({
                             e.stopPropagation();
                             onOpenTour(project.id);
                           }}
-                          className="absolute bottom-2.5 right-2.5 bg-[#245348] hover:bg-[#1B3F37] text-white px-3 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
+                          className="absolute bottom-3 right-3 z-20 bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
                         >
                           <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
-                          <span>360° Virtual Tour</span>
+                          <span>360° Tour</span>
                         </button>
                       )}
 
                       {/* Bottom Left: Multiple photos count pill */}
                       {project.images && project.images.length > 0 && (
-                        <div className="absolute bottom-2.5 left-2.5 z-20 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1.5">
+                        <div className="absolute bottom-3 left-3 z-20 bg-[#12221E]/75 backdrop-blur-md text-[#FFF7E2] border border-white/15 px-2.5 py-1 rounded-full text-[10px] font-mono flex items-center gap-1.5 shadow-sm">
                           <Eye className="w-3 h-3 text-[#DFBE79]" />
-                          <span>{project.images.length} Photos</span>
+                          <span>{project.images.length} {project.images.length === 1 ? 'Photo' : 'Photos'}</span>
                         </div>
                       )}
                     </div>
 
                     {/* Card Content Body */}
-                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3.5">
-                      <div className="space-y-2.5">
-                        
-                        {/* Status & Developer Header */}
-                        <div className="flex items-center justify-between text-xs h-5">
-                          <span className="text-[11px] font-semibold text-[#245348] uppercase tracking-wider font-mono truncate max-w-[62%]">
+                    <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between space-y-2.5">
+                      <div className="space-y-2">
+
+                        {/* Refined Developer Eyebrow */}
+                        <div className="flex items-center gap-2">
+                          <span className="w-4 h-[1.5px] bg-gradient-to-r from-[#C59B4E] to-[#DFBE79] rounded-full shrink-0" />
+                          <span className="text-[10px] font-mono font-semibold text-[#8B6846] uppercase tracking-[0.2em] truncate">
                             {project.builder}
-                          </span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold shadow-xs shrink-0">
-                            {project.status || 'Verified Project'}
                           </span>
                         </div>
 
-                        {/* Project Name & 1-Line Tagline */}
-                        <div>
-                          <h3 
+                        {/* Sculptural Project Name & Editorial Tagline */}
+                        <div className="-mt-0.5">
+                          <h3
                             onClick={() => onSelectProject(project)}
-                            className="font-serif text-lg sm:text-xl font-bold text-[#14221F] group-hover:text-[#245348] transition-colors cursor-pointer truncate"
+                            className="text-[21px] sm:text-[23px] font-bold text-[#14221F] group-hover:text-[#1D3530] transition-colors cursor-pointer truncate leading-tight tracking-tight"
+                            style={{ fontFamily: '"Cormorant Garamond", serif' }}
                             title={project.name}
                           >
                             {project.name}
                           </h3>
-                          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1 font-light min-h-[16px]" title={project.tagline || project.overview}>
+                          <p className="text-[11.5px] text-[#6A5F52] mt-0.5 line-clamp-1 font-serif italic min-h-[15px]" title={project.tagline || project.overview}>
                             {project.tagline || project.overview}
                           </p>
                         </div>
 
-                        {/* Available BHK Configurations */}
-                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5 min-h-[28px]">
-                          {project.configurations.map((cfg, idx) => (
+                        {/* Clean, Deduplicated Champagne BHK Pills */}
+                        <div className="flex flex-wrap items-center gap-1.5 min-h-[24px]">
+                          {bhkChips.map((chip, idx) => (
                             <span
                               key={idx}
-                              className="px-2 py-0.5 rounded-md bg-[#FAF9F6] border border-[#EAE6DF] text-[11px] font-semibold text-[#14221F] group-hover:border-[#C59B4E]/40 transition-colors"
+                              className="px-2.5 py-0.5 rounded-full bg-[#FAF6EC] border border-[#E5D7B8] text-[10px] font-semibold text-[#1D3530] tracking-wide group-hover:border-[#C59B4E] transition-colors shadow-[0_1px_2px_rgba(197,155,78,0.08)]"
                             >
-                              {cfg.bhk.split(' ')[0]} BHK
+                              {chip}
                             </span>
                           ))}
                         </div>
 
-                        {/* Top Key Connectivity & Vicinity Landmarks */}
-                        <div className="pt-1.5 space-y-1">
-                          {project.transit?.metro && (
-                            <div className="flex items-center gap-1.5 text-[11px] text-[#245348] font-medium truncate">
-                              <Train className="w-3 h-3 text-[#245348] shrink-0" />
-                              <span className="truncate" title={project.transit.metro}>
-                                {project.transit.metro}
-                              </span>
-                            </div>
-                          )}
+                        {/* Recessed Luxury Connectivity Highlight Box */}
+                        {hasConnectivity && (
+                          <div className="rounded-xl bg-[#FAF8F3] border border-[#EFE7D8] px-2.5 py-2 space-y-1">
+                            {project.transit?.metro && (
+                              <div className="flex items-center gap-2 text-[10.5px] text-[#1D3530] font-medium truncate">
+                                <span className="w-4 h-4 rounded-full bg-[#1D3530]/10 text-[#1D3530] flex items-center justify-center shrink-0">
+                                  <Train className="w-2.5 h-2.5" />
+                                </span>
+                                <span className="truncate" title={project.transit.metro}>
+                                  {project.transit.metro}
+                                </span>
+                              </div>
+                            )}
 
-                          {project.transit?.landmark ? (
-                            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-light truncate">
-                              <Building2 className="w-3 h-3 text-[#C59B4E] shrink-0" />
-                              <span className="truncate" title={project.transit.landmark}>
-                                {project.transit.landmark}
-                              </span>
-                            </div>
-                          ) : project.keyFeatures && project.keyFeatures.length > 0 ? (
-                            <div className="flex items-center gap-1.5 text-[11px] text-gray-500 font-light truncate">
-                              <Navigation className="w-3 h-3 text-[#C59B4E] shrink-0" />
-                              <span className="truncate" title={project.keyFeatures[0]}>
-                                {project.keyFeatures[0]}
-                              </span>
-                            </div>
-                          ) : null}
-                        </div>
+                            {project.transit?.landmark ? (
+                              <div className="flex items-center gap-2 text-[10.5px] text-[#63584C] font-normal truncate">
+                                <span className="w-4 h-4 rounded-full bg-[#C59B4E]/15 text-[#8B6846] flex items-center justify-center shrink-0">
+                                  <Building2 className="w-2.5 h-2.5" />
+                                </span>
+                                <span className="truncate" title={project.transit.landmark}>
+                                  {project.transit.landmark}
+                                </span>
+                              </div>
+                            ) : project.keyFeatures && project.keyFeatures.length > 0 ? (
+                              <div className="flex items-center gap-2 text-[10.5px] text-[#63584C] font-normal truncate">
+                                <span className="w-4 h-4 rounded-full bg-[#C59B4E]/15 text-[#8B6846] flex items-center justify-center shrink-0">
+                                  <Navigation className="w-2.5 h-2.5" />
+                                </span>
+                                <span className="truncate" title={project.keyFeatures[0]}>
+                                  {project.keyFeatures[0]}
+                                </span>
+                              </div>
+                            ) : null}
+                          </div>
+                        )}
 
                       </div>
 
-                      {/* Pricing & Dual CTA Action Buttons */}
-                      <div className="pt-3 border-t border-[#EAE6DF] space-y-3">
-                        <div className="flex items-baseline justify-between">
+                      {/* Pricing & Dual Boutique CTA Action Buttons */}
+                      <div className="pt-2.5 space-y-2.5 relative">
+                        {/* Refined Champagne Gold Divider */}
+                        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#DFBE79]/70 to-transparent" />
+
+                        <div className="flex items-end justify-between gap-2">
                           <div>
-                            <span className="text-[9px] uppercase text-gray-400 block font-mono tracking-wider">
-                              Indicative Quoted Price*
+                            <span className="text-[9px] uppercase text-[#8B6846] block font-mono tracking-[0.16em] font-semibold">
+                              Indicative Price
                             </span>
-                            <div className="font-sans text-lg sm:text-xl font-semibold text-[#14221F] tracking-tight group-hover:text-[#245348] transition-colors mt-0.5">
+                            <div className="font-sans text-[17px] sm:text-[19px] font-bold text-[#14221F] tracking-tight group-hover:text-[#1D3530] transition-colors leading-snug">
                               {project.priceRange || project.priceDisplay}
                             </div>
                           </div>
-                          <span className="text-[9px] text-gray-400 italic font-mono">
-                            *Indicative
+                          <span className="text-[9px] text-[#8E8477] italic font-serif pb-0.5 shrink-0">
+                            *Onwards
                           </span>
                         </div>
 
@@ -599,7 +834,7 @@ export function SignatureProjects({
                           <button
                             type="button"
                             onClick={() => onSelectProject(project)}
-                            className="w-full py-2 px-2.5 rounded-lg border border-[#14221F] hover:bg-[#14221F] hover:text-white text-xs uppercase tracking-wider font-semibold transition-all duration-200 text-center cursor-pointer shadow-xs hover:scale-[1.02]"
+                            className="w-full py-2 px-3 rounded-xl border border-[#1D3530]/35 bg-[#FAF8F3] hover:bg-[#1D3530] text-[#1D3530] hover:text-[#DFBE79] hover:border-[#1D3530] text-[10.5px] uppercase tracking-[0.14em] font-bold transition-all duration-200 text-center cursor-pointer shadow-xs active:scale-[0.98]"
                           >
                             Details
                           </button>
@@ -611,9 +846,9 @@ export function SignatureProjects({
                               location: project.location,
                               project: project
                             })}
-                            className="w-full py-2 px-2.5 rounded-lg bg-gradient-to-r from-[#245348] to-[#1B3F37] hover:from-[#C59B4E] hover:to-[#B3883B] text-white hover:text-[#14221F] text-xs uppercase tracking-wider font-semibold transition-all duration-300 shadow-sm hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer hover:scale-[1.02]"
+                            className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#DFBE79] hover:via-[#C59B4E] hover:to-[#B3883B] text-[#FFF7E2] hover:text-[#14221F] border border-[#C59B4E]/60 text-[10.5px] uppercase tracking-[0.14em] font-bold transition-all duration-300 shadow-[0_6px_18px_rgba(20,34,31,0.2)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.35)] flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.98]"
                           >
-                            <PhoneCall className="w-3.5 h-3.5" />
+                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] group-hover:text-current" />
                             <span>Enquire</span>
                           </button>
                         </div>
@@ -621,9 +856,10 @@ export function SignatureProjects({
 
                     </div>
 
-                  </div>
-                );
-              })}
+                    </div>
+                  );
+                });
+              })()}
             </div>
           )}
 
