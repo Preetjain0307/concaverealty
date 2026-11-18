@@ -226,11 +226,12 @@ export const PROJECTS_DATA = [
     towerDetails: "G + 3 Podium + 36 Floors",
     elevators: "3 High-Speed Elevators",
     amenitiesCount: "25+ Amenities",
-    coverImage: "/projects/project_4_user_1.png",
+    coverImage: "/projects/chandak_greenair_cover.jpg",
     images: [
-      "/projects/project_4_user_1.png",
-      "/projects/project_4_user_2.png",
-      "/projects/chandak_greenair_official.webp"
+      "/projects/chandak_greenair_cover.jpg",
+      "/project_photos/4%20-%20Chandak%20GreenAir/3.jpg",
+      "/project_photos/4%20-%20Chandak%20GreenAir/1.jpg",
+      "/project_photos/4%20-%20Chandak%20GreenAir/2.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Smart", carpetArea: "640 sq.ft CA", price: "₹1.95 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
@@ -267,10 +268,15 @@ export const PROJECTS_DATA = [
     towerDetails: "G + 42 Storey Modern Towers overlooking green canopy",
     elevators: "4 Elevators per wing",
     amenitiesCount: "60+ Resort Amenities including 6-acre forest reserve",
-    coverImage: "/projects/project_5_user_1.png",
+    coverImage: "/projects/godrej_reserve_cover.jpg",
     images: [
-      "/projects/project_5_user_1.png",
-      "/projects/godrej_reserve_official.webp"
+      "/projects/godrej_reserve_cover.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/6.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/7.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/8.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/3.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/4.jpg",
+      "/project_photos/5%20-%20Godrej%20Reserve/5.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Forest View", carpetArea: "750 - 820 sq.ft CA", price: "₹2.45 Cr*", floorPlanLabel: "Type 2F Serenity", possessionDate: "June 2027" },
@@ -348,7 +354,6 @@ export const PROJECTS_DATA = [
     images: [
       "/projects/project_7_user_1.png",
       "/projects/project_7_user_2.png",
-      "/projects/project_7_user_3.png",
       "/projects/godrej_bliss_official.webp"
     ],
     configurations: [
@@ -382,12 +387,11 @@ export const PROJECTS_DATA = [
     towerDetails: "G + 35 Storeys with deep balconies",
     elevators: "3 High-Speed Elevators",
     amenitiesCount: "30+ Amenities",
-    coverImage: "/projects/lodha_woods_official.webp",
+    coverImage: "/project_photos/8%20-%20Lodha%20Woods/1.jpg",
     images: [
-      "/projects/lodha_woods_official.webp",
-      "/projects/project_img_21.webp",
-      "/projects/project_img_23.webp",
-      "/projects/project_img_35.jpg"
+      "/project_photos/8%20-%20Lodha%20Woods/1.jpg",
+      "/project_photos/8%20-%20Lodha%20Woods/2.jpg",
+      "/project_photos/8%20-%20Lodha%20Woods/4.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Forest Deck", carpetArea: "710 sq.ft CA", price: "₹2.10 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Mid 2025" },
@@ -424,11 +428,12 @@ export const PROJECTS_DATA = [
     towerDetails: "Contemporary architectural facade with luxury units",
     elevators: "Modern High-Speed Elevators",
     amenitiesCount: "Curated Luxury Amenities",
-    coverImage: "/projects/project_9_user_1.png",
+    coverImage: "/projects/naring_malad_cover.jpg",
     images: [
-      "/projects/project_9_user_1.png",
-      "/projects/project_9_user_2.png",
-      "/projects/project_9_user_3.png"
+      "/projects/naring_malad_cover.jpg",
+      "/project_photos/9%20-%20Naring%20(Malad)/1.jpg",
+      "/project_photos/9%20-%20Naring%20(Malad)/2.jpg",
+      "/project_photos/9%20-%20Naring%20(Malad)/3.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
@@ -498,10 +503,11 @@ export const PROJECTS_DATA = [
     towerDetails: "Iconic contemporary facade with private sun decks",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Lodha Signature Amenities",
-    coverImage: "/projects/project_11_user_1.png",
+    coverImage: "/projects/lodha_malad_cover.jpg",
     images: [
-      "/projects/project_11_user_1.png",
-      "/projects/project_11_user_2.png"
+      "/projects/lodha_malad_cover.jpg",
+      "/project_photos/11%20-%20Lodha%20(Malad)/1.jpg",
+      "/project_photos/11%20-%20Lodha%20(Malad)/2.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
@@ -574,10 +580,12 @@ export const PROJECTS_DATA = [
     towerDetails: "Sculptural architecture with expansive balconies",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Premium Amenities",
-    coverImage: "/projects/project_13_user_1.png",
+    coverImage: "/projects/naring_goregaon_cover.jpg",
     images: [
-      "/projects/project_13_user_1.png",
-      "/projects/project_13_user_2.png"
+      "/projects/naring_goregaon_cover.jpg",
+      "/project_photos/13%20-%20Naring%20(Goregaon)/1.jpg",
+      "/project_photos/13%20-%20Naring%20(Goregaon)/2.jpg",
+      "/project_photos/13%20-%20Naring%20(Goregaon)/3.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
@@ -1202,8 +1210,9 @@ export const PROJECTS_DATA = [
     towerDetails: "Multi-storey residential landmark",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Rustomjee Signature Amenities",
-    coverImage: "/projects/project_30_user_1.png",
+    coverImage: "/projects/rustomjee_andheri_cover.jpg",
     images: [
+      "/projects/rustomjee_andheri_cover.jpg",
       "/projects/project_30_user_1.png",
       "/projects/rustomjee_stella_official.webp"
     ],
@@ -1315,12 +1324,10 @@ export const PROJECTS_DATA = [
     towerDetails: "Bespoke seafront sky mansions with wrap-around balconies",
     elevators: "Private Biometric Elevators",
     amenitiesCount: "Bespoke Club Amenities",
-    coverImage: "/projects/project_33_user_1.png",
+    coverImage: "/projects/godrej_bandra_cover.jpg",
     images: [
-      "/projects/project_33_user_1.png",
-      "/projects/project_33_user_2.png",
-      "/projects/godrej_reserve_official.webp",
-      "/projects/godrej_bliss_official.webp"
+      "/projects/godrej_bandra_cover.jpg",
+      "/projects/godrej_bandra_2.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Seafront", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
@@ -1353,8 +1360,9 @@ export const PROJECTS_DATA = [
     towerDetails: "Neoclassical high-rise architecture",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Curated Amenities",
-    coverImage: "/projects/project_34_user_1.png",
+    coverImage: "/projects/hiranandani_bandra_cover.jpg",
     images: [
+      "/projects/hiranandani_bandra_cover.jpg",
       "/projects/project_34_user_1.png",
       "/projects/project_34_user_2.png"
     ],
@@ -1389,11 +1397,10 @@ export const PROJECTS_DATA = [
     towerDetails: "G + 40 Storeys Luxury Tower with curated club",
     elevators: "4 High-Speed Elevators",
     amenitiesCount: "35+ Curated Amenities",
-    coverImage: "/projects/raymond_the_address_official.webp",
+    coverImage: "/projects/raymond_bandra_cover.jpg",
     images: [
-      "/projects/raymond_the_address_official.webp",
-      "/projects/project_img_50.jpg",
-      "/projects/project_img_51.webp"
+      "/projects/raymond_bandra_cover.jpg",
+      "/projects/raymond_bandra_balcony.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2027" },
@@ -1426,10 +1433,10 @@ export const PROJECTS_DATA = [
     towerDetails: "Private residences overlooking Arabian Sea",
     elevators: "Private Elevators",
     amenitiesCount: "World-Class Amenities",
-    coverImage: "/projects/project_img_4.jpg",
+    coverImage: "/projects/sunteck_bandra_cover.jpg",
     images: [
-      "/projects/project_img_4.jpg",
-      "/projects/project_img_1.jpg",
+      "/projects/sunteck_bandra_cover.jpg",
+      "/projects/sunteck_bandra_daylight.jpg",
       "/projects/project_img_36.jpg"
     ],
     configurations: [
@@ -1538,8 +1545,9 @@ export const PROJECTS_DATA = [
     towerDetails: "Low-density luxury apartments",
     elevators: "Private Elevators",
     amenitiesCount: "Boutique Amenities",
-    coverImage: "/projects/project_39_user_1.png",
+    coverImage: "/projects/dlh_bandra_cover.jpg",
     images: [
+      "/projects/dlh_bandra_cover.jpg",
       "/projects/project_39_user_1.png",
       "/projects/project_39_user_2.png"
     ],
@@ -2718,42 +2726,42 @@ export const BEST_COVER_FILES = {
   1: "3.jpg",              // Kalpataru Advay (Borivali W): 3 glowing high-rise towers in twilight
   2: "tower_facade.jpg",   // Lodha Altus (Borivali W): Full high-rise skyscraper tower from JLL
   3: "3.jpg",              // Oberoi Sky City (Borivali E): All 5 majestic towers in golden sunlight
-  4: "tower_facade.jpg",   // Chandak GreenAir (Borivali E): Chandak twin towers with commercial podium
-  5: "tower_facade.webp",  // Godrej Reserve (Kandivali E): Official multi-tower master render
+  4: "cover.jpg",          // Chandak GreenAir (Borivali E): User twin towers sunset elevation
+  5: "cover.jpg",          // Godrej Reserve (Kandivali E): Official multi-tower master render (user cover)
   6: "tower_facade.webp",  // Mahindra Vista (Kandivali E): All 4 high-rise towers from Mahindra Lifespaces
   7: "2.jpg",              // Godrej Bliss (Kandivali E): All 4 high-rise towers
   8: "1.jpg",              // Lodha Woods (Kandivali E): Wide estate building facade
-  9: "1.jpg",              // Naring Malad (Malad W): Full twin towers overlooking sports court
+  9: "cover.jpg",          // Naring Malad (Malad W): High-rise tower elevation render
   10: "3.jpg",             // Runwal Auris (Malad W): All 4 lit towers at dusk
-  11: "1.jpg",             // Lodha Malad (Malad W): Full high-rise towers with clubhouse
+  11: "cover.jpg",          // Lodha Malad (Malad W): High-rise dusk tower facade render
   12: "3.jpg",             // Enchante Point (Malad W): Full high-rise tower at night
-  13: "2.jpg",             // Naring Goregaon (Goregaon W): Full twin towers with commercial podium
+  13: "cover.jpg",          // Naring Goregaon (Goregaon W): Full twin towers with commercial podium (user render)
   14: "1.jpg",             // Kalpataru Elara (Goregaon W): Grand high-rise towers overlooking city
-  15: "1.jpg",             // Kolte-Patil Goregaon (Goregaon W): Twin towers facade (NOT Buddha lawn)
+  15: "cover.jpg",         // Kolte-Patil Goregaon (Goregaon W): Sunset skyline master elevation render
   16: "2.jpg",             // Rustomjee Goregaon (Goregaon W): 4-tower skyline (NOT swimming pool)
   17: "1.jpg",             // Lodha Sovrano (Jogeshwari W): Full high-rise towers with commercial podium
-  18: "1.jpg",             // Paradigm Downtown 102 (Jogeshwari W): Tall skyscraper tower (NOT logo banner)
-  19: "3.jpg",             // Roseworld (Jogeshwari W): Glowing skyscraper twin towers at sunset
-  20: "tower_facade.jpg",  // Sunteck City (Jogeshwari W): 3K JLL full high-rise tower at night (NOT woman in dress)
-  21: "1.jpg",             // Godrej Skyshore (Versova): Full twin towers in sunset glow facing sea
-  22: "tower_facade.jpg",  // Kalpataru Vian (Andheri E): Magnificent multi-tower high-rise skyline
-  23: "2.jpg",             // Adani Linkbay (Andheri W): Full modern residential tower (NOT bedroom)
+  18: "cover.jpg",         // Paradigm Downtown 102 (Jogeshwari W): Widescreen sunset master elevation render
+  19: "cover.jpg",         // Roseworld (Jogeshwari W): Glowing skyscraper twin towers at sunset
+  20: "cover.jpg",         // Sunteck City (Jogeshwari W): 4-tower daytime aerial master elevation render
+  21: "cover.jpg",         // Godrej Skyshore (Versova): Widescreen aerial sunset master elevation facing Arabian sea
+  22: "cover.jpg",         // Kalpataru Vian (Andheri E): Widescreen 3-tower master elevation render
+  23: "cover.jpg",         // Adani Linkbay (Andheri W): Widescreen daylight master elevation render
   24: "2.jpg",             // Puravankara (Andheri): Full illuminated building at night
-  25: "1.jpg",             // Gurukrupa Realcon (Andheri E): Entire tower elevation (NOT gift box with couple)
-  26: "1.jpg",             // Naman 58 (Andheri E): Aerial tower elevation overlooking metro line
+  25: "cover.jpg",         // Gurukrupa Realcon (Andheri E): Widescreen aerial master elevation overlooking highway & metro corridor
+  26: "cover.jpg",         // Naman 58 (Andheri E): Widescreen aerial master elevation overlooking metro line
   27: "1.jpg",             // Kolte-Patil (Andheri): 2-tower lit exterior next to metro line
-  28: "1.jpg",             // Hiranandani Vicino (Andheri): Full color glass tower (NOT black & white)
+  28: "cover.jpg",         // Hiranandani (Andheri): Widescreen sunset architectural master elevation render
   29: "4.jpg",             // Bharat (Andheri W): Full corporate & residential high-rise complex
-  30: "2.jpg",             // Rustomjee Stella (Andheri): Full tower at twilight
-  31: "1.jpg",             // Lodha Acenza (Andheri): Striking tower facade (NOT balcony)
+  30: "cover.jpg",         // Rustomjee (Andheri): Widescreen boulevard avenue master elevation render
+  31: "cover.jpg",         // Lodha (Andheri): Widescreen sunset residential wings overlooking pool & sports court
   32: "1.jpg",             // DLF (Andheri): DLF residential towers
-  33: "2.jpg",             // Godrej (Bandra W): Waterfront tower overlooking Bandra-Worli Sea Link
-  34: "1.jpg",             // Hiranandani (Bandra W): Entire luxury neoclassical skyscraper (NOT roof edge)
-  35: "1.jpg",             // Raymond (Bandra E): Illuminated residential towers
-  36: "1.jpg",             // Sunteck (Bandra W): Commercial glass towers (NOT woman with coffee cup)
+  33: "cover.jpg",         // Godrej (Bandra W): Waterfront luxury tower overlooking Bandra-Worli Sea Link
+  34: "cover.jpg",         // Hiranandani (Bandra W): Widescreen sunset neoclassical skyscraper tower render
+  35: "cover.jpg",         // Raymond (Bandra E): Widescreen master elevation render of full towers at dusk
+  36: "cover.jpg",         // Sunteck (Bandra W): Widescreen sunset master elevation render with vertical sky-gardens
   37: "1.jpg",             // Oberoi Realty (Bandra W): Luxury towers overlooking greenery
   38: "tower_facade.jpg",  // Adani Ten BKC (Bandra BKC): Illuminated night exterior from Adani Realty (NOT swimming pool)
-  39: "1.jpg",             // DLH (Bandra W): Sea-facing skyscraper tower (NOT rooftop lounge)
+  39: "cover.jpg",         // DLH (Bandra W): Widescreen sunset master elevation render of skyscraper tower
   40: "1.jpg",             // Lodha Lower Parel (World Towers): Entire skyscraper tower (NOT woman in dress)
   41: "1.jpg",             // Piramal Mahalaxmi (Lower Parel): Iconic 3-tower luxury skyline overlooking racecourse
   42: "1.jpg",             // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
@@ -2762,13 +2770,13 @@ export const BEST_COVER_FILES = {
 
 // Map each project's total photo count in public/project_photos/
 export const PROJECT_PHOTO_COUNTS = {
-  1: 3, 2: 4, 3: 3, 4: 3, 5: 5,
-  6: 4, 7: 4, 8: 4, 9: 3, 10: 3,
-  11: 4, 12: 5, 13: 3, 14: 4, 15: 3,
+  1: 3, 2: 4, 3: 3, 4: 3, 5: 8,
+  6: 4, 7: 3, 8: 3, 9: 3, 10: 3,
+  11: 2, 12: 4, 13: 3, 14: 4, 15: 4,
   16: 3, 17: 4, 18: 3, 19: 3, 20: 3,
-  21: 3, 22: 4, 23: 3, 24: 3, 25: 3,
-  26: 4, 27: 3, 28: 3, 29: 4, 30: 3,
-  31: 3, 32: 3, 33: 4, 34: 3, 35: 3,
+  21: 4, 22: 5, 23: 3, 24: 3, 25: 3,
+  26: 5, 27: 3, 28: 3, 29: 4, 30: 3,
+  31: 4, 32: 3, 33: 2, 34: 3, 35: 2,
   36: 3, 37: 3, 38: 4, 39: 3, 40: 5,
   41: 3, 42: 3, 43: 3
 };
@@ -2779,6 +2787,7 @@ PROJECTS_DATA.forEach(p => {
     p.keyFeatures = enrich.keyFeatures || [];
     if (enrich.amenities) p.amenities = enrich.amenities;
   }
+
   const folder = PROJECT_FOLDERS[p.id] || `${p.id} - ${p.name}`;
   p.folder = folder;
   p.fallbackCover = p.coverImage;
@@ -2789,7 +2798,84 @@ PROJECTS_DATA.forEach(p => {
   // Assemble full photo gallery with best exterior facade as 1st photo
   const count = PROJECT_PHOTO_COUNTS[p.id] || 3;
   const otherImages = [];
-  for (let i = 1; i <= count; i++) {
+  // For custom projects, customize gallery order to exclude unwanted images
+  let photoOrder;
+  if (p.id === 4) {
+    // Chandak GreenAir: cover.jpg, then new aerial view (3.jpg), followed by 1.jpg & 2.jpg
+    photoOrder = [3, 1, 2];
+  } else if (p.id === 5) {
+    photoOrder = [6, 7, 8, 3, 4, 5];
+  } else if (p.id === 7) {
+    // Godrej Bliss: exclude watermarked pool photo (3.jpg), keep 1, 2 (cover), 4
+    photoOrder = [1, 4];
+  } else if (p.id === 8) {
+    // Lodha Woods: gallery has image 1 (cover), newly inserted image 2 (tower facade), and image 4
+    photoOrder = [1, 2, 4];
+  } else if (p.id === 11) {
+    // Lodha Malad: exclude European brick buildings (3.jpg & 4.jpg), keep 1 and 2
+    photoOrder = [1, 2];
+  } else if (p.id === 12) {
+    // Enchante Point: exclude commercial glass building (4.jpg), keep 1, 2, and 5
+    photoOrder = [1, 2, 5];
+  } else if (p.id === 15) {
+    // Kolte-Patil Goregaon: gallery has newly added high-res facade render (4.jpg), followed by 2.jpg & 3.jpg
+    photoOrder = [4, 2, 3];
+  } else if (p.id === 17) {
+    // Lodha Sovrano: 1 (cover tower), 2 (tower facade), 3 (treehouse bridge), 4 (lawn & palm grove)
+    photoOrder = [1, 2, 3, 4];
+  } else if (p.id === 18) {
+    // Paradigm Downtown 102: cover (sunset master render), 1 (tower elevation), 2 (facade render)
+    photoOrder = [1, 2];
+  } else if (p.id === 19) {
+    // Roseworld: cover (HD glowing twin towers at sunset), 1 (facade), 2 (amenities)
+    photoOrder = [1, 2];
+  } else if (p.id === 20) {
+    // Sunteck City: cover (4-tower daylight render), 4 (night tower facade), 2 (amenities)
+    photoOrder = [4, 2];
+  } else if (p.id === 21) {
+    // Godrej Skyshore: cover (widescreen sunset over Arabian sea), 1 (tower elevation), 2, 3
+    photoOrder = [1, 2, 3];
+  } else if (p.id === 22) {
+    // Kalpataru Vian: cover (widescreen master render), 1 (tower facade), 2, 3, 4
+    photoOrder = [1, 2, 3, 4];
+  } else if (p.id === 23) {
+    // Adani Linkbay: cover (widescreen master render), 2 (tower elevation), 3
+    photoOrder = [2, 3];
+  } else if (p.id === 25) {
+    // Gurukrupa Realcon: exclude purple gift box (3.jpg), keep 1 and 2
+    photoOrder = [1, 2];
+  } else if (p.id === 26) {
+    // Naman 58: cover (widescreen aerial view over metro line), 2, 3, 4, 1
+    photoOrder = [2, 3, 4, 1];
+  } else if (p.id === 28) {
+    // Hiranandani Andheri: exclude black & white photo (3.jpg), keep 1 and 2
+    photoOrder = [1, 2];
+  } else if (p.id === 30) {
+    // Rustomjee Andheri: cover (widescreen master render), 2 (twilight tower), 1 (tower elevation), 3
+    photoOrder = [2, 1, 3];
+  } else if (p.id === 31) {
+    // Lodha Andheri: cover (sunset wings overlooking pool), 1 (tower facade), 2, 3
+    photoOrder = [1, 2, 3];
+  } else if (p.id === 33) {
+    // Godrej Pali Hill / Bandra West: cover (waterfront tower facing Sea Link), 2 (coastline aerial)
+    photoOrder = [2];
+  } else if (p.id === 34) {
+    // Hiranandani Bandra: cover (sunset master render), 1 (tower facade), 2 (interiors)
+    photoOrder = [1, 2];
+  } else if (p.id === 35) {
+    // Raymond Bandra East: cover (widescreen master elevation render), 2 (balcony deck & luxury living room)
+    photoOrder = [2];
+  } else if (p.id === 36) {
+    // Sunteck Bandra West: cover (sunset sky-gardens render), 2 (daylight tower render), 3
+    photoOrder = [2, 3];
+  } else if (p.id === 39) {
+    // DLH Bandra West: cover (sunset master render), 1 (tower elevation), 2 (facade)
+    photoOrder = [1, 2];
+  } else {
+    photoOrder = Array.from({ length: count }, (_, idx) => idx + 1);
+  }
+
+  for (const i of photoOrder) {
     const fileName = `${i}.jpg`;
     if (fileName !== bestCover) {
       otherImages.push(`/project_photos/${encodeURIComponent(folder)}/${fileName}`);

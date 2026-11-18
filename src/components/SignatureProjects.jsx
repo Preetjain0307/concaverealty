@@ -427,18 +427,37 @@ export function SignatureProjects({
                   >
                     {/* 1. Main Project Image with subtle zoom on hover */}
                     <div 
-                      className="relative h-48 sm:h-52 overflow-hidden bg-gray-900 cursor-pointer"
+                      className="relative h-52 sm:h-60 overflow-hidden bg-[#0E1715] flex items-center justify-center cursor-pointer"
                       onClick={() => onSelectProject(project)}
                     >
-                      <img
-                        src={project.coverImage}
-                        alt={project.name}
-                        referrerPolicy="no-referrer"
-                        onError={(e) => handleProjectImgError(e, project.fallbackCover)}
-                        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
+                      {/* Ambient soft backdrop so full portrait towers fit beautifully without blank space */}
+                      {project.coverImage ? (
+                        <>
+                          <img
+                            src={project.coverImage}
+                            alt=""
+                            aria-hidden="true"
+                            className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-110 pointer-events-none"
+                          />
+
+                          <img
+                            src={project.coverImage}
+                            alt={project.name}
+                            referrerPolicy="no-referrer"
+                            onError={(e) => handleProjectImgError(e, project.fallbackCover)}
+                            className="relative z-10 w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-center p-4 text-[#DFBE79]/80 space-y-2 z-10">
+                          <div className="w-12 h-12 rounded-full bg-[#1D3530] border border-[#DFBE79]/30 flex items-center justify-center text-[#DFBE79]">
+                            <Building2 className="w-6 h-6" />
+                          </div>
+                          <span className="text-xs font-mono tracking-wider uppercase text-white/80">Photos Updating</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity" />
                       
                       {/* Top Header Row: Location Badge & Developer Badge - perfectly aligned across all boxes */}
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
@@ -482,7 +501,7 @@ export function SignatureProjects({
                       {/* Bottom Left: Multiple photos count pill */}
                       <div className="absolute bottom-2.5 left-2.5 bg-black/60 backdrop-blur-md text-white px-2 py-0.5 rounded-full text-[10px] font-mono flex items-center gap-1.5">
                         <Eye className="w-3 h-3 text-[#DFBE79]" />
-                        <span>{project.images?.length || 1} Photos</span>
+                        <span>{project.images?.length > 0 ? `${project.images.length} Photos` : 'Photos Updating'}</span>
                       </div>
                     </div>
 

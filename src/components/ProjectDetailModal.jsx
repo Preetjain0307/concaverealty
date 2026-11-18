@@ -26,7 +26,8 @@ import {
   Film,
   Flame,
   ArrowUpRight,
-  Plane
+  Plane,
+  Maximize2
 } from 'lucide-react';
 
 // Seamlessly try multiple extensions (1.jpg -> 1.png -> 1.webp -> 1.jpeg) when user adds photos
@@ -101,6 +102,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
   if (!project) return null;
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const modalRef = useRef(null);
 
   // Always reset to the primary official hero image when opening or changing projects
@@ -115,9 +117,9 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
   const imagesList = (project.images && project.images.length > 0)
     ? project.images
-    : [project.coverImage];
+    : (project.coverImage ? [project.coverImage] : []);
 
-  const currentImage = imagesList[activeImageIdx] || project.coverImage;
+  const currentImage = imagesList[activeImageIdx] || project.coverImage || '';
 
   return (
     <div
@@ -165,18 +167,62 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
           {/* Section: Property Image Gallery */}
           <div className="space-y-3">
-            <div className="relative h-52 xs:h-64 sm:h-84 md:h-96 rounded-lg overflow-hidden border border-[#EAE6DF] bg-gray-900 group">
-              <img
-                src={currentImage}
-                alt={`${project.name} exterior view, ${project.location} Mumbai`}
-                referrerPolicy="no-referrer"
-                onError={(e) => handleModalImgError(e, project.fallbackCover)}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-102"
-              />
+            <div 
+              className="relative h-72 sm:h-96 md:h-[490px] rounded-xl overflow-hidden border border-[#EAE6DF] bg-[#0E1715] flex items-center justify-center group cursor-pointer"
+              onClick={() => setIsLightboxOpen(true)}
+              title="Click to view full photo"
+            >
+              {currentImage ? (
+                <>
+                  {/* Soft ambient background for portrait photos so full photo fits without black bars */}
+                  <img
+                    src={currentImage}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-35 scale-110 pointer-events-none"
+                  />
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 pointer-events-none" />
+                  {/* Main Photo - fully visible without cropping */}
+                  <img
+                    src={currentImage}
+                    alt={`${project.name} exterior view, ${project.location} Mumbai`}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => handleModalImgError(e, project.fallbackCover)}
+                    className="relative z-10 w-full h-full object-contain transition-transform duration-500 group-hover:scale-[1.01]"
+                  />
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-center p-6 text-white/70 space-y-3 z-10">
+                  <div className="w-16 h-16 rounded-full bg-[#1D3530] border border-[#DFBE79]/40 flex items-center justify-center text-[#DFBE79]">
+                    <Building2 className="w-8 h-8" />
+                  </div>
+                  <p className="font-serif text-lg text-white font-medium">New Photos Being Curated</p>
+                  <p className="text-xs text-white/60 max-w-sm">All previous project visuals removed. Ready for new official photo uploads for {project.name}.</p>
+                </div>
+              )}
 
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between pointer-events-auto">
+              <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 pointer-events-none" />
+
+              {/* Top right Expand / Fullscreen icon */}
+              <div className="absolute top-3 right-3 z-20 pointer-events-auto">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsLightboxOpen(true);
+                  }}
+                  title="View full size photo"
+                  aria-label="View full size photo"
+                  className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition-all border border-white/20 shadow-md hover:scale-105 cursor-pointer"
+                >
+                  <Maximize2 className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div 
+                className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <span className="text-xs uppercase font-mono tracking-wider bg-white/95 text-[#14221F] px-3 py-1 rounded shadow-sm font-semibold">
                   {project.locality || project.location}
                 </span>
@@ -639,6 +685,28 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
         </div>
 
       </div>
+
+      {/* Fullscreen High-Resolution Lightbox View */}
+      {isLightboxOpen && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-4 right-4 p-2.5 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all border border-white/20 shadow-xl cursor-pointer"
+            aria-label="Close full size view"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <img
+            src={currentImage}
+            alt={project.name}
+            className="max-w-[96vw] max-h-[92vh] object-contain rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </div>
   );
 }
