@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { sendOtpEmail, verifyOtpCode } from './server/otpService.js';
+import { sendOtpEmail, verifyOtpCode, validateVerifiedEmail } from './server/otpService.js';
 import {
   checkRateLimit,
   sanitizePayload,
@@ -202,6 +202,48 @@ function enterpriseSecurityPlugin() {
           } catch (e) {
             res.statusCode = 500;
             res.end(JSON.stringify({ error: 'Vault token generation failed' }));
+          }
+        });
+      });
+
+      // 7. POST /api/career-apply (Mandatory Backend Email OTP Verification Check)
+      server.middlewares.use('/api/career-apply', (req, res) => {
+        if (req.method !== 'POST') {
+          res.statusCode = 405;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+          return;
+        }
+
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+          res.setHeader('Content-Type', 'application/json');
+          try {
+            const rawData = JSON.parse(body || '{}');
+            const data = sanitizePayload(rawData);
+
+            // Mandatory Server-Side Verification Check
+            const validation = validateVerifiedEmail(data.email, data.verificationToken);
+            if (!validation.valid) {
+              res.statusCode = 403;
+              res.end(JSON.stringify({
+                success: false,
+                code: 'EMAIL_UNVERIFIED',
+                message: validation.message || 'Please verify your email address before submitting your application.'
+              }));
+              return;
+            }
+
+            res.statusCode = 200;
+            res.end(JSON.stringify({
+              success: true,
+              verified: true,
+              message: 'Email verification confirmed on server. Application accepted.'
+            }));
+          } catch (err) {
+            res.statusCode = 400;
+            res.end(JSON.stringify({ success: false, message: err.message }));
           }
         });
       });

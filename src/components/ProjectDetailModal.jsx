@@ -143,11 +143,13 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
     setTimeout(() => setCopiedCoords(false), 2200);
   };
 
-  const imagesList = (project.images && project.images.length > 0)
+  const rawImages = (project.images && project.images.length > 0)
     ? project.images
     : (project.coverImage ? [project.coverImage] : []);
+  const imagesList = rawImages.filter(Boolean);
 
-  const currentImage = imagesList[activeImageIdx] || project.coverImage || '';
+  const hasImages = imagesList.length > 0;
+  const currentImage = hasImages ? (imagesList[activeImageIdx] || imagesList[0]) : null;
 
   return (
     <div
@@ -193,6 +195,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
         {/* Modal Scrollable Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1 text-[#14221F]">
 
+          {/* Section: Property Image Gallery */}
           {/* Section: Property Image Gallery */}
           <div className="space-y-3">
             <div 
@@ -241,20 +244,22 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 pointer-events-none" />
 
               {/* Top right Expand / Fullscreen icon */}
-              <div className="absolute top-3 right-3 z-20 pointer-events-auto">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setIsLightboxOpen(true);
-                  }}
-                  title="View full size photo"
-                  aria-label="View full size photo"
-                  className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition-all border border-white/20 shadow-md hover:scale-105 cursor-pointer"
-                >
-                  <Maximize2 className="w-4 h-4" />
-                </button>
-              </div>
+              {currentImage && (
+                <div className="absolute top-3 right-3 z-20 pointer-events-auto">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsLightboxOpen(true);
+                    }}
+                    title="View full size photo"
+                    aria-label="View full size photo"
+                    className="bg-black/60 hover:bg-black/80 text-white p-2 rounded-full backdrop-blur-md transition-all border border-white/20 shadow-md hover:scale-105 cursor-pointer"
+                  >
+                    <Maximize2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
 
               <div 
                 className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto"
@@ -354,7 +359,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-[#C59B4E]" />
-                <h4 
+                <h4
                   className="text-lg sm:text-xl font-bold text-[#14221F] tracking-tight"
                   style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
                 >
@@ -411,7 +416,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
                     Strategic Location Advantage
                   </span>
-                  <h4 
+                  <h4
                     className="text-xl sm:text-2xl font-bold text-[#14221F] tracking-tight mt-0.5"
                     style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
                   >
@@ -462,7 +467,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
                     World-Class Living
                   </span>
-                  <h4 
+                  <h4
                     className="text-xl sm:text-2xl font-bold text-[#14221F] tracking-tight mt-0.5"
                     style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
                   >

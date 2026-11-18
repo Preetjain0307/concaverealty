@@ -262,11 +262,20 @@ export function EnquiryPage({ initialData = {}, onNavigateHome, onNavigateProjec
               {/* Selected Project Card */}
               <div className="bg-white rounded-2xl border border-[#EAE6DF] overflow-hidden shadow-sm">
                 <div className="relative h-48 overflow-hidden bg-gray-900">
-                  <img
-                    src={selectedProjObj.coverImage}
-                    alt={selectedProjObj.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {selectedProjObj.coverImage ? (
+                    <img
+                      src={selectedProjObj.coverImage}
+                      alt={selectedProjObj.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gradient-to-br from-[#1D3530] via-[#14221F] to-[#0A1210] flex flex-col items-center justify-center p-4 text-center">
+                      <div className="w-10 h-10 rounded-full bg-[#284F45]/70 border border-[#C59B4E]/40 flex items-center justify-center text-[#DFBE79] mb-1.5 shadow-inner">
+                        <Building2 className="w-5 h-5 text-[#DFBE79]" />
+                      </div>
+                      <span className="text-[11px] text-[#DFBE79] font-mono uppercase tracking-wider">Visuals in Private Release</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                   
                   <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase tracking-wider text-[#14221F]">

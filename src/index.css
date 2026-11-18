@@ -583,3 +583,102 @@
 .anim-border-glow-gold {
   animation: borderGlowChampagne 3.5s ease-in-out infinite;
 }
+
+/* ── Hero Luxury Title Continuous Shimmer Animation ── */
+@keyframes luxuryTitleShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.anim-luxury-title {
+  background: linear-gradient(
+    90deg,
+    #FFFFFF 0%,
+    #FFFFFF 20%,
+    #DFBE79 40%,
+    #FFF4D6 50%,
+    #C59B4E 60%,
+    #FFFFFF 80%,
+    #FFFFFF 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: luxuryTitleShimmer 5s linear infinite;
+  display: inline-block;
+  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.9));
+}
+
+/* ── Hero Slogan Breathing & Subtle Floating Animation ── */
+@keyframes sloganGlowPulse {
+  0%, 100% {
+    opacity: 0.95;
+    transform: translateY(0);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.85));
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+    filter: drop-shadow(0 4px 18px rgba(197, 155, 78, 0.45));
+  }
+}
+
+.anim-slogan-pulse {
+  animation: sloganGlowPulse 4s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* ── Open Positions Animated Gradient Fill (Forest Green & Champagne Gold) ── */
+@keyframes emeraldGoldShimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.anim-open-positions-title {
+  background: linear-gradient(
+    90deg,
+    #1D3530 0%,
+    #1D3530 20%,
+    #C59B4E 40%,
+    #DFBE79 50%,
+    #C59B4E 60%,
+    #1D3530 80%,
+    #1D3530 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: emeraldGoldShimmer 4s linear infinite;
+  display: inline-block;
+}
+
+/* ── Subtle Animated Fill Shimmer Divider ── */
+@keyframes dividerFillSweep {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.anim-fill-divider {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #C59B4E 35%,
+    #DFBE79 50%,
+    #C59B4E 65%,
+    transparent 100%
+  );
+  background-size: 200% auto;
+  animation: dividerFillSweep 3s linear infinite;
+}
