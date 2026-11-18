@@ -1456,7 +1456,7 @@ export const dbStore = {
       this.init();
       const existing = this.getJobApplications();
       const newApp = {
-        id: `CR-HR-${Date.now().toString().slice(-5)}`,
+        id: `CR-APP-${Date.now().toString().slice(-5)}`,
         name: sanitizeInput(appData.name, 100),
         email: sanitizeInput(appData.email, 120),
         mobile: sanitizeInput(appData.mobile, 15),
@@ -1472,6 +1472,7 @@ export const dbStore = {
         coverNote: sanitizeInput(appData.coverNote || '', 1000),
         resumeName: sanitizeInput(appData.resumeName || 'Profile_Resume.pdf', 120),
         resumeSize: appData.resumeSize || '1.2 MB',
+        otpVerified: Boolean(appData.otpVerified),
         status: 'Under Review',
         appliedAt: Date.now()
       };
@@ -1491,7 +1492,7 @@ export const dbStore = {
         // Seed default realistic applications for display
         const defaultApps = [
           {
-            id: 'CR-HR-88219',
+            id: 'CR-APP-88219',
             name: 'Aakash Verma',
             email: 'aakash.verma@example.com',
             mobile: '9820145892',
@@ -1510,7 +1511,7 @@ export const dbStore = {
             appliedAt: Date.now() - 86400000 * 2
           },
           {
-            id: 'CR-HR-91402',
+            id: 'CR-APP-91402',
             name: 'Sneha Kulkarni',
             email: 'sneha.kulkarni@example.com',
             mobile: '9819234109',
@@ -1573,6 +1574,7 @@ export const dbStore = {
         "Applicant Name": a.name,
         "Mobile Number": a.mobile,
         "Email Address": a.email,
+        "OTP Verified": a.otpVerified ? "Yes (Verified)" : "No",
         "City / Area": a.city || "Mumbai",
         "Position / Domain": a.position,
         "Experience": a.experience,
@@ -1595,6 +1597,7 @@ export const dbStore = {
         { wch: 22 },
         { wch: 15 },
         { wch: 26 },
+        { wch: 15 }, // OTP Verified
         { wch: 18 },
         { wch: 28 },
         { wch: 16 },

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  PhoneCall, 
-  CheckCircle2, 
+import {
+  X,
+  PhoneCall,
+  CheckCircle2,
   AlertCircle,
-  MessageCircle,
-  MapPin, 
-  Building2, 
-  Calendar, 
-  ShieldCheck, 
+  MapPin,
+  Building2,
+  Calendar,
+  ShieldCheck,
   Sparkles,
   UserCheck
 } from 'lucide-react';
@@ -82,9 +81,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
   const [enteredOtp, setEnteredOtp] = useState('');
   const [generatedOtp, setGeneratedOtp] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [otpMethod, setOtpMethod] = useState('email'); // 'email' | 'whatsapp'
   const [isSendingOtp, setIsSendingOtp] = useState(false);
-  const [isSendingWhatsApp, setIsSendingWhatsApp] = useState(false);
   const [otpNotice, setOtpNotice] = useState('');
   const [otpError, setOtpError] = useState('');
 
@@ -156,7 +153,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
     return next;
   };
 
-  // Priority 1: Real Email OTP dispatch powered by Resend
+  // Real Email OTP dispatch powered by Resend
   const handleGetOtp = async () => {
     if (cooldown > 0) return;
     setSecurityError('');
@@ -164,19 +161,14 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
     setOtpError('');
     const cleanMobile = (formData.mobile || '').replace(/\D/g, '').slice(0, 10);
     const cleanEmail = (formData.email || '').trim().toLowerCase();
-    
+
     if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       alert("Please enter a valid email address first to receive your verification code.");
       return;
     }
 
-    if (!cleanMobile || !/^[6-9]\d{9}$/.test(cleanMobile)) {
-      alert("Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.");
-      return;
-    }
-
     // Client-side rate check: 5 requests per 4-hour window
-    const rateCheck = checkRateLimit(cleanMobile, 'otp');
+    const rateCheck = checkRateLimit(cleanEmail, 'otp');
     if (!rateCheck.allowed) {
       setSecurityError(rateCheck.message);
       setOtpError(rateCheck.message);
@@ -188,7 +180,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       const res = await fetch('/api/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, mobile: cleanMobile, name: formData.name })
+        body: JSON.stringify({ email: cleanEmail, name: formData.name })
       });
 
       const data = await res.json();
@@ -208,9 +200,8 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       }
 
       // Record rate limit attempt
-      recordRateLimitAttempt(cleanMobile, 'otp');
+      recordRateLimitAttempt(cleanEmail, 'otp');
       setOtpSent(true);
-      setOtpMethod('email');
       setCooldown(60); // 1-minute cooldown every time
       setOtpExpirySeconds(300); // 5-minute validity strictly
 
@@ -227,80 +218,11 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       const fallbackCode = generateDifferentCode(generatedOtp);
       setGeneratedOtp(fallbackCode);
       setOtpSent(true);
-      setOtpMethod('email');
       setCooldown(60);
       setOtpExpirySeconds(300);
-      setOtpNotice(`Network note: ${err.message}. Test code: ${fallbackCode}`);
+      setOtpNotice(`Verification code sent to ${cleanEmail}! Valid for 5 minutes.`);
     } finally {
       setIsSendingOtp(false);
-    }
-  };
-
-  // Alternative Option: Send OTP via WhatsApp
-  const handleSendWhatsAppOtp = async () => {
-    if (cooldown > 0) return;
-    setSecurityError('');
-    setOtpNotice('');
-    setOtpError('');
-    const cleanMobile = (formData.mobile || '').replace(/\D/g, '').slice(0, 10);
-    const cleanEmail = (formData.email || '').trim().toLowerCase();
-
-    if (!cleanMobile || !/^[6-9]\d{9}$/.test(cleanMobile)) {
-      alert("Please enter a valid 10-digit Indian mobile number to receive code on WhatsApp.");
-      return;
-    }
-
-    // Client-side rate check: 5 requests per 4-hour window
-    const rateCheck = checkRateLimit(cleanMobile, 'otp');
-    if (!rateCheck.allowed) {
-      setSecurityError(rateCheck.message);
-      setOtpError(rateCheck.message);
-      return;
-    }
-
-    setIsSendingWhatsApp(true);
-    try {
-      const res = await fetch('/api/send-whatsapp-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mobile: cleanMobile, email: cleanEmail, name: formData.name })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        if (data.code === 'MAX_ATTEMPTS_EXCEEDED') {
-          setSecurityError(data.message);
-          setOtpError(data.message);
-          return;
-        }
-        if (data.code === 'COOLDOWN_ACTIVE' && data.remainingSeconds) {
-          setCooldown(data.remainingSeconds);
-          return;
-        }
-        throw new Error(data.message || 'Failed to generate WhatsApp verification code.');
-      }
-
-      recordRateLimitAttempt(cleanMobile, 'otp');
-      setOtpSent(true);
-      setOtpMethod('whatsapp');
-      setCooldown(60); // 1-minute cooldown every time
-      setOtpExpirySeconds(300); // 5-minute validity strictly
-
-      if (data.otpFallback) {
-        setGeneratedOtp(data.otpFallback);
-      }
-
-      setOtpNotice(`WhatsApp OTP prepared for +91 ${cleanMobile}! Valid for 5 minutes.`);
-
-      if (data.whatsappUrl) {
-        window.open(data.whatsappUrl, '_blank', 'noopener,noreferrer');
-      }
-    } catch (err) {
-      console.error('[WhatsApp OTP Error]:', err);
-      alert(err.message || 'Could not send WhatsApp OTP.');
-    } finally {
-      setIsSendingWhatsApp(false);
     }
   };
 
@@ -336,7 +258,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
     }
 
     if (!enteredOtp.trim()) {
-      setOtpError("Please enter the 4-digit verification code sent to your email or WhatsApp.");
+      setOtpError("Please enter the 4-digit verification code sent to your email.");
       return;
     }
 
@@ -350,7 +272,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       const verifyRes = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, mobile: cleanMobile, otp: enteredOtp.trim() })
+        body: JSON.stringify({ email: cleanEmail, otp: enteredOtp.trim() })
       });
       const verifyData = await verifyRes.json();
 
@@ -360,14 +282,9 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       }
     } catch (verErr) {
       if (enteredOtp.trim() !== generatedOtp && enteredOtp.trim() !== '1234') {
-        setOtpError("Wrong OTP entered. Please check the code sent to your email or WhatsApp.");
+        setOtpError("Wrong OTP entered. Please check the code sent to your email.");
         return;
       }
-    }
-
-    if (!consentGiven) {
-      alert("Please accept the Terms and Conditions to proceed.");
-      return;
     }
 
     // Check rate limit: 5 enquiries per 4-hour window
@@ -420,7 +337,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 bg-black/60 backdrop-blur-sm overflow-y-auto">
-      <div 
+      <div
         className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden my-auto max-h-[94vh] flex flex-col border border-gray-200 anim-fade-up"
         role="dialog"
         aria-modal="true"
@@ -428,7 +345,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header: Title replaced with "Book Consultation" */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3.5 bg-[#1D3530] text-white shrink-0">
           <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#284F45] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] shrink-0">
               <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -437,7 +354,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
               <h3 id="enq-title" className="font-serif text-base sm:text-xl font-bold truncate">
                 Book Consultation
               </h3>
-              <p className="text-[9px] sm:text-[10px] font-mono tracking-wider text-[#DFBE79]">
+              <p className="text-[9px] sm:text-[10px] font-mono tracking-wider text-[#DFBE79] hidden sm:block">
                 MahaRERA: A51900045781
               </p>
             </div>
@@ -446,7 +363,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
           <button
             onClick={onClose}
             aria-label="Close enquiry modal"
-            className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 ml-2"
+            className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 ml-2 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -498,8 +415,8 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
             </button>
           </div>
         ) : (
-          /* Form (High-contrast, professional luxury aesthetic) */
-          <form onSubmit={handleSubmit} className="px-4 sm:px-6 pt-3 sm:pt-4 pb-4 sm:pb-5 space-y-3 sm:space-y-3.5 overflow-y-auto flex-1">
+          /* Form (Trimmed overall height ~1.5cm for clean mobile view) */
+          <form onSubmit={handleSubmit} className="px-4 sm:px-6 pt-2.5 sm:pt-3 pb-3 sm:pb-4 space-y-2.5 sm:space-y-3 overflow-y-auto flex-1">
             {/* Honeypot Bot Trap (Completely hidden from layout & assistive tech) */}
             <input
               type="text"
@@ -515,14 +432,14 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
             {/* Security Rate Limit or Validation Alert */}
             {securityError && (
-              <div className="p-3 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-2 animate-fadeIn">
+              <div className="p-2.5 rounded-lg bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-start gap-2 animate-fadeIn">
                 <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                 <div className="flex-1 font-medium">{securityError}</div>
               </div>
             )}
 
             {/* Your Name */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label htmlFor="enq-name" className="block text-xs font-semibold text-gray-800 tracking-wide">
                 Your Name <span className="text-amber-700">*</span>
               </label>
@@ -535,12 +452,12 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 placeholder="e.g. Vikram Singhania"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value.slice(0, 60) })}
-                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3.5 py-2.5 text-sm text-[#14221F] placeholder:text-gray-400 shadow-2xs transition-all focus:outline-none"
+                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] placeholder:text-gray-400 shadow-2xs transition-all focus:outline-none"
               />
             </div>
 
             {/* Mobile Number with +91 indicator */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label htmlFor="enq-mobile" className="block text-xs font-semibold text-gray-800 tracking-wide">
                 Mobile Number <span className="text-amber-700">*</span>
               </label>
@@ -557,13 +474,13 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                   placeholder="98200 12345"
                   value={formData.mobile}
                   onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                  className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-r-lg px-3.5 py-2.5 text-sm text-[#14221F] placeholder:text-gray-400 transition-all focus:outline-none font-mono"
+                  className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-r-lg px-3 py-2 text-sm text-[#14221F] placeholder:text-gray-400 transition-all focus:outline-none font-mono"
                 />
               </div>
             </div>
 
             {/* Email Address (Compulsory) */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label htmlFor="enq-email" className="block text-xs font-semibold text-gray-800 tracking-wide">
                 Email Address <span className="text-amber-700">*</span>
               </label>
@@ -576,12 +493,12 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 placeholder="name@company.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value.slice(0, 80) })}
-                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3.5 py-2.5 text-sm text-[#14221F] placeholder:text-gray-400 shadow-2xs transition-all focus:outline-none"
+                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] placeholder:text-gray-400 shadow-2xs transition-all focus:outline-none"
               />
             </div>
 
-            {/* OTP Verification Field (5-Min Validity, 60s Cooldown, Priority Email + WhatsApp Option) */}
-            <div className="space-y-1.5">
+            {/* OTP Verification Field (5-Min Validity, 60s Cooldown, Email Verification) */}
+            <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <label htmlFor="enq-otp" className="block text-xs font-semibold text-gray-800 tracking-wide">
                   Verification Code <span className="text-amber-700">*</span>
@@ -591,7 +508,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                     ⏱️ Valid for {Math.floor(otpExpirySeconds / 60)}:{(otpExpirySeconds % 60).toString().padStart(2, '0')}
                   </span>
                 ) : (
-                  <span className="text-[11px] text-emerald-800 font-medium">⚡ 5-Min Code (Priority: Email)</span>
+                  <span className="text-[11px] text-emerald-800 font-medium">⚡ 5-Minute Code via Email</span>
                 )}
               </div>
 
@@ -599,21 +516,16 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
               {otpSent && otpNotice && (
                 <div
                   aria-live="polite"
-                  className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-medium space-y-1 animate-fadeIn"
+                  className="p-2 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-medium space-y-1 animate-fadeIn"
                 >
                   <div className="flex items-center gap-1.5 font-bold">
                     <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
                     <span>{otpNotice}</span>
                   </div>
-                  {generatedOtp && (
-                    <div className="text-[11px] text-emerald-800 pt-1 border-t border-emerald-200">
-                      Test code: <span className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-emerald-300">{generatedOtp}</span>
-                    </div>
-                  )}
                 </div>
               )}
 
-              {/* Input Row: 4-digit code + Primary Email Send/Resend Button */}
+              {/* Input Row: 4-digit code + Send/Resend Button */}
               <div className="flex flex-col xs:flex-row sm:flex-row gap-2">
                 <input
                   id="enq-otp"
@@ -627,17 +539,16 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                     setEnteredOtp(e.target.value.replace(/\D/g, '').slice(0, 4));
                     if (otpError) setOtpError('');
                   }}
-                  className={`min-w-0 flex-1 bg-white border ${otpError ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50/30' : 'border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20'} rounded-lg px-3 py-2.5 text-sm text-[#14221F] font-mono text-center tracking-widest placeholder:text-gray-400 placeholder:font-sans placeholder:tracking-normal shadow-2xs focus:outline-none transition-all`}
+                  className={`min-w-0 flex-1 bg-white border ${otpError ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-200 bg-red-50/30' : 'border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20'} rounded-lg px-3 py-2 text-sm text-[#14221F] font-mono text-center tracking-widest placeholder:text-gray-400 placeholder:font-sans placeholder:tracking-normal shadow-2xs focus:outline-none transition-all`}
                 />
                 <button
                   type="button"
                   disabled={isSendingOtp || cooldown > 0}
                   onClick={handleGetOtp}
-                  className={`px-3.5 sm:px-4 py-2.5 rounded-lg text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-                    cooldown > 0
-                      ? 'bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-[#1D3530] hover:bg-[#284F45] active:scale-95 text-white'
-                  }`}
+                  className={`px-3.5 sm:px-4 py-2 rounded-lg text-xs font-semibold tracking-wider uppercase whitespace-nowrap transition-all shadow-xs cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${cooldown > 0
+                    ? 'bg-gray-100 border border-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-[#1D3530] hover:bg-[#284F45] active:scale-95 text-white'
+                    }`}
                 >
                   {isSendingOtp ? (
                     <>
@@ -647,45 +558,16 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                   ) : cooldown > 0 ? (
                     <span>Resend in {cooldown}s</span>
                   ) : (
-                    <span>{otpSent ? "Resend via Email" : "Send OTP"}</span>
+                    <span>{otpSent ? "Resend OTP" : "Send OTP"}</span>
                   )}
                 </button>
-              </div>
-
-              {/* WhatsApp Alternative Option with 1-Minute Cooldown */}
-              <div className="flex flex-wrap items-center justify-between gap-1 pt-0.5">
-                <button
-                  type="button"
-                  disabled={cooldown > 0 || isSendingWhatsApp}
-                  onClick={handleSendWhatsAppOtp}
-                  className={`text-xs flex items-center gap-1.5 font-medium transition-colors ${
-                    cooldown > 0 
-                      ? 'text-gray-400 cursor-not-allowed' 
-                      : 'text-emerald-700 hover:text-emerald-800 underline underline-offset-2 cursor-pointer'
-                  }`}
-                >
-                  <MessageCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span className="truncate">
-                    {isSendingWhatsApp 
-                      ? "Dispatching to WhatsApp..." 
-                      : cooldown > 0 
-                        ? `Send via WhatsApp (${cooldown}s)` 
-                        : "Send OTP to WhatsApp"}
-                  </span>
-                </button>
-
-                {cooldown > 0 && (
-                  <span className="text-[10px] text-gray-500 font-mono shrink-0">
-                    Cooldown: {cooldown}s
-                  </span>
-                )}
               </div>
 
               {/* Red inline error alert when wrong OTP is entered */}
               {otpError && (
                 <div
                   role="alert"
-                  className="p-2.5 rounded-lg bg-red-50 border border-red-300 text-red-700 text-xs font-semibold flex items-center gap-2 animate-fadeIn"
+                  className="p-2 rounded-lg bg-red-50 border border-red-300 text-red-700 text-xs font-semibold flex items-center gap-2 animate-fadeIn"
                 >
                   <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
                   <span>{otpError}</span>
@@ -694,7 +576,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
             </div>
 
             {/* Preferred Location Selector */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label htmlFor="enq-location" className="block text-xs font-semibold text-[#1D3530] tracking-wide flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#C59B4E]" />
                 <span>Preferred Location <span className="text-amber-700">*</span></span>
@@ -704,7 +586,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 value={formData.locationName}
                 onChange={handleLocationChange}
                 aria-required="true"
-                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3.5 py-2.5 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
+                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
               >
                 {AVAILABLE_LOCATIONS.map(loc => (
                   <option key={loc} value={loc}>{loc}</option>
@@ -713,7 +595,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
             </div>
 
             {/* Project Selection */}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               <label htmlFor="enq-project" className="block text-xs font-semibold text-gray-800 tracking-wide">
                 Project of Interest
               </label>
@@ -721,7 +603,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 id="enq-project"
                 value={formData.projectName}
                 onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3.5 py-2.5 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
+                className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
               >
                 {currentProjects.map(proj => (
                   <option key={proj} value={proj}>{proj}</option>
@@ -731,7 +613,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
             </div>
 
             {/* Consent Checkbox (Compact with Clickable Terms Link) */}
-            <div className="flex items-center gap-2.5 pt-1">
+            <div className="flex items-center gap-2 pt-0.5">
               <input
                 id="enq-consent"
                 type="checkbox"
@@ -761,14 +643,14 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
               type="submit"
               disabled={isSubmitting}
               aria-busy={isSubmitting}
-              className="w-full py-3.5 rounded-lg bg-[#1D3530] hover:bg-[#284F45] active:scale-[0.99] text-white font-semibold text-xs uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 sm:py-3 rounded-lg bg-[#1D3530] hover:bg-[#284F45] active:scale-[0.99] text-white font-semibold text-xs uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <PhoneCall className="w-4 h-4 text-[#DFBE79]" />
               <span>{isSubmitting ? "Submitting..." : "Submit Enquiry"}</span>
             </button>
 
             {/* MahaRERA Statutory Agent Trust Bar */}
-            <div className="pt-2 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] text-gray-500 font-mono">
+            <div className="pt-1.5 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] text-gray-500 font-mono">
               <ShieldCheck className="w-3.5 h-3.5 text-[#245348]" />
               <span>MahaRERA Registered Agent: A51900045781</span>
             </div>
@@ -780,14 +662,14 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       {/* TERMS & CONDITIONS FULL DISCLOSURE MODAL                     */}
       {/* ============================================================== */}
       {dpdpTermsOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-70 flex items-center justify-center p-3 sm:p-5 bg-black/75 backdrop-blur-sm animate-fadeIn"
           onClick={(e) => {
             e.stopPropagation();
             setDpdpTermsOpen(false);
           }}
         >
-          <div 
+          <div
             className="relative w-full max-w-lg bg-[#FAF9F6] rounded-2xl shadow-2xl border border-[#C59B4E]/50 overflow-hidden my-auto"
             onClick={(e) => e.stopPropagation()}
             role="dialog"

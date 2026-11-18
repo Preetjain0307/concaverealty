@@ -261,8 +261,16 @@ export const AboutUs = () => {
   const bandTextRefs = useRef([]);
 
   useEffect(() => {
+    // Fallback if IntersectionObserver is unsupported in older environments
+    if (!('IntersectionObserver' in window)) {
+      bandWrapRefs.current.forEach((el) => el?.classList.add('is-revealed'));
+      bandImageRefs.current.forEach((el) => el?.classList.add('is-revealed'));
+      bandTextRefs.current.forEach((el) => el?.classList.add('is-revealed'));
+      return;
+    }
+
     const pairs = LUXURY_BANDS.map((_, idx) => ({
-      trigger: bandImageRefs.current[idx],
+      triggers: [bandImageRefs.current[idx], bandTextRefs.current[idx]].filter(Boolean),
       targets: [
         bandWrapRefs.current[idx],
         bandImageRefs.current[idx],
@@ -270,32 +278,42 @@ export const AboutUs = () => {
       ],
     }));
 
-    if (!('IntersectionObserver' in window)) {
-      pairs.forEach(({ targets }) => targets.forEach((t) => t?.classList.add('is-revealed')));
-      return;
-    }
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const match = pairs.find((p) => p.trigger === entry.target);
-          if (match) {
-            if (entry.isIntersecting) {
+          if (entry.isIntersecting) {
+            const match = pairs.find((p) => p.triggers.includes(entry.target));
+            if (match) {
               match.targets.forEach((t) => t?.classList.add('is-revealed'));
-            } else {
-              match.targets.forEach((t) => t?.classList.remove('is-revealed'));
+              // Keep permanently revealed — unobserve so it stays visible forever!
+              match.triggers.forEach((trig) => {
+                if (trig) observer.unobserve(trig);
+              });
             }
           }
         });
       },
       {
-        threshold: 0.15,
+        threshold: 0.08, // Start revealing smoothly as soon as 8% enters screen
         rootMargin: '0px 0px -40px 0px',
       }
     );
 
-    pairs.forEach(({ trigger }) => {
-      if (trigger) observer.observe(trigger);
+    // Initial check: if already in viewport on mount, reveal immediately
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+    pairs.forEach(({ triggers, targets }) => {
+      const alreadyInView = triggers.some((trig) => {
+        if (!trig) return false;
+        const rect = trig.getBoundingClientRect();
+        return rect.top < windowHeight && rect.bottom > 0;
+      });
+      if (alreadyInView) {
+        targets.forEach((t) => t?.classList.add('is-revealed'));
+      } else {
+        triggers.forEach((trigger) => {
+          if (trigger) observer.observe(trigger);
+        });
+      }
     });
 
     return () => observer.disconnect();

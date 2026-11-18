@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { sendOtpEmail, sendOtpWhatsApp, verifyOtpCode } from './server/otpService.js';
+import { sendOtpEmail, verifyOtpCode } from './server/otpService.js';
 import {
   checkRateLimit,
   sanitizePayload,
@@ -37,7 +37,11 @@ function enterpriseSecurityPlugin() {
         });
 
         // Strict CORS Enforcement
-        if (origin && ALLOWED_ORIGINS.has(origin)) {
+        const isAllowedOrigin = origin && (
+          ALLOWED_ORIGINS.has(origin) ||
+          /^http:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)
+        );
+        if (isAllowedOrigin) {
           res.setHeader('Access-Control-Allow-Origin', origin);
           res.setHeader('Access-Control-Allow-Credentials', 'true');
         } else if (!origin) {
@@ -96,37 +100,6 @@ function enterpriseSecurityPlugin() {
             const rawData = JSON.parse(body || '{}');
             const data = sanitizePayload(rawData); // Never trust frontend: deep sanitization
             const result = await sendOtpEmail(data);
-            res.statusCode = 200;
-            res.end(JSON.stringify(result));
-          } catch (err) {
-            res.statusCode = 400;
-            res.end(JSON.stringify({ 
-              success: false, 
-              code: err.code || 'ERROR',
-              remainingSeconds: err.remainingSeconds,
-              message: err.message 
-            }));
-          }
-        });
-      });
-
-      // 3. POST /api/send-whatsapp-otp (Alternative Option)
-      server.middlewares.use('/api/send-whatsapp-otp', async (req, res) => {
-        if (req.method !== 'POST') {
-          res.statusCode = 405;
-          res.setHeader('Content-Type', 'application/json');
-          res.end(JSON.stringify({ error: 'Method Not Allowed' }));
-          return;
-        }
-
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', async () => {
-          res.setHeader('Content-Type', 'application/json');
-          try {
-            const rawData = JSON.parse(body || '{}');
-            const data = sanitizePayload(rawData);
-            const result = await sendOtpWhatsApp(data);
             res.statusCode = 200;
             res.end(JSON.stringify(result));
           } catch (err) {

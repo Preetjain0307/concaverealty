@@ -37,7 +37,8 @@ import {
   EyeOff,
   Briefcase,
   FileText,
-  ExternalLink
+  ExternalLink,
+  MessageCircle
 } from 'lucide-react';
 import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs } from '../data/dbStore';
 
@@ -131,6 +132,76 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   const [careerSearch, setCareerSearch] = useState('');
   const [selectedCandidateModal, setSelectedCandidateModal] = useState(null);
   const [isExportingCareers, setIsExportingCareers] = useState(false);
+
+  const handleViewResume = (app) => {
+    if (!app) return;
+    if (app.resumeData) {
+      window.open(app.resumeData, '_blank');
+      return;
+    }
+    const resumeWin = window.open('', '_blank');
+    if (resumeWin) {
+      resumeWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>${app.name} - Resume Profile - Concave Realty</title>
+          <style>
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FAF9F6; margin: 0; padding: 40px; color: #14221F; }
+            .card { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid #EAE6DF; border-radius: 16px; padding: 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+            .header { border-bottom: 2px solid #245348; padding-bottom: 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+            h1 { margin: 0 0 6px 0; color: #245348; font-size: 26px; font-family: Georgia, serif; }
+            .badge { display: inline-block; background: #FAF9F6; border: 1px solid #C59B4E; color: #C59B4E; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; font-family: monospace; }
+            .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+            .item { background: #FAF9F6; padding: 12px 16px; border-radius: 8px; border: 1px solid #EAE6DF; }
+            .label { font-size: 11px; color: #777; text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+            .val { font-size: 14px; font-weight: 600; color: #14221F; }
+            .note-box { background: #FAF9F6; border-left: 4px solid #245348; padding: 16px; border-radius: 6px; margin-bottom: 24px; font-style: italic; line-height: 1.6; }
+            .footer-info { border-top: 1px solid #EAE6DF; padding-top: 16px; display: flex; justify-content: space-between; font-size: 11px; color: #888; font-family: monospace; }
+            @media print { body { padding: 0; background: #fff; } .card { box-shadow: none; border: none; padding: 20px 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <div class="header">
+              <div>
+                <h1>${app.name}</h1>
+                <div style="color: #555; font-size: 13px; margin-top: 4px;">${app.email} • +91 ${app.mobile} • ${app.city || 'Mumbai'}</div>
+              </div>
+              <div class="badge">REF: ${app.id}</div>
+            </div>
+            <div class="grid">
+              <div class="item"><div class="label">Applied Position</div><div class="val">${app.position}</div></div>
+              <div class="item"><div class="label">Total Experience</div><div class="val">${app.experience}</div></div>
+              <div class="item"><div class="label">Current Organization</div><div class="val">${app.currentCompany || 'Not Disclosed'}</div></div>
+              <div class="item"><div class="label">Current Role / Title</div><div class="val">${app.currentRole || 'N/A'}</div></div>
+              <div class="item"><div class="label">Current CTC</div><div class="val">${app.currentCtc || 'Not Disclosed'}</div></div>
+              <div class="item"><div class="label">Expected CTC</div><div class="val">${app.expectedCtc || 'Negotiable'}</div></div>
+              <div class="item"><div class="label">Notice Period</div><div class="val">${app.noticePeriod || 'Immediate'}</div></div>
+              <div class="item"><div class="label">Hiring Status</div><div class="val">${app.status || 'Under Review'}</div></div>
+            </div>
+            ${app.coverNote ? `
+            <div class="label" style="margin-bottom:6px;">Candidate Background & Pitch</div>
+            <div class="note-box">"${app.coverNote}"</div>
+            ` : ''}
+            ${app.linkedin ? `
+            <div style="margin-bottom: 24px; font-size: 13px;">
+              <strong>LinkedIn Profile:</strong> <a href="${app.linkedin}" target="_blank" style="color: #0A66C2;">${app.linkedin}</a>
+            </div>
+            ` : ''}
+            <div class="footer-info">
+              <span>Attached Resume Document: ${app.resumeName || 'Resume.pdf'} (${app.resumeSize || '1.2 MB'})</span>
+              <span>Applied: ${new Date(app.appliedAt).toLocaleString()}</span>
+            </div>
+          </div>
+          <script>window.onload = function() { setTimeout(function(){ window.print(); }, 500); };</script>
+        </body>
+        </html>
+      `);
+      resumeWin.document.close();
+    }
+  };
 
   // Add caller modal state with multiple locations support
   const [showAddCallerModal, setShowAddCallerModal] = useState(false);
@@ -1036,23 +1107,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           )}
         </button>
 
-        {/* Tab 5: Security & Audit Trail */}
-        <button
-          onClick={() => setAdminTab('audit')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'audit'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <ShieldCheck className="w-4 h-4 text-[#DFBE79]" />
-          <span>Security & Audit Logs</span>
-          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-emerald-800 text-emerald-200 font-mono">
-            Zero-Trust
-          </span>
-        </button>
-
-        {/* Tab 6: Careers & Talent Applications */}
+        {/* Tab 5: Careers & Talent Applications */}
         <button
           onClick={() => setAdminTab('careers')}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
@@ -1150,6 +1205,42 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
           </div>
 
+          {/* ── Talent Acquisition & Careers Quick Bar ── */}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl bg-gradient-to-r from-emerald-50/80 via-[#FAF9F6] to-white border border-emerald-200 shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 shadow-xs">
+                <Briefcase className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-serif font-bold text-sm text-[#14221F]">
+                    Talent Acquisition Desk
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    {jobApplications.length} Candidates
+                  </span>
+                  {jobApplications.some(a => a.status === 'Under Review') && (
+                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                      {jobApplications.filter(a => a.status === 'Under Review').length} New Applications
+                    </span>
+                  )}
+                </div>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  Review applicant resumes, verify candidate OTP security, and conduct interviews.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setAdminTab('careers')}
+              className="px-4 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer self-stretch sm:self-auto justify-center"
+            >
+              <span>Open Job Enquiries</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           {/* ── Enquiry Records Table (Customer Directory) ── */}
           <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
             
@@ -1167,15 +1258,15 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               </div>
 
               {/* Filters */}
-              <div className="flex flex-wrap items-center gap-2.5 text-xs">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 text-xs w-full lg:w-auto">
                 {/* Search */}
-                <div className="relative">
+                <div className="relative w-full sm:w-64">
                   <input
                     type="text"
                     placeholder="Search customer, phone, project..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg pl-8 pr-3 py-2 text-[#14221F] focus:outline-none w-56 sm:w-64 transition-all"
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-xl pl-8 pr-8 py-2 text-[#14221F] focus:outline-none transition-all text-xs"
                   />
                   <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-3 pointer-events-none" />
                   {searchQuery && (
@@ -1188,36 +1279,39 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   )}
                 </div>
 
-                {/* Location Filter */}
-                <select
-                  value={locationFilter}
-                  onChange={(e) => setLocationFilter(e.target.value)}
-                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none"
-                >
-                  <option value="All">All Locations</option>
-                  {Object.values(LOCATION_CODES).map((loc, idx) => (
-                    <option key={idx} value={loc}>{loc}</option>
-                  ))}
-                </select>
+                {/* Filter Dropdowns Grid on Mobile, Flex on Tablet/Desktop */}
+                <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+                  {/* Location Filter */}
+                  <select
+                    value={locationFilter}
+                    onChange={(e) => setLocationFilter(e.target.value)}
+                    className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-[#14221F] focus:outline-none text-xs"
+                  >
+                    <option value="All">All Locations</option>
+                    {Object.values(LOCATION_CODES).map((loc, idx) => (
+                      <option key={idx} value={loc}>{loc}</option>
+                    ))}
+                  </select>
 
-                {/* Response Type Filter */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-2 text-[#14221F] focus:outline-none"
-                >
-                  <option value="All">All Response Types</option>
-                  <option value="1">Hot Lead</option>
-                  <option value="2">Lead</option>
-                  <option value="4">Not Picking Up</option>
-                  <option value="3">Okay / Follow Up</option>
-                  <option value="5">Not Interested</option>
-                  <option value="6">Fake / Spam</option>
-                </select>
+                  {/* Response Type Filter */}
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-[#14221F] focus:outline-none text-xs truncate"
+                  >
+                    <option value="All">All Responses</option>
+                    <option value="1">Hot Lead</option>
+                    <option value="2">Lead</option>
+                    <option value="4">Not Picking Up</option>
+                    <option value="3">Okay / Follow Up</option>
+                    <option value="5">Not Interested</option>
+                    <option value="6">Fake / Spam</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            {/* Customer Table */}
+            {/* Desktop Table (Visible on all devices) */}
             <div className="overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#14221F] text-[#DFBE79] uppercase font-mono text-[11px] tracking-wider border-b border-[#245348]">
@@ -1243,7 +1337,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         CON-{lead.id}
                       </td>
 
-                      {/* Customer Name & Mobile (Email removed as requested) */}
+                      {/* Customer Name & Mobile */}
                       <td className="py-3 px-4">
                         <div className="min-w-0">
                           <p className="font-bold text-[#14221F] text-sm group-hover:text-[#245348] transition-colors">
@@ -1255,7 +1349,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         </div>
                       </td>
 
-                      {/* Locations Enquiry (Plain text) */}
+                      {/* Locations Enquiry */}
                       <td className="py-3 px-4">
                         <div className="space-y-0.5">
                           <p className="font-semibold text-[#14221F] text-xs">
@@ -1267,7 +1361,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         </div>
                       </td>
 
-                      {/* Response Type (1-line, whitespace-nowrap) */}
+                      {/* Response Type */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
                           lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
@@ -1283,7 +1377,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         </span>
                       </td>
 
-                      {/* Assigned Caller (Only caller name, mobile removed) */}
+                      {/* Assigned Caller */}
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span className="font-semibold text-[#245348] flex items-center gap-1.5 text-xs">
                           <Users className="w-3.5 h-3.5 text-[#DFBE79]" />
@@ -1339,38 +1433,46 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
             {/* Pagination Controls (30 records per page) */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-gray-600 pt-3 gap-3 border-t border-[#EAE6DF]">
-              <span>
+              <span className="text-center sm:text-left">
                 Showing <strong>{filteredLeads.length > 0 ? (enquiryPage - 1) * pageSize + 1 : 0}</strong> to <strong>{Math.min(enquiryPage * pageSize, filteredLeads.length)}</strong> of <strong>{filteredLeads.length}</strong> records
               </span>
 
               {totalPages > 1 && (
-                <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                <div className="flex items-center justify-center gap-1.5 self-center sm:self-auto">
                   <button
                     onClick={() => setEnquiryPage(p => Math.max(1, p - 1))}
                     disabled={enquiryPage === 1}
-                    className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors"
+                    className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors cursor-pointer"
                   >
                     Previous
                   </button>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
-                    <button
-                      key={pageNum}
-                      onClick={() => setEnquiryPage(pageNum)}
-                      className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all ${
-                        enquiryPage === pageNum
-                          ? 'bg-[#245348] text-white shadow-xs'
-                          : 'bg-white border border-[#EAE6DF] hover:bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  ))}
+                  {/* Compact on Mobile: Page X of Y */}
+                  <span className="sm:hidden text-xs font-mono font-bold px-2.5 py-1 bg-[#FAF9F6] border border-[#EAE6DF] rounded-lg">
+                    {enquiryPage} / {totalPages}
+                  </span>
+
+                  {/* Numbered Buttons on Desktop */}
+                  <div className="hidden sm:flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                      <button
+                        key={pageNum}
+                        onClick={() => setEnquiryPage(pageNum)}
+                        className={`w-8 h-8 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                          enquiryPage === pageNum
+                            ? 'bg-[#245348] text-white shadow-xs'
+                            : 'bg-white border border-[#EAE6DF] hover:bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
 
                   <button
                     onClick={() => setEnquiryPage(p => Math.min(totalPages, p + 1))}
                     disabled={enquiryPage === totalPages}
-                    className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors"
+                    className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors cursor-pointer"
                   >
                     Next
                   </button>
@@ -1996,11 +2098,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               <Briefcase className="w-5 h-5 text-[#245348]" />
               <div>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-                  Job Enquiries & Candidate Applications
+                  Job Enquiries
                 </h2>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Review incoming job applications, download resume documents, update hiring status, or export enquiries to Excel.
-                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -2039,60 +2138,58 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Total Applications</span>
-              <span className="font-bold text-xl text-[#14221F] mt-0.5 block">{jobApplications.length}</span>
-              <p className="text-[10px] text-gray-500 mt-0.5">Profiles in repository</p>
+              <span className="font-bold text-2xl text-[#14221F] mt-0.5 block">{jobApplications.length}</span>
             </div>
-            <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Under Review</span>
-              <span className="font-bold text-xl text-amber-700 mt-0.5 block">
+              <span className="font-bold text-2xl text-amber-700 mt-0.5 block">
                 {jobApplications.filter(a => a.status === 'Under Review').length}
               </span>
-              <p className="text-[10px] text-gray-500 mt-0.5">Pending initial screening</p>
             </div>
-            <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Shortlisted</span>
-              <span className="font-bold text-xl text-emerald-700 mt-0.5 block">
-                {jobApplications.filter(a => a.status && (a.status.includes('Shortlisted') || a.status.includes('Interview'))).length}
+              <span className="font-bold text-2xl text-emerald-700 mt-0.5 block">
+                {jobApplications.filter(a => a.status && (a.status.includes('Shortlisted') || a.status.includes('Interview') || a.status.includes('Offer'))).length}
               </span>
-              <p className="text-[10px] text-gray-500 mt-0.5">Ready for interviews</p>
             </div>
-            <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Direct HR Helpline</span>
-              <span className="font-mono font-bold text-xs text-[#245348] mt-1 block">+91 82910 90155</span>
-              <p className="text-[10px] text-gray-500 mt-0.5">WhatsApp / Phone Active</p>
+            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Direct Contact</span>
+              <span className="font-mono font-bold text-sm text-[#245348] mt-1 block">+91 82910 90155</span>
             </div>
           </div>
 
           {/* Filters Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-[#FAF9F6] rounded-xl border border-[#EAE6DF]">
-            <div className="relative w-full sm:w-72">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-3 p-3 bg-[#FAF9F6] rounded-xl border border-[#EAE6DF]">
+            <div className="relative w-full lg:w-72">
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search candidate, role, mobile, city..."
+                placeholder="Search candidate, role, mobile, email, city..."
                 value={careerSearch}
                 onChange={(e) => setCareerSearch(e.target.value)}
                 className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg pl-9 pr-3 py-1.5 text-xs text-[#14221F] focus:outline-none"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+              {/* Position Filter - exact 4 roles */}
               <select
                 value={careerRoleFilter}
                 onChange={(e) => setCareerRoleFilter(e.target.value)}
                 className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-1.5 text-xs text-[#14221F] focus:outline-none"
               >
-                <option value="All">All Positions</option>
-                <option value="BDA">Business Development Associate (BDA)</option>
-                <option value="BDM">Business Development Manager (BDM)</option>
+                <option value="All">All Positions (4 Open Roles)</option>
+                <option value="Business Development Associate">Business Development Associate (BDA)</option>
+                <option value="Business Development Manager">Business Development Manager (BDM)</option>
                 <option value="Sales Manager">Sales Manager</option>
                 <option value="Sales Executive">Sales Executive</option>
                 <option value="General">General Candidature</option>
               </select>
 
+              {/* Status Filter */}
               <select
                 value={careerStatusFilter}
                 onChange={(e) => setCareerStatusFilter(e.target.value)}
@@ -2115,19 +2212,26 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#FAF9F6] border-b border-[#EAE6DF] text-gray-500 uppercase text-[10px] tracking-wider font-mono">
                   <tr>
-                    <th className="py-3 px-4">Applicant ID & Name</th>
-                    <th className="py-3 px-4">Contact & Location</th>
-                    <th className="py-3 px-4">Position & Experience</th>
-                    <th className="py-3 px-4">Current Org & CTC</th>
-                    <th className="py-3 px-4">Resume Document</th>
+                    <th className="py-3 px-4">ID</th>
+                    <th className="py-3 px-4">Name</th>
+                    <th className="py-3 px-4">Number</th>
+                    <th className="py-3 px-4">Position Applied For</th>
+                    <th className="py-3 px-4">Experience</th>
                     <th className="py-3 px-4">Hiring Status</th>
-                    <th className="py-3 px-4 text-right">Actions</th>
+                    <th className="py-3 px-4 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAE6DF]">
-                  {jobApplications
-                    .filter(app => {
-                      if (careerRoleFilter !== 'All' && !app.position.toLowerCase().includes(careerRoleFilter.toLowerCase())) return false;
+                  {(() => {
+                    const filteredCareers = jobApplications.filter(app => {
+                      if (careerRoleFilter !== 'All') {
+                        const filterLower = careerRoleFilter.toLowerCase();
+                        const posLower = (app.position || '').toLowerCase();
+                        const matches = posLower.includes(filterLower) ||
+                          (filterLower.includes('bda') && posLower.includes('bda')) ||
+                          (filterLower.includes('bdm') && posLower.includes('bdm'));
+                        if (!matches) return false;
+                      }
                       if (careerStatusFilter !== 'All' && app.status !== careerStatusFilter) return false;
                       if (careerSearch.trim()) {
                         const q = careerSearch.toLowerCase();
@@ -2141,155 +2245,83 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         if (!match) return false;
                       }
                       return true;
-                    })
-                    .length === 0 ? (
-                      <tr>
-                        <td colSpan="7" className="py-12 text-center text-gray-400 text-xs">
-                          No candidate job enquiries matching current filters.
+                    });
+
+                    if (filteredCareers.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan="7" className="py-12 text-center text-gray-400 text-xs">
+                            No candidate job enquiries matching current filters.
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return filteredCareers.map(app => (
+                      <tr key={app.id} className="hover:bg-gray-50/80 transition-colors">
+                        <td className="py-3.5 px-4">
+                          <span className="font-mono text-xs text-[#C59B4E] font-bold">{app.id}</span>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <button
+                            onClick={() => setSelectedCandidateModal(app)}
+                            className="font-semibold text-xs text-[#14221F] hover:text-[#245348] hover:underline cursor-pointer text-left"
+                          >
+                            {app.name}
+                          </button>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <a
+                            href={`tel:${app.mobile}`}
+                            className="font-mono text-xs text-gray-700 hover:text-[#245348] font-medium"
+                          >
+                            +91 {app.mobile}
+                          </a>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <span className="text-xs text-gray-800 font-medium">{app.position}</span>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <span className="text-xs text-gray-700 font-mono">{app.experience}</span>
+                        </td>
+
+                        <td className="py-3.5 px-4">
+                          <select
+                            value={app.status}
+                            onChange={(e) => {
+                              const newStat = e.target.value;
+                              dbStore.updateJobApplicationStatus(app.id, newStat);
+                              setJobApplications(dbStore.getJobApplications());
+                              setFeedbackToast(`Application ${app.id} marked as ${newStat}`);
+                            }}
+                            className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2.5 py-1 text-xs font-semibold text-[#14221F] focus:outline-none"
+                          >
+                            <option value="Under Review">Under Review</option>
+                            <option value="Shortlisted for Interview">Shortlisted</option>
+                            <option value="Interview Scheduled">Interview Scheduled</option>
+                            <option value="Offer Extended">Offer Extended</option>
+                            <option value="Hired">Hired</option>
+                            <option value="Archived / Rejected">Archived</option>
+                          </select>
+                        </td>
+
+                        <td className="py-3.5 px-4 text-right">
+                          <button
+                            onClick={() => setSelectedCandidateModal(app)}
+                            className="px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold inline-flex items-center gap-1.5 transition-all shadow-2xs cursor-pointer"
+                            title="View full candidate application form"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View</span>
+                          </button>
                         </td>
                       </tr>
-                    ) : (
-                      jobApplications
-                        .filter(app => {
-                          if (careerRoleFilter !== 'All' && !app.position.toLowerCase().includes(careerRoleFilter.toLowerCase())) return false;
-                          if (careerStatusFilter !== 'All' && app.status !== careerStatusFilter) return false;
-                          if (careerSearch.trim()) {
-                            const q = careerSearch.toLowerCase();
-                            const match =
-                              app.name.toLowerCase().includes(q) ||
-                              app.mobile.includes(q) ||
-                              app.email.toLowerCase().includes(q) ||
-                              app.position.toLowerCase().includes(q) ||
-                              (app.city && app.city.toLowerCase().includes(q)) ||
-                              (app.currentCompany && app.currentCompany.toLowerCase().includes(q));
-                            if (!match) return false;
-                          }
-                          return true;
-                        })
-                        .map(app => (
-                          <tr key={app.id} className="hover:bg-gray-50/80 transition-colors">
-                            <td className="py-3 px-4">
-                              <span className="font-mono text-[10px] text-[#C59B4E] font-bold block">{app.id}</span>
-                              <button
-                                onClick={() => setSelectedCandidateModal(app)}
-                                className="text-[#14221F] font-bold text-xs hover:text-[#245348] hover:underline text-left cursor-pointer"
-                              >
-                                {app.name}
-                              </button>
-                              <span className="text-[10px] text-gray-400 font-mono block">Applied: {new Date(app.appliedAt).toLocaleDateString()}</span>
-                            </td>
-
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-1.5">
-                                <a
-                                  href={`tel:${app.mobile}`}
-                                  className="font-mono font-bold text-xs text-[#245348] hover:underline"
-                                >
-                                  +91 {app.mobile}
-                                </a>
-                                <a
-                                  href={`https://wa.me/91${app.mobile}?text=Hello%20${encodeURIComponent(app.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(app.position)}.`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  title="WhatsApp Candidate"
-                                  className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center hover:bg-emerald-200 transition-colors"
-                                >
-                                  <PhoneCall className="w-2.5 h-2.5" />
-                                </a>
-                              </div>
-                              <span className="text-[11px] text-gray-500 block truncate max-w-[160px]">{app.email}</span>
-                              <span className="text-[10px] text-gray-400 block">{app.city}</span>
-                            </td>
-
-                            <td className="py-3 px-4">
-                              <span className="font-semibold text-xs text-[#14221F] block">{app.position}</span>
-                              <span className="text-[10px] text-gray-500 font-mono block">Exp: {app.experience}</span>
-                              {app.noticePeriod && (
-                                <span className="text-[9.5px] text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded font-mono inline-block mt-0.5">
-                                  Notice: {app.noticePeriod}
-                                </span>
-                              )}
-                            </td>
-
-                            <td className="py-3 px-4 text-xs">
-                              <span className="text-gray-700 block truncate max-w-[140px]">{app.currentCompany || 'Not Disclosed'}</span>
-                              <span className="text-[10px] text-gray-500 block">{app.currentRole || ''}</span>
-                              <div className="mt-0.5 space-y-0.2 font-mono text-[10px]">
-                                {app.currentCtc && app.currentCtc !== 'Not Disclosed' && (
-                                  <span className="text-gray-500 block">Cur: {app.currentCtc}</span>
-                                )}
-                                <span className="text-[#245348] font-semibold block">Exp: {app.expectedCtc || 'Negotiable'}</span>
-                              </div>
-                            </td>
-
-                            <td className="py-3 px-4">
-                              <div className="flex items-center gap-1.5">
-                                <FileText className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
-                                <span className="text-[11px] font-medium text-gray-700 truncate max-w-[120px]" title={app.resumeName}>
-                                  {app.resumeName || 'Resume.pdf'}
-                                </span>
-                              </div>
-                              <span className="text-[10px] text-gray-400 font-mono block pl-5">{app.resumeSize || '1.2 MB'}</span>
-                              {app.linkedin && (
-                                <a
-                                  href={app.linkedin}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-[10px] text-[#0A66C2] hover:underline flex items-center gap-1 mt-0.5 pl-5"
-                                >
-                                  <span>LinkedIn</span>
-                                  <ExternalLink className="w-2.5 h-2.5" />
-                                </a>
-                              )}
-                            </td>
-
-                            <td className="py-3 px-4">
-                              <select
-                                value={app.status}
-                                onChange={(e) => {
-                                  const newStat = e.target.value;
-                                  dbStore.updateJobApplicationStatus(app.id, newStat);
-                                  setJobApplications(dbStore.getJobApplications());
-                                  setFeedbackToast(`Application ${app.id} marked as ${newStat}`);
-                                }}
-                                className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2 py-1 text-xs font-semibold text-[#14221F] focus:outline-none"
-                              >
-                                <option value="Under Review">Under Review</option>
-                                <option value="Shortlisted for Interview">Shortlisted</option>
-                                <option value="Interview Scheduled">Interview Scheduled</option>
-                                <option value="Offer Extended">Offer Extended</option>
-                                <option value="Hired">Hired</option>
-                                <option value="Archived / Rejected">Archived</option>
-                              </select>
-                            </td>
-
-                            <td className="py-3 px-4 text-right">
-                              <div className="flex items-center justify-end gap-1.5">
-                                <button
-                                  onClick={() => setSelectedCandidateModal(app)}
-                                  className="px-2.5 py-1 rounded bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#245348] text-[11px] font-semibold text-gray-700 transition-colors"
-                                  title="View full candidate details"
-                                >
-                                  View
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    if (window.confirm(`Delete job enquiry for ${app.name} (${app.id})?`)) {
-                                      dbStore.deleteJobApplication(app.id);
-                                      setJobApplications(dbStore.getJobApplications());
-                                      setFeedbackToast(`Job enquiry ${app.id} removed.`);
-                                    }
-                                  }}
-                                  className="p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
-                                  title="Delete enquiry"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                    )}
+                    ));
+                  })()}
                 </tbody>
               </table>
             </div>
@@ -2300,55 +2332,69 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       {/* ── JOB CANDIDATE FULL DETAILS MODAL ── */}
       {selectedCandidateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#C59B4E]/40 anim-fade-scale">
+          <div className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden border border-[#C59B4E]/40 anim-fade-scale">
             
             {/* Header */}
             <div className="px-6 py-4 bg-[#183C32] text-white flex items-center justify-between border-b border-[#C59B4E]/30">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-[#245348] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79]">
-                  <Briefcase className="w-4 h-4" />
+                <div className="w-10 h-10 rounded-full bg-[#245348] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79]">
+                  <Briefcase className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-serif text-lg font-bold text-white">
                     {selectedCandidateModal.name}
                   </h3>
-                  <span className="text-[10px] font-mono text-[#DFBE79]">
-                    Ref: {selectedCandidateModal.id} • Applied: {new Date(selectedCandidateModal.appliedAt).toLocaleString()}
+                  <span className="text-[11px] font-mono text-[#DFBE79]">
+                    Application ID: {selectedCandidateModal.id} • Submitted: {new Date(selectedCandidateModal.appliedAt).toLocaleString()}
                   </span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedCandidateModal(null)}
-                className="p-1.5 rounded-full hover:bg-white/10 text-white transition-colors"
+                className="p-1.5 rounded-full hover:bg-white/10 text-white transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Content Body */}
-            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto text-xs text-[#14221F]">
+            <div className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs text-[#14221F]">
               
-              {/* Contact & Status Bar */}
-              <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] flex flex-wrap items-center justify-between gap-3">
-                <div className="space-y-0.5">
-                  <span className="text-[10px] uppercase font-mono text-gray-400 block">Candidate Contact</span>
-                  <div className="flex items-center gap-2">
-                    <strong className="font-mono text-xs">+91 {selectedCandidateModal.mobile}</strong>
+              {/* Contact Bar with Direct Actions & Hiring Status */}
+              <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Candidate Contact</span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <strong className="font-mono text-sm text-[#14221F]">+91 {selectedCandidateModal.mobile}</strong>
+                    <a
+                      href={`tel:${selectedCandidateModal.mobile}`}
+                      className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                    >
+                      <PhoneCall className="w-3 h-3 text-[#245348]" />
+                      <span>Call</span>
+                    </a>
                     <a
                       href={`https://wa.me/91${selectedCandidateModal.mobile}?text=Hello%20${encodeURIComponent(selectedCandidateModal.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(selectedCandidateModal.position)}.`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-semibold flex items-center gap-1 hover:bg-emerald-200"
+                      className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold flex items-center gap-1 hover:bg-emerald-200 transition-colors"
                     >
-                      <PhoneCall className="w-2.5 h-2.5" />
+                      <MessageCircle className="w-3 h-3 text-emerald-600" />
                       <span>WhatsApp</span>
                     </a>
+                    <a
+                      href={`mailto:${selectedCandidateModal.email}?subject=Concave%20Realty%20Job%20Enquiry%20-${encodeURIComponent(selectedCandidateModal.id)}`}
+                      className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[11px] font-semibold flex items-center gap-1 hover:bg-blue-100 transition-colors"
+                    >
+                      <Mail className="w-3 h-3 text-blue-600" />
+                      <span>Email</span>
+                    </a>
                   </div>
-                  <span className="text-gray-500 block">{selectedCandidateModal.email}</span>
+                  <span className="text-gray-600 text-xs block">{selectedCandidateModal.email}</span>
                 </div>
 
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-mono text-gray-400 block">Hiring Status</span>
+                <div className="text-left sm:text-right">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Hiring Status</span>
                   <select
                     value={selectedCandidateModal.status}
                     onChange={(e) => {
@@ -2358,7 +2404,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                       setJobApplications(dbStore.getJobApplications());
                       setFeedbackToast(`Status updated to ${newStat}`);
                     }}
-                    className="mt-1 bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2.5 py-1 text-xs font-semibold text-[#14221F] focus:outline-none"
+                    className="mt-1 bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-1.5 text-xs font-semibold text-[#14221F] focus:outline-none shadow-2xs"
                   >
                     <option value="Under Review">Under Review</option>
                     <option value="Shortlisted for Interview">Shortlisted</option>
@@ -2372,78 +2418,94 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
               {/* Grid of Profile Details */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Applied Position</span>
-                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.position}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Position Applied For</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.position}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Location / City</span>
-                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.city || 'Mumbai'}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Experience</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.experience}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Total Experience</span>
-                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.experience}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Location / City</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.city || 'Mumbai'}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Current Company</span>
-                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.currentCompany || 'N/A'}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Current Organization</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.currentCompany || 'Not Disclosed'}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Current CTC</span>
-                  <span className="font-semibold text-gray-900 block mt-0.5">{selectedCandidateModal.currentCtc || 'Not Disclosed'}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Current Role / Title</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.currentRole || 'N/A'}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Expected CTC</span>
-                  <span className="font-semibold text-[#245348] block mt-0.5">{selectedCandidateModal.expectedCtc || 'Negotiable'}</span>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Notice Period</span>
+                  <span className="font-semibold text-amber-800 block mt-1 text-xs">{selectedCandidateModal.noticePeriod || 'Immediate'}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Current CTC</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.currentCtc || 'Not Disclosed'}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Expected CTC</span>
+                  <span className="font-semibold text-[#245348] block mt-1 text-xs">{selectedCandidateModal.expectedCtc || 'Negotiable'}</span>
+                </div>
+                <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">LinkedIn Profile</span>
+                  {selectedCandidateModal.linkedin ? (
+                    <a
+                      href={selectedCandidateModal.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#0A66C2] hover:underline flex items-center gap-1 mt-1 text-xs truncate"
+                    >
+                      <span className="truncate">View Profile</span>
+                      <ExternalLink className="w-3 h-3 shrink-0" />
+                    </a>
+                  ) : (
+                    <span className="font-semibold text-gray-400 block mt-1 text-xs">Not Provided</span>
+                  )}
                 </div>
               </div>
 
-              {/* Notice Period & Resume */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Notice Period</span>
-                  <span className="font-semibold text-amber-800 block mt-0.5">{selectedCandidateModal.noticePeriod || 'Immediate'}</span>
-                </div>
-                <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">
-                  <span className="text-[10px] text-gray-400 font-mono block">Resume File</span>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
-                    <span className="font-semibold text-gray-800 truncate">{selectedCandidateModal.resumeName || 'Resume.pdf'}</span>
-                    <span className="text-[10px] text-gray-400 font-mono">({selectedCandidateModal.resumeSize || '1.2 MB'})</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* LinkedIn URL */}
-              {selectedCandidateModal.linkedin && (
-                <div className="p-3 rounded-lg bg-blue-50/50 border border-blue-100 flex items-center justify-between">
-                  <span className="text-gray-600 font-medium">LinkedIn Profile:</span>
-                  <a
-                    href={selectedCandidateModal.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#0A66C2] font-semibold hover:underline flex items-center gap-1"
-                  >
-                    <span>{selectedCandidateModal.linkedin}</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              )}
-
-              {/* Cover Note / Pitch */}
+              {/* Cover Note / Pitch (if any) */}
               {selectedCandidateModal.coverNote && (
                 <div className="space-y-1 pt-1">
-                  <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Candidate Note / Background</span>
-                  <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] text-gray-700 leading-relaxed italic">
+                  <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Candidate Pitch / Background Note</span>
+                  <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] text-gray-700 leading-relaxed italic text-xs">
                     "{selectedCandidateModal.coverNote}"
                   </div>
                 </div>
               )}
 
+              {/* In the end: Resume View Option */}
+              <div className="p-4 rounded-xl bg-gradient-to-r from-[#FAF9F6] to-amber-50/40 border border-[#C59B4E]/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-xl bg-white border border-[#C59B4E]/40 flex items-center justify-center text-[#C59B4E] shrink-0 shadow-2xs">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] uppercase font-mono text-gray-400 font-bold tracking-wider block">Candidate Resume Document</span>
+                    <span className="font-semibold text-gray-900 text-xs block mt-0.5">{selectedCandidateModal.resumeName || 'Resume.pdf'}</span>
+                    <span className="text-[10px] text-gray-400 font-mono block">Document Size: {selectedCandidateModal.resumeSize || '1.2 MB'}</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleViewResume(selectedCandidateModal)}
+                  className="px-4 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer shrink-0"
+                >
+                  <Eye className="w-4 h-4 text-[#DFBE79]" />
+                  <span>View Resume</span>
+                  <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                </button>
+              </div>
+
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 bg-gray-50 border-t border-[#EAE6DF] flex items-center justify-between">
+            <div className="px-6 py-3.5 bg-gray-50 border-t border-[#EAE6DF] flex flex-wrap items-center justify-between gap-2">
               <button
                 onClick={() => {
                   if (window.confirm(`Delete job enquiry for ${selectedCandidateModal.name}?`)) {
@@ -2459,12 +2521,14 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 <span>Delete Enquiry</span>
               </button>
 
-              <button
-                onClick={() => setSelectedCandidateModal(null)}
-                className="px-5 py-2 rounded-xl bg-[#245348] text-white font-semibold text-xs uppercase tracking-wider hover:bg-[#1B3F37] transition-colors"
-              >
-                Close
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedCandidateModal(null)}
+                  className="px-5 py-2 rounded-xl bg-[#245348] text-white font-semibold text-xs uppercase tracking-wider hover:bg-[#1B3F37] transition-colors cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
             </div>
 
           </div>

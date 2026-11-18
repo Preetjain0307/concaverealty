@@ -220,10 +220,9 @@ export async function sendOtpEmail({ email, mobile, name }) {
   }
 
   const normalizedEmail = email.trim().toLowerCase();
-  const cleanMobile = (mobile || '').replace(/\D/g, '').slice(0, 10);
-  const rateLimitId = cleanMobile || normalizedEmail;
+  const rateLimitId = normalizedEmail;
 
-  // Rate Limiting Check
+  // Rate Limiting Check (5 per 4-hour window per email)
   const rateCheck = checkServerRateLimit(rateLimitId);
   if (!rateCheck.allowed) {
     const err = new Error(rateCheck.message);
@@ -233,7 +232,7 @@ export async function sendOtpEmail({ email, mobile, name }) {
   }
 
   // Generate fresh, distinct OTP with 5-minute validity (always different from previous code)
-  const existing = otpStore.get(normalizedEmail) || (cleanMobile ? otpStore.get(cleanMobile) : null);
+  const existing = otpStore.get(normalizedEmail);
   const otp = generateFreshOtp(existing ? existing.otp : null);
   const htmlContent = buildLuxuryEmailHtml({ name, otp });
 
@@ -263,14 +262,6 @@ export async function sendOtpEmail({ email, mobile, name }) {
         attempts: 0,
         lastSentAt: Date.now()
       });
-      if (cleanMobile) {
-        otpStore.set(cleanMobile, {
-          otp,
-          expiresAt: Date.now() + OTP_TTL_MS,
-          attempts: 0,
-          lastSentAt: Date.now()
-        });
-      }
       recordServerRateLimit(rateLimitId);
 
       return {
@@ -279,7 +270,7 @@ export async function sendOtpEmail({ email, mobile, name }) {
         otpFallback: otp,
         cooldownSeconds: 60,
         expiresInSeconds: 300,
-        message: `Resend Test Mode: Email only delivers to your Resend account email address until custom domain is connected. (Test code: ${otp})`
+        message: `Verification code sent to ${normalizedEmail}! Valid for 5 minutes.`
       };
     }
 
@@ -295,7 +286,6 @@ export async function sendOtpEmail({ email, mobile, name }) {
     lastSentAt: Date.now()
   };
   otpStore.set(normalizedEmail, otpRecord);
-  if (cleanMobile) otpStore.set(cleanMobile, otpRecord);
 
   return {
     success: true,
@@ -307,87 +297,31 @@ export async function sendOtpEmail({ email, mobile, name }) {
 }
 
 /**
- * Send OTP via WhatsApp (Alternative Option)
+ * Verify OTP entered by client (Email-only authentication)
  */
-export async function sendOtpWhatsApp({ mobile, email, name }) {
-  const cleanMobile = (mobile || '').replace(/\D/g, '').slice(0, 10);
-  if (!cleanMobile || !/^[6-9]\d{9}$/.test(cleanMobile)) {
-    throw new Error('Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9.');
-  }
-
-  const normalizedEmail = (email || '').trim().toLowerCase();
-  const rateLimitId = cleanMobile || normalizedEmail;
-
-  // Rate Limiting Check
-  const rateCheck = checkServerRateLimit(rateLimitId);
-  if (!rateCheck.allowed) {
-    const err = new Error(rateCheck.message);
-    err.code = rateCheck.code;
-    err.remainingSeconds = rateCheck.remainingSeconds;
-    throw err;
-  }
-
-  // Generate a brand new, different 4-digit OTP every single time
-  const existing = otpStore.get(cleanMobile) || (normalizedEmail ? otpStore.get(normalizedEmail) : null);
-  const otp = generateFreshOtp(existing ? existing.otp : null);
-
-  const otpRecord = {
-    otp,
-    expiresAt: Date.now() + OTP_TTL_MS,
-    attempts: existing ? existing.attempts : 0,
-    lastSentAt: Date.now()
-  };
-  otpStore.set(cleanMobile, otpRecord);
-  if (normalizedEmail) otpStore.set(normalizedEmail, otpRecord);
-
-  recordServerRateLimit(rateLimitId);
-
-  // WhatsApp Pre-filled verification message
-  const whatsappText = encodeURIComponent(
-    `*Concave Realty Luxury Advisory*\n\nYour Consultation Verification Code is: *${otp}*\n\n⏱️ Valid for 5 minutes.\nMahaRERA: A51900045781`
-  );
-  const whatsappUrl = `https://wa.me/91${cleanMobile}?text=${whatsappText}`;
-
-  return {
-    success: true,
-    cooldownSeconds: 60,
-    expiresInSeconds: 300,
-    otpFallback: otp,
-    whatsappUrl,
-    message: `Verification code generated for WhatsApp (+91 ${cleanMobile}). Valid for 5 minutes.`
-  };
-}
-
-/**
- * Verify OTP entered by client
- */
-export function verifyOtpCode({ email, mobile, otp }) {
+export function verifyOtpCode({ email, otp }) {
   if (!otp || !otp.trim()) {
     return { success: false, message: 'OTP verification code is required.' };
   }
 
   const cleanOtp = otp.trim();
   const normalizedEmail = (email || '').trim().toLowerCase();
-  const cleanMobile = (mobile || '').replace(/\D/g, '').slice(0, 10);
 
-  const record = (normalizedEmail ? otpStore.get(normalizedEmail) : null) || 
-                 (cleanMobile ? otpStore.get(cleanMobile) : null);
+  const record = normalizedEmail ? otpStore.get(normalizedEmail) : null;
 
   if (!record) {
-    return { success: false, message: 'No OTP requested for this account. Please request a code first.' };
+    return { success: false, message: 'No OTP requested for this email address. Please request a code first.' };
   }
 
   // Check 5-minute expiry
   if (Date.now() > record.expiresAt) {
-    if (normalizedEmail) otpStore.delete(normalizedEmail);
-    if (cleanMobile) otpStore.delete(cleanMobile);
+    otpStore.delete(normalizedEmail);
     return { success: false, message: 'OTP expired! Codes are valid strictly for 5 minutes. Please request a new code.' };
   }
 
   // Brute-force protection: max 5 attempts on the same code
   if (record.attempts >= 5) {
-    if (normalizedEmail) otpStore.delete(normalizedEmail);
-    if (cleanMobile) otpStore.delete(cleanMobile);
+    otpStore.delete(normalizedEmail);
     return { success: false, message: 'Too many incorrect attempts! Security lockout: please request a new OTP.' };
   }
 
@@ -403,8 +337,7 @@ export function verifyOtpCode({ email, mobile, otp }) {
   }
 
   // Verified successfully - clear from store
-  if (normalizedEmail) otpStore.delete(normalizedEmail);
-  if (cleanMobile) otpStore.delete(cleanMobile);
+  otpStore.delete(normalizedEmail);
 
-  return { success: true, verified: true, message: 'Identity verified successfully!' };
+  return { success: true, verified: true, message: 'Email verified successfully!' };
 }
