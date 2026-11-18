@@ -13,12 +13,10 @@ import {
   ArrowRight,
   Trophy,
   Film,
-  Search,
   CheckCircle2,
   PhoneCall,
   Flame,
-  Compass,
-  X
+  Compass
 } from 'lucide-react';
 
 const FALLBACK_AMENITY_IMG = '/amenities/theme_clubhouse_pool.jpg';
@@ -89,7 +87,7 @@ const AMENITY_CATEGORIES = [
   {
     id: "All",
     name: "All Amenities",
-    count: 26,
+    count: 25,
     tag: "Master Portfolio",
     subtitle: "All 9 categories",
     icon: Sparkles
@@ -161,8 +159,8 @@ const AMENITY_CATEGORIES = [
   {
     id: "Elite Services & Safety",
     name: "Elite Services & Safety",
-    count: 2,
-    tag: "White-Glove",
+    count: 1,
+    tag: "High Security",
     subtitle: "24x7 Valet & EV bays",
     icon: ShieldCheck
   }
@@ -179,7 +177,7 @@ const AMENITIES_DATA = [
     category: "Aquatics & Pools",
     desc: "50-meter temperature-regulated lap pool with underwater acoustic system & sunken loungers",
     icon: Waves,
-    image: "/amenities/theme_clubhouse_pool.jpg",
+    image: "/project_photos/16%20-%20Rustomjee%20(Goregaon)/3.jpg",
     tag: "Olympic Standard",
     hasWaterRipple: true
   },
@@ -189,7 +187,7 @@ const AMENITIES_DATA = [
     category: "Aquatics & Pools",
     desc: "Cantilevered glass-edge horizon pool with panoramic sunset views over Mumbai's western coast",
     icon: Sparkles,
-    image: "/amenities/infinity_pool.jpg",
+    image: "/projects/project_img_40.jpg",
     tag: "Skyline Icon",
     hasWaterRipple: true
   },
@@ -199,7 +197,7 @@ const AMENITIES_DATA = [
     category: "Aquatics & Pools",
     desc: "Natural stone lagoon pool lined with private curtained daybed cabanas & hydrotherapy jets",
     icon: Waves,
-    image: "/amenities/swimming_pool.jpg",
+    image: "/project_photos/11%20-%20Lodha%20(Malad)/1.jpg",
     tag: "Resort Living",
     hasWaterRipple: true
   },
@@ -209,7 +207,7 @@ const AMENITIES_DATA = [
     category: "Aquatics & Pools",
     desc: "Zero-depth shallow waterplay arena with playful interactive fountains and anti-skid surfaces",
     icon: Waves,
-    image: "/projects/kalpataru_advay_pool.png",
+    image: "/project_photos/19%20-%20Roseworld/1.jpg",
     tag: "Family Aquatics",
     hasWaterRipple: true
   },
@@ -241,7 +239,7 @@ const AMENITIES_DATA = [
     category: "Clubhouse & Leisure",
     desc: "High-speed private work booths, conference boardrooms & high-definition video conferencing suites",
     icon: Building2,
-    image: "/amenities/coworking.jpg",
+    image: "/project_photos/12%20-%20Enchante%20Point/2.jpg",
     tag: "Work from Home",
     hasWaterRipple: false
   },
@@ -273,7 +271,7 @@ const AMENITIES_DATA = [
     category: "Wellness & Spa",
     desc: "Certified therapy rooms for signature body therapies, deep tissue massage & reflexology rituals",
     icon: Trees,
-    image: "/amenities/spa_sauna.jpg",
+    image: "/amenities/ayurvedic_treatment.jpg",
     tag: "Signature Spa",
     hasWaterRipple: false
   },
@@ -305,7 +303,7 @@ const AMENITIES_DATA = [
     category: "Fitness & Health",
     desc: "Elevated cushioned jogging loop with unobstructed 360-degree city and national park horizon views",
     icon: Sparkles,
-    image: "/amenities/sky_deck.jpg",
+    image: "/amenities/sky_jogging_track.jpg",
     tag: "Elevated Track",
     hasWaterRipple: false
   },
@@ -317,7 +315,7 @@ const AMENITIES_DATA = [
     category: "Sports & Recreation",
     desc: "WSF-compliant international squash courts with spectator viewing gallery and indoor gaming salon",
     icon: Trophy,
-    image: "/projects/kalpataru_elara_balcony.webp",
+    image: "/project_photos/3%20-%20Oberoi%20Sky%20City/1.jpg",
     tag: "Indoor Championship",
     hasWaterRipple: false
   },
@@ -327,7 +325,7 @@ const AMENITIES_DATA = [
     category: "Sports & Recreation",
     desc: "Floodlit FIFA-standard artificial turf arena for box cricket, futsal & dynamic community sports",
     icon: Trophy,
-    image: "/projects/kalpataru_elara_park.webp",
+    image: "/project_photos/19%20-%20Roseworld/2.jpg",
     tag: "Floodlit Arena",
     hasWaterRipple: false
   },
@@ -337,7 +335,7 @@ const AMENITIES_DATA = [
     category: "Sports & Recreation",
     desc: "Full-size English Riley tournament snooker tables with vintage leather armchairs & scorekeepers",
     icon: Gamepad2,
-    image: "/amenities/theme_residents_lounge.jpg",
+    image: "/amenities/bespoke_billiards.jpg",
     tag: "Gentlemen's Salon",
     hasWaterRipple: false
   },
@@ -349,7 +347,7 @@ const AMENITIES_DATA = [
     category: "Sky & Rooftop Living",
     desc: "Stargazing telescope dome, glass skywalk lookout & private sunset viewing cabanas on high floors",
     icon: Eye,
-    image: "/amenities/sky_deck.jpg",
+    image: "/project_photos/5%20-%20Godrej%20Reserve/8.jpg",
     tag: "Level 50+ Living",
     hasWaterRipple: false
   },
@@ -359,7 +357,7 @@ const AMENITIES_DATA = [
     category: "Sky & Rooftop Living",
     desc: "Sunken plush lounge around a smokeless ethanol firepit under Mumbai's illuminated skyline",
     icon: Flame,
-    image: "/amenities/theme_wellness_spa.jpg",
+    image: "/projects/kalpataru_elara_balcony.webp",
     tag: "Skyline Romance",
     hasWaterRipple: false
   },
@@ -391,7 +389,7 @@ const AMENITIES_DATA = [
     category: "Entertainment & Social",
     desc: "Built-in charcoal and gas grills with open-air dining tables for weekend culinary celebrations",
     icon: Building2,
-    image: "/projects/kalpataru_advay_party_hall.png",
+    image: "/project_photos/1%20-%20Kalpataru%20Advay/2.jpg",
     tag: "Culinary Terrace",
     hasWaterRipple: false
   },
@@ -403,7 +401,7 @@ const AMENITIES_DATA = [
     category: "Kids & Green Nature",
     desc: "Natural birch wood playhouse, rock climbing walls, rope bridges & zero-impact soft rubber play turf",
     icon: Gamepad2,
-    image: "/amenities/kids_play_v2.jpg",
+    image: "/project_photos/17%20-%20Lodha%20Sovrano/3.jpg",
     tag: "Nature Play",
     hasWaterRipple: false
   },
@@ -430,22 +428,12 @@ const AMENITIES_DATA = [
 
   // --- Elite Services & Safety ---
   {
-    id: 25,
-    name: "24x7 White-Glove Concierge & Valet Desk",
-    category: "Elite Services & Safety",
-    desc: "Round-the-clock bespoke assistance for travel bookings, parcel management, housekeeping & valet services",
-    icon: ShieldCheck,
-    image: "/amenities/concierge.jpg",
-    tag: "White-Glove Service",
-    hasWaterRipple: false
-  },
-  {
     id: 26,
     name: "Multi-Tier Biometric Security & EV Fast-Charging",
     category: "Elite Services & Safety",
     desc: "5-tier automated access control, RFID vehicular booms, 24/7 CCTV vigilance & high-capacity EV charging bays",
     icon: ShieldCheck,
-    image: "/amenities/ev_charging.jpg",
+    image: "/amenities/biometric_security.jpg",
     tag: "Eco & Safe",
     hasWaterRipple: false
   }
@@ -513,31 +501,16 @@ const FLOOR_VIEWS = [
 
 export function AmenitiesSection({ onOpenEnquiry }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
 
-  // Filter amenities by category and search query
+  // Filter amenities by category
   const filteredAmenities = useMemo(() => {
     return AMENITIES_DATA.filter((item) => {
-      // 1. Category Filter
       if (selectedCategory !== 'All' && selectedCategory !== 'All Amenities') {
         if (item.category !== selectedCategory) return false;
       }
-
-      // 2. Search Query Filter
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const matchesName = item.name.toLowerCase().includes(q);
-        const matchesDesc = item.desc.toLowerCase().includes(q);
-        const matchesCat = item.category.toLowerCase().includes(q);
-        const matchesTag = item.tag.toLowerCase().includes(q);
-        if (!matchesName && !matchesDesc && !matchesCat && !matchesTag) {
-          return false;
-        }
-      }
-
       return true;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory]);
 
   // Smooth scroll down to the amenities cards showcase when a category card is clicked
   const handleCategoryClick = (catId) => {
@@ -564,7 +537,7 @@ export function AmenitiesSection({ onOpenEnquiry }) {
       <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden border-b border-[#EAE6DF] flex items-center justify-center group shadow-md">
         
         {/* Background Scrolling Architectural Image Marquee */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-auto">
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
           {/* Subtle horizontal fade masks on sides */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-r from-black/60 to-transparent z-10" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 sm:w-32 bg-gradient-to-l from-black/60 to-transparent z-10" />
@@ -574,16 +547,7 @@ export function AmenitiesSection({ onOpenEnquiry }) {
             {MARQUEE_ITEMS.map((item, idx) => (
               <div
                 key={idx}
-                className="h-full w-72 sm:w-84 md:w-96 flex-shrink-0 relative overflow-hidden cursor-pointer"
-                onClick={() => {
-                  if (onOpenEnquiry) {
-                    onOpenEnquiry({
-                      projectName: item.title,
-                      location: "Concave Luxury Developments",
-                      configuration: `Signature Amenity Experience: ${item.title}`
-                    });
-                  }
-                }}
+                className="h-full w-72 sm:w-84 md:w-96 flex-shrink-0 relative overflow-hidden"
               >
                 <img
                   src={item.image}
@@ -620,8 +584,8 @@ export function AmenitiesSection({ onOpenEnquiry }) {
       {/* ============================================================== */}
       {/* SECTION B: AMENITIES SERVED & INTERACTIVE CATEGORY CARDS       */}
       {/* ============================================================== */}
-      <section className="py-12 bg-[#FAF9F6]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="py-8 sm:py-12 bg-[#FAF9F6]">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
           
           {/* Aesthetic Section Header */}
           <div className="text-center max-w-3xl mx-auto space-y-2">
@@ -633,130 +597,39 @@ export function AmenitiesSection({ onOpenEnquiry }) {
             </h2>
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
             <p className="text-xs sm:text-sm text-[#5C5549] font-light max-w-xl mx-auto pt-1 leading-relaxed">
-              Explore 26 handpicked resort-grade amenities, wellness sanctuaries, and high-energy sports clubs curated across Mumbai's elite developments.
+              Explore {AMENITIES_DATA.length} handpicked resort-grade amenities, wellness sanctuaries, and high-energy sports clubs curated across Mumbai's elite developments.
             </p>
           </div>
 
-          {/* Attractive Category Filter Cards Grid (Matching the exact look of Explore Location cards) */}
-          <div className="pt-2">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-3.5">
-              {AMENITY_CATEGORIES.map((cat) => {
-                const IconComp = cat.icon;
-                const isSelected = selectedCategory === cat.id;
-
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => handleCategoryClick(cat.id)}
-                    className={`group relative p-2.5 xs:p-3.5 sm:p-4 rounded-xl text-left transition-all duration-300 flex flex-col justify-between border cursor-pointer min-h-[88px] sm:min-h-[96px] ${
-                      isSelected
-                        ? 'bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#245348] text-white border-[#C59B4E] shadow-[0_8px_20px_-3px_rgba(36,83,72,0.45)] ring-2 ring-[#C59B4E]/60 scale-[1.02]'
-                        : 'bg-white text-[#14221F] border-[#EAE6DF] hover:border-[#C59B4E] hover:shadow-md hover:-translate-y-1'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between w-full mb-2">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                        isSelected
-                          ? 'bg-[#284F45] text-[#DFBE79] shadow-xs'
-                          : 'bg-[#FAF9F6] text-[#245348] group-hover:bg-[#245348] group-hover:text-[#DFBE79]'
-                      }`}>
-                        <IconComp className="w-4 h-4" />
-                      </div>
-                      <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full font-bold transition-colors ${
-                        isSelected
-                          ? 'bg-[#14221F] text-[#DFBE79] border border-[#C59B4E]/40'
-                          : 'bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] group-hover:border-[#C59B4E]/40'
-                      }`}>
-                        {cat.count} {cat.id === 'All' ? 'Total' : 'Amenities'}
-                      </span>
-                    </div>
-
-                    <div className="space-y-0.5">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-serif text-xs sm:text-sm font-bold tracking-tight truncate pr-1">
-                          {cat.name}
-                        </h4>
-                        <span className={`text-[8px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${
-                          isSelected
-                            ? 'bg-white/10 text-[#DFBE79]'
-                            : 'bg-gray-100 text-gray-500'
-                        }`}>
-                          {cat.tag}
-                        </span>
-                      </div>
-                      <p className={`text-[10px] font-light truncate ${
-                        isSelected ? 'text-gray-300' : 'text-gray-500'
-                      }`}>
-                        {cat.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Active Gold Indicator Bar */}
-                    {isSelected && (
-                      <div className="absolute -bottom-0.5 left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent rounded-full animate-pulse" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Quick Search & Count Filter Bar */}
-          <div id="amenities-showcase-section" className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#EAE6DF] pb-5">
+          {/* Subheader */}
+          <div id="amenities-showcase-section" className="pt-2 flex items-center justify-between border-b border-[#EAE6DF] pb-4">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#C59B4E]" />
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#14221F]">
                 {selectedCategory === 'All' ? 'All Curated Amenities' : selectedCategory}
               </h3>
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#183C32]/10 text-[#183C32] font-semibold ml-1">
-                {filteredAmenities.length} Verified
-              </span>
-            </div>
-
-            {/* Amenity Search Input */}
-            <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search amenities (e.g. Pool, Gym, Spa)..."
-                className="w-full pl-9 pr-8 py-2 rounded-xl bg-white border border-[#EAE6DF] focus:border-[#C59B4E] focus:outline-none text-xs text-[#14221F] placeholder-gray-400 shadow-2xs"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
           </div>
 
           {/* ============================================================== */}
-          {/* SECTION C: 26 CURATED AMENITIES CARDS IN LUXURY AESTHETIC      */}
+          {/* SECTION C: CURATED AMENITIES CARDS IN LUXURY AESTHETIC         */}
           {/* ============================================================== */}
           {filteredAmenities.length === 0 ? (
             <div className="text-center py-16 bg-white rounded-2xl border border-[#EAE6DF] p-8 space-y-3">
               <Sparkles className="w-8 h-8 text-[#C59B4E] mx-auto opacity-70" />
-              <h4 className="font-serif text-lg font-bold text-[#14221F]">No Amenities Match Your Search</h4>
+              <h4 className="font-serif text-lg font-bold text-[#14221F]">No Amenities Available</h4>
               <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                Try searching for another keyword or select "All Amenities" from the category cards above.
+                No amenities found under this category.
               </p>
               <button
-                onClick={() => {
-                  setSelectedCategory('All');
-                  setSearchQuery('');
-                }}
+                onClick={() => setSelectedCategory('All')}
                 className="px-4 py-2 rounded-lg bg-[#245348] text-white text-xs font-semibold hover:bg-[#1B3F37] transition-colors"
               >
-                Reset Filters
+                View All Amenities
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
               {filteredAmenities.map((item) => {
                 const IconComponent = item.icon || Sparkles;
 
@@ -772,10 +645,10 @@ export function AmenitiesSection({ onOpenEnquiry }) {
                         });
                       }
                     }}
-                    className="group relative rounded-2xl overflow-hidden border border-[#E7E0D5] hover:border-[#C59B4E] bg-white cursor-pointer shadow-sm hover:shadow-[0_16px_36px_rgba(139,104,70,0.18)] transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between"
+                    className="group relative rounded-2xl overflow-hidden border border-[#E7E0D5] hover:border-[#C59B4E] bg-white cursor-pointer shadow-sm hover:shadow-[0_20px_40px_rgba(139,104,70,0.2)] transition-all duration-500 hover:-translate-y-1.5 flex flex-col justify-between"
                   >
                     {/* Top Image Window with Realistic Living Hover */}
-                    <div className="relative h-48 w-full overflow-hidden bg-slate-900">
+                    <div className="relative h-36 sm:h-48 md:h-52 w-full overflow-hidden bg-slate-900">
                       <img
                         src={item.image}
                         alt={item.name}
@@ -796,53 +669,46 @@ export function AmenitiesSection({ onOpenEnquiry }) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/20 pointer-events-none" />
 
                       {/* Floating Category Tag Badge */}
-                      <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
-                        <div className="w-8 h-8 rounded-xl bg-white/95 backdrop-blur-md border border-[#C59B4E]/30 flex items-center justify-center text-[#245348] group-hover:bg-[#1D3530] group-hover:text-[#DFBE79] group-hover:border-[#C59B4E] transition-all duration-300 shadow-sm">
-                          <IconComponent className="w-4 h-4 transition-transform group-hover:scale-110" />
+                      <div className="absolute top-2.5 left-2.5 sm:top-3 sm:left-3 z-10 flex items-center gap-1.5">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/95 backdrop-blur-md border border-[#C59B4E]/30 flex items-center justify-center text-[#245348] group-hover:bg-[#1D3530] group-hover:text-[#DFBE79] group-hover:border-[#C59B4E] transition-all duration-300 shadow-sm">
+                          <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:scale-110" />
                         </div>
                       </div>
 
                       {/* Right Tag Badge */}
-                      <div className="absolute top-3 right-3 z-10">
-                        <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-[#DFBE79] border border-white/20 text-[10px] font-mono font-semibold">
+                      <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 z-10">
+                        <span className="px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full bg-black/65 backdrop-blur-md text-[#DFBE79] border border-white/20 text-[8.5px] sm:text-[10px] font-mono font-semibold max-w-[95px] sm:max-w-none truncate block shadow-xs">
                           {item.tag}
                         </span>
                       </div>
 
                       {/* Bottom Category Subtitle */}
-                      <div className="absolute bottom-2.5 left-3 right-3 z-10 pointer-events-none">
-                        <span className="text-[10px] uppercase font-mono tracking-wider text-gray-200 font-semibold block drop-shadow">
+                      <div className="absolute bottom-2 left-2.5 right-2.5 sm:bottom-2.5 sm:left-3 sm:right-3 z-10 pointer-events-none">
+                        <span className="text-[8.5px] sm:text-[10px] uppercase font-mono tracking-wider text-gray-200 font-semibold block drop-shadow truncate">
                           {item.category}
                         </span>
                       </div>
                     </div>
 
                     {/* Card Content in Warm Luxury Tone */}
-                    <div className="p-4 bg-white flex-1 flex flex-col justify-between space-y-3">
+                    <div className="p-3 sm:p-4 bg-white flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
                       <div>
-                        <h4 className="font-serif text-base font-bold text-[#14221F] group-hover:text-[#8B6846] transition-colors leading-snug line-clamp-1">
+                        <h4 className="font-serif text-[13px] sm:text-base font-bold text-[#14221F] group-hover:text-[#8B6846] transition-colors leading-snug line-clamp-2 min-h-[2.4rem] sm:min-h-[2.75rem] flex items-center">
                           {item.name}
                         </h4>
-                        <p className="text-xs text-[#5C5549] font-light leading-relaxed line-clamp-2 mt-1.5">
-                          {item.desc}
-                        </p>
                       </div>
 
                       {/* Bottom Action Row */}
-                      <div className="pt-2 border-t border-[#F2EDE4] flex items-center justify-between text-xs">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#245348] group-hover:text-[#C59B4E] transition-colors">
-                          <Sparkles className="w-3 h-3 text-[#C59B4E]" />
-                          <span>Curated Privilege</span>
-                        </span>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-mono font-semibold text-[#8B6846] group-hover:translate-x-1 transition-transform">
+                      <div className="pt-2.5 border-t border-[#F2EDE4] flex items-center justify-center">
+                        <span className="w-full py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#1D3530] via-[#245348] to-[#1D3530] group-hover:from-[#245348] group-hover:to-[#1D3530] text-[#DFBE79] border border-[#C59B4E]/30 group-hover:border-[#DFBE79] text-[10px] sm:text-xs font-mono uppercase tracking-widest font-semibold shadow-sm flex items-center justify-center gap-1.5 transition-all">
                           <span>Enquire</span>
-                          <ArrowRight className="w-3 h-3 text-[#C59B4E]" />
+                          <ArrowRight className="w-3 h-3 text-[#DFBE79] group-hover:translate-x-1 transition-transform" />
                         </span>
                       </div>
                     </div>
 
-                    {/* Top Subtle Gold Highlight Line on Hover */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-[#C59B4E] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Top Subtle Gold Highlight Line */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                 );
               })}
@@ -855,39 +721,35 @@ export function AmenitiesSection({ onOpenEnquiry }) {
       {/* ============================================================== */}
       {/* SECTION D: ARCHITECTURAL FLOOR VIEWS (CONFIDENTIAL BLUEPRINTS) */}
       {/* ============================================================== */}
-      <section className="py-16 bg-[#FAF7F2] border-t border-[#E7E0D5]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="py-10 sm:py-16 bg-[#FAF7F2] border-t border-[#E7E0D5]">
+        <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
           
           {/* Clean Section Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-[#E7E0D5] pb-4">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 sm:gap-3 border-b border-[#E7E0D5] pb-4">
             <div>
               <span className="text-xs uppercase tracking-[0.25em] text-[#C59B4E] font-semibold block font-mono">
                 ARCHITECTURAL BLUEPRINTS
               </span>
-              <h3 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#14221F]">
+              <h3 className="font-serif text-xl sm:text-3xl font-bold tracking-tight text-[#14221F]">
                 Exclusive Floor Views & Blueprints
               </h3>
             </div>
-            
-            <span className="text-xs font-mono text-gray-500">
-              Confidential layouts in protected blur mode — click to unlock HD layout
-            </span>
           </div>
 
           {/* 6 Authentic Blurred Blueprints Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
             {FLOOR_VIEWS.map((fv) => (
               <div
                 key={fv.id}
                 onClick={() => onOpenEnquiry && onOpenEnquiry({
                   projectName: fv.title,
                   location: "Mumbai Signature Developments",
-                  configuration: `Confidential Floor View: ${fv.title} (${fv.carpetArea})`
+                  configuration: `Floor View: ${fv.title}`
                 })}
-                className="group relative rounded-2xl overflow-hidden border border-[#E7E0D5] hover:border-[#C59B4E] bg-white shadow-lg hover:shadow-[0_20px_45px_rgba(139,104,70,0.22)] transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col justify-between"
+                className="group relative rounded-2xl overflow-hidden border border-[#E7E0D5] hover:border-[#C59B4E] bg-white shadow-sm hover:shadow-[0_20px_45px_rgba(139,104,70,0.22)] transition-all duration-500 hover:-translate-y-2 cursor-pointer flex flex-col justify-between"
               >
                 {/* Blueprint Container with Protected Blur */}
-                <div className="relative h-64 sm:h-72 overflow-hidden bg-slate-100">
+                <div className="relative h-40 sm:h-56 md:h-64 w-full overflow-hidden bg-slate-900">
                   
                   {/* SVG Blueprint with Gaussian Blur */}
                   <img
@@ -899,68 +761,46 @@ export function AmenitiesSection({ onOpenEnquiry }) {
                   {/* Vignette Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/20 group-hover:via-black/15 transition-colors" />
 
-                  {/* Top Floating Security Badge */}
-                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10 gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-md text-[#14221F] text-[10px] font-mono font-semibold shadow-sm whitespace-nowrap flex-shrink-0">
-                      <Lock className="w-3 h-3 text-[#C59B4E] flex-shrink-0" />
-                      <span>Confidential Plan</span>
-                    </span>
-
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#1D3530]/90 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 text-[10px] font-mono uppercase tracking-wider font-semibold shadow-sm whitespace-nowrap flex-shrink-0">
+                  {/* Top Floating Level Badge */}
+                  <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 pointer-events-none z-10">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full bg-[#1D3530]/90 backdrop-blur-md text-[#DFBE79] border border-[#C59B4E]/40 text-[8.5px] sm:text-[10px] font-mono uppercase tracking-wider font-semibold shadow-xs whitespace-nowrap">
                       {fv.level}
                     </span>
                   </div>
 
                   {/* Center Lock Shield & Call to Action */}
-                  <div className="absolute inset-0 flex items-center justify-center p-3 text-center text-white pointer-events-none z-10">
-                    <div className="w-full max-w-[275px] bg-black/60 backdrop-blur-sm rounded-2xl p-3.5 border border-white/10 shadow-2xl flex flex-col items-center justify-between h-[185px]">
-                      
-                      {/* Round Lock Badge */}
-                      <div className="w-9 h-9 rounded-full bg-[#1D3530] border-2 border-[#DFBE79] flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                        <Lock className="w-4 h-4 text-[#DFBE79]" />
-                      </div>
-
-                      {/* Title & Subtitle */}
-                      <div className="w-full space-y-1">
-                        <h4 className="font-serif text-sm sm:text-base font-bold tracking-tight text-white drop-shadow-md group-hover:text-[#DFBE79] transition-colors leading-snug line-clamp-2 h-10 flex items-center justify-center text-center px-1">
-                          {fv.title}
-                        </h4>
-                        <p className="text-[10px] text-gray-200 drop-shadow leading-relaxed font-light line-clamp-2 h-7 flex items-center justify-center text-center px-1">
-                          {fv.highlight}
-                        </p>
-                      </div>
-
-                      {/* Action Button */}
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#245348] text-white text-[10px] uppercase tracking-wider font-semibold shadow-md group-hover:bg-[#1B3F37] transition-all border border-[#DFBE79]/40 flex-shrink-0">
-                        <Eye className="w-3 h-3 text-[#DFBE79]" />
-                        <span>Click to Unlock Layout</span>
-                      </span>
-
+                  <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-center text-white pointer-events-none z-10">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#1D3530]/90 backdrop-blur-md border-2 border-[#DFBE79] flex items-center justify-center shadow-[0_0_20px_rgba(223,190,121,0.35)] group-hover:scale-110 transition-transform duration-300">
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-[#DFBE79]" />
                     </div>
+                    <span className="mt-2 inline-flex items-center gap-1 sm:gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#245348]/95 to-[#1D3530]/95 backdrop-blur-md text-[#DFBE79] border border-[#DFBE79]/50 text-[9px] sm:text-[11px] font-mono uppercase tracking-wider font-semibold shadow-md group-hover:from-[#1D3530] group-hover:to-[#245348] transition-all">
+                      <Eye className="w-3 h-3 text-[#DFBE79]" />
+                      <span>Unlock Plan</span>
+                    </span>
                   </div>
 
-                  {/* Carpet Area Tag */}
-                  <div className="absolute bottom-3 right-3 pointer-events-none z-10">
-                    <span className="px-2.5 py-1 rounded bg-black/80 backdrop-blur-md border border-white/20 text-[#DFBE79] font-mono text-[10px] font-semibold shadow-sm whitespace-nowrap">
-                      {fv.carpetArea}
+
+                </div>
+
+                {/* Card Content in Warm Luxury Tone */}
+                <div className="p-3 sm:p-4 bg-white flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
+                  <div>
+                    <h4 className="font-serif text-[13px] sm:text-base font-bold text-[#14221F] group-hover:text-[#8B6846] transition-colors leading-snug line-clamp-2 min-h-[2.4rem] sm:min-h-[2.75rem] flex items-center">
+                      {fv.title}
+                    </h4>
+                  </div>
+
+                  {/* Bottom Action Row */}
+                  <div className="pt-2.5 border-t border-[#F2EDE4] flex items-center justify-center">
+                    <span className="w-full py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-[#1D3530] via-[#245348] to-[#1D3530] group-hover:from-[#245348] group-hover:to-[#1D3530] text-[#DFBE79] border border-[#C59B4E]/30 group-hover:border-[#DFBE79] text-[10px] sm:text-xs font-mono uppercase tracking-widest font-semibold shadow-sm flex items-center justify-center gap-1.5 transition-all">
+                      <span>Enquire</span>
+                      <ArrowRight className="w-3 h-3 text-[#DFBE79] group-hover:translate-x-1 transition-transform" />
                     </span>
                   </div>
                 </div>
 
-                {/* Card Info Footer */}
-                <div className="p-3.5 bg-white flex items-center justify-between text-xs border-t border-[#E7E0D5]">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-2 h-2 rounded-full bg-[#C59B4E] flex-shrink-0" />
-                    <span className="font-semibold text-[#14221F] truncate text-xs">{fv.type}</span>
-                  </div>
-                  <span className="text-[#245348] font-mono font-semibold flex items-center gap-1 group-hover:text-[#C59B4E] transition-colors whitespace-nowrap flex-shrink-0 ml-2">
-                    <span>Enquire Layout</span>
-                    <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1.5 transition-transform" />
-                  </span>
-                </div>
-
                 {/* Top Subtle Gold Shimmer Bar */}
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent opacity-40 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>

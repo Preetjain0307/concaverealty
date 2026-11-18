@@ -8,8 +8,6 @@ import {
   ExternalLink,
   Sparkles,
   ArrowRight,
-  Lock,
-  Headphones,
   Building2,
   MapPin,
   Clock,
@@ -150,9 +148,9 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                         onNavigate('careers');
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block font-medium"
+                      className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
-                      Careers & Hiring
+                      Careers and Hiring
                     </button>
                   </li>
                   <li>
@@ -380,35 +378,6 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                     </svg>
                   </a>
                 </div>
-
-                {/* Staff Portals: Caller Workspace & Admin Portal */}
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => {
-                      onNavigate('caller');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    title="Caller Workspace (Tele-advisory Desk)"
-                    aria-label="Caller Workspace"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#183C32] hover:bg-[#245348] text-gray-200 hover:text-[#DFBE79] border border-white/10 hover:border-[#DFBE79]/50 text-[10px] font-mono font-medium transition-all cursor-pointer shadow-xs"
-                  >
-                    <Headphones className="w-3 h-3 text-[#DFBE79]" />
-                    <span>Caller Panel</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      onNavigate('admin');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    title="Super Admin Portal"
-                    aria-label="Admin Portal"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#183C32] hover:bg-[#245348] text-gray-200 hover:text-[#DFBE79] border border-white/10 hover:border-[#DFBE79]/50 text-[10px] font-mono font-medium transition-all cursor-pointer shadow-xs"
-                  >
-                    <Lock className="w-3 h-3 text-[#DFBE79]" />
-                    <span>Admin Panel</span>
-                  </button>
-                </div>
               </div>
 
             </div>
@@ -514,7 +483,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                 }}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
-                Careers
+                Careers and Hiring
               </button>
               <button
                 type="button"

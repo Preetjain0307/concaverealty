@@ -75,7 +75,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               onClick={() => onNavigate('careers')}
               className={`hover:text-[#DFBE79] transition-colors ${currentView === 'careers' ? 'text-[#DFBE79] border-b border-[#DFBE79] pb-1' : ''}`}
             >
-              Careers
+              Careers and Hiring
             </button>
             <button
               onClick={() => onNavigate('contact')}
@@ -178,7 +178,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
             onClick={() => { onNavigate('careers'); setMobileMenuOpen(false); }}
             className="w-full text-left py-2.5 px-3 rounded-lg hover:bg-[#284F45] text-gray-200 transition-colors"
           >
-            Careers
+            Careers and Hiring
           </button>
           <button
             onClick={() => { onNavigate('contact'); setMobileMenuOpen(false); }}
