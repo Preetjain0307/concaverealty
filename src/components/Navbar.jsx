@@ -76,7 +76,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               onClick={() => onNavigate('careers')}
               className={`hover:text-[#DFBE79] transition-colors ${currentView === 'careers' ? 'text-[#DFBE79] border-b border-[#DFBE79] pb-1' : ''}`}
             >
-              Careers and Hiring
+              Career
             </button>
             <button
               onClick={() => onNavigate('contact')}
@@ -162,7 +162,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               { id: 'home', label: 'Home', icon: Home },
               { id: 'projects', label: 'Our Projects', icon: Building2 },
               { id: 'amenities', label: 'Amenities', icon: Sparkles },
-              { id: 'careers', label: 'Careers and Hiring', icon: Briefcase },
+              { id: 'careers', label: 'Career', icon: Briefcase },
               { id: 'contact', label: 'Contact Us', icon: PhoneCall },
             ].map((item) => {
               const Icon = item.icon;

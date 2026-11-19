@@ -16,7 +16,7 @@ import { ArrowRight, Volume2, VolumeX } from 'lucide-react';
  * 3. The player will automatically play the full duration of your new video.
  * =========================================================================
  */
-export const INTRO_VIDEO_PATH = "/videos/intro-video.mp4";
+export const INTRO_VIDEO_PATH = "/videos/intro-video.mp4?v=2";
 
 export function SplashIntro({ onFinish }) {
   const videoRef = useRef(null);
@@ -76,9 +76,8 @@ export function SplashIntro({ onFinish }) {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black select-none transition-opacity duration-700 ease-out ${
-        closing ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black select-none transition-opacity duration-700 ease-out ${closing ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
     >
       {/* ── Fullscreen Intro Video (Plays until video actually ends) ── */}
       <video
@@ -89,7 +88,7 @@ export function SplashIntro({ onFinish }) {
         preload="auto"
         onEnded={handleEnded}
         onError={handleError}
-        className="absolute inset-0 w-full h-full object-cover scale-[1.08]"
+        className="absolute inset-0 w-full h-full object-cover"
       >
         <source src={INTRO_VIDEO_PATH} type="video/mp4" />
         <source src="/videos/mumbai-skyline.mp4" type="video/mp4" />

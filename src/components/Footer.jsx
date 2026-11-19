@@ -138,7 +138,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                       }}
                       className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
-                      Careers and Hiring
+                      Career
                     </button>
                   </li>
                   <li>
@@ -282,10 +282,10 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
 
             {/* Column 4 on Desktop (Order 1 on Mobile): Brand Identity & Direct Connect */}
             <div className="lg:col-span-3 order-1 lg:order-4 space-y-2.5 pb-2 md:pb-0">
-              
+
               {/* Brand Header */}
               <div className="space-y-1">
-                <span 
+                <span
                   className="font-serif text-lg sm:text-2xl font-bold tracking-[0.10em] text-[#F7F3EB] block uppercase pr-2"
                   style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
                 >
@@ -304,7 +304,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
 
               {/* Direct Verified Contact Card */}
               <div className="p-2 sm:p-2.5 rounded-lg bg-[#183C32]/80 border border-[#C59B4E]/40 space-y-1.5 text-xs">
-                
+
                 {/* Phone & WhatsApp */}
                 <a
                   href={WHATSAPP_URL}
@@ -429,7 +429,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
 
           {/* Simple & Clean 2-Column Links Grid */}
           <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px] font-normal leading-snug">
-            
+
             {/* Column 1: Company & Navigation */}
             <div className="space-y-2.5 flex flex-col items-start">
               <button
@@ -471,7 +471,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                 }}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
-                Careers and Hiring
+                Career
               </button>
               <button
                 type="button"
