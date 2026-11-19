@@ -116,10 +116,11 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
               <span className="text-[11px] uppercase tracking-[0.25em] text-[#8B6846] font-semibold block">
                 Official Email
               </span>
-              <div className="overflow-x-auto custom-scrollbar-none py-0.5">
+              <div className="py-1">
                 <a
                   href={`mailto:${EMAIL_ADDRESS}`}
-                  className="text-[15.5px] min-[360px]:text-[17px] min-[410px]:text-[19px] sm:text-2xl md:text-3xl font-bold text-[#183C32] hover:text-[#C59B4E] transition-colors inline-block whitespace-nowrap tracking-tight"
+                  title={`Send email to ${EMAIL_ADDRESS}`}
+                  className="text-[14px] xs:text-[15px] sm:text-base md:text-lg lg:text-xl font-bold text-[#183C32] hover:text-[#C59B4E] transition-colors inline-block tracking-tight select-all"
                 >
                   {EMAIL_ADDRESS}
                 </a>
@@ -195,7 +196,7 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
             Prefer an in-person or virtual consultation?
           </p>
           <button
-            onClick={() => onOpenEnquiry && onOpenEnquiry({ projectName: "Kalpataru Advay", location: "Borivali West" })}
+            onClick={() => onOpenEnquiry && onOpenEnquiry({})}
             type="button"
             className="inline-flex items-center gap-3 px-10 py-4 rounded-full bg-gradient-to-r from-[#DFBE79] via-[#C59B4E] to-[#B3883B] hover:from-[#EBD296] hover:to-[#C59B4E] text-[#14221F] font-bold text-xs uppercase tracking-[0.2em] shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-[#F6E4B8]"
           >

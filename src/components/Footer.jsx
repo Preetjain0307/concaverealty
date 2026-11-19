@@ -527,7 +527,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
               </button>
               <button
                 type="button"
-                onClick={() => onOpenEnquiry && onOpenEnquiry({ projectName: "Curated Portfolio", location: "Mumbai" })}
+                onClick={() => onOpenEnquiry && onOpenEnquiry({})}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
                 Book Consultation

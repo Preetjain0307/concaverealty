@@ -108,7 +108,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
             {/* Minimal Lodha Enquire Action */}
             <button
-              onClick={() => onOpenEnquiry({ projectName: "Kalpataru Advay", location: "Borivali West" })}
+              onClick={() => onOpenEnquiry({})}
               className="text-xs uppercase tracking-widest text-gray-200 hover:text-[#DFBE79] transition-colors flex items-center gap-1.5 font-medium cursor-pointer"
             >
               <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
@@ -134,7 +134,7 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
             {/* Mobile Enquire Action - Compact phone icon on mobile, text on sm: */}
             <button
-              onClick={() => onOpenEnquiry({ projectName: "Kalpataru Advay", location: "Borivali West" })}
+              onClick={() => onOpenEnquiry({})}
               aria-label="Enquire about luxury residences"
               className="p-1.5 xs:p-2 sm:px-3 sm:py-1.5 rounded-full text-white bg-[#245348] hover:bg-[#1B3F37] border border-[#C59B4E]/40 shrink-0 flex items-center gap-1.5 transition-all shadow-xs"
             >

@@ -12,62 +12,74 @@ import {
   UserCheck
 } from 'lucide-react';
 import { dbStore, LOCATION_CODES, checkRateLimit, recordRateLimitAttempt, sanitizeInput } from '../data/dbStore';
+import { PROJECTS_DATA, LOCATIONS_LIST } from '../data/projectsData';
 
-const AVAILABLE_LOCATIONS = [
-  "Borivali West",
-  "Versova",
-  "Goregaon",
-  "Bhayander",
-  "Mira Road",
-  "Kandivali",
-  "Worli",
-  "Bandra",
-  "Powai",
-  "Lower Parel"
-];
+// Exclusively valid project locations from actual catalog
+const AVAILABLE_LOCATIONS = LOCATIONS_LIST;
 
-const LOCATION_PROJECTS_MAP = {
-  "Borivali West": [
-    "Kalpataru Advay (Borivali West - 3 & 4 BHK)"
-  ],
-  "Versova": [
-    "Godrej Skyshore (Versova - 4 Bed Sky Bungalows)"
-  ],
-  "Goregaon": [
-    "Concave Signature Residences (Goregaon)"
-  ],
-  "Bhayander": [
-    "Mira-Bhayander Waterfront Enclave"
-  ],
-  "Mira Road": [
-    "Mira-Bhayander Waterfront Enclave"
-  ],
-  "Kandivali": [
-    "Godrej Reserve (Kandivali East)"
-  ],
-  "Worli": [
-    "Lodha World Towers Collection (Worli)"
-  ],
-  "Bandra": [
-    "Bandra Seafront Luxury Penthouses"
-  ],
-  "Powai": [
-    "Hiranandani Gardens & Lakeside Residences"
-  ],
-  "Lower Parel": [
-    "Lower Parel High-Rise Sky Mansions"
-  ]
+// Dynamic mapping of actual catalog projects for each valid location
+const LOCATION_PROJECTS_MAP = LOCATIONS_LIST.reduce((acc, loc) => {
+  acc[loc] = PROJECTS_DATA
+    .filter(p => p.location.toLowerCase() === loc.toLowerCase())
+    .map(p => `${p.name} (${p.builder})`);
+  return acc;
+}, {});
+
+const resolveInitialLocation = (data) => {
+  if (data?.location) {
+    const loc = data.location.toLowerCase().trim();
+    if (loc === 'mumbai' || loc.includes('concave') || loc.includes('developments')) {
+      return '';
+    }
+    const match = LOCATIONS_LIST.find(l => l.toLowerCase() === loc);
+    if (match) return match;
+    if (loc.includes('borivali')) return 'Borivali';
+    if (loc.includes('kandivali')) return 'Kandivali';
+    if (loc.includes('malad')) return 'Malad';
+    if (loc.includes('goregaon')) return 'Goregaon';
+    if (loc.includes('jogeshwari')) return 'Jogeshwari';
+    if (loc.includes('andheri') || loc.includes('versova')) return 'Andheri';
+    if (loc.includes('bandra')) return 'Bandra';
+    if (loc.includes('lower parel') || loc.includes('parel')) return 'Lower Parel';
+  }
+  if (data?.projectName) {
+    const cleanName = data.projectName.toLowerCase().trim();
+    if (cleanName !== 'curated portfolio' && !cleanName.includes('consultation')) {
+      const proj = PROJECTS_DATA.find(p => p.name.toLowerCase() === cleanName);
+      if (proj && proj.location) return proj.location;
+    }
+  }
+  return '';
+};
+
+const resolveInitialProject = (data, resolvedLoc) => {
+  if (!data?.projectName) return '';
+  const cleanName = data.projectName.toLowerCase().trim();
+  if (cleanName === 'curated portfolio' || cleanName.includes('consultation')) {
+    return '';
+  }
+  const projsForLoc = resolvedLoc ? (LOCATION_PROJECTS_MAP[resolvedLoc] || []) : [];
+  if (resolvedLoc) {
+    const matched = projsForLoc.find(p => p.toLowerCase().includes(cleanName));
+    if (matched) return matched;
+  }
+  const anyProj = PROJECTS_DATA.find(p => p.name.toLowerCase() === cleanName);
+  if (anyProj) return `${anyProj.name} (${anyProj.builder})`;
+  return data.projectName;
 };
 
 export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
   if (!isOpen) return null;
 
+  const initialLoc = resolveInitialLocation(initialData);
+  const initialProj = resolveInitialProject(initialData, initialLoc);
+
   const [formData, setFormData] = useState({
     name: '',
     mobile: '',
     email: '',
-    locationName: initialData.location || 'Borivali West',
-    projectName: initialData.projectName || 'Kalpataru Advay (Borivali West - 3 & 4 BHK)',
+    locationName: initialLoc,
+    projectName: initialProj,
     type: 'Consultation',
     description: ''
   });
@@ -119,10 +131,9 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
   }, [otpExpirySeconds]);
 
   useEffect(() => {
-    if (initialData.location) {
-      const loc = initialData.location;
-      const projectsForLoc = LOCATION_PROJECTS_MAP[loc] || [];
-      const proj = initialData.projectName || (projectsForLoc.length > 0 ? projectsForLoc[0] : 'Other');
+    if (initialData.location || initialData.projectName) {
+      const loc = resolveInitialLocation(initialData);
+      const proj = resolveInitialProject(initialData, loc);
       setFormData(prev => ({
         ...prev,
         locationName: loc,
@@ -133,12 +144,24 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
   const handleLocationChange = (e) => {
     const newLoc = e.target.value;
-    const projectsForLoc = LOCATION_PROJECTS_MAP[newLoc] || [];
-    const defaultProj = projectsForLoc.length > 0 ? projectsForLoc[0] : 'Other';
     setFormData(prev => ({
       ...prev,
       locationName: newLoc,
-      projectName: defaultProj
+      projectName: ''
+    }));
+  };
+
+  const handleProjectChange = (e) => {
+    const newProj = e.target.value;
+    let autoLoc = formData.locationName;
+    if (!autoLoc && newProj && newProj !== 'Other') {
+      const found = PROJECTS_DATA.find(p => newProj.includes(p.name));
+      if (found) autoLoc = found.location;
+    }
+    setFormData(prev => ({
+      ...prev,
+      projectName: newProj,
+      locationName: autoLoc
     }));
   };
 
@@ -254,6 +277,11 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
     if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       alert("Please enter a valid email address (e.g. name@domain.com).");
+      return;
+    }
+
+    if (!formData.locationName) {
+      alert("Please select your preferred location.");
       return;
     }
 
@@ -585,9 +613,11 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 id="enq-location"
                 value={formData.locationName}
                 onChange={handleLocationChange}
+                required
                 aria-required="true"
                 className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
               >
+                <option value="">-- Select Preferred Location --</option>
                 {AVAILABLE_LOCATIONS.map(loc => (
                   <option key={loc} value={loc}>{loc}</option>
                 ))}
@@ -596,19 +626,38 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
             {/* Project Selection */}
             <div className="space-y-0.5">
-              <label htmlFor="enq-project" className="block text-xs font-semibold text-gray-800 tracking-wide">
-                Project of Interest
+              <label htmlFor="enq-project" className="block text-xs font-semibold text-gray-800 tracking-wide flex items-center justify-between">
+                <span>Project of Interest</span>
+                {formData.locationName && (
+                  <span className="text-[10px] font-mono text-[#245348] font-semibold">({formData.locationName})</span>
+                )}
               </label>
               <select
                 id="enq-project"
                 value={formData.projectName}
-                onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
+                onChange={handleProjectChange}
                 className="w-full bg-white border border-gray-300 focus:border-[#245348] focus:ring-2 focus:ring-[#245348]/20 rounded-lg px-3 py-2 text-sm text-[#14221F] font-medium shadow-2xs transition-all focus:outline-none cursor-pointer"
               >
-                {currentProjects.map(proj => (
-                  <option key={proj} value={proj}>{proj}</option>
-                ))}
-                <option value="Other">Other</option>
+                <option value="">-- Select Project of Interest --</option>
+                {formData.locationName ? (
+                  <>
+                    {(LOCATION_PROJECTS_MAP[formData.locationName] || []).map(proj => (
+                      <option key={proj} value={proj}>{proj}</option>
+                    ))}
+                    <option value="Other">Other / General Portfolio Consultation</option>
+                  </>
+                ) : (
+                  <>
+                    {AVAILABLE_LOCATIONS.map(loc => (
+                      <optgroup key={loc} label={`── ${loc} ──`}>
+                        {(LOCATION_PROJECTS_MAP[loc] || []).map(proj => (
+                          <option key={proj} value={proj}>{proj}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                    <option value="Other">Other / General Portfolio Consultation</option>
+                  </>
+                )}
               </select>
             </div>
 

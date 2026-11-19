@@ -52,42 +52,53 @@ export const CALL_STATUS_CODES = {
 };
 
 export const LOCATION_CODES = {
-  1: "Borivali West",
-  2: "Versova",
-  3: "Goregaon",
-  4: "Bhayander",
-  5: "Mira Road",
-  6: "Kandivali",
-  7: "Worli",
-  8: "Bandra",
-  9: "Powai",
-  10: "Lower Parel"
+  1: "Borivali",
+  2: "Kandivali",
+  3: "Malad",
+  4: "Goregaon",
+  5: "Jogeshwari",
+  6: "Andheri",
+  7: "Bandra",
+  8: "Lower Parel"
 };
 
 export const REVERSE_LOCATION_CODES = {
-  "borivali west": 1,
   "borivali": 1,
-  "versova": 2,
-  "goregaon": 3,
-  "goregaon west": 3,
-  "bhayander": 4,
-  "bhayandar": 4,
-  "mira road": 5,
-  "miraroad": 5,
-  "kandivali": 6,
-  "worli": 7,
-  "bandra": 8,
-  "powai": 9,
-  "lower parel": 10
+  "borivali west": 1,
+  "borivali east": 1,
+  "kandivali": 2,
+  "kandivali east": 2,
+  "kandivali west": 2,
+  "malad": 3,
+  "malad west": 3,
+  "malad east": 3,
+  "goregaon": 4,
+  "goregaon west": 4,
+  "goregaon east": 4,
+  "jogeshwari": 5,
+  "jogeshwari west": 5,
+  "jogeshwari east": 5,
+  "andheri": 6,
+  "andheri west": 6,
+  "andheri east": 6,
+  "versova": 6,
+  "bandra": 7,
+  "bandra west": 7,
+  "bandra east": 7,
+  "lower parel": 8,
+  "lower parel west": 8,
+  "lower parel east": 8
 };
 
 export const PROJECT_CODES = {
   1: "Kalpataru Advay",
   2: "Godrej Skyshore",
   3: "Godrej Reserve",
-  4: "Concave Signature Residences",
-  5: "Lodha World Towers Collection",
-  6: "Mira-Bhayander Waterfront Enclave"
+  4: "Lodha Altus",
+  5: "Lodha Woods",
+  6: "Lodha Sovrano",
+  7: "Oberoi Sky City",
+  8: "Mahindra Vista"
 };
 
 export const TYPE_CODES = {
@@ -110,7 +121,7 @@ const DEFAULT_CALLERS = [
     phone: "98201 12345",
     email: "rahul.sharma@concaverealty.com",
     password: "caller123",
-    assignedLocations: [3, 4], // Goregaon, Bhayander
+    assignedLocations: [3, 4], // Malad, Goregaon
     role: "Senior Location Specialist",
     active: true
   },
@@ -121,7 +132,7 @@ const DEFAULT_CALLERS = [
     phone: "98202 23456",
     email: "priya.deshmukh@concaverealty.com",
     password: "caller123",
-    assignedLocations: [1, 5], // Borivali West, Mira Road
+    assignedLocations: [1, 2], // Borivali, Kandivali
     role: "North Suburb Specialist",
     active: true
   },
@@ -132,7 +143,7 @@ const DEFAULT_CALLERS = [
     phone: "98203 34567",
     email: "sneha.kapadia@concaverealty.com",
     password: "caller123",
-    assignedLocations: [2, 7, 8], // Versova, Worli, Bandra
+    assignedLocations: [6, 7], // Andheri, Bandra
     role: "Luxury Coastal Specialist",
     active: true
   },
@@ -143,7 +154,7 @@ const DEFAULT_CALLERS = [
     phone: "98204 45678",
     email: "vikram.mehta@concaverealty.com",
     password: "caller123",
-    assignedLocations: [6, 9, 10], // Kandivali, Powai, Lower Parel
+    assignedLocations: [5, 8], // Jogeshwari, Lower Parel
     role: "Central & Commercial Hub Specialist",
     active: true
   }
@@ -244,7 +255,7 @@ const INITIAL_SEED_LEADS = [
     m: "91670 55443",
     e: "nisha.p@gmail.com",
     l: 5, // Mira Road
-    p: 6, // Mira-Bhayander Waterfront
+    p: 6, // Lodha Sovrano
     t: 3,
     s: 4, // Not Picking Up -> PROTECTED PENDING CALL!
     c: 2,
@@ -319,11 +330,11 @@ const INITIAL_SEED_LEADS = [
     n: "Rohan Varma",
     m: "98199 44321",
     e: "rohan.v@example.com",
-    l: 4, // Bhayander
-    p: 6, // Mira-Bhayander Waterfront
+    l: 4, // Goregaon
+    p: 6, // Lodha Sovrano
     t: 1,
     s: 2, // Interested (2)
-    c: 1, // Rahul Sharma (Bhayander Specialist)
+    c: 1, // Rahul Sharma (Goregaon Specialist)
     cs: 1,
     rc: 0,
     na: null,
@@ -358,7 +369,7 @@ const INITIAL_SEED_LEADS = [
     m: "91672 88771",
     e: "pooja.h@gmail.com",
     l: 5, // Mira Road
-    p: 6, // Mira-Bhayander
+    p: 6, // Lodha Sovrano
     t: 4,
     s: 4, // Not Picking Up
     c: 2, // Priya Deshmukh (Mira Road Specialist)
@@ -396,8 +407,8 @@ const INITIAL_SEED_LEADS = [
     n: "Vikramaditya Roy",
     m: "98192 33445",
     e: "v.roy@example.com",
-    l: 4, // Bhayander
-    p: 6, // Mira-Bhayander
+    l: 4, // Goregaon
+    p: 6, // Lodha Sovrano
     t: 1, // General Enquiry
     s: 7, // New Lead / Enquiry record
     c: 1, // Rahul Sharma
@@ -407,7 +418,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 1,
     d: "Enquiry for 2 BHK waterfront facing apartment.",
     nt: [
-      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Bhayander." }
+      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Goregaon." }
     ]
   }
 ];
@@ -819,7 +830,9 @@ export const dbStore = {
       else if (normProj.includes("reserve")) projId = 3;
       else if (normProj.includes("signature")) projId = 4;
       else if (normProj.includes("lodha") || normProj.includes("world")) projId = 5;
-      else if (normProj.includes("mira") || normProj.includes("bhayander")) projId = 6;
+      else if (normProj.includes("altus")) projId = 4;
+      else if (normProj.includes("woods")) projId = 5;
+      else if (normProj.includes("sovrano")) projId = 6;
       else projId = 1;
 
       // Type code mapping
