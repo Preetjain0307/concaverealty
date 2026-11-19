@@ -320,10 +320,8 @@ const INITIAL_SEED_LEADS = [
     rc: 1,
     na: Date.now() + 3600 * 1000 * 2.5, // Due in 2.5 hours
     ts: Date.now() - 3600 * 1000 * 1.5,
-    d: "Requested callback regarding ready-to-move units near Inorbit.",
-    nt: [
-      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 1.5, txt: "Rung 4 times, no response. Scheduled 4-hour automatic re-dial." }
-    ]
+    d: "",
+    nt: []
   },
   {
     i: 104,
@@ -339,10 +337,8 @@ const INITIAL_SEED_LEADS = [
     rc: 0,
     na: null,
     ts: Date.now() - 3600 * 1000 * 24,
-    d: "Looking for 2 BHK budget around 1.15 Cr all-in.",
-    nt: [
-      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 20, txt: "Interested in payment milestone schedule. Sent brochure via WhatsApp." }
-    ]
+    d: "",
+    nt: []
   },
   {
     i: 105,
@@ -416,10 +412,8 @@ const INITIAL_SEED_LEADS = [
     rc: 0,
     na: null,
     ts: Date.now() - 3600 * 1000 * 1,
-    d: "Enquiry for 2 BHK waterfront facing apartment.",
-    nt: [
-      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Goregaon." }
-    ]
+    d: "",
+    nt: []
   }
 ];
 
@@ -596,6 +590,16 @@ export const dbStore = {
         setRawData(DB_KEY, INITIAL_SEED_LEADS);
       } else {
         let updated = false;
+        // Strip the requested requirement & notes text from existing browser storage
+        existing.forEach(l => {
+          if (l.i === 103 || l.i === 104 || l.i === 108) {
+            if (l.d || (l.nt && l.nt.length > 0)) {
+              l.d = "";
+              l.nt = [];
+              updated = true;
+            }
+          }
+        });
         INITIAL_SEED_LEADS.forEach(seed => {
           if (!existing.some(l => l.i === seed.i)) {
             existing.push(seed);
