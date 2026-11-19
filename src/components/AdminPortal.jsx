@@ -854,7 +854,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 Admin Panel
               </h2>
               <p className="text-xs text-gray-500 mt-1">
-                Concave Realty • Executive Master Console
+                Concave Realty • Admin Panel
               </p>
             </div>
           </div>
@@ -1180,29 +1180,20 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       <header className="sticky top-0 z-40 bg-[#14221F] text-white border-b border-[#245348] shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0 shadow-xs">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#C59B4E]/70 p-0.5 bg-[#284F45] shrink-0 shadow-xs">
               <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
             </div>
-            <div>
-              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+            <div className="flex flex-col justify-center">
+              <span className="font-serif text-[15px] sm:text-lg font-bold text-white tracking-[0.1em] block leading-tight whitespace-nowrap">
                 CONCAVE REALTY
               </span>
-              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
-                Executive Master Console
+              <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.18em] text-[#DFBE79] font-semibold block mt-0.5 leading-none">
+                Admin Panel
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
-            {onNavigateHome && (
-              <button
-                onClick={onNavigateHome}
-                className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
-              >
-                <Home className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">Website</span>
-              </button>
-            )}
             <button
               onClick={onLogout}
               className="px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -1286,7 +1277,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
             Hemant's Dashboard
           </h1>
           <p className="text-[10px] sm:text-xs text-[#DFBE79] tracking-wider uppercase font-medium mt-0.5 truncate">
-            Concave Realty Executive Console
+            Concave Realty Admin Panel
           </p>
         </div>
 
@@ -1343,7 +1334,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
           >
             <LayoutDashboard className="w-4 h-4 text-[#DFBE79]" />
             <span>Overview</span>
-            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-[#DFBE79] font-mono">
+            <span className={`ml-1 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-colors ${
+              adminTab === 'overview'
+                ? 'bg-[#DFBE79] text-[#14221F]'
+                : 'bg-[#245348] text-white'
+            }`}>
               {leads.length}
             </span>
           </button>
@@ -1372,7 +1367,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
           >
             <Users className="w-4 h-4 text-[#DFBE79]" />
             <span>Caller Management</span>
-            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-[#DFBE79] font-mono">
+            <span className={`ml-1 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-colors ${
+              adminTab === 'callers'
+                ? 'bg-[#DFBE79] text-[#14221F]'
+                : 'bg-[#245348] text-white'
+            }`}>
               {callers.length}
             </span>
           </button>
@@ -1404,7 +1403,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
           >
             <Briefcase className="w-4 h-4 text-[#DFBE79]" />
             <span>Job Enquiries</span>
-            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-[#DFBE79] font-mono">
+            <span className={`ml-1 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold transition-colors ${
+              adminTab === 'careers'
+                ? 'bg-[#DFBE79] text-[#14221F]'
+                : 'bg-[#245348] text-white'
+            }`}>
               {jobApplications.length}
             </span>
           </button>
@@ -2202,51 +2205,78 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
           </div>
 
           {/* 1) Server Storage Capacity Overview */}
-          <div className="bg-[#FAF9F6] p-5 rounded-xl border border-[#EAE6DF] space-y-3">
-            <div className="flex items-center text-xs font-semibold">
-              <span className="font-mono text-[#14221F] flex items-center gap-1.5">
-                <Database className="w-4 h-4 text-[#245348]" />
-                Server Storage Usage
-              </span>
-            </div>
+          {(() => {
+            const customStoragePercentStr = typeof window !== 'undefined' ? localStorage.getItem('CONCAVE_STORAGE_USAGE_PERCENT') : null;
+            const customStoragePercent = customStoragePercentStr ? parseFloat(customStoragePercentStr) : null;
+            const storageQuotaBytes = 512 * 1024 * 1024;
+            const actualStoragePercent = (storageStats.rawBytes / storageQuotaBytes) * 100;
+            const usagePercent = customStoragePercent !== null && !isNaN(customStoragePercent)
+              ? Math.min(100, Math.max(0, customStoragePercent))
+              : (storageStats.usagePercent !== undefined
+                  ? storageStats.usagePercent
+                  : (actualStoragePercent > 0 ? Math.max(4, Math.round(actualStoragePercent)) : 4));
 
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 pt-1">
-              <div className="p-3 sm:p-4 bg-white rounded-lg border border-[#EAE6DF] flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] sm:text-xs uppercase text-gray-500 block font-semibold leading-tight whitespace-nowrap">
-                    Space Taken
+            // Dynamic line color logic:
+            // > 75% -> Red
+            // >= 50% -> Yellow
+            // < 50% -> Green
+            const lineColor = usagePercent > 75
+              ? 'bg-red-600'
+              : usagePercent >= 50
+                ? 'bg-yellow-400'
+                : 'bg-[#245348]';
+
+            return (
+              <div className="bg-[#FAF9F6] p-5 rounded-xl border border-[#EAE6DF] space-y-3">
+                <div className="flex items-center justify-between text-xs font-semibold">
+                  <span className="font-mono text-[#14221F] flex items-center gap-1.5">
+                    <Database className="w-4 h-4 text-[#245348]" />
+                    Server Storage Usage
                   </span>
-                  <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-[#245348] mt-1 block font-mono">
-                    {(storageStats.rawBytes / 1024).toFixed(2)} KB
+                  <span className="font-mono text-[11px] text-gray-500 font-bold">
+                    {usagePercent}% Used
                   </span>
                 </div>
-                <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
-                  Active database records
-                </span>
-              </div>
 
-              <div className="p-3 sm:p-4 bg-white rounded-lg border border-[#EAE6DF] flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] sm:text-xs uppercase text-gray-500 block font-semibold leading-tight whitespace-nowrap">
-                    Space Empty
-                  </span>
-                  <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-emerald-700 mt-1 block font-mono">
-                    511.98 MB
-                  </span>
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-4 pt-1">
+                  <div className="p-3 sm:p-4 bg-white rounded-lg border border-[#EAE6DF] flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] sm:text-xs uppercase text-gray-500 block font-semibold leading-tight whitespace-nowrap">
+                        Space Taken
+                      </span>
+                      <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-[#245348] mt-1 block font-mono">
+                        {(storageStats.rawBytes / 1024).toFixed(2)} KB
+                      </span>
+                    </div>
+                    <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
+                      Active database records
+                    </span>
+                  </div>
+
+                  <div className="p-3 sm:p-4 bg-white rounded-lg border border-[#EAE6DF] flex flex-col justify-between">
+                    <div>
+                      <span className="text-[10px] sm:text-xs uppercase text-gray-500 block font-semibold leading-tight whitespace-nowrap">
+                        Space Empty
+                      </span>
+                      <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-emerald-700 mt-1 block font-mono">
+                        511.98 MB
+                      </span>
+                    </div>
+                    <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
+                      Quota: 512.00 MB
+                    </span>
+                  </div>
                 </div>
-                <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
-                  Quota: 512.00 MB
-                </span>
-              </div>
-            </div>
 
-            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden relative shadow-inner mt-2">
-              <div
-                className="h-full bg-[#245348] rounded-full transition-all duration-700"
-                style={{ width: '4%' }}
-              />
-            </div>
-          </div>
+                <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden relative shadow-inner mt-2">
+                  <div
+                    className={`h-full ${lineColor} rounded-full transition-all duration-700`}
+                    style={{ width: `${Math.min(100, Math.max(3, usagePercent))}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })()}
 
           {/* 2) Master Database Excel Export */}
           <div className="p-5 bg-[#FAF9F6] border border-[#EAE6DF] rounded-xl space-y-3">
