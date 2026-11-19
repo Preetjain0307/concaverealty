@@ -18,12 +18,44 @@
     background: #FAF9F6;
   }
   ::-webkit-scrollbar-thumb {
-    background: #CBD5D1;
+    background: #245348;
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #245348;
+    background: #1B3F37;
   }
+}
+
+/* Luxury Green Scrollbar for tables and sliders - Always clearly visible */
+.scrollbar-luxury-green {
+  scrollbar-width: thin;
+  scrollbar-color: #245348 #EAE5D9;
+  -webkit-overflow-scrolling: touch;
+}
+.scrollbar-luxury-green::-webkit-scrollbar {
+  height: 9px;
+  width: 9px;
+  display: block;
+}
+.scrollbar-luxury-green::-webkit-scrollbar-track {
+  background: #EAE5D9;
+  border-radius: 9999px;
+  border: 1px solid #DDD5C7;
+  margin: 0 4px 4px 4px;
+}
+.scrollbar-luxury-green::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #245348, #2E685A);
+  border-radius: 9999px;
+  border: 1.5px solid #FAF6EC;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  cursor: grab;
+}
+.scrollbar-luxury-green::-webkit-scrollbar-thumb:hover {
+  background: #1B3F37;
+}
+.scrollbar-luxury-green::-webkit-scrollbar-thumb:active {
+  background: #14221F;
+  cursor: grabbing;
 }
 
 /* Minimal Luxury Utilities */

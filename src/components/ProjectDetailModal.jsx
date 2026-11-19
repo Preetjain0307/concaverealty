@@ -9,7 +9,6 @@ import {
   PhoneCall,
   Calendar,
   ExternalLink,
-  Info,
   Lock,
   Eye,
   Navigation,
@@ -262,24 +261,37 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               )}
 
               <div 
-                className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto"
+                className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 z-20 flex items-center justify-between gap-2 pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className="text-xs uppercase font-mono tracking-wider bg-white/95 text-[#14221F] px-3 py-1 rounded shadow-sm font-semibold">
-                  {project.locality || project.location}
-                </span>
+                {/* Location Map Badge */}
+                <a
+                  href={project.coords ? `https://www.google.com/maps/search/?api=1&query=${project.coords.lat},${project.coords.lng}` : (project.mapUrl || '#')}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={(e) => {
+                    if (!project.mapUrl && !project.coords) e.preventDefault();
+                    e.stopPropagation();
+                  }}
+                  title={`View ${project.name} on Google Maps (${project.locality || project.location})`}
+                  className="h-8 sm:h-9 bg-white/95 hover:bg-white text-[#14221F] border border-[#C59B4E]/40 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold shadow-md flex items-center gap-1.5 max-w-[62%] sm:max-w-[70%] truncate transition-all group/loc"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0 group-hover/loc:scale-110 transition-transform" />
+                  <span className="truncate uppercase font-mono tracking-wider">{project.locality || project.location}</span>
+                </a>
 
                 {/* 360° Virtual Tour button - strictly conditional */}
                 {project.virtualTourUrl && (
                   <button
+                    type="button"
                     onClick={() => {
                       onClose();
                       onOpenTour(project.id);
                     }}
                     aria-label={`Open 360° virtual tour for ${project.name}`}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded text-xs font-semibold bg-[#245348] text-white shadow-md hover:bg-[#1B3F37] transition-colors"
+                    className="h-8 sm:h-9 inline-flex items-center gap-1.5 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold bg-[#245348] hover:bg-[#1B3F37] text-white border border-[#DFBE79]/50 shadow-md transition-all hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer"
                   >
-                    <Compass className="w-4 h-4 text-[#DFBE79] animate-spin" style={{ animationDuration: '10s' }} />
+                    <Compass className="w-3.5 h-3.5 text-[#DFBE79] shrink-0 animate-spin" style={{ animationDuration: '10s' }} />
                     <span>360° Virtual Tour</span>
                   </button>
                 )}
@@ -462,7 +474,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           {/* Section: Curated Lifestyle Amenities */}
           {project.amenities && project.amenities.length > 0 && (
             <div className="space-y-3 pt-2">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5">
                 <div>
                   <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
                     World-Class Living
@@ -474,9 +486,12 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     Curated Lifestyle & Wellness Amenities
                   </h4>
                 </div>
-                <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs shrink-0">
-                  {project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}
-                </span>
+                <div className="self-start sm:self-auto shrink-0">
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs whitespace-nowrap">
+                    <Sparkles className="w-3 h-3 text-[#C59B4E]" />
+                    <span>{project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}</span>
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -510,43 +525,60 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
           {/* Section: Available Configurations & Quotations */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="font-serif text-base font-bold text-[#14221F]">
-                Available Configurations & Quotations
-              </h4>
-              <span className="text-[11px] text-gray-500 font-mono">
-                Possession: {project.possession}
-              </span>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5">
+              <div>
+                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
+                  Pricing & Typologies
+                </span>
+                <h4 className="font-serif text-lg sm:text-xl font-bold text-[#14221F]">
+                  Available Configurations & Quotations
+                </h4>
+              </div>
+              {project.possession && (
+                <div className="self-start sm:self-auto shrink-0">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#C59B4E]/30 text-[11px] font-mono text-gray-700 whitespace-nowrap shadow-2xs">
+                    <Calendar className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                    <span>Possession: <strong className="text-[#14221F] font-semibold">{project.possession}</strong></span>
+                  </span>
+                </div>
+              )}
             </div>
 
-            <div className="overflow-x-auto rounded border border-[#EAE6DF]">
-              <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-[#EAE6DF] scrollbar-luxury-green shadow-2xs bg-white pb-0.5">
+              <table className="min-w-[620px] w-full text-left text-xs">
                 <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
                   <tr>
-                    <th className="py-2.5 px-3">Configuration</th>
-                    <th className="py-2.5 px-3">Carpet Area</th>
-                    <th className="py-2.5 px-3">Quoted Value*</th>
-                    <th className="py-2.5 px-3">Possession</th>
-                    <th className="py-2.5 px-3 text-right">Action</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Carpet Area</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Quoted Value*</th>
+                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Possession</th>
+                    <th className="py-3 px-3.5 text-right whitespace-nowrap font-semibold">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
                   {project.configurations && project.configurations.length > 0 ? (
                     project.configurations.map((cfg, idx) => (
                       <tr key={idx} className="hover:bg-[#FAF9F6] transition-colors">
-                        <td className="py-2.5 px-3 font-semibold text-[#14221F]">
-                          {cfg.bhk}
+                        <td className="py-3 px-3.5 font-semibold text-[#14221F] whitespace-nowrap">
+                          <div>{cfg.bhk}</div>
                           {cfg.floorPlanLabel && (
                             <span className="text-[10px] text-gray-500 block font-normal">
                               {cfg.floorPlanLabel}
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3 font-mono">{cfg.carpetArea}</td>
-                        <td className="py-2.5 px-3 font-semibold text-[#245348]">{cfg.price}</td>
-                        <td className="py-2.5 px-3 text-gray-500">{cfg.possessionDate || project.possession}</td>
-                        <td className="py-2.5 px-3 text-right">
+                        <td className="py-3 px-3.5 font-mono text-[11.5px] text-gray-700 whitespace-nowrap font-medium">
+                          {cfg.carpetArea}
+                        </td>
+                        <td className="py-3 px-3.5 font-semibold text-[#245348] whitespace-nowrap text-sm">
+                          {cfg.price}
+                        </td>
+                        <td className="py-3 px-3.5 text-gray-600 whitespace-nowrap text-[11px] font-mono">
+                          {cfg.possessionDate || project.possession}
+                        </td>
+                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
                           <button
+                            type="button"
                             onClick={() => {
                               onClose();
                               onOpenEnquiry({
@@ -556,7 +588,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                                 project
                               });
                             }}
-                            className="px-3 py-1 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-medium transition-colors"
+                            className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs whitespace-nowrap active:scale-95 cursor-pointer"
                           >
                             Enquire Unit
                           </button>
@@ -565,7 +597,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="5" className="py-4 text-center text-gray-500">
+                      <td colSpan="5" className="py-6 text-center text-gray-500 font-mono text-xs">
                         Configurations and quotation available on request
                       </td>
                     </tr>
@@ -574,15 +606,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               </table>
             </div>
 
-            {/* Mandatory Price Disclaimer */}
-            <div className="bg-[#FAF9F6] border-l-2 border-[#C59B4E] p-3 text-[11px] text-gray-600 leading-relaxed rounded-r">
-              <p className="flex items-start gap-1.5">
-                <Info className="w-3.5 h-3.5 text-[#C59B4E] flex-shrink-0 mt-0.5" />
-                <span>
-                  <strong>Price Disclaimer:</strong> *Prices mentioned are indicative quoted prices and are subject to change without prior notice. Actual pricing, apartment availability, taxes, additional charges and final commercial terms must be confirmed with the authorized sales representative or developer.
-                </span>
-              </p>
-            </div>
           </div>
 
           {/* Section: Architectural Floor View */}
@@ -625,9 +648,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     <h5 className="font-serif text-sm sm:text-base font-bold text-white drop-shadow">
                       Architectural Floor View & Unit Layout
                     </h5>
-                    <p className="text-[11px] text-gray-200 max-w-xs drop-shadow mt-0.5">
-                      Floor plans and room dimensions are confidential. Click to unlock official layout via enquiry.
-                    </p>
                   </div>
                   <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#245348] text-white text-[10px] uppercase tracking-wider font-semibold shadow-md group-hover:bg-[#1B3F37] transition-all border border-[#DFBE79]/40 mt-1">
                     <Eye className="w-3.5 h-3.5 text-[#DFBE79]" />
@@ -641,44 +661,46 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           {/* Section: Precision Location & Interactive Map View */}
           <div className="space-y-4 pt-4 border-t border-[#EAE6DF]">
             {/* Top Bar: Title, Address, MahaRERA & GPS Coordinates */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-              <div className="space-y-1">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
+              <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-md bg-[#245348]/10 text-[#245348] flex items-center justify-center">
-                    <MapPin className="w-3.5 h-3.5" />
+                  <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold">
+                    Location & Connectivity
                   </span>
-                  <h4 className="font-serif text-base sm:text-lg font-bold text-[#14221F]">
-                    Precise Location & Connectivity
-                  </h4>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-semibold flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-mono font-semibold shrink-0">
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
                     <span>Verified Site</span>
                   </span>
                 </div>
 
-                <p className="text-xs text-gray-600 font-normal leading-relaxed pl-8">
+                <h4 className="font-serif text-lg sm:text-xl font-bold text-[#14221F] flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-[#245348] shrink-0" />
+                  <span>Precise Location & Connectivity</span>
+                </h4>
+
+                <p className="text-xs sm:text-[13px] text-gray-600 font-normal leading-relaxed">
                   {project.exactAddress || `${project.locality ? `${project.locality}, ` : ''}${project.location}, Mumbai, Maharashtra`}
                 </p>
               </div>
 
               {/* Coordinates Pill & Quick Actions */}
-              <div className="flex flex-wrap items-center gap-2 pl-8 sm:pl-0">
+              <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
                 {project.coords && (
                   <button
                     type="button"
                     onClick={() => handleCopyCoords(project.coords.lat, project.coords.lng)}
                     title="Click to copy exact GPS coordinates"
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FAF9F6] hover:bg-gray-100 border border-[#EAE6DF] text-[11px] font-mono text-gray-700 transition-colors shadow-2xs cursor-pointer group"
+                    className="h-8.5 inline-flex items-center gap-1.5 px-3 rounded-lg bg-[#FAF9F6] hover:bg-gray-100 border border-[#EAE6DF] text-[11px] font-mono text-gray-700 transition-all shadow-2xs cursor-pointer group active:scale-95 whitespace-nowrap"
                   >
-                    <LocateFixed className="w-3 h-3 text-[#C59B4E] group-hover:scale-110 transition-transform" />
-                    <span>{project.coords.lat.toFixed(4)}° N, {project.coords.lng.toFixed(4)}° E</span>
+                    <LocateFixed className="w-3.5 h-3.5 text-[#C59B4E] group-hover:scale-110 transition-transform shrink-0" />
+                    <span className="tracking-tight">{project.coords.lat.toFixed(4)}° N, {project.coords.lng.toFixed(4)}° E</span>
                     {copiedCoords ? (
                       <span className="inline-flex items-center gap-0.5 text-emerald-700 font-semibold text-[10px] ml-1">
                         <Check className="w-3 h-3" />
                         <span>Copied</span>
                       </span>
                     ) : (
-                      <Copy className="w-3 h-3 text-gray-400 group-hover:text-gray-600 ml-0.5" />
+                      <Copy className="w-3 h-3 text-gray-400 group-hover:text-gray-600 ml-0.5 shrink-0" />
                     )}
                   </button>
                 )}
@@ -687,9 +709,9 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   href={`https://www.google.com/maps/dir/?api=1&destination=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs"
+                  className="h-8.5 inline-flex items-center gap-1.5 px-3.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs shrink-0 whitespace-nowrap active:scale-95"
                 >
-                  <Route className="w-3 h-3" />
+                  <Route className="w-3.5 h-3.5 text-[#DFBE79] shrink-0" />
                   <span>Get Directions</span>
                 </a>
               </div>
@@ -846,10 +868,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
 
           {/* Bottom Action Footer */}
-          <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-[11px] sm:text-xs text-gray-500 font-mono text-center sm:text-left">
-              Concave Realty Curated Portfolio
-            </div>
+          <div className="pt-4 border-t border-[#EAE6DF] flex items-center justify-end gap-2.5">
             <div className="flex items-center gap-2.5 w-full sm:w-auto">
               <button
                 onClick={onClose}

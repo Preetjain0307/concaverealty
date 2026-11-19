@@ -581,24 +581,6 @@ export function SignatureProjects({
 
           </div>
 
-          {/* Selected Location Summary Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#FAF6EC]/85 via-white/75 to-[#FAF6EC]/85 border border-[#E6DACA]/80 text-xs text-[#4A5551]">
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2.5 w-2.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C59B4E] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#245348]" />
-              </span>
-              <span className="tracking-[0.01em]">
-                Showing <strong className="text-[#14221F] font-semibold">{displayedProjects.length}</strong> curated developments in <strong className="text-[#245348] font-semibold">{selectedLocation}</strong>
-                {selectedBhk !== 'All' && <span> • Typology: <strong className="text-[#14221F] font-semibold">{selectedBhk}</strong></span>}
-                {searchQuery && <span> • Matching: "<strong className="text-[#9E7B42] font-semibold">{searchQuery}</strong>"</span>}
-              </span>
-            </div>
-            <span className="text-[#8E8372] text-[10.5px] italic">
-              *Prices mentioned are indicative quoted prices
-            </span>
-          </div>
-
           {/* ============================================================== */}
           {/* SECTION C & D: LOCATION-WISE PROJECT INFORMATION CARDS GRID    */}
           {/* ============================================================== */}
