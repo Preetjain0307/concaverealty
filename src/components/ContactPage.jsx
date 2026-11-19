@@ -107,7 +107,7 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
           </div>
 
           {/* 2. Official Email Card */}
-          <div className="p-8 sm:p-10 rounded-2xl bg-white border border-[#EAE6DF] shadow-[0_10px_30px_rgba(24,60,50,0.06)] hover:border-[#C59B4E] transition-all duration-300 space-y-6 text-center group">
+          <div className="p-4 xs:p-6 sm:p-10 rounded-2xl bg-white border border-[#EAE6DF] shadow-[0_10px_30px_rgba(24,60,50,0.06)] hover:border-[#C59B4E] transition-all duration-300 space-y-6 text-center group">
             <div className="w-14 h-14 mx-auto rounded-full bg-[#C59B4E]/15 flex items-center justify-center text-[#8B6846] group-hover:scale-110 transition-transform shadow-xs">
               <Mail className="w-6 h-6" />
             </div>
@@ -116,12 +116,14 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
               <span className="text-[11px] uppercase tracking-[0.25em] text-[#8B6846] font-semibold block">
                 Official Email
               </span>
-              <a
-                href={`mailto:${EMAIL_ADDRESS}`}
-                className="text-lg sm:text-xl font-bold text-[#183C32] hover:text-[#C59B4E] transition-colors block break-all font-mono"
-              >
-                {EMAIL_ADDRESS}
-              </a>
+              <div className="overflow-x-auto custom-scrollbar-none py-0.5">
+                <a
+                  href={`mailto:${EMAIL_ADDRESS}`}
+                  className="text-[15.5px] min-[360px]:text-[17px] min-[410px]:text-[19px] sm:text-2xl md:text-3xl font-bold text-[#183C32] hover:text-[#C59B4E] transition-colors inline-block whitespace-nowrap tracking-tight"
+                >
+                  {EMAIL_ADDRESS}
+                </a>
+              </div>
               <p className="text-xs text-gray-500">
                 Official inquiries, developer partnerships & verified dossiers
               </p>

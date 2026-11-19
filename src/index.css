@@ -9,7 +9,11 @@
     min-height: 100vh;
   }
 
-  /* Custom subtle scrollbar */
+  /* Custom green scrollbar matching website brand green (#245348) */
+  * {
+    scrollbar-color: #245348 #FAF9F6;
+    scrollbar-width: thin;
+  }
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -21,6 +25,7 @@
     background: #245348;
     border-radius: 4px;
   }
+  ::-webkit-scrollbar-thumb:hover {
   ::-webkit-scrollbar-thumb:hover {
     background: #1B3F37;
   }
@@ -56,6 +61,41 @@
 .scrollbar-luxury-green::-webkit-scrollbar-thumb:active {
   background: #14221F;
   cursor: grabbing;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Always-visible Green Scrollbar Utility for Horizontal Tab Bars & Panels */
+.custom-green-scrollbar {
+  scrollbar-color: #245348 #E8EFEA;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.custom-green-scrollbar::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+  display: block !important;
+}
+.custom-green-scrollbar::-webkit-scrollbar-track {
+  background: #E8EFEA;
+  border-radius: 9999px;
+}
+.custom-green-scrollbar::-webkit-scrollbar-thumb {
+  background: #245348;
+  border-radius: 9999px;
+}
+.custom-green-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #14221F;
+}
 }
 
 /* Minimal Luxury Utilities */

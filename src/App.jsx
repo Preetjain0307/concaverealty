@@ -87,8 +87,35 @@ function HomeCtaBanner({ onExplore }) {
 }
 
 export function App() {
-  const [showSplash, setShowSplash] = useState(true);
-  const [currentView, setCurrentView] = useState('home'); // 'home', 'projects', 'locations', 'amenities', 'enquiry', 'caller', 'admin', 'legal'
+  const isInitialAdminOrCaller = () => {
+    try {
+      const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+      const hash = window.location.hash.toLowerCase();
+      return (
+        path === '/concave-admin' || path === '/admin' || hash === '#concave-admin' || hash === '#admin' ||
+        path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller'
+      );
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const [showSplash, setShowSplash] = useState(() => !isInitialAdminOrCaller());
+  const [currentView, setCurrentView] = useState(() => {
+    try {
+      const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+      const hash = window.location.hash.toLowerCase();
+      if (path === '/concave-admin' || path === '/admin' || hash === '#concave-admin' || hash === '#admin') return 'admin';
+      if (path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller') return 'caller';
+      if (path === '/careers' || hash === '#careers' || hash === '#career') return 'careers';
+      if (hash.startsWith('#terms') || path === '/terms') return 'legal';
+      if (hash.startsWith('#privacy') || path === '/privacy') return 'legal';
+      if (hash.startsWith('#disclaimer') || path === '/disclaimer') return 'legal';
+      if (hash.startsWith('#cookies') || path === '/cookies') return 'legal';
+      if (hash === '#legal' || path === '/legal') return 'legal';
+    } catch (e) {}
+    return 'home';
+  });
   const [legalTab, setLegalTab] = useState('terms'); // 'terms', 'privacy', 'disclaimer', 'cookies'
 
   const [selectedProject, setSelectedProject] = useState(null);
@@ -135,11 +162,13 @@ export function App() {
       const hash = window.location.hash.toLowerCase();
 
       if (path === '/concave-admin' || path === '/admin' || hash === '#concave-admin' || hash === '#admin') {
+        setShowSplash(false);
         setCurrentView('admin');
         if (window.location.pathname !== '/concave-admin') {
           window.history.replaceState(null, '', '/concave-admin');
         }
       } else if (path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller') {
+        setShowSplash(false);
         setCurrentView('caller');
         if (window.location.pathname !== '/concave-caller') {
           window.history.replaceState(null, '', '/concave-caller');
@@ -170,10 +199,12 @@ export function App() {
     const handleKeydown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
         e.preventDefault();
+        setShowSplash(false);
         setCurrentView('admin');
         window.history.pushState(null, '', '/concave-admin');
       } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
         e.preventDefault();
+        setShowSplash(false);
         setCurrentView('caller');
         window.history.pushState(null, '', '/concave-caller');
       }
@@ -197,6 +228,7 @@ export function App() {
     }
 
     if (currentView === 'admin' || currentView === 'caller') {
+      setShowSplash(false);
       robotsMeta.content = 'noindex, nofollow, noarchive, nosnippet';
     } else {
       robotsMeta.content = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
@@ -244,8 +276,8 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      {/* 3-Second Logo Splash Animation Screen */}
-      {showSplash && (
+      {/* 3-Second Logo Splash Animation Screen: Never shown on admin or caller portals */}
+      {showSplash && currentView !== 'admin' && currentView !== 'caller' && (
         <SplashIntro onFinish={() => setShowSplash(false)} />
       )}
 

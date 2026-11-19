@@ -758,11 +758,10 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                   <div className="flex justify-center px-1">
                     <a
                       href={`mailto:${EMAIL_ADDRESS}?subject=Concave%20Realty%20Career%20Application`}
-                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[13px] xs:text-base sm:text-xl md:text-2xl font-mono font-bold text-[#1D3530] hover:text-[#C59B4E] transition-colors max-w-full px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg hover:bg-black/5 leading-normal"
-                      style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[14.5px] min-[360px]:text-[16px] xs:text-lg sm:text-2xl md:text-3xl font-bold text-[#1D3530] hover:text-[#C59B4E] transition-colors max-w-full px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg hover:bg-black/5 leading-normal tracking-tight"
                     >
-                      <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#C59B4E] shrink-0" />
-                      <span className="break-all xs:break-normal">{EMAIL_ADDRESS}</span>
+                      <Mail className="w-4 h-4 sm:w-6 sm:h-6 text-[#C59B4E] shrink-0" />
+                      <span className="whitespace-nowrap">{EMAIL_ADDRESS}</span>
                     </a>
                   </div>
 

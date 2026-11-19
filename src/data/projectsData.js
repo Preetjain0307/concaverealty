@@ -540,10 +540,13 @@ export const PROJECTS_DATA = [
     towerDetails: "G + 34 Storeys with boutique finishing",
     elevators: "3 High-Speed Elevators",
     amenitiesCount: "20+ Curated Amenities",
-    coverImage: "/projects/project_img_41.jpg",
+    coverImage: "/project_photos/12%20-%20Enchante%20Point/cover.jpg",
     images: [
-      "/projects/project_img_41.jpg",
-      "/projects/project_img_38.jpg"
+      "/project_photos/12%20-%20Enchante%20Point/cover.jpg",
+      "/project_photos/12%20-%20Enchante%20Point/3.jpg",
+      "/project_photos/12%20-%20Enchante%20Point/1.jpg",
+      "/project_photos/12%20-%20Enchante%20Point/2.jpg",
+      "/project_photos/12%20-%20Enchante%20Point/5.jpg"
     ],
     configurations: [
       { bhk: "2 BHK Boutique", carpetArea: "630 sq.ft CA", price: "₹1.70 Cr*", floorPlanLabel: "Type 2B", possessionDate: "March 2027" },
@@ -1696,8 +1699,12 @@ export const PROJECTS_DATA = [
     towerDetails: "Ultra-luxury residential skyscraper",
     elevators: "High-Speed Elevators",
     amenitiesCount: "Godrej Signature Amenities",
-    coverImage: null,
-    images: [],
+    coverImage: "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/cover.jpg",
+    images: [
+      "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/cover.jpg",
+      "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/2.jpg",
+      "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/3.jpg"
+    ],
     configurations: [
       { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
       { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
@@ -2777,7 +2784,7 @@ export const BEST_COVER_FILES = {
   9: "cover.jpg",          // Naring Malad (Malad W): High-rise tower elevation render
   10: "3.jpg",             // Runwal Auris (Malad W): All 4 lit towers at dusk
   11: "cover.jpg",          // Lodha Malad (Malad W): High-rise dusk tower facade render
-  12: "3.jpg",             // Enchante Point (Malad W): Full high-rise tower at night
+  12: "cover.jpg",         // Enchante Point (Malad W): Widescreen night aerial master elevation of illuminated towers
   13: "cover.jpg",          // Naring Goregaon (Goregaon W): Full twin towers with commercial podium (user render)
   14: "1.jpg",             // Kalpataru Elara (Goregaon W): Grand high-rise towers overlooking city
   15: "cover.jpg",         // Kolte-Patil Goregaon (Goregaon W): Sunset skyline master elevation render
@@ -2807,20 +2814,21 @@ export const BEST_COVER_FILES = {
   39: "cover.jpg",         // DLH (Bandra W): Widescreen sunset master elevation render of skyscraper tower
   40: "1.jpg",             // Lodha Lower Parel (World Towers / Parkside): Iconic triple high-rise towers overlooking bay & parkland
   41: "1.jpg",             // Piramal Mahalaxmi (Lower Parel): Iconic 3-tower luxury skyline overlooking racecourse
-  42: "1.jpg"              // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
+  42: "1.jpg",             // Prestige Jasdan Classic (Lower Parel): Twin towers rising over city (NOT bedroom)
+  43: "cover.jpg"          // Godrej (Lower Parel): Sunset high-rise skyscraper towers
 };
 
 // Map each project's total photo count in public/project_photos/
 export const PROJECT_PHOTO_COUNTS = {
   1: 3, 2: 4, 3: 3, 4: 3, 5: 8,
   6: 4, 7: 3, 8: 3, 9: 3, 10: 3,
-  11: 2, 12: 4, 13: 3, 14: 4, 15: 4,
+  11: 2, 12: 5, 13: 3, 14: 4, 15: 4,
   16: 3, 17: 4, 18: 3, 19: 3, 20: 3,
   21: 4, 22: 5, 23: 3, 24: 3, 25: 3,
   26: 5, 27: 3, 28: 3, 29: 4, 30: 3,
   31: 4, 32: 3, 33: 2, 34: 3, 35: 2,
   36: 3, 37: 3, 38: 4, 39: 3, 40: 2,
-  41: 3, 42: 2, 43: 0
+  41: 3, 42: 2, 43: 3
 };
 
 PROJECTS_DATA.forEach(p => {
@@ -2832,14 +2840,6 @@ PROJECTS_DATA.forEach(p => {
 
   const folder = PROJECT_FOLDERS[p.id] || `${p.id} - ${p.name}`;
   p.folder = folder;
-
-  // Project 43 (Godrej Lower Parel): Photos explicitly removed as requested
-  if (p.id === 43) {
-    p.coverImage = null;
-    p.images = [];
-    p.fallbackCover = null;
-    return;
-  }
 
   p.fallbackCover = p.coverImage;
 
@@ -2866,8 +2866,8 @@ PROJECTS_DATA.forEach(p => {
     // Lodha Malad: exclude European brick buildings (3.jpg & 4.jpg), keep 1 and 2
     photoOrder = [1, 2];
   } else if (p.id === 12) {
-    // Enchante Point: exclude commercial glass building (4.jpg), keep 1, 2, and 5
-    photoOrder = [1, 2, 5];
+    // Enchante Point: cover (widescreen night aerial render), 3 (tower at night), 1 (facade), 2 (amenities), 5 (landscape)
+    photoOrder = [3, 1, 2, 5];
   } else if (p.id === 15) {
     // Kolte-Patil Goregaon: gallery has newly added high-res facade render (4.jpg), followed by 2.jpg & 3.jpg
     photoOrder = [4, 2, 3];
@@ -2922,6 +2922,9 @@ PROJECTS_DATA.forEach(p => {
   } else if (p.id === 39) {
     // DLH Bandra West: cover (sunset master render), 1 (tower elevation), 2 (facade)
     photoOrder = [1, 2];
+  } else if (p.id === 43) {
+    // Godrej Lower Parel: cover (sunset master elevation of dual towers), 2 (podium clubhouse & pool terrace), 3 (panoramic sunset sky lounge)
+    photoOrder = [2, 3];
   } else {
     photoOrder = Array.from({ length: count }, (_, idx) => idx + 1);
   }

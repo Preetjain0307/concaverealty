@@ -21,6 +21,7 @@ import {
   Train
 } from 'lucide-react';
 import { PROJECTS_DATA, LOCATIONS_LIST, MARQUEE_IMAGES } from '../data/projectsData';
+import { LocationDropdown } from './LocationDropdown';
 
 // Fallback image in case any photo ever encounters an error
 const FALLBACK_IMG = '/projects/project_img_27.jpg';
@@ -90,19 +91,6 @@ export function SignatureProjects({
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBhk, setSelectedBhk] = useState('All');
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  // Close mobile location dropdown when clicking outside
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setLocationDropdownOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
 
   // Synchronize when external filterLocation prop is passed
   useEffect(() => {
@@ -288,124 +276,14 @@ export function SignatureProjects({
             <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-1.5" />
           </div>
 
-          {/* Mobile View: Single Luxury Select Location Dropdown (with All Locations inside) */}
-          <div className="block md:hidden pt-0.5">
-            <div ref={dropdownRef} className="relative">
-              {(() => {
-                const isAllSelected = selectedLocation === 'All Locations' || selectedLocation === 'All';
-
-                return (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => setLocationDropdownOpen(prev => !prev)}
-                      aria-expanded={locationDropdownOpen}
-                      className="group relative w-full px-4 py-3.5 rounded-2xl text-left transition-all duration-300 flex items-center justify-between gap-3 border cursor-pointer overflow-hidden bg-gradient-to-r from-[#122420] via-[#1B3831] to-[#122420] text-[#FFF7E2] border-[#C59B4E] shadow-[0_10px_28px_-4px_rgba(20,34,31,0.45)] ring-1 ring-[#DFBE79]/40"
-                    >
-                      <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center border shrink-0 bg-[#244940] border-[#DFBE79]/60 text-[#DFBE79] shadow-[0_0_12px_rgba(223,190,121,0.3)]">
-                          <MapPin className="w-4 h-4" />
-                        </div>
-                        <span
-                          className="text-[19px] font-bold tracking-[0.06em] truncate"
-                          style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                        >
-                          {isAllSelected ? 'Select Location' : selectedLocation}
-                        </span>
-                      </div>
-
-                      <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-all border bg-white/10 border-[#DFBE79]/40 text-[#DFBE79]">
-                        <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${
-                          locationDropdownOpen ? 'rotate-180' : ''
-                        }`} />
-                      </div>
-
-                      <span className="pointer-events-none absolute bottom-0 left-6 right-6 h-[1.5px] bg-gradient-to-r from-transparent via-[#DFBE79] to-transparent" />
-                    </button>
-
-                    {/* Boutique Luxury Dropdown Panel (All Locations + 8 Full Uncut Micro-Markets) */}
-                    {locationDropdownOpen && (
-                      <div className="mt-2.5 rounded-2xl overflow-hidden bg-gradient-to-b from-[#FAF4E7] via-[#FDFBF6] to-[#F5ECDA] border border-[#C59B4E]/60 shadow-[0_22px_48px_-8px_rgba(20,34,31,0.22)] ring-1 ring-inset ring-white/80 z-30 relative">
-                        {/* Signature Top Forest-to-Gold Hairline Bar */}
-                        <div className="h-[2.5px] w-full bg-gradient-to-r from-[#14221F] via-[#DFBE79] to-[#14221F]" />
-
-                        <div className="p-2.5 grid grid-cols-2 gap-2">
-                          {/* All Locations Option inside Select Location (centered luxury champagne-ivory tile, styled like Borivali) */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setLocationDropdownOpen(false);
-                              handleLocationClick('All Locations');
-                            }}
-                            className={`col-span-2 group relative px-3 py-2.5 rounded-xl flex items-center justify-center gap-2.5 border transition-all duration-200 cursor-pointer active:scale-[0.98] overflow-hidden ${
-                              isAllSelected
-                                ? 'bg-gradient-to-r from-[#FFFDF7] via-[#FAF0D8] to-[#FFFDF7] text-[#14221F] border-[#C59B4E] shadow-[0_6px_16px_-4px_rgba(197,155,78,0.28)] ring-1 ring-[#DFBE79]/45'
-                                : 'bg-gradient-to-b from-white to-[#FBF7EE] text-[#14221F] border-[#E0D2B4] shadow-[0_3px_10px_-2px_rgba(20,34,31,0.06)] hover:border-[#C59B4E] hover:bg-[#FAF4E4]'
-                            }`}
-                          >
-                            <span className="h-[1px] w-6 bg-gradient-to-r from-transparent to-[#C59B4E]/60 shrink-0" />
-                            <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all ${
-                              isAllSelected
-                                ? 'bg-gradient-to-br from-[#14221F] to-[#245348] border-[#DFBE79] text-[#DFBE79] shadow-[0_2px_8px_rgba(20,34,31,0.28)]'
-                                : 'bg-gradient-to-br from-[#F7EDD7] to-[#EAD8B2] border-[#C59B4E]/55 text-[#1B3831] group-hover:from-[#14221F] group-hover:to-[#245348] group-hover:text-[#DFBE79]'
-                            }`}>
-                              <Sparkles className="w-3 h-3" />
-                            </span>
-                            <span
-                              className="text-[16px] font-bold tracking-[0.04em] whitespace-nowrap"
-                              style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                            >
-                              All Locations
-                            </span>
-                            <span className="h-[1px] w-6 bg-gradient-to-l from-transparent to-[#C59B4E]/60 shrink-0" />
-                            {isAllSelected && (
-                              <span className="pointer-events-none absolute bottom-0 left-8 right-8 h-[1.5px] bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent" />
-                            )}
-                          </button>
-
-                          {LOCATIONS_LIST.map((loc) => {
-                            const isSelected = selectedLocation.toLowerCase() === loc.toLowerCase();
-
-                            return (
-                              <button
-                                key={loc}
-                                type="button"
-                                onClick={() => {
-                                  setLocationDropdownOpen(false);
-                                  handleLocationClick(loc);
-                                }}
-                                className={`group relative px-2.5 py-2.5 rounded-xl text-left flex items-center gap-2 border transition-all duration-200 cursor-pointer active:scale-[0.97] overflow-hidden ${
-                                  isSelected
-                                    ? 'bg-gradient-to-br from-[#FFFDF7] via-[#FAF0D8] to-[#F3E3BE] text-[#14221F] border-[#C59B4E] shadow-[0_6px_16px_-4px_rgba(197,155,78,0.28)] ring-1 ring-[#DFBE79]/45'
-                                    : 'bg-gradient-to-b from-white to-[#FBF7EE] text-[#14221F] border-[#E0D2B4] shadow-[0_3px_10px_-2px_rgba(20,34,31,0.06)] hover:border-[#C59B4E] hover:from-[#FFFDF8] hover:to-[#F7EEDB]'
-                                }`}
-                              >
-                                <span className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 border transition-all ${
-                                  isSelected
-                                    ? 'bg-gradient-to-br from-[#14221F] to-[#245348] border-[#DFBE79] text-[#DFBE79] shadow-[0_2px_8px_rgba(20,34,31,0.28)]'
-                                    : 'bg-gradient-to-br from-[#F7EDD7] to-[#EAD8B2] border-[#C59B4E]/55 text-[#1B3831] group-hover:from-[#14221F] group-hover:to-[#245348] group-hover:text-[#DFBE79]'
-                                }`}>
-                                  <MapPin className="w-3 h-3" />
-                                </span>
-                                <span
-                                  className="text-[15.5px] font-bold tracking-[0.02em] whitespace-nowrap"
-                                  style={{ fontFamily: '"Cormorant Garamond", serif' }}
-                                >
-                                  {loc}
-                                </span>
-                                {isSelected && (
-                                  <span className="pointer-events-none absolute bottom-0 left-3 right-3 h-[1.5px] bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent" />
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                );
-              })()}
-            </div>
+          {/* Mobile View: Luxury Location Dropdown */}
+          <div className="block md:hidden pt-1">
+            <LocationDropdown
+              selectedLocation={selectedLocation}
+              onSelectLocation={handleLocationClick}
+              locationsList={LOCATIONS_LIST}
+              projectsData={PROJECTS_DATA}
+            />
           </div>
 
           {/* Desktop View: Attractive & Animated Location Cards Grid – Balanced Medium Size Layout */}
