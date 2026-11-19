@@ -504,7 +504,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
       {/* ============================================================== */}
       <section className="relative pt-28 sm:pt-36 pb-16 sm:pb-20 overflow-hidden z-10 border-b border-white/5">
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+        <div className="max-w-6xl mx-auto px-3.5 xs:px-4 sm:px-6 lg:px-8 text-center space-y-8">
 
           {/* Statutory MahaRERA Tag (Off-White & Deep Forest Green Luxury Pill) */}
           <div className="flex justify-center">
@@ -540,7 +540,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
           </div>
 
           {/* We Are Hiring Bar (Wider Luxury Grid with Smooth Animations) */}
-          <div className="relative overflow-hidden max-w-5xl w-full mx-auto rounded-2xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-5 sm:p-6 text-left shadow-[0_15px_35px_rgba(20,34,31,0.12)] hover:shadow-[0_22px_45px_rgba(20,34,31,0.2)] hover:border-[#C59B4E] transition-all duration-300 hover:-translate-y-1 space-y-4 group">
+          <div className="relative overflow-hidden max-w-5xl w-full mx-auto rounded-2xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-4 xs:p-5 sm:p-6 text-left shadow-[0_15px_35px_rgba(20,34,31,0.12)] hover:shadow-[0_22px_45px_rgba(20,34,31,0.2)] hover:border-[#C59B4E] transition-all duration-300 hover:-translate-y-1 space-y-4 group">
             {/* Top Luxury Accent Strip */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1D3530] via-[#C59B4E] to-[#1D3530]" />
 
@@ -607,40 +607,35 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
 
           {/* Leadership / Founder's Message Card (Off-White & Green Luxury Editorial Card) */}
-          <div className="relative overflow-hidden max-w-5xl w-full mx-auto text-left rounded-2xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-6 sm:p-9 shadow-[0_20px_50px_rgba(20,34,31,0.14)] hover:shadow-[0_28px_60px_rgba(20,34,31,0.22)] hover:border-[#C59B4E] transition-all duration-300 hover:-translate-y-1 text-[#14221F] space-y-6 group">
+          <div className="relative overflow-hidden max-w-5xl w-full mx-auto text-left rounded-2xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-4 xs:p-5 sm:p-8 shadow-[0_20px_50px_rgba(20,34,31,0.14)] hover:shadow-[0_28px_60px_rgba(20,34,31,0.22)] hover:border-[#C59B4E] transition-all duration-300 hover:-translate-y-1 text-[#14221F] space-y-4 sm:space-y-6 group">
             {/* Top Luxury Accent Strip */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1D3530] via-[#C59B4E] to-[#1D3530]" />
 
             {/* Header Row: "LEADERSHIP" + "Founder's Message" on Left, "Verified Vision" on Right */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#EAE6DF] pt-1">
-              <div className="flex items-center gap-3">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#1D3530] text-[#DFBE79] text-xs font-mono font-bold tracking-widest border border-[#C59B4E]/50 shadow-xs">
-                  <Sparkles className="w-3.5 h-3.5 text-[#DFBE79]" />
+            <div className="flex items-center justify-between gap-2.5 pb-3.5 sm:pb-4 border-b border-[#EAE6DF] pt-1">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-full bg-[#1D3530] text-[#DFBE79] text-[11px] sm:text-xs font-mono font-bold tracking-wider sm:tracking-widest border border-[#C59B4E]/50 shadow-xs shrink-0">
+                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#DFBE79]" />
                   <span>LEADERSHIP</span>
                 </span>
-                <span className="text-xs sm:text-sm font-mono text-[#63706B] font-bold tracking-wider uppercase">
+                <span className="text-xs sm:text-sm font-mono text-[#63706B] font-bold tracking-wider uppercase truncate">
                   Founder's Message
                 </span>
               </div>
 
-              <div className="inline-flex items-center gap-1.5 text-xs font-mono text-[#245348] font-bold bg-[#F4F1EA] px-3 py-1 rounded-full border border-[#E2DDD3]">
-                <ShieldCheck className="w-4 h-4 text-[#C59B4E]" />
+              <div className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#245348] font-bold bg-[#F4F1EA] px-2.5 py-1 sm:px-3 sm:py-1 rounded-full border border-[#E2DDD3] shrink-0">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C59B4E]" />
                 <span>Verified Vision</span>
               </div>
             </div>
 
-            {/* Body Quote Block with Decorative Gold Watermark */}
+            {/* Body Quote Block with Decorative Inset Gold Accent Line */}
             <div className="relative">
-              {/* Decorative Gold Watermark Quote */}
-              <span className="absolute -top-6 -left-3 text-7xl sm:text-8xl font-serif text-[#C59B4E]/15 select-none pointer-events-none leading-none">
-                “
-              </span>
-
-              <blockquote className="relative z-10 pl-5 sm:pl-7 border-l-4 border-l-[#C59B4E] space-y-3.5">
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-serif italic font-bold text-[#1D3530] leading-snug tracking-tight">
+              <blockquote className="relative z-10 pl-3.5 sm:pl-6 border-l-2 sm:border-l-3 border-[#C59B4E] space-y-2.5 sm:space-y-3.5">
+                <h3 className="text-base sm:text-2xl lg:text-3xl font-serif italic font-bold text-[#1D3530] leading-snug tracking-tight">
                   “Welcome to Concave Realty, where you truly belong.”
                 </h3>
-                <p className="text-sm sm:text-base lg:text-lg text-[#2D3A37] font-normal leading-relaxed max-w-4xl">
+                <p className="text-xs sm:text-base lg:text-lg text-[#2D3A37] font-normal leading-relaxed max-w-4xl">
                   Real estate in Mumbai is built on long-term relationships, trust, and absolute market precision. We are building an advisory culture where associates are provided with verified inventory, qualified buyer appointments, and institutional backing to thrive.
                 </p>
               </blockquote>
@@ -651,7 +646,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
           {/* 2. OPEN POSITIONS SECTION                                      */}
           {/* ============================================================== */}
           <div id="open-positions-card" className="mt-12 sm:mt-16 text-left max-w-5xl w-full mx-auto">
-            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-6 sm:p-10 shadow-[0_25px_55px_rgba(20,34,31,0.16)] hover:border-[#C59B4E]/60 transition-all duration-300 text-[#14221F] space-y-8">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] p-4 xs:p-6 sm:p-10 shadow-[0_25px_55px_rgba(20,34,31,0.16)] hover:border-[#C59B4E]/60 transition-all duration-300 text-[#14221F] space-y-8">
               {/* Top Luxury Accent Strip */}
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1D3530] via-[#C59B4E] to-[#1D3530]" />
 
@@ -675,40 +670,64 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
               </div>
 
               {/* The 4 Open Positions List */}
-              <div className="space-y-3.5 pt-2">
+              <div className="space-y-3 sm:space-y-4 pt-2">
                 {OPEN_POSITIONS_LIST.map((pos) => (
                   <div
                     key={pos.id}
-                    className="group rounded-xl border border-[#E2DDD3] bg-[#FAF9F6] hover:bg-[#F4F1EA] hover:border-[#1D3530] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                    className="group rounded-2xl border border-[#E2DDD3] bg-[#FAF9F6] hover:bg-[#F4F1EA] hover:border-[#1D3530] p-4 xs:p-5 sm:p-6 transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5"
                   >
-                    {/* Left: Number + Title + Location */}
-                    <div className="flex items-start sm:items-center gap-3.5 sm:gap-5 min-w-0">
-                      <span className="font-mono text-base sm:text-lg font-bold text-[#C59B4E] group-hover:scale-110 transition-transform shrink-0 mt-0.5 sm:mt-0">
-                        {pos.num}
-                      </span>
-                      <div className="space-y-1.5 min-w-0">
-                        <h3 className="text-lg sm:text-xl font-bold text-[#14221F] group-hover:text-[#1D3530] transition-colors leading-snug">
-                          {pos.title}
-                        </h3>
-                        <div className="flex flex-wrap items-center gap-2.5 text-xs sm:text-sm text-[#4A5854]">
-                          <span className="flex items-center gap-1.5">
-                            <MapPin className="w-4 h-4 text-[#245348]" />
-                            <span>{pos.location}</span>
-                          </span>
-                          <span className="text-gray-300 hidden sm:inline">•</span>
-                          <span className="text-[#1D3530] font-mono font-semibold">Exp: {pos.exp}</span>
-                        </div>
+                    {/* Two-Column Responsive Layout: Serial Number + Job Details & Action */}
+                    <div className="grid grid-cols-[auto_1fr] gap-3 xs:gap-4 sm:gap-5 items-start">
+                      
+                      {/* Column 1: Serial Number vertically aligned with Job Title */}
+                      <div className="pt-0.5 sm:pt-1">
+                        <span className="font-mono text-sm xs:text-base sm:text-lg font-bold text-[#C59B4E] bg-[#1D3530]/5 px-2 py-1 rounded-lg border border-[#C59B4E]/30 shrink-0 inline-flex items-center justify-center leading-none">
+                          {pos.num}
+                        </span>
                       </div>
-                    </div>
 
-                    {/* Right: Apply Now Button */}
-                    <button
-                      onClick={() => handleApplyRole(pos.title)}
-                      className="self-start sm:self-center px-6 py-3 rounded-lg bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white border border-[#C59B4E]/40 text-xs sm:text-sm uppercase tracking-wider font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer shrink-0 shadow-sm hover:shadow-md hover:scale-105 active:scale-95 group/btn"
-                    >
-                      <span>APPLY NOW</span>
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+                      {/* Column 2: Job Details & Apply Action */}
+                      <div className="min-w-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+                        
+                        {/* Title, Location & Experience */}
+                        <div className="space-y-2 min-w-0 flex-1">
+                          <h3 className="text-base xs:text-lg sm:text-xl font-bold text-[#14221F] group-hover:text-[#1D3530] transition-colors leading-snug break-words">
+                            {pos.title}
+                          </h3>
+                          
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-sm text-[#4A5854]">
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0" />
+                              <span className="truncate">{pos.location}</span>
+                            </div>
+                            <span className="text-gray-300 hidden sm:inline">•</span>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#1D3530]/5 text-[#1D3530] font-mono text-[11px] sm:text-xs font-semibold">
+                                Exp: {pos.exp}
+                              </span>
+                              <span className="text-gray-300 hidden xs:inline">•</span>
+                              <span className="text-[11px] text-[#63706B] font-mono hidden xs:inline">
+                                {pos.type}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Apply Now Button: Consistent height, width, padding & alignment */}
+                        <div className="shrink-0 pt-1 sm:pt-0">
+                          <button
+                            type="button"
+                            onClick={() => handleApplyRole(pos.title)}
+                            className="w-full sm:w-auto h-10 sm:h-11 px-5 sm:px-6 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white border border-[#C59B4E]/40 text-xs sm:text-sm uppercase tracking-wider font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-xs hover:shadow-md hover:scale-[1.02] sm:hover:scale-105 active:scale-95 group/btn"
+                          >
+                            <span>APPLY NOW</span>
+                            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+                          </button>
+                        </div>
+
+                      </div>
+
+                    </div>
                   </div>
                 ))}
               </div>
@@ -721,8 +740,9 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                 {/* Centered Solid Apply Button */}
                 <div className="flex justify-center">
                   <button
+                    type="button"
                     onClick={() => handleApplyRole()}
-                    className="px-10 py-3.5 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white font-bold text-xs sm:text-sm uppercase tracking-[0.25em] shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer border border-[#C59B4E]/50 flex items-center gap-2.5"
+                    className="w-full xs:w-auto h-12 px-8 sm:px-12 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white font-bold text-xs sm:text-sm uppercase tracking-[0.25em] shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer border border-[#C59B4E]/50 flex items-center justify-center gap-2.5 mx-auto"
                   >
                     <span>APPLY NOW</span>
                     <ArrowRight className="w-4 h-4" />
@@ -730,25 +750,39 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                 </div>
 
                 {/* Direct Careers Email Card */}
-                <div className="w-full rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] p-6 sm:p-8 space-y-2.5 shadow-sm hover:border-[#1D3530] transition-colors">
-                  <span className="text-xs sm:text-sm uppercase font-mono tracking-[0.25em] text-[#63706B] font-bold block">
+                <div className="w-full rounded-2xl border border-[#EAE6DF] bg-[#FAF9F6] p-5 xs:p-6 sm:p-8 space-y-3 shadow-xs hover:border-[#1D3530] transition-colors">
+                  <span className="text-[11px] sm:text-xs uppercase font-mono tracking-[0.22em] text-[#63706B] font-bold block">
                     CAREERS EMAIL
                   </span>
-                  <a
-                    href={`mailto:${EMAIL_ADDRESS}?subject=Concave%20Realty%20Career%20Application`}
-                    className="text-xl sm:text-2xl lg:text-3xl font-mono font-bold text-[#1D3530] hover:text-[#C59B4E] transition-colors block break-all"
-                  >
-                    {EMAIL_ADDRESS}
-                  </a>
-                  <p className="text-sm sm:text-base text-[#4A5854] font-normal">
-                    Send your CV and we'll get back to you.
+                  
+                  <div className="flex justify-center px-1">
+                    <a
+                      href={`mailto:${EMAIL_ADDRESS}?subject=Concave%20Realty%20Career%20Application`}
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 text-[13px] xs:text-base sm:text-xl md:text-2xl font-mono font-bold text-[#1D3530] hover:text-[#C59B4E] transition-colors max-w-full px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg hover:bg-black/5 leading-normal"
+                      style={{ wordBreak: 'break-word', overflowWrap: 'anywhere' }}
+                    >
+                      <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-[#C59B4E] shrink-0" />
+                      <span className="break-all xs:break-normal">{EMAIL_ADDRESS}</span>
+                    </a>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-[#4A5854] font-normal leading-relaxed max-w-md mx-auto">
+                    Send your CV directly to our talent acquisition team and we will get back to you within 24–48 hours.
                   </p>
                 </div>
 
-                {/* Office & Statutory Address */}
-                <div className="pt-2 flex items-center justify-center gap-2 text-xs sm:text-sm text-[#4A5854] font-medium">
-                  <MapPin className="w-4 h-4 text-[#245348] shrink-0" />
-                  <span>Concave Realty | Borivali West, Mumbai, Maharashtra 400092 | MahaRERA: A51900045781</span>
+                {/* Regional Presence & Statutory Credentials */}
+                <div className="pt-3 flex items-start sm:items-center justify-center gap-2 text-xs sm:text-sm text-[#4A5854] font-medium max-w-2xl mx-auto leading-relaxed">
+                  <MapPin className="w-4 h-4 text-[#245348] shrink-0 mt-0.5 sm:mt-0" />
+                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-center">
+                    <span className="font-semibold text-[#14221F]">Concave Realty</span>
+                    <span className="text-[#C59B4E] hidden xs:inline">•</span>
+                    <span>Mumbai, Maharashtra</span>
+                    <span className="text-[#C59B4E] hidden sm:inline">•</span>
+                    <span className="font-mono text-[11px] sm:text-xs text-[#245348] block sm:inline font-semibold">
+                      MahaRERA: A51900045781
+                    </span>
+                  </div>
                 </div>
 
               </div>
@@ -775,14 +809,14 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header (Deep Forest Green with Gold Accents matching Website Theme) */}
-            <div className="flex items-center justify-between px-5 sm:px-7 py-4 bg-[#1D3530] text-white shrink-0 border-b-2 border-[#C59B4E]/40 shadow-sm">
+            <div className="flex items-center justify-between px-5 sm:px-7 py-3 sm:py-3.5 bg-[#1D3530] text-white shrink-0 border-b-2 border-[#C59B4E]/40 shadow-sm">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-8 h-8 rounded-xl bg-white/10 border border-[#C59B4E]/60 flex items-center justify-center text-[#DFBE79] shrink-0">
                   <Briefcase className="w-4 h-4" />
                 </div>
                 <div className="min-w-0">
-                  <h3 id="career-modal-title" className="font-serif text-lg sm:text-xl font-bold truncate text-white">
-                    Apply: {formData.position || 'Career Candidature'}
+                  <h3 id="career-modal-title" className="font-serif text-base sm:text-xl font-bold truncate text-white tracking-wide">
+                    {formData.position ? `Join Our Team: ${formData.position}` : 'Join Our Team'}
                   </h3>
                   <p className="text-[10px] sm:text-[11px] font-mono tracking-wider text-[#DFBE79]">
                     Concave Realty • MahaRERA: A51900045781
@@ -800,7 +834,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
             </div>
 
             {/* Modal Content */}
-            <div className="p-5 sm:p-7 overflow-y-auto flex-1 space-y-6 bg-[#FAF9F6]">
+            <div className="px-4 xs:px-5 sm:px-7 pt-1.5 pb-5 sm:pt-2.5 sm:pb-6 overflow-y-auto flex-1 bg-[#FAF9F6]">
 
               {/* Success Notification Banner */}
               {submissionSuccess ? (
@@ -869,18 +903,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-
-                  {/* Honeypot anti-spam (hidden) */}
-                  <input
-                    type="text"
-                    name="user_hp_check"
-                    value={honeypot}
-                    onChange={(e) => setHoneypot(e.target.value)}
-                    style={{ display: 'none' }}
-                    tabIndex={-1}
-                    autoComplete="off"
-                  />
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
 
                   {/* Form Error Banner */}
                   {formError && (
@@ -891,7 +914,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                   )}
 
                   {/* Section 1: Candidate Contact Info */}
-                  <div className="space-y-3.5">
+                  <div className="space-y-3.5 !mt-0">
                     <h4 className="font-serif text-base sm:text-lg font-bold text-[#1D3530] border-b border-[#EAE6DF] pb-2 flex items-center gap-2.5">
                       <span className="w-6 h-6 rounded-full bg-[#1D3530] text-[#DFBE79] text-xs flex items-center justify-center font-mono font-bold">1</span>
                       <span>Personal Details & Contact</span>
@@ -914,7 +937,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
                       {/* Mobile */}
                       <div className="space-y-1.5">
-                        <label className="text-[#14221F] font-semibold block text-xs sm:text-sm">Mobile Number (WhatsApp) *</label>
+                        <label className="text-[#14221F] font-semibold block text-xs sm:text-sm">Mobile Number *</label>
                         <div className="flex">
                           <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#EAE6DF] bg-[#FAF9F6] text-[#63706B] font-mono text-sm font-semibold">
                             +91
@@ -1228,6 +1251,14 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                       )}
                     </button>
                   </div>
+
+                  {/* Honeypot anti-spam (hidden) */}
+                  <input
+                    type="hidden"
+                    name="user_hp_check"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
+                  />
 
                 </form>
               )}

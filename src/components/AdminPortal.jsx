@@ -38,17 +38,25 @@ import {
   Briefcase,
   FileText,
   ExternalLink,
-  MessageCircle
+  MessageCircle,
+  Home,
+  Headphones
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs } from '../data/dbStore';
+import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs, verifyPassword } from '../data/dbStore';
 
-export function AdminPortal({ currentUser, onLogin, onLogout }) {
-  // Navigation tabs: 'overview' | 'performance' | 'callers' | 'storage'
+export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
+  // Navigation tabs: 'overview' | 'performance' | 'callers' | 'storage' | 'careers'
   const [adminTab, setAdminTab] = useState('overview');
 
+  // Full Caller Capabilities for Admin (calling, duration timer, dispositions)
+  const [callingLead, setCallingLead] = useState(null);
+  const [callDuration, setCallDuration] = useState(0);
+  const [selectedDisposition, setSelectedDisposition] = useState(1);
+  const [callerRemark, setCallerRemark] = useState('');
+
   const adminCredsInitial = dbStore.getAdminCredentials();
-  const [adminUsername, setAdminUsername] = useState(adminCredsInitial.username || 'admin');
-  const [adminPassword, setAdminPassword] = useState(adminCredsInitial.password || 'concave@2026');
+  const [adminUsername, setAdminUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminLoginError, setAdminLoginError] = useState('');
   const [adminFailedAttempts, setAdminFailedAttempts] = useState(0);
@@ -270,7 +278,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     };
   }, [forgotPasswordMode, forgotStep, otpExpiresAt]);
 
-  const handleAdminPasswordLogin = (e) => {
+  const handleAdminPasswordLogin = async (e) => {
     e.preventDefault();
     setAdminLoginError('');
 
@@ -289,8 +297,9 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
     const cleanUser = sanitizeInput(adminUsername);
     const adminCreds = dbStore.getAdminCredentials();
+    const isPasswordValid = await verifyPassword(adminPassword, adminCreds.password);
 
-    if (cleanUser.toLowerCase() === adminCreds.username.toLowerCase() && adminPassword === adminCreds.password) {
+    if (cleanUser.toLowerCase() === adminCreds.username.toLowerCase() && isPasswordValid) {
       setAdminFailedAttempts(0);
       setAdminLockoutUntil(0);
       setAdminLoginError('');
@@ -316,36 +325,63 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     }
   };
 
-  const handleStartForgotPassword = () => {
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = Date.now() + 5 * 60 * 1000;
-    setForgotOtp(code);
-    setOtpExpiresAt(expires);
-    setOtpRemainingSeconds(300);
-    setWrongOtpAttempts(0);
-    setEnteredForgotOtp('');
+  const [forgotToken, setForgotToken] = useState('');
+
+  const handleStartForgotPassword = async () => {
     setForgotError('');
     setForgotSuccessMsg('');
-    setForgotStep(1);
-    setForgotPasswordMode(true);
-    setFeedbackToast(`OTP sent to concaverealtyindia@gmail.com: ${code} (Valid for 5 mins)`);
-    setTimeout(() => setFeedbackToast(null), 8000);
-  };
-
-  const handleResendForgotPasswordOtp = () => {
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = Date.now() + 5 * 60 * 1000;
-    setForgotOtp(code);
-    setOtpExpiresAt(expires);
-    setOtpRemainingSeconds(300);
     setWrongOtpAttempts(0);
     setEnteredForgotOtp('');
-    setForgotError('');
-    setFeedbackToast(`New OTP sent to concaverealtyindia@gmail.com: ${code}`);
-    setTimeout(() => setFeedbackToast(null), 8000);
+    setForgotPasswordMode(true);
+    setForgotStep(1);
+
+    const adminCreds = dbStore.getAdminCredentials();
+    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+
+    try {
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmail, name: 'Administrator', digits: 6, purpose: 'admin_reset' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOtpExpiresAt(Date.now() + 5 * 60 * 1000);
+        setOtpRemainingSeconds(300);
+        setFeedbackToast(`A 6-digit verification code has been dispatched to ${adminEmail}. Please check your inbox.`);
+      } else {
+        setForgotError(data.message || 'Failed to dispatch verification code. Please check rate limits.');
+      }
+    } catch {
+      setForgotError('Security server unreachable. Please verify server connectivity.');
+    }
   };
 
-  const handleVerifyForgotOtp = (e) => {
+  const handleResendForgotPasswordOtp = async () => {
+    setForgotError('');
+    const adminCreds = dbStore.getAdminCredentials();
+    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+
+    try {
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmail, name: 'Administrator', digits: 6, purpose: 'admin_reset' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOtpExpiresAt(Date.now() + 5 * 60 * 1000);
+        setOtpRemainingSeconds(300);
+        setFeedbackToast(`New verification code sent to ${adminEmail}.`);
+      } else {
+        setForgotError(data.message || 'Failed to resend code.');
+      }
+    } catch {
+      setForgotError('Security server unreachable.');
+    }
+  };
+
+  const handleVerifyForgotOtp = async (e) => {
     e.preventDefault();
     setForgotError('');
 
@@ -354,32 +390,33 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       return;
     }
 
-    if (Date.now() > otpExpiresAt) {
-      setForgotError('This OTP has expired (5-minute limit). Please click Resend OTP.');
+    if (!enteredForgotOtp || enteredForgotOtp.trim().length !== 6) {
+      setForgotError('Please enter the 6-digit security code received in your email.');
       return;
     }
 
-    if (wrongOtpAttempts >= 3) {
-      setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP has been invalidated. Please request a new OTP.');
-      return;
-    }
+    const adminCreds = dbStore.getAdminCredentials();
+    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
 
-    if (enteredForgotOtp.trim() === forgotOtp) {
-      setForgotError('');
-      setForgotStep(2); // Set New Password step
-    } else {
-      const next = wrongOtpAttempts + 1;
-      setWrongOtpAttempts(next);
-      if (next >= 3) {
-        setForgotOtp('');
-        setForgotError('Maximum 3 incorrect OTP attempts reached. For security, this OTP has been invalidated. Please request a new OTP.');
+    try {
+      const res = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmail, otp: enteredForgotOtp.trim() })
+      });
+      const data = await res.json();
+      if (data.success && data.verified) {
+        setForgotToken(data.token || 'verified');
+        setForgotStep(2); // Set New Password step
       } else {
-        setForgotError(`Incorrect OTP entered. You have ${3 - next} attempt(s) remaining.`);
+        setForgotError(data.message || 'Invalid or expired OTP code.');
       }
+    } catch {
+      setForgotError('Verification service temporarily unavailable.');
     }
   };
 
-  const handleResetAdminPassword = (e) => {
+  const handleResetAdminPassword = async (e) => {
     e.preventDefault();
     setForgotError('');
 
@@ -399,10 +436,30 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       return;
     }
 
-    const res = dbStore.updateAdminPassword(newAdminPassword);
+    const adminCreds = dbStore.getAdminCredentials();
+    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+
+    // 1. Update backend MySQL / persistent store via verified API
+    try {
+      await fetch('/api/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: adminEmail,
+          verificationToken: forgotToken,
+          newPassword: newAdminPassword,
+          role: 'admin'
+        })
+      });
+    } catch {
+      // Non-blocking for offline dev fallback
+    }
+
+    // 2. Update local state store
+    const res = await dbStore.updateAdminPassword(newAdminPassword);
     if (res.success) {
       setAdminPassword(newAdminPassword);
-      setForgotSuccessMsg('Master Admin password updated successfully! Redirecting to login...');
+      setForgotSuccessMsg('Master Admin password updated successfully in database! Redirecting to login...');
       setTimeout(() => {
         setForgotPasswordMode(false);
         setForgotStep(1);
@@ -612,12 +669,81 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
     refreshAdminData();
   };
 
+  // Calling timer effect for Admin Caller Mode
+  useEffect(() => {
+    let interval;
+    if (callingLead) {
+      interval = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+    } else {
+      setCallDuration(0);
+    }
+    return () => clearInterval(interval);
+  }, [callingLead]);
+
+  const handleStartAdminCall = (lead) => {
+    if (lead?.mobile) {
+      window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
+    }
+    setCallingLead(lead);
+    setSelectedDisposition(lead.statusCode || 1);
+    setCallerRemark('');
+  };
+
+  const handleFinishAdminCall = () => {
+    if (!callingLead) return;
+    dbStore.updateLeadDisposition(callingLead.id, {
+      statusCode: selectedDisposition,
+      noteText: callerRemark,
+      callerName: 'Admin (Master Console)'
+    });
+    setCallingLead(null);
+    setCallerRemark('');
+    setFeedbackToast(`Lead CON-${callingLead.id} updated with new call disposition & cadence.`);
+    setTimeout(() => setFeedbackToast(null), 4000);
+    refreshAdminData();
+  };
+
+  const formatCallTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
   // =========================================================================
-  // VIEW 1: ADMIN LOGIN SCREEN (Single Centered Professional Card)
+  // VIEW 1: ADMIN LOGIN SCREEN (Standalone Executive Portal View)
   // =========================================================================
   if (!currentUser || currentUser.role !== 'admin') {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-4 bg-[#FAF9F6] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAF9F6] flex flex-col justify-between">
+        {/* Standalone Minimal Header */}
+        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+                CONCAVE REALTY
+              </span>
+              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
+                Executive Portal
+              </span>
+            </div>
+          </div>
+          {onNavigateHome && (
+            <button
+              onClick={onNavigateHome}
+              className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+            >
+              <Home className="w-3.5 h-3.5" />
+              <span>Return to Website</span>
+            </button>
+          )}
+        </header>
+
+        <div className="flex-1 py-12 px-4 flex items-center justify-center">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-luxury border border-[#EAE6DF] p-8 sm:p-9 space-y-6 anim-fade-up">
           
           {/* Company Logo & Header */}
@@ -897,6 +1023,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           )}
 
         </div>
+        </div>
       </div>
     );
   }
@@ -952,7 +1079,47 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
   const paginatedLeads = filteredLeads.slice((enquiryPage - 1) * pageSize, enquiryPage * pageSize);
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 bg-[#FAF9F6]">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#14221F] selection:bg-[#245348] selection:text-white">
+
+      {/* Standalone Executive Master Header Bar */}
+      <header className="sticky top-0 z-40 bg-[#14221F] text-white border-b border-[#245348] shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0 shadow-xs">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+                CONCAVE REALTY
+              </span>
+              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
+                Executive Master Console
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            {onNavigateHome && (
+              <button
+                onClick={onNavigateHome}
+                className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">Website</span>
+              </button>
+            )}
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden xs:inline">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6">
 
       {/* Floating Success Toast for Excel Export */}
       {excelExportSuccess && (
@@ -1017,111 +1184,131 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
         </div>
       )}
 
-      {/* ── Executive Header Banner (EXECUTIVE SALES COMMAND TOWER removed as requested) ── */}
-      <div className="bg-[#1D3530] text-white rounded-2xl p-6 sm:p-7 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-5 anim-fade-up">
+      {/* ── Executive Header Banner (Responsive) ── */}
+      <div className="bg-[#1D3530] text-white rounded-2xl p-4 sm:p-6 shadow-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-4 anim-fade-up border border-[#245348]/40">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          <h1 className="font-serif text-xl sm:text-3xl font-bold text-white tracking-tight">
             Hemant's Dashboard
           </h1>
+          <p className="text-[10px] sm:text-xs text-[#DFBE79] tracking-wider uppercase font-medium mt-0.5">
+            Concave Realty Executive Console
+          </p>
         </div>
 
-        {/* Global Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        {/* Global Controls & Refresh */}
+        <div className="flex items-center gap-2.5 self-end sm:self-auto">
           <button
             onClick={refreshAdminData}
-            className="p-2.5 rounded-lg bg-[#284F45] text-white hover:bg-[#245348] active:scale-95 transition-all"
+            className="p-2 sm:p-2.5 rounded-xl bg-[#284F45] text-white hover:bg-[#245348] active:scale-95 transition-all cursor-pointer border border-[#C59B4E]/30"
             title="Refresh Database"
           >
-            <RefreshCw className={`w-4 h-4 transition-transform duration-500 ${isRefreshing ? 'animate-spin' : ''}`} />
-          </button>
-
-          <button
-            onClick={onLogout}
-            className="px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs font-semibold transition-all"
-          >
-            Sign Out
+            <RefreshCw className={`w-4 h-4 transition-transform duration-500 text-[#DFBE79] ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
         </div>
       </div>
 
+      {/* ── Caller Access Mode Banner (If No Callers Registered or Active) ── */}
+      {callers.length === 0 && (
+        <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/90 via-[#1D3530] to-[#14221F] text-white border border-[#DFBE79]/50 shadow-md flex items-center justify-between gap-3 anim-fade-up">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 border border-[#DFBE79]/40">
+              <Headphones className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <h4 className="font-serif font-bold text-sm text-white flex items-center gap-2">
+                <span>Full Caller Access Mode Active</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono border border-emerald-500/40">Zero Callers Registered</span>
+              </h4>
+              <p className="text-xs text-gray-300 mt-0.5">
+                Admin has full direct calling, disposition rating, 4hr/10d auto-retries, and discussion notes on all customer enquiries.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Sub-Navigation Tabs ── */}
-      <div className="flex items-center gap-2 border-b border-[#EAE6DF] pb-2 overflow-x-auto">
-        {/* Tab 1: Overview */}
-        <button
-          onClick={() => setAdminTab('overview')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'overview'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <LayoutDashboard className="w-4 h-4 text-[#DFBE79]" />
-          <span>Overview</span>
-          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
-            {leads.length}
-          </span>
-        </button>
+      <div className="relative">
+        <div className="flex items-center gap-2 border-b border-[#EAE6DF] pb-2 overflow-x-auto scroll-smooth no-scrollbar">
+          {/* Tab 1: Overview */}
+          <button
+            onClick={() => setAdminTab('overview')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
+              adminTab === 'overview'
+                ? 'bg-[#245348] text-white shadow-sm'
+                : 'text-gray-600 hover:text-black hover:bg-white/80'
+            }`}
+          >
+            <LayoutDashboard className="w-4 h-4 text-[#DFBE79]" />
+            <span>Overview</span>
+            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
+              {leads.length}
+            </span>
+          </button>
 
-        {/* Tab 2: Callers Performance */}
-        <button
-          onClick={() => setAdminTab('performance')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'performance'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <TrendingUp className="w-4 h-4 text-[#DFBE79]" />
-          <span>Callers Performance</span>
-        </button>
+          {/* Tab 2: Callers Performance */}
+          <button
+            onClick={() => setAdminTab('performance')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
+              adminTab === 'performance'
+                ? 'bg-[#245348] text-white shadow-sm'
+                : 'text-gray-600 hover:text-black hover:bg-white/80'
+            }`}
+          >
+            <TrendingUp className="w-4 h-4 text-[#DFBE79]" />
+            <span>Callers Performance</span>
+          </button>
 
-        {/* Tab 3: Caller Management */}
-        <button
-          onClick={() => setAdminTab('callers')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'callers'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <Users className="w-4 h-4 text-[#DFBE79]" />
-          <span>Caller Management</span>
-          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
-            {callers.length}
-          </span>
-        </button>
+          {/* Tab 3: Caller Management */}
+          <button
+            onClick={() => setAdminTab('callers')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
+              adminTab === 'callers'
+                ? 'bg-[#245348] text-white shadow-sm'
+                : 'text-gray-600 hover:text-black hover:bg-white/80'
+            }`}
+          >
+            <Users className="w-4 h-4 text-[#DFBE79]" />
+            <span>Caller Management</span>
+            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
+              {callers.length}
+            </span>
+          </button>
 
-        {/* Tab 4: Data & Storage */}
-        <button
-          onClick={() => setAdminTab('storage')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'storage'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <HardDrive className="w-4 h-4 text-[#DFBE79]" />
-          <span>Data & Storage</span>
-          {queueInfo.isOverdue && (
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-ping ml-1" />
-          )}
-        </button>
+          {/* Tab 4: Data & Storage */}
+          <button
+            onClick={() => setAdminTab('storage')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
+              adminTab === 'storage'
+                ? 'bg-[#245348] text-white shadow-sm'
+                : 'text-gray-600 hover:text-black hover:bg-white/80'
+            }`}
+          >
+            <HardDrive className="w-4 h-4 text-[#DFBE79]" />
+            <span>Data & Storage</span>
+            {queueInfo.isOverdue && (
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-ping ml-1" />
+            )}
+          </button>
 
-        {/* Tab 5: Careers & Talent Applications */}
-        <button
-          onClick={() => setAdminTab('careers')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap ${
-            adminTab === 'careers'
-              ? 'bg-[#245348] text-white shadow-sm'
-              : 'text-gray-600 hover:text-black hover:bg-white/80'
-          }`}
-        >
-          <Briefcase className="w-4 h-4 text-[#DFBE79]" />
-          <span>Job Enquiries</span>
-          <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
-            {jobApplications.length}
-          </span>
-        </button>
+          {/* Tab 5: Careers & Talent Applications */}
+          <button
+            onClick={() => setAdminTab('careers')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 whitespace-nowrap shrink-0 cursor-pointer ${
+              adminTab === 'careers'
+                ? 'bg-[#245348] text-white shadow-sm'
+                : 'text-gray-600 hover:text-black hover:bg-white/80'
+            }`}
+          >
+            <Briefcase className="w-4 h-4 text-[#DFBE79]" />
+            <span>Job Enquiries</span>
+            <span className="ml-1 text-[10px] px-1.5 py-0.2 rounded bg-black/20 text-white font-mono">
+              {jobApplications.length}
+            </span>
+          </button>
+        </div>
+        {/* Subtle right fade cue on mobile to signal horizontal scrollability */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-[#FAF9F6] to-transparent sm:hidden" />
       </div>
 
       {/* =====================================================================
@@ -1130,103 +1317,113 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
       {adminTab === 'overview' && (
         <div className="space-y-6 anim-fade-scale">
 
-          {/* ── Exact 5 Cards Requested by User ── */}
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+          {/* ── 5 KPI Cards: Fully Responsive Grid ── */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
 
             {/* 1) Total Leads Today */}
-            <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase text-gray-500 font-semibold tracking-wider">Total Leads Today</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+            <div className="bg-white p-3.5 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between min-h-[110px] sm:min-h-[125px]">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] sm:text-[11px] uppercase text-gray-500 font-semibold tracking-wider truncate">Total Leads Today</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0"></span>
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-emerald-800 mt-2 tracking-tight">
-                {todaysLeadsCount}
-              </div>
-              <div className="text-[11px] text-gray-400 mt-1.5">
-                Marked as Leads Today
+              <div>
+                <div className="text-2xl sm:text-4xl font-bold text-emerald-800 tracking-tight font-mono sm:font-sans">
+                  {todaysLeadsCount}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-gray-400 mt-1 truncate">
+                  Marked as Leads Today
+                </div>
               </div>
             </div>
 
             {/* 2) Today Enquiries Today */}
-            <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase text-gray-500 font-semibold tracking-wider">Today Enquiries Today</span>
-                <Activity className="w-4 h-4 text-[#245348]" />
+            <div className="bg-white p-3.5 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between min-h-[110px] sm:min-h-[125px]">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] sm:text-[11px] uppercase text-gray-500 font-semibold tracking-wider truncate">Today Enquiries</span>
+                <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#245348] shrink-0" />
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-[#14221F] mt-2 tracking-tight">
-                {todaysEnquiriesCount}
-              </div>
-              <div className="text-[11px] text-gray-400 mt-1.5">
-                Received Since Midnight
+              <div>
+                <div className="text-2xl sm:text-4xl font-bold text-[#14221F] tracking-tight font-mono sm:font-sans">
+                  {todaysEnquiriesCount}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-gray-400 mt-1 truncate">
+                  Received Since Midnight
+                </div>
               </div>
             </div>
 
             {/* 3) Total Call Done Today */}
-            <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase text-gray-500 font-semibold tracking-wider">Total Call Done Today</span>
-                <PhoneCall className="w-4 h-4 text-[#C59B4E]" />
+            <div className="bg-white p-3.5 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between min-h-[110px] sm:min-h-[125px]">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] sm:text-[11px] uppercase text-gray-500 font-semibold tracking-wider truncate">Calls Done Today</span>
+                <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C59B4E] shrink-0" />
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-[#14221F] mt-2 tracking-tight">
-                {totalCallsDoneToday}
-              </div>
-              <div className="text-[11px] text-gray-400 mt-1.5">
-                Calls Logged by Team
+              <div>
+                <div className="text-2xl sm:text-4xl font-bold text-[#14221F] tracking-tight font-mono sm:font-sans">
+                  {totalCallsDoneToday}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-gray-400 mt-1 truncate">
+                  Calls Logged by Team
+                </div>
               </div>
             </div>
 
             {/* 4) Overall Lead */}
-            <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase text-gray-500 font-semibold tracking-wider">Overall Lead</span>
-                <Sparkles className="w-4 h-4 text-[#DFBE79]" />
+            <div className="bg-white p-3.5 sm:p-5 rounded-xl border border-[#EAE6DF] shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between min-h-[110px] sm:min-h-[125px]">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] sm:text-[11px] uppercase text-gray-500 font-semibold tracking-wider truncate">Overall Leads</span>
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DFBE79] shrink-0" />
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-[#245348] mt-2 tracking-tight">
-                {overallLeadsCount}
-              </div>
-              <div className="text-[11px] text-gray-400 mt-1.5">
-                Total Cumulative Leads
+              <div>
+                <div className="text-2xl sm:text-4xl font-bold text-[#245348] tracking-tight font-mono sm:font-sans">
+                  {overallLeadsCount}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-gray-400 mt-1 truncate">
+                  Total Cumulative Leads
+                </div>
               </div>
             </div>
 
-            {/* 5) Pending Calls in RED */}
-            <div className="bg-red-50/70 p-4 sm:p-5 rounded-xl border-2 border-red-300 shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 col-span-2 lg:col-span-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase text-red-800 font-bold tracking-wider">Pending Calls</span>
-                <AlertTriangle className="w-4 h-4 text-red-600 animate-pulse" />
+            {/* 5) Pending Calls in RED (Spans 2 columns on mobile for visual balance) */}
+            <div className="bg-red-50/80 p-3.5 sm:p-5 rounded-xl border-2 border-red-300 shadow-subtle hover:-translate-y-1 hover:shadow-lg transition-all duration-300 col-span-2 lg:col-span-1 flex flex-col justify-between min-h-[110px] sm:min-h-[125px]">
+              <div className="flex items-center justify-between gap-1">
+                <span className="text-[10px] sm:text-[11px] uppercase text-red-800 font-bold tracking-wider truncate">Pending Calls</span>
+                <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-600 animate-pulse shrink-0" />
               </div>
-              <div className="text-3xl sm:text-4xl font-bold text-red-600 mt-2 tracking-tight">
-                {pendingCallsCount}
-              </div>
-              <div className="text-[11px] text-red-700 font-semibold mt-1.5">
-                Requires Caller Follow-up
+              <div>
+                <div className="text-2xl sm:text-4xl font-bold text-red-600 tracking-tight font-mono sm:font-sans">
+                  {pendingCallsCount}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-red-700 font-semibold mt-1 truncate">
+                  Requires Caller Follow-up
+                </div>
               </div>
             </div>
 
           </div>
 
           {/* ── Talent Acquisition & Careers Quick Bar ── */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl bg-gradient-to-r from-emerald-50/80 via-[#FAF9F6] to-white border border-emerald-200 shadow-2xs">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 shadow-xs">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50/90 via-[#FAF9F6] to-white border border-emerald-200/80 shadow-2xs">
+            <div className="flex items-start gap-3.5 min-w-0 flex-1">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#245348] text-[#DFBE79] flex items-center justify-center shrink-0 shadow-xs mt-0.5">
                 <Briefcase className="w-5 h-5" />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-serif font-bold text-sm text-[#14221F]">
+              <div className="space-y-1.5 min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-serif font-bold text-base sm:text-lg text-[#14221F]">
                     Talent Acquisition Desk
                   </span>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 whitespace-nowrap">
                     {jobApplications.length} Candidates
                   </span>
                   {jobApplications.some(a => a.status === 'Under Review') && (
-                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-                      {jobApplications.filter(a => a.status === 'Under Review').length} New Applications
+                      {jobApplications.filter(a => a.status === 'Under Review').length} New
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-gray-500 mt-0.5">
+                <p className="text-xs text-gray-600 leading-relaxed">
                   Review applicant resumes, verify candidate OTP security, and conduct interviews.
                 </p>
               </div>
@@ -1234,15 +1431,15 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
             <button
               onClick={() => setAdminTab('careers')}
-              className="px-4 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-xs cursor-pointer self-stretch sm:self-auto justify-center"
+              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-xs cursor-pointer active:scale-98 shrink-0"
             >
               <span>Open Job Enquiries</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
             </button>
           </div>
 
-          {/* ── Enquiry Records Table (Customer Directory) ── */}
-          <div className="bg-white rounded-2xl p-6 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
+          {/* ── Enquiry Records Container (Customer Directory) ── */}
+          <div className="bg-white rounded-2xl p-4 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
             
             {/* Header: Enquiry Records */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#EAE6DF] pb-4">
@@ -1272,7 +1469,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   {searchQuery && (
                     <button
                       onClick={() => setSearchQuery('')}
-                      className="absolute right-2.5 top-2.5 text-gray-400 hover:text-black"
+                      className="absolute right-2.5 top-2.5 text-gray-400 hover:text-black cursor-pointer"
                     >
                       ✕
                     </button>
@@ -1311,8 +1508,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               </div>
             </div>
 
-            {/* Desktop Table (Visible on all devices) */}
-            <div className="overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
+            {/* ── 1. Desktop Table (Preserved 100% on 1024px and above) ── */}
+            <div className="hidden lg:block overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#14221F] text-[#DFBE79] uppercase font-mono text-[11px] tracking-wider border-b border-[#245348]">
                   <tr>
@@ -1405,16 +1602,38 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                         {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </td>
 
-                      {/* Action: Call */}
+                      {/* Action: Direct Call & Caller-Grade Disposition */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <a
-                          href={`tel:${lead.mobile}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#245348]/10 text-[#245348] hover:bg-[#245348] hover:text-white transition-colors text-xs font-semibold"
-                          title="Call Customer"
-                        >
-                          <PhoneCall className="w-3.5 h-3.5" />
-                          <span>Call</span>
-                        </a>
+                        {(() => {
+                          const hasCallDone = Boolean((lead.callStatusCode && lead.callStatusCode > 0) || (lead.notes && lead.notes.length > 0));
+                          if (!hasCallDone) {
+                            return (
+                              <button
+                                onClick={() => handleStartAdminCall(lead)}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+                                title="Direct Call & Give Feedback / Disposition"
+                              >
+                                <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                                <span>Direct Call</span>
+                              </button>
+                            );
+                          }
+                          return (
+                            <div className="flex items-center justify-end gap-1.5">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                                <span>Call Done</span>
+                              </span>
+                              <button
+                                onClick={() => handleStartAdminCall(lead)}
+                                className="p-1.5 rounded-lg border border-[#EAE6DF] hover:border-[#245348] text-gray-500 hover:text-[#245348] transition-colors"
+                                title="Re-dial / Update Call Feedback"
+                              >
+                                <PhoneCall className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          );
+                        })()}
                       </td>
                     </tr>
                   ))}
@@ -1429,6 +1648,145 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* ── 2. Mobile & Tablet Cards Feed (Dedicated View Below 1024px) ── */}
+            <div className="block lg:hidden space-y-3.5">
+              {paginatedLeads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="bg-white rounded-xl border border-[#EAE6DF] shadow-xs p-4 space-y-3.5 hover:border-[#245348]/40 transition-all"
+                >
+                  {/* Top Bar: ID + Response Type Badge */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] whitespace-nowrap shrink-0">
+                      CON-{lead.id}
+                    </span>
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                      lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                      (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                      lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                      <span>
+                        {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                      </span>
+                    </span>
+                  </div>
+
+                  {/* Customer Header & Quick Direct Call Action */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-serif font-bold text-base text-[#14221F] tracking-tight truncate">
+                        {lead.name}
+                      </h3>
+                      <a
+                        href={`tel:${lead.mobile}`}
+                        className="text-xs text-gray-600 font-mono font-medium hover:text-[#245348] flex items-center gap-1.5 mt-0.5"
+                      >
+                        <PhoneCall className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                        <span>{lead.mobile}</span>
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {(() => {
+                        const hasCallDone = Boolean((lead.callStatusCode && lead.callStatusCode > 0) || (lead.notes && lead.notes.length > 0));
+                        if (!hasCallDone) {
+                          return (
+                            <button
+                              onClick={() => handleStartAdminCall(lead)}
+                              className="px-3.5 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer"
+                              title="Direct Call & Give Feedback / Disposition"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                              <span>Direct Call</span>
+                            </button>
+                          );
+                        }
+                        return (
+                          <div className="flex items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-semibold border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                              <span>Call Done</span>
+                            </span>
+                            <button
+                              onClick={() => handleStartAdminCall(lead)}
+                              className="p-1.5 rounded-lg border border-[#EAE6DF] text-gray-500 hover:text-[#245348]"
+                              title="Re-dial / Update Call Feedback"
+                            >
+                              <PhoneCall className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  </div>
+
+                  {/* 2-Column Clean Information Grid */}
+                  <div className="grid grid-cols-2 gap-2.5 bg-[#FAF9F6] p-3 rounded-xl border border-[#EAE6DF]/80 text-xs">
+                    {/* Location & Project */}
+                    <div className="space-y-0.5 min-w-0">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">
+                        Location / Project
+                      </span>
+                      <p className="font-semibold text-[#14221F] truncate text-xs">
+                        {lead.locationName}
+                      </p>
+                      <p className="text-[11px] text-gray-500 truncate">
+                        {lead.projectName}
+                      </p>
+                    </div>
+
+                    {/* Assigned Caller */}
+                    <div className="space-y-0.5 min-w-0">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">
+                        Assigned Caller
+                      </span>
+                      <p className="font-semibold text-[#245348] flex items-center gap-1 text-xs truncate">
+                        <Users className="w-3 h-3 text-[#DFBE79] shrink-0" />
+                        <span className="truncate">{lead.callerName}</span>
+                      </p>
+                    </div>
+
+                    {/* Call Status & Cadence */}
+                    <div className="space-y-0.5 min-w-0">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">
+                        Call Status
+                      </span>
+                      <p className="font-medium text-[#14221F] text-xs truncate">
+                        {lead.callStatusName}
+                      </p>
+                      {lead.statusCode === 4 && (
+                        <span className="text-[10px] text-amber-800 font-semibold block truncate">
+                          Attempt {lead.retryCount}/10
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Logged Date & Time */}
+                    <div className="space-y-0.5 min-w-0">
+                      <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">
+                        Logged Time
+                      </span>
+                      <p className="text-gray-700 font-medium text-xs">
+                        {new Date(lead.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                      </p>
+                      <p className="text-[10px] text-gray-400">
+                        {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              {paginatedLeads.length === 0 && (
+                <div className="py-12 text-center text-gray-400 space-y-2 bg-white rounded-xl border border-[#EAE6DF] p-6">
+                  <Users className="w-8 h-8 mx-auto text-gray-300" />
+                  <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+                </div>
+              )}
             </div>
 
             {/* Pagination Controls (30 records per page) */}
@@ -1502,8 +1860,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
             </p>
           </div>
 
-          {/* Performance Table */}
-          <div className="overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
+          {/* Performance Table - Desktop (1024px and above) */}
+          <div className="hidden lg:block overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
             <table className="w-full text-left text-xs">
               <thead className="bg-[#14221F] text-[#DFBE79] uppercase font-mono text-[11px] tracking-wider border-b border-[#245348]">
                 <tr>
@@ -1568,6 +1926,59 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Performance Cards - Mobile (Below 1024px) */}
+          <div className="block lg:hidden space-y-3.5">
+            {callers.map(caller => {
+              const callerLeads = leads.filter(l => l.callerId === caller.id);
+              const totalCallerLeads = callerLeads.length;
+
+              const callsDoneToday = callerLeads.filter(l => {
+                const hasNoteToday = l.notes && l.notes.some(n => n.at >= todayStart && n.by.includes(caller.name));
+                return hasNoteToday || (l.createdAt >= todayStart && l.callStatusCode > 0);
+              }).length;
+
+              const leadsToday = callerLeads.filter(l => l.createdAt >= todayStart && (l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7)).length;
+
+              const allocatedLocsStr = caller.assignedLocations && caller.assignedLocations.length > 0
+                ? caller.assignedLocations.map(id => LOCATION_CODES[id]).filter(Boolean).join(", ")
+                : "None";
+
+              return (
+                <div key={caller.id} className="bg-[#FAF9F6] border border-[#EAE6DF] rounded-xl p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3 className="font-serif font-bold text-base text-[#14221F]">{caller.name}</h3>
+                      <p className="text-xs text-gray-500 font-mono">{caller.callerCode} • {caller.phone}</p>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-[#245348]/10 text-[#245348] text-[10px] font-bold uppercase">
+                      {caller.role || "Specialist"}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-gray-600 bg-white p-2.5 rounded-lg border border-[#EAE6DF]">
+                    <span className="text-[10px] uppercase font-bold text-gray-400 block mb-0.5">Territories</span>
+                    <span className="font-medium text-[#14221F]">{allocatedLocsStr}</span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="bg-white p-2.5 rounded-lg border border-[#EAE6DF]">
+                      <span className="text-[10px] text-gray-400 uppercase font-semibold block">Total Leads</span>
+                      <span className="text-lg font-bold text-[#14221F] font-mono">{totalCallerLeads}</span>
+                    </div>
+                    <div className="bg-white p-2.5 rounded-lg border border-[#EAE6DF]">
+                      <span className="text-[10px] text-gray-400 uppercase font-semibold block">Calls Today</span>
+                      <span className="text-lg font-bold text-blue-800 font-mono">{callsDoneToday}</span>
+                    </div>
+                    <div className="bg-white p-2.5 rounded-lg border border-[#EAE6DF]">
+                      <span className="text-[10px] text-gray-400 uppercase font-semibold block">Leads Today</span>
+                      <span className="text-lg font-bold text-emerald-800 font-mono">{leadsToday}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -2091,18 +2502,18 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
 
       {/* ── TAB 6: CAREERS & TALENT ACQUISITION APPLICATIONS ── */}
       {adminTab === 'careers' && (
-        <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-subtle p-6 space-y-6 anim-fade-up">
+        <div className="bg-white rounded-2xl border border-[#EAE6DF] shadow-subtle p-4 sm:p-6 space-y-5 sm:space-y-6 anim-fade-up">
           {/* Header */}
-          <div className="border-b border-[#EAE6DF] pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="border-b border-[#EAE6DF] pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3.5">
             <div className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-[#245348]" />
+              <Briefcase className="w-5 h-5 text-[#245348] shrink-0" />
               <div>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
                   Job Enquiries
                 </h2>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
               <button
                 onClick={() => {
                   setIsExportingCareers(true);
@@ -2117,10 +2528,10 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   }, 400);
                 }}
                 disabled={isExportingCareers}
-                className="px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
+                className="w-full sm:w-auto px-3.5 py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer disabled:opacity-50"
               >
                 <Download className="w-3.5 h-3.5 text-[#DFBE79]" />
-                <span>{isExportingCareers ? 'Exporting...' : 'Export to Excel'}</span>
+                <span className="truncate">{isExportingCareers ? 'Exporting...' : 'Export to Excel'}</span>
               </button>
 
               <button
@@ -2129,7 +2540,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                   setJobApplications(apps);
                   setFeedbackToast('Applications refreshed from storage.');
                 }}
-                className="px-3 py-1.5 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#245348] text-xs font-semibold text-gray-700 transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto px-3.5 py-2 rounded-lg bg-[#FAF9F6] border border-[#EAE6DF] hover:border-[#245348] text-xs font-semibold text-gray-700 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 <span>Refresh</span>
@@ -2138,48 +2549,48 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
           </div>
 
           {/* Quick Metrics */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Total Applications</span>
-              <span className="font-bold text-2xl text-[#14221F] mt-0.5 block">{jobApplications.length}</span>
+              <span className="font-bold text-2xl text-[#14221F] mt-0.5 block font-mono">{jobApplications.length}</span>
             </div>
-            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Under Review</span>
-              <span className="font-bold text-2xl text-amber-700 mt-0.5 block">
+              <span className="font-bold text-2xl text-amber-700 mt-0.5 block font-mono">
                 {jobApplications.filter(a => a.status === 'Under Review').length}
               </span>
             </div>
-            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Shortlisted</span>
-              <span className="font-bold text-2xl text-emerald-700 mt-0.5 block">
+              <span className="font-bold text-2xl text-emerald-700 mt-0.5 block font-mono">
                 {jobApplications.filter(a => a.status && (a.status.includes('Shortlisted') || a.status.includes('Interview') || a.status.includes('Offer'))).length}
               </span>
             </div>
-            <div className="p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF]">
               <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider block">Direct Contact</span>
-              <span className="font-mono font-bold text-sm text-[#245348] mt-1 block">+91 82910 90155</span>
+              <span className="font-mono font-bold text-xs sm:text-sm text-[#245348] mt-1 block whitespace-nowrap">+91 82910 90155</span>
             </div>
           </div>
 
           {/* Filters Bar */}
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-3 p-3 bg-[#FAF9F6] rounded-xl border border-[#EAE6DF]">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 bg-[#FAF9F6] rounded-xl border border-[#EAE6DF]">
             <div className="relative w-full lg:w-72">
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search candidate, role, mobile, email, city..."
+                placeholder="Search candidate, role, mobile, email..."
                 value={careerSearch}
                 onChange={(e) => setCareerSearch(e.target.value)}
-                className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg pl-9 pr-3 py-1.5 text-xs text-[#14221F] focus:outline-none"
+                className="w-full bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg pl-9 pr-3 py-2 text-xs text-[#14221F] focus:outline-none"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex items-center gap-2 w-full lg:w-auto">
               {/* Position Filter - exact 4 roles */}
               <select
                 value={careerRoleFilter}
                 onChange={(e) => setCareerRoleFilter(e.target.value)}
-                className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-1.5 text-xs text-[#14221F] focus:outline-none"
+                className="w-full lg:w-auto bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-2 text-xs text-[#14221F] focus:outline-none"
               >
                 <option value="All">All Positions (4 Open Roles)</option>
                 <option value="Business Development Associate">Business Development Associate (BDA)</option>
@@ -2193,7 +2604,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
               <select
                 value={careerStatusFilter}
                 onChange={(e) => setCareerStatusFilter(e.target.value)}
-                className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-1.5 text-xs text-[#14221F] focus:outline-none"
+                className="w-full lg:w-auto bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-2 text-xs text-[#14221F] focus:outline-none"
               >
                 <option value="All">All Statuses</option>
                 <option value="Under Review">Under Review</option>
@@ -2206,8 +2617,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
             </div>
           </div>
 
-          {/* Applications Table */}
-          <div className="border border-[#EAE6DF] rounded-xl overflow-hidden">
+          {/* 1. Desktop Applications Table (Preserved on 1024px and above) */}
+          <div className="hidden lg:block border border-[#EAE6DF] rounded-xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-[#FAF9F6] border-b border-[#EAE6DF] text-gray-500 uppercase text-[10px] tracking-wider font-mono">
@@ -2298,7 +2709,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                               setJobApplications(dbStore.getJobApplications());
                               setFeedbackToast(`Application ${app.id} marked as ${newStat}`);
                             }}
-                            className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2.5 py-1 text-xs font-semibold text-[#14221F] focus:outline-none"
+                            className="bg-white border border-[#EAE6DF] focus:border-[#245348] rounded px-2.5 py-1 text-xs font-semibold text-[#14221F] focus:outline-none cursor-pointer"
                           >
                             <option value="Under Review">Under Review</option>
                             <option value="Shortlisted for Interview">Shortlisted</option>
@@ -2325,6 +2736,103 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* 2. Mobile Applications Card Feed (Below 1024px) */}
+          <div className="block lg:hidden space-y-3.5">
+            {(() => {
+              const filteredCareers = jobApplications.filter(app => {
+                if (careerRoleFilter !== 'All') {
+                  const filterLower = careerRoleFilter.toLowerCase();
+                  const posLower = (app.position || '').toLowerCase();
+                  const matches = posLower.includes(filterLower) ||
+                    (filterLower.includes('bda') && posLower.includes('bda')) ||
+                    (filterLower.includes('bdm') && posLower.includes('bdm'));
+                  if (!matches) return false;
+                }
+                if (careerStatusFilter !== 'All' && app.status !== careerStatusFilter) return false;
+                if (careerSearch.trim()) {
+                  const q = careerSearch.toLowerCase();
+                  const match =
+                    app.name.toLowerCase().includes(q) ||
+                    app.mobile.includes(q) ||
+                    app.email.toLowerCase().includes(q) ||
+                    app.position.toLowerCase().includes(q) ||
+                    (app.city && app.city.toLowerCase().includes(q)) ||
+                    (app.currentCompany && app.currentCompany.toLowerCase().includes(q));
+                  if (!match) return false;
+                }
+                return true;
+              });
+
+              if (filteredCareers.length === 0) {
+                return (
+                  <div className="py-12 text-center text-gray-400 space-y-2 bg-white rounded-xl border border-[#EAE6DF] p-6">
+                    <p className="text-sm font-medium">No candidate job enquiries matching current filters.</p>
+                  </div>
+                );
+              }
+
+              return filteredCareers.map(app => (
+                <div key={app.id} className="bg-white rounded-xl border border-[#EAE6DF] p-4 space-y-3 shadow-xs">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono font-bold text-xs px-2.5 py-1 rounded bg-[#FAF9F6] text-[#C59B4E] border border-[#EAE6DF]">
+                      {app.id}
+                    </span>
+                    <button
+                      onClick={() => setSelectedCandidateModal(app)}
+                      className="px-3 py-1 rounded-lg bg-[#245348] text-white text-xs font-semibold flex items-center gap-1 shadow-2xs"
+                    >
+                      <Eye className="w-3 h-3 text-[#DFBE79]" />
+                      <span>Details</span>
+                    </button>
+                  </div>
+
+                  <div>
+                    <h3 className="font-serif font-bold text-base text-[#14221F]">{app.name}</h3>
+                    <a
+                      href={`tel:${app.mobile}`}
+                      className="text-xs text-gray-600 font-mono font-medium hover:text-[#245348] flex items-center gap-1 mt-0.5"
+                    >
+                      <PhoneCall className="w-3 h-3 text-[#C59B4E]" />
+                      <span>+91 {app.mobile}</span>
+                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 bg-[#FAF9F6] p-2.5 rounded-lg border border-[#EAE6DF] text-xs">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-gray-400 block">Position</span>
+                      <span className="font-medium text-[#14221F] text-xs truncate block">{app.position}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-gray-400 block">Experience</span>
+                      <span className="font-medium text-gray-700 text-xs truncate block font-mono">{app.experience}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-[10px] uppercase font-bold text-gray-500 block">Hiring Status</label>
+                    <select
+                      value={app.status}
+                      onChange={(e) => {
+                        const newStat = e.target.value;
+                        dbStore.updateJobApplicationStatus(app.id, newStat);
+                        setJobApplications(dbStore.getJobApplications());
+                        setFeedbackToast(`Application ${app.id} marked as ${newStat}`);
+                      }}
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-3 py-1.5 text-xs font-semibold text-[#14221F] focus:outline-none"
+                    >
+                      <option value="Under Review">Under Review</option>
+                      <option value="Shortlisted for Interview">Shortlisted</option>
+                      <option value="Interview Scheduled">Interview Scheduled</option>
+                      <option value="Offer Extended">Offer Extended</option>
+                      <option value="Hired">Hired</option>
+                      <option value="Archived / Rejected">Archived</option>
+                    </select>
+                  </div>
+                </div>
+              ));
+            })()}
           </div>
         </div>
       )}
@@ -3220,6 +3728,90 @@ export function AdminPortal({ currentUser, onLogin, onLogout }) {
         </div>
       )}
 
+      {/* ── ADMIN IN-APP CALLING & DISPOSITION MODAL (Full Caller Access) ── */}
+      {callingLead && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-5 border border-emerald-500/30 anim-fade-scale">
+            <div className="text-center space-y-1 pb-3 border-b border-[#EAE6DF]">
+              <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mb-2 animate-pulse shadow-xs">
+                <PhoneCall className="w-7 h-7" />
+              </div>
+              <h3 className="font-serif text-2xl font-bold text-[#14221F]">
+                Calling {callingLead.name}
+              </h3>
+              <p className="font-mono text-xs text-gray-600">
+                {callingLead.mobile} • {callingLead.locationName} ({callingLead.projectName})
+              </p>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#14221F] text-xs font-mono text-[#DFBE79] mt-1 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span>CALL DURATION: {formatCallTime(callDuration)}</span>
+              </div>
+            </div>
+
+            {/* Disposition Rating Options */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-gray-700 block">
+                Call Disposition & Customer Rating:
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                {[
+                  { code: 1, label: "Hot Lead (1)", desc: "Ready to book" },
+                  { code: 2, label: "Interested (2)", desc: "Schedule site visit" },
+                  { code: 4, label: "Not Picking (4)", desc: "Auto 4h/10d retry" },
+                  { code: 3, label: "Okay (3)", desc: "Follow up needed" },
+                  { code: 5, label: "Not Interested", desc: "No interest" },
+                  { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
+                ].map(disp => (
+                  <button
+                    key={disp.code}
+                    type="button"
+                    onClick={() => setSelectedDisposition(disp.code)}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      selectedDisposition === disp.code
+                        ? 'bg-[#245348] text-white border-[#245348] shadow-xs'
+                        : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-black'
+                    }`}
+                  >
+                    <div className="font-bold text-xs">{disp.label}</div>
+                    <div className={`text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Discussion Remarks */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-700 font-medium">Remarks & Call Discussion Notes:</label>
+              <textarea
+                rows={3}
+                value={callerRemark}
+                onChange={(e) => setCallerRemark(e.target.value)}
+                placeholder="e.g., Client wants 3 BHK Sea View in Versova, budget ₹5.5 Cr, invited for Saturday consultation."
+                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setCallingLead(null)}
+                className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                Cancel Call
+              </button>
+              <button
+                type="button"
+                onClick={handleFinishAdminCall}
+                className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
+              >
+                Save Disposition
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      </div>
     </div>
   );
 }

@@ -226,7 +226,7 @@ export function SignatureProjects({
       {/* ============================================================== */}
       {/* HERO BANNER – MARQUEE BACKGROUND + ANIMATED GOLD HEADING       */}
       {/* ============================================================== */}
-      <div className="relative h-64 sm:h-72 md:h-80 w-full overflow-hidden border-b border-[#EAE6DF] flex items-center justify-center group shadow-md">
+      <div className="relative h-48 xs:h-56 sm:h-72 md:h-80 w-full overflow-hidden border-b border-[#EAE6DF] flex items-center justify-center group shadow-md">
         
         {/* Background Scrolling Architectural Image Marquee */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
@@ -277,19 +277,19 @@ export function SignatureProjects({
       {/* ============================================================== */}
       {/* SECTION B: LOCATION SELECTION & INTERACTIVE FILTERS            */}
       {/* ============================================================== */}
-      <section className="py-12 bg-[#FAF9F6]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section className="pt-5 pb-8 sm:py-10 md:py-12 bg-[#FAF9F6]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 sm:space-y-6 md:space-y-8">
           
           {/* Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-2">
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#14221F] tracking-tight">
+          <div className="text-center max-w-3xl mx-auto space-y-1.5">
+            <h2 className="font-serif text-2xl xs:text-3xl sm:text-5xl font-bold text-[#14221F] tracking-tight">
               Explore Location
             </h2>
-            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-2" />
+            <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-[#C59B4E] to-transparent mx-auto mt-1.5" />
           </div>
 
           {/* Mobile View: Single Luxury Select Location Dropdown (with All Locations inside) */}
-          <div className="block md:hidden pt-1">
+          <div className="block md:hidden pt-0.5">
             <div ref={dropdownRef} className="relative">
               {(() => {
                 const isAllSelected = selectedLocation === 'All Locations' || selectedLocation === 'All';

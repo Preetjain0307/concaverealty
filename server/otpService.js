@@ -273,7 +273,7 @@ function buildLuxuryEmailHtml({ name, otp, purpose }) {
                 MahaRERA Registered Real Estate Agent: A51900045781
               </p>
               <p style="margin: 0 0 10px; font-size: 11px; color: #736B5E; line-height: 1.5;">
-                Western Suburbs & South Mumbai Luxury Advisory • Borivali West, Mumbai 400092
+                Western Suburbs & South Mumbai Luxury Advisory • Mumbai, Maharashtra
               </p>
               <div style="font-size: 10.5px; color: #9E9689; border-top: 1px solid #EDE9E1; padding-top: 10px;">
                 Concave Realty Talent Acquisition Desk • concaverealtyindia@gmail.com • +91 8291090155
@@ -431,11 +431,6 @@ export function verifyOtpCode({ email, otp }) {
     );
   } catch {
     isMatch = false;
-  }
-
-  // Universal testing fallback code for automated testing if in local dev
-  if (!isMatch && (cleanOtp === '123456' || cleanOtp === '1234')) {
-    isMatch = true;
   }
 
   if (!isMatch) {

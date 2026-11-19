@@ -13,12 +13,6 @@ import {
   Clock,
   Compass
 } from 'lucide-react';
-import {
-  PrivacyPolicyModal,
-  TermsConditionsModal,
-  DisclaimerModal,
-  CookiePolicyModal
-} from './LegalModals';
 
 const INSTAGRAM_URL = "https://www.instagram.com/concaverealtyindia?mdxt=MTZkYTJobTV5YnpuMA==";
 const WHATSAPP_URL = "https://wa.me/918291090155";
@@ -26,12 +20,6 @@ const PHONE_NUMBER = "8291090155";
 const EMAIL_ADDRESS = "concaverealtyindia@gmail.com";
 
 export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
-  // Modal states for legal & compliance documents
-  const [privacyOpen, setPrivacyOpen] = useState(false);
-  const [termsOpen, setTermsOpen] = useState(false);
-  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
-  const [cookieOpen, setCookieOpen] = useState(false);
-
   // Mobile accordion states to keep mobile footer sleek, compact & elegant
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileLocationsOpen, setMobileLocationsOpen] = useState(false);
@@ -112,7 +100,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                   </li>
                   <li>
                     <button
-                      onClick={() => setTermsOpen(true)}
+                      onClick={() => onNavigate('terms')}
                       className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
                       Terms & Conditions
@@ -120,7 +108,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                   </li>
                   <li>
                     <button
-                      onClick={() => setDisclaimerOpen(true)}
+                      onClick={() => onNavigate('disclaimer')}
                       className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
                       Disclaimer
@@ -128,7 +116,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                   </li>
                   <li>
                     <button
-                      onClick={() => setPrivacyOpen(true)}
+                      onClick={() => onNavigate('privacy')}
                       className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
                       Privacy Policy
@@ -136,7 +124,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
                   </li>
                   <li>
                     <button
-                      onClick={() => setCookieOpen(true)}
+                      onClick={() => onNavigate('cookies')}
                       className="hover:text-[#DFBE79] transition-colors text-left cursor-pointer block"
                     >
                       Cookie Policy
@@ -298,7 +286,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
               {/* Brand Header */}
               <div className="space-y-1">
                 <span 
-                  className="font-serif text-lg sm:text-2xl font-bold tracking-[0.12em] text-[#F7F3EB] block uppercase"
+                  className="font-serif text-lg sm:text-2xl font-bold tracking-[0.10em] text-[#F7F3EB] block uppercase pr-2"
                   style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
                 >
                   CONCAVE REALTY
@@ -432,18 +420,18 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
       {/* Small, simple, elegant 2-column layout in our dark luxury forest green &  */}
       {/* gold brand theme, styled exclusively for mobile view.                     */}
       {/* ========================================================================= */}
-      <footer className="block md:hidden w-full bg-[#14221F] text-[#D0C5B4] px-6 pt-9 pb-6 border-t border-[#C59B4E]/30 relative overflow-hidden">
+      <footer className="block md:hidden w-full bg-[#14221F] text-[#D0C5B4] px-4 xs:px-6 pt-7 pb-5 border-t border-[#C59B4E]/30 relative overflow-hidden">
         {/* Subtle luxury ambient glow */}
         <div className="pointer-events-none absolute -top-20 -left-20 w-64 h-64 bg-[#C59B4E]/10 rounded-full blur-3xl" />
         <div className="pointer-events-none absolute -bottom-20 -right-20 w-64 h-64 bg-[#245348]/20 rounded-full blur-3xl" />
 
-        <div className="relative z-10 max-w-sm mx-auto">
+        <div className="relative z-10 max-w-md mx-auto">
 
           {/* Simple & Clean 2-Column Links Grid */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3.5 text-[13px] font-normal leading-snug">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-[12.5px] font-normal leading-snug">
             
             {/* Column 1: Company & Navigation */}
-            <div className="space-y-3.5 flex flex-col items-start">
+            <div className="space-y-2.5 flex flex-col items-start">
               <button
                 type="button"
                 onClick={() => scrollToSection('about-us')}
@@ -498,31 +486,31 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
             </div>
 
             {/* Column 2: Legal & Portals */}
-            <div className="space-y-3.5 flex flex-col items-start">
+            <div className="space-y-2.5 flex flex-col items-start">
               <button
                 type="button"
-                onClick={() => setTermsOpen(true)}
+                onClick={() => onNavigate('terms')}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
                 Terms & Conditions
               </button>
               <button
                 type="button"
-                onClick={() => setPrivacyOpen(true)}
+                onClick={() => onNavigate('privacy')}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
                 Privacy Policy
               </button>
               <button
                 type="button"
-                onClick={() => setDisclaimerOpen(true)}
+                onClick={() => onNavigate('disclaimer')}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
                 Disclaimer
               </button>
               <button
                 type="button"
-                onClick={() => setCookieOpen(true)}
+                onClick={() => onNavigate('cookies')}
                 className="text-[#D0C5B4] hover:text-[#DFBE79] active:text-[#DFBE79] transition-colors text-left cursor-pointer"
               >
                 Cookie Policy
@@ -549,12 +537,12 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
           </div>
 
           {/* Full Brand Wordmark & Slogan */}
-          <div className="pt-8 pb-5 space-y-2">
+          <div className="pt-8 pb-3.5 space-y-1.5 overflow-visible">
             <h2
-              className="text-[23px] xs:text-[27px] font-bold tracking-[0.15em] uppercase select-none whitespace-nowrap leading-tight bg-gradient-to-r from-[#FFFDF7] via-[#F3DFB0] to-[#C59B4E] bg-clip-text text-transparent"
+              className="text-[21px] min-[360px]:text-[24px] xs:text-[27px] font-bold tracking-[0.08em] xs:tracking-[0.10em] uppercase select-none whitespace-nowrap leading-tight bg-gradient-to-r from-[#FFFDF7] via-[#F3DFB0] to-[#C59B4E] bg-clip-text text-transparent pr-2 inline-block max-w-full"
               style={{
                 fontFamily: '"Cinzel", "Cormorant Garamond", serif',
-                filter: 'drop-shadow(0 2px 12px rgba(223, 190, 121, 0.32))',
+                filter: 'drop-shadow(0 2px 14px rgba(223, 190, 121, 0.35))',
               }}
             >
               CONCAVE REALTY
@@ -562,24 +550,28 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
 
             {/* Refined Gold Signature Hairline */}
             <div className="flex items-center gap-2 pt-0.5">
-              <span className="h-[1px] w-10 bg-gradient-to-r from-[#DFBE79] to-[#C59B4E]/40" />
+              <span className="h-[1px] w-12 bg-gradient-to-r from-[#DFBE79] to-[#C59B4E]/40" />
               <span className="text-[7px] text-[#DFBE79] leading-none">◆</span>
-              <span className="h-[1px] w-20 bg-gradient-to-r from-[#C59B4E]/40 to-transparent" />
+              <span className="h-[1px] w-24 bg-gradient-to-r from-[#C59B4E]/40 to-transparent" />
             </div>
 
-            <p className="text-[11px] uppercase tracking-[0.24em] text-[#DFBE79]/95 font-sans font-medium pt-0.5">
+            <p className="text-[8px] xs:text-[8.5px] uppercase tracking-[0.26em] text-[#DFBE79]/90 font-sans font-medium pt-0.5">
               Where Legacy Meets Luxury
             </p>
-            <div className="pt-1.5">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#183C32] border border-[#C59B4E]/50 text-[10px] text-[#DFBE79] font-mono shadow-xs">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#DFBE79]" />
+            <div className="pt-1.5 flex flex-col gap-1.5 items-start">
+              <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#183C32] border border-[#C59B4E]/40 text-[7.5px] xs:text-[8px] text-[#DFBE79]/90 font-mono shadow-xs">
+                <ShieldCheck className="w-3 h-3 text-[#DFBE79]/90 shrink-0" />
                 <span>MahaRERA: A51900045781</span>
+              </div>
+              <div className="inline-flex items-center gap-1.5 text-[9px] text-[#D0C5B4]/80 font-medium">
+                <MapPin className="w-3 h-3 text-[#DFBE79] shrink-0" />
+                <span>Mumbai, Maharashtra</span>
               </div>
             </div>
           </div>
 
           {/* Clean Solid Circular Social Buttons (Instagram & WhatsApp) */}
-          <div className="flex items-center gap-3 pb-7">
+          <div className="flex items-center gap-3 pb-5">
             {/* Instagram */}
             <a
               href={INSTAGRAM_URL}
@@ -608,7 +600,7 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
           </div>
 
           {/* Minimal Divider Line with Centered Chevron Down Toggle */}
-          <div className="relative border-t border-white/15 pt-5 pb-1 flex flex-col items-center">
+          <div className="relative border-t border-white/15 pt-4 pb-2 flex flex-col items-center">
             <button
               type="button"
               onClick={() => setMobileReraOpen(!mobileReraOpen)}
@@ -645,12 +637,9 @@ export function Footer({ onNavigate, onOpenEnquiry, onSelectLocation }) {
       </footer>
 
       {/* ========================================================================= */}
-      {/* 3. LEGAL & COMPLIANCE MODALS                                              */}
+      {/* 3. LEGAL & COMPLIANCE                                                     */}
+      {/* (All legal documents routed to dedicated corporate pages)                */}
       {/* ========================================================================= */}
-      <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
-      <TermsConditionsModal isOpen={termsOpen} onClose={() => setTermsOpen(false)} />
-      <DisclaimerModal isOpen={disclaimerOpen} onClose={() => setDisclaimerOpen(false)} />
-      <CookiePolicyModal isOpen={cookieOpen} onClose={() => setCookieOpen(false)} />
     </>
   );
 }

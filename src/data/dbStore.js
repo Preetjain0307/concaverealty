@@ -108,6 +108,7 @@ const DEFAULT_CALLERS = [
     callerCode: "CALLER-101",
     name: "Rahul Sharma",
     phone: "98201 12345",
+    email: "rahul.sharma@concaverealty.com",
     password: "caller123",
     assignedLocations: [3, 4], // Goregaon, Bhayander
     role: "Senior Location Specialist",
@@ -118,6 +119,7 @@ const DEFAULT_CALLERS = [
     callerCode: "CALLER-102",
     name: "Priya Deshmukh",
     phone: "98202 23456",
+    email: "priya.deshmukh@concaverealty.com",
     password: "caller123",
     assignedLocations: [1, 5], // Borivali West, Mira Road
     role: "North Suburb Specialist",
@@ -128,6 +130,7 @@ const DEFAULT_CALLERS = [
     callerCode: "CALLER-103",
     name: "Sneha Kapadia",
     phone: "98203 34567",
+    email: "sneha.kapadia@concaverealty.com",
     password: "caller123",
     assignedLocations: [2, 7, 8], // Versova, Worli, Bandra
     role: "Luxury Coastal Specialist",
@@ -138,6 +141,7 @@ const DEFAULT_CALLERS = [
     callerCode: "CALLER-104",
     name: "Vikram Mehta",
     phone: "98204 45678",
+    email: "vikram.mehta@concaverealty.com",
     password: "caller123",
     assignedLocations: [6, 9, 10], // Kandivali, Powai, Lower Parel
     role: "Central & Commercial Hub Specialist",
@@ -667,11 +671,12 @@ export const dbStore = {
     };
   },
 
-  // Update admin password
-  updateAdminPassword(newPassword) {
+  // Update admin password with cryptographic hashing
+  async updateAdminPassword(newPassword) {
     try {
       const current = this.getAdminCredentials();
-      const updated = { ...current, password: newPassword, updatedAt: Date.now() };
+      const hashedPassword = await hashPassword(newPassword);
+      const updated = { ...current, password: hashedPassword, updatedAt: Date.now() };
       localStorage.setItem('concave_admin_auth', JSON.stringify(updated));
       return { success: true };
     } catch (e) {
@@ -679,8 +684,8 @@ export const dbStore = {
     }
   },
 
-  // Update caller password by id or callerCode
-  updateCallerPassword(callerIdOrCode, newPassword) {
+  // Update caller password by id or callerCode with cryptographic hashing
+  async updateCallerPassword(callerIdOrCode, newPassword) {
     try {
       this.init();
       const callers = this.getCallers();
@@ -689,7 +694,7 @@ export const dbStore = {
         c.callerCode.toUpperCase() === String(callerIdOrCode).trim().toUpperCase()
       );
       if (idx !== -1) {
-        callers[idx].password = newPassword;
+        callers[idx].password = await hashPassword(newPassword);
         setRawData(CALLERS_KEY, callers);
         return { success: true, caller: callers[idx] };
       }
@@ -1660,5 +1665,31 @@ export function validatePasswordPolicy(password) {
     return { valid: false, message: "Password must contain at least 1 special character (!@#$%^&* etc.)." };
   }
   return { valid: true };
+}
+
+// Cryptographic Password Hashing (SHA-256 with Salt via Web Crypto API)
+export async function hashPassword(plainPassword, salt = 'concave_auth_salt_2026') {
+  if (!plainPassword) return '';
+  try {
+    const enc = new TextEncoder();
+    const data = enc.encode(`${salt}:${plainPassword}`);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  } catch {
+    // Fallback if crypto.subtle unavailable in non-browser context
+    return plainPassword;
+  }
+}
+
+export async function verifyPassword(plainPassword, storedPassword, salt = 'concave_auth_salt_2026') {
+  if (!plainPassword || !storedPassword) return false;
+  // If stored password is an encrypted 64-character SHA-256 hex string
+  if (storedPassword.length === 64 && /^[0-9a-f]{64}$/i.test(storedPassword)) {
+    const hashed = await hashPassword(plainPassword, salt);
+    return hashed.toLowerCase() === storedPassword.toLowerCase();
+  }
+  // Backward compatibility for initial bootstrap plaintext
+  return plainPassword === storedPassword;
 }
 

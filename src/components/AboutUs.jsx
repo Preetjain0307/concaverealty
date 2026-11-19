@@ -198,7 +198,7 @@ const LuxuryEditorialBand = ({ section, wrapRef, imageRef, textRef, isFirst, isL
             isImageLeft ? '' : 'order-2 lg:order-1'
           }`}
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 lodha-text-item lodha-delay-1">
             <span className="text-xs font-mono font-bold text-[#B78A3F] tracking-wider px-2.5 py-1 rounded-md border border-[#B78A3F]/35 bg-[#F7F3EB] shadow-xs">
               {section.index}
             </span>
@@ -209,7 +209,7 @@ const LuxuryEditorialBand = ({ section, wrapRef, imageRef, textRef, isFirst, isL
           </div>
 
           <h2
-            className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-bold text-[#183C32] tracking-tight leading-[1.12]"
+            className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-bold text-[#183C32] tracking-tight leading-[1.12] lodha-text-item lodha-delay-2"
             style={{
               fontFamily: '"Cormorant Garamond", Cinzel, serif',
               fontVariantCaps: 'small-caps',
@@ -219,17 +219,17 @@ const LuxuryEditorialBand = ({ section, wrapRef, imageRef, textRef, isFirst, isL
             <br className="hidden lg:inline" /> {section.headingLine2}
           </h2>
 
-          <div className="border-l-2 border-[#B78A3F] pl-5 py-0.5">
+          <div className="border-l-2 border-[#B78A3F] pl-5 py-0.5 lodha-text-item lodha-delay-3">
             <p className="text-[15px] sm:text-base leading-[1.78] text-[#554B3E] font-normal">
               {section.description}
             </p>
           </div>
 
-          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 auto-rows-fr gap-4">
+          <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 auto-rows-fr gap-4 lodha-text-item lodha-delay-4">
             {section.pillars.map(({ Icon, title, subtitle }, cardIdx) => (
               <div
                 key={title}
-                style={{ '--stagger-delay': `${0.35 + cardIdx * 0.14}s` }}
+                style={{ '--stagger-delay': `${0.18 + cardIdx * 0.12}s` }}
                 className="about-stagger-card h-full bg-[#F7F3EB]/95 backdrop-blur-sm rounded-[14px] p-4 border border-[#DFD2BE] shadow-[0_8px_22px_rgba(92,78,58,0.09)] hover:border-[#B78A3F]/65 hover:shadow-[0_14px_28px_rgba(92,78,58,0.14)] flex items-center gap-3.5"
               >
                 <div className="w-11 h-11 rounded-full bg-[#EFE4D0] border border-[#B78A3F]/40 flex items-center justify-center shrink-0">
@@ -269,50 +269,43 @@ export const AboutUs = () => {
       return;
     }
 
-    const pairs = LUXURY_BANDS.map((_, idx) => ({
-      triggers: [bandImageRefs.current[idx], bandTextRefs.current[idx]].filter(Boolean),
-      targets: [
-        bandWrapRefs.current[idx],
-        bandImageRefs.current[idx],
-        bandTextRefs.current[idx],
-      ],
-    }));
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const match = pairs.find((p) => p.triggers.includes(entry.target));
-            if (match) {
-              match.targets.forEach((t) => t?.classList.add('is-revealed'));
-              // Keep permanently revealed — unobserve so it stays visible forever!
-              match.triggers.forEach((trig) => {
-                if (trig) observer.unobserve(trig);
-              });
+            entry.target.classList.add('is-revealed');
+            // If image wrap, also ensure the inner image frame triggers
+            if (entry.target.classList.contains('about-frame-wrap')) {
+              entry.target.querySelector('.lodha-frame')?.classList.add('is-revealed');
             }
+            observer.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.08, // Start revealing smoothly as soon as 8% enters screen
-        rootMargin: '0px 0px -40px 0px',
+        threshold: 0.12, // Trigger as soon as 12% enters screen
+        rootMargin: '0px 0px -30px 0px',
       }
     );
 
-    // Initial check: if already in viewport on mount, reveal immediately
     const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-    pairs.forEach(({ triggers, targets }) => {
-      const alreadyInView = triggers.some((trig) => {
-        if (!trig) return false;
-        const rect = trig.getBoundingClientRect();
-        return rect.top < windowHeight && rect.bottom > 0;
-      });
-      if (alreadyInView) {
-        targets.forEach((t) => t?.classList.add('is-revealed'));
+
+    // Observe each image wrapper and text block individually
+    const elements = [
+      ...bandWrapRefs.current,
+      ...bandImageRefs.current,
+      ...bandTextRefs.current,
+    ].filter(Boolean);
+
+    elements.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < windowHeight * 0.9 && rect.bottom > 0) {
+        el.classList.add('is-revealed');
+        if (el.classList.contains('about-frame-wrap')) {
+          el.querySelector('.lodha-frame')?.classList.add('is-revealed');
+        }
       } else {
-        triggers.forEach((trigger) => {
-          if (trigger) observer.observe(trigger);
-        });
+        observer.observe(el);
       }
     });
 

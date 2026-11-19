@@ -76,8 +76,8 @@ export function HeroSection({ onSearch, onOpenTour, onOpenEnquiry }) {
       {/* Hero Typography & Search */}
       <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-6">
 
-        {/* Main Title & User Slogan */}
-        <div className="space-y-2 sm:space-y-3 px-2">
+        {/* Main Title & User Slogan with smooth entrance animation */}
+        <div className="space-y-2 sm:space-y-3 px-2 anim-hero-entrance">
           <h1 className="font-serif text-3xl sm:text-6xl md:text-7xl font-bold tracking-tight drop-shadow-md gold-shine-text leading-tight">
             CONCAVE REALTY
           </h1>

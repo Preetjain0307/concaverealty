@@ -21,23 +21,38 @@ import {
   Sparkles,
   LogOut,
   RefreshCw,
-  ArrowRight
+  ArrowRight,
+  Home
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, verifyPassword } from '../data/dbStore';
 
-export function CallerPortal({ currentUser, onLogin, onLogout }) {
+export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   const [callers, setCallers] = useState([]);
   const [loginMethod, setLoginMethod] = useState('credentials'); // 'credentials' or 'otp'
   
   // Credentials login state
-  const [callerCode, setCallerCode] = useState('CALLER-101');
-  const [password, setPassword] = useState('caller123');
+  const [callerCode, setCallerCode] = useState('');
+  const [password, setPassword] = useState('');
 
   // OTP login state
-  const [otpMobile, setOtpMobile] = useState('98201 12345');
+  const [otpMobile, setOtpMobile] = useState('');
   const [otpSent, setOtpSent] = useState(false);
-  const [generatedOtp, setGeneratedOtp] = useState('');
   const [enteredOtp, setEnteredOtp] = useState('');
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
+
+  // Self-Service Password Reset via Registered Email OTP
+  const [forgotPasswordMode, setForgotPasswordMode] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: Enter ID, 2: Enter OTP, 3: Set Password
+  const [forgotCallerCode, setForgotCallerCode] = useState('');
+  const [forgotCallerEmail, setForgotCallerEmail] = useState('');
+  const [forgotOtp, setForgotOtp] = useState('');
+  const [forgotToken, setForgotToken] = useState('');
+  const [newCallerPassword, setNewCallerPassword] = useState('');
+  const [confirmCallerPassword, setConfirmCallerPassword] = useState('');
+  const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
 
   // Portal view state
   const [leads, setLeads] = useState([]);
@@ -83,41 +98,211 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
   }, [callActive]);
 
   // Login Handlers
-  const handleCredentialsLogin = (e) => {
+  const handleCredentialsLogin = async (e) => {
     e.preventDefault();
-    const found = callers.find(c => c.callerCode.toUpperCase() === callerCode.trim().toUpperCase() && c.password === password);
+    setLoginError('');
+
+    if (!callerCode.trim() || !password) {
+      setLoginError("Please enter both Caller ID and password.");
+      return;
+    }
+
+    let found = null;
+    for (const c of callers) {
+      if (c.callerCode.toUpperCase() === callerCode.trim().toUpperCase()) {
+        const isMatch = await verifyPassword(password, c.password);
+        if (isMatch) {
+          found = c;
+          break;
+        }
+      }
+    }
+
     if (found) {
       onLogin({ ...found, role: 'caller' });
     } else {
-      alert("Invalid Caller ID or Password. Try 'CALLER-101' with password 'caller123'.");
+      setLoginError("Invalid Caller ID or Password. Please contact administration.");
     }
   };
 
-  const handleSendOtp = () => {
-    if (!otpMobile || otpMobile.length < 5) {
-      alert("Please enter a valid mobile number.");
+  const handleSendOtp = async () => {
+    setLoginError('');
+    const cleanMobile = otpMobile.replace(/\D/g, '');
+    if (!cleanMobile || cleanMobile.length < 10) {
+      setLoginError("Please enter a valid 10-digit registered mobile number.");
       return;
     }
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    setGeneratedOtp(code);
-    setOtpSent(true);
-  };
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    if (enteredOtp === generatedOtp || enteredOtp === '1234') {
-      const found = callers.find(c => c.phone.replace(/\s+/g, '') === otpMobile.replace(/\s+/g, '')) || callers[0];
-      onLogin({ ...found, role: 'caller' });
-    } else {
-      alert("Invalid OTP! Use the generated OTP shown on screen or 1234.");
+    const found = callers.find(c => c.phone.replace(/\D/g, '') === cleanMobile);
+    if (!found) {
+      setLoginError("Mobile number is not registered for any active caller account.");
+      return;
+    }
+
+    setOtpLoading(true);
+    try {
+      // Dispatch real email OTP to the registered advisor email
+      const targetEmail = found.email || 'concaverealtyindia@gmail.com';
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: targetEmail, name: found.name, digits: 6, purpose: 'caller_auth' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setOtpSent(true);
+      } else {
+        setLoginError(data.message || "Failed to dispatch verification code.");
+      }
+    } catch {
+      setLoginError("Authentication server unreachable. Please use ID & Password.");
+    } finally {
+      setOtpLoading(false);
     }
   };
 
-  const handleQuickLoginAs = (callerObj) => {
-    onLogin({ ...callerObj, role: 'caller' });
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setLoginError('');
+
+    const cleanMobile = otpMobile.replace(/\D/g, '');
+    const found = callers.find(c => c.phone.replace(/\D/g, '') === cleanMobile);
+    if (!found) {
+      setLoginError("Caller account not found.");
+      return;
+    }
+
+    const targetEmail = found.email || 'concaverealtyindia@gmail.com';
+    try {
+      const res = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: targetEmail, otp: enteredOtp.trim() })
+      });
+      const data = await res.json();
+      if (data.success && data.verified) {
+        onLogin({ ...found, role: 'caller' });
+      } else {
+        setLoginError(data.message || "Invalid or expired OTP. Please try again.");
+      }
+    } catch {
+      setLoginError("Verification service temporarily unavailable.");
+    }
+  };
+
+  // Caller Forgot Password Handlers
+  const handleStartForgot = async (e) => {
+    e.preventDefault();
+    setForgotError('');
+    const code = forgotCallerCode.trim().toUpperCase();
+    if (!code) {
+      setForgotError('Please enter your Caller ID (e.g. CALLER-101).');
+      return;
+    }
+    const found = callers.find(c => c.callerCode.toUpperCase() === code);
+    if (!found) {
+      setForgotError('Caller ID not found in system.');
+      return;
+    }
+    const email = found.email || 'concaverealtyindia@gmail.com';
+    setForgotCallerEmail(email);
+    setForgotLoading(true);
+
+    try {
+      const res = await fetch('/api/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name: found.name, digits: 6, purpose: 'caller_reset' })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setForgotStep(2);
+      } else {
+        setForgotError(data.message || 'Failed to dispatch verification code.');
+      }
+    } catch {
+      setForgotError('Security server unreachable. Please try again.');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleVerifyForgotOtp = async (e) => {
+    e.preventDefault();
+    setForgotError('');
+    if (!forgotOtp || forgotOtp.trim().length !== 6) {
+      setForgotError('Please enter the 6-digit code received in your email.');
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      const res = await fetch('/api/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotCallerEmail, otp: forgotOtp.trim() })
+      });
+      const data = await res.json();
+      if (data.success && data.verified) {
+        setForgotToken(data.token || 'verified');
+        setForgotStep(3);
+      } else {
+        setForgotError(data.message || 'Invalid or expired verification code.');
+      }
+    } catch {
+      setForgotError('Verification service temporarily unavailable.');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetCallerPassword = async (e) => {
+    e.preventDefault();
+    setForgotError('');
+    if (newCallerPassword !== confirmCallerPassword) {
+      setForgotError('Passwords do not match. Please verify.');
+      return;
+    }
+    if (newCallerPassword.length < 8) {
+      setForgotError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    setForgotLoading(true);
+    try {
+      // 1. Update on server MySQL / persistent store
+      await fetch('/api/update-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: forgotCallerEmail,
+          verificationToken: forgotToken,
+          newPassword: newCallerPassword,
+          role: 'caller',
+          callerCode: forgotCallerCode.trim().toUpperCase()
+        })
+      });
+
+      // 2. Update local state store
+      await dbStore.updateCallerPassword(forgotCallerCode.trim().toUpperCase(), newCallerPassword);
+      setForgotSuccess('Password updated successfully in database! You may now sign in.');
+      setTimeout(() => {
+        setForgotPasswordMode(false);
+        setForgotStep(1);
+        setForgotSuccess('');
+        setPassword(newCallerPassword);
+        setCallerCode(forgotCallerCode.trim().toUpperCase());
+      }, 1500);
+    } catch {
+      setForgotError('Failed to update password. Please contact administrator.');
+    } finally {
+      setForgotLoading(false);
+    }
   };
 
   const handleStartCall = (lead) => {
+    if (lead?.mobile) {
+      window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
+    }
     setCallingLead(lead);
     setCallActive(true);
     setSelectedDisposition(lead.statusCode || 1);
@@ -161,11 +346,38 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
   });
 
   // =========================================================================
-  // VIEW 1: LOGIN SCREEN (Using user's exact #284F45 panel & #245348 button)
+  // VIEW 1: LOGIN SCREEN (Standalone Executive Portal View)
   // =========================================================================
   if (!currentUser) {
     return (
-      <div className="min-h-screen pt-28 pb-16 px-4 bg-[#FAF9F6] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FAF9F6] flex flex-col justify-between">
+        {/* Standalone Minimal Header */}
+        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+                CONCAVE REALTY
+              </span>
+              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
+                Caller Operations Portal
+              </span>
+            </div>
+          </div>
+          {onNavigateHome && (
+            <button
+              onClick={onNavigateHome}
+              className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+            >
+              <Home className="w-3.5 h-3.5" />
+              <span>Return to Website</span>
+            </button>
+          )}
+        </header>
+
+        <div className="flex-1 py-12 px-4 flex items-center justify-center">
         <div className="w-full max-w-4xl bg-white border border-[#EAE6DF] rounded-2xl shadow-luxury-light overflow-hidden grid grid-cols-1 md:grid-cols-2">
           
           {/* Left Form Panel (Light, aesthetic, minimal) */}
@@ -202,8 +414,132 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
               </button>
             </div>
 
-            {loginMethod === 'credentials' ? (
+            {forgotPasswordMode ? (
+              <div className="space-y-4 text-xs">
+                <div className="flex items-center justify-between pb-1 border-b border-[#EAE6DF]">
+                  <span className="font-bold text-[#14221F] text-sm">Reset Caller Password</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForgotPasswordMode(false);
+                      setForgotError('');
+                      setForgotSuccess('');
+                    }}
+                    className="text-[11px] text-gray-500 hover:text-black underline cursor-pointer"
+                  >
+                    Back to Sign In
+                  </button>
+                </div>
+
+                {forgotError && (
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
+                    {forgotError}
+                  </div>
+                )}
+
+                {forgotSuccess && (
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
+                    {forgotSuccess}
+                  </div>
+                )}
+
+                {forgotStep === 1 && (
+                  <form onSubmit={handleStartForgot} className="space-y-3">
+                    <p className="text-gray-500 leading-relaxed text-[11px]">
+                      Enter your Caller ID. We will dispatch a 6-digit security verification code to your registered email address.
+                    </p>
+                    <div className="space-y-1">
+                      <label className="text-gray-600 font-medium">Caller ID</label>
+                      <input
+                        type="text"
+                        required
+                        value={forgotCallerCode}
+                        onChange={(e) => setForgotCallerCode(e.target.value.toUpperCase())}
+                        placeholder="e.g. CALLER-101"
+                        className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none uppercase"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                    >
+                      {forgotLoading ? 'Sending Verification Code...' : 'Send Verification Code'}
+                    </button>
+                  </form>
+                )}
+
+                {forgotStep === 2 && (
+                  <form onSubmit={handleVerifyForgotOtp} className="space-y-3">
+                    <p className="text-gray-500 leading-relaxed text-[11px]">
+                      A 6-digit verification code has been dispatched to your registered email ({forgotCallerEmail}).
+                    </p>
+                    <div className="space-y-1">
+                      <label className="text-gray-600 font-medium">Enter 6-Digit OTP</label>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        required
+                        value={forgotOtp}
+                        onChange={(e) => setForgotOtp(e.target.value.replace(/\D/g, ''))}
+                        placeholder="123456"
+                        className="w-full bg-[#FAF9F6] border border-[#245348] rounded px-3 py-2 text-center text-base font-mono tracking-widest text-[#14221F]"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                    >
+                      {forgotLoading ? 'Verifying...' : 'Verify Security Code'}
+                    </button>
+                  </form>
+                )}
+
+                {forgotStep === 3 && (
+                  <form onSubmit={handleResetCallerPassword} className="space-y-3">
+                    <p className="text-gray-500 leading-relaxed text-[11px]">
+                      Code verified! Set your new password. It will be securely hashed and updated in the database.
+                    </p>
+                    <div className="space-y-1">
+                      <label className="text-gray-600 font-medium">New Password</label>
+                      <input
+                        type="password"
+                        required
+                        value={newCallerPassword}
+                        onChange={(e) => setNewCallerPassword(e.target.value)}
+                        placeholder="Min 8 characters (Upper, Lower, Number, Special)"
+                        className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-gray-600 font-medium">Confirm New Password</label>
+                      <input
+                        type="password"
+                        required
+                        value={confirmCallerPassword}
+                        onChange={(e) => setConfirmCallerPassword(e.target.value)}
+                        placeholder="Repeat new password"
+                        className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded px-3 py-2 text-[#14221F] font-mono focus:outline-none"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                    >
+                      {forgotLoading ? 'Updating Database...' : 'Update Password in Database'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            ) : loginMethod === 'credentials' ? (
               <form onSubmit={handleCredentialsLogin} className="space-y-4 text-xs">
+                {loginError && (
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
+                    {loginError}
+                  </div>
+                )}
                 <div className="space-y-1">
                   <label className="text-gray-600 font-medium">Caller ID</label>
                   <input
@@ -217,7 +553,22 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-gray-600 font-medium">Password</label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-gray-600 font-medium">Password</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForgotPasswordMode(true);
+                        setForgotStep(1);
+                        setForgotCallerCode(callerCode || '');
+                        setForgotError('');
+                        setForgotSuccess('');
+                      }}
+                      className="text-[10px] text-[#284F45] hover:text-[#1D3530] hover:underline font-semibold cursor-pointer"
+                    >
+                      Forgot Password?
+                    </button>
+                  </div>
                   <input
                     type="password"
                     required
@@ -257,26 +608,32 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
                   </div>
                 </div>
 
+                {loginError && (
+                  <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium">
+                    {loginError}
+                  </div>
+                )}
+
                 {otpSent && (
                   <form onSubmit={handleVerifyOtp} className="space-y-3">
-                    <div className="p-2 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex justify-between rounded">
-                      <span>Demo Code:</span>
-                      <strong className="font-mono text-sm">{generatedOtp}</strong>
-                    </div>
+                    <p className="text-gray-500 text-[11px]">
+                      A 6-digit security code has been dispatched to your authorized email address.
+                    </p>
 
                     <input
                       type="text"
-                      maxLength={4}
+                      maxLength={6}
                       value={enteredOtp}
-                      onChange={(e) => setEnteredOtp(e.target.value)}
-                      placeholder="Enter 4-digit OTP"
+                      onChange={(e) => setEnteredOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Enter 6-digit OTP"
                       className="w-full bg-[#FAF9F6] border border-[#245348] rounded px-3 py-2 text-center text-base font-mono tracking-widest text-[#14221F]"
+                      required
                     />
 
                     {/* Requested "Sign in" button: #245348 */}
                     <button
                       type="submit"
-                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider"
+                      className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
                     >
                       Sign In with OTP
                     </button>
@@ -285,23 +642,14 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
               </div>
             )}
 
-            {/* Quick Territory Switchers */}
-            <div className="pt-3 border-t border-[#EAE6DF] space-y-1.5">
+            {/* Security Notice */}
+            <div className="pt-3 border-t border-[#EAE6DF] space-y-1">
               <span className="text-[10px] uppercase font-mono text-gray-400 block">
-                ⚡ 1-Click Territory Switch:
+                🔒 Enterprise Access Control:
               </span>
-              <div className="grid grid-cols-2 gap-1.5">
-                {callers.slice(0, 4).map(c => (
-                  <button
-                    key={c.id}
-                    onClick={() => handleQuickLoginAs(c)}
-                    className="p-1.5 rounded bg-[#FAF9F6] hover:bg-[#EFECE6] border border-[#EAE6DF] text-left text-[11px] truncate"
-                  >
-                    <strong className="text-[#14221F] block">{c.name.split(' ')[0]}</strong>
-                    <span className="text-gray-500 text-[10px]">{c.assignedLocations.map(l => LOCATION_CODES[l]).join(', ')}</span>
-                  </button>
-                ))}
-              </div>
+              <p className="text-[11px] text-gray-500 leading-relaxed">
+                Authorized advisory personnel only. All access attempts, IP addresses, and caller interactions are logged in compliance with MahaRERA records.
+              </p>
             </div>
           </div>
 
@@ -346,18 +694,59 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
           </div>
 
         </div>
+        </div>
       </div>
     );
   }
 
   // =========================================================================
-  // VIEW 2: AUTHENTICATED CALLER WORKSPACE (Light, clean, deployment-ready)
+  // VIEW 2: AUTHENTICATED CALLER WORKSPACE (Standalone Clean Environment)
   // =========================================================================
   const pendingRetriesCount = leads.filter(l => l.statusCode === 4 && l.callStatusCode !== 5).length;
   const hotLeadsCount = leads.filter(l => l.statusCode === 1).length;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 bg-[#FAF9F6]">
+    <div className="min-h-screen bg-[#FAF9F6] text-[#14221F] selection:bg-[#245348] selection:text-white">
+
+      {/* Standalone Executive Caller Header Bar */}
+      <header className="sticky top-0 z-40 bg-[#14221F] text-white border-b border-[#245348] shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0 shadow-xs">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div>
+              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+                CONCAVE REALTY
+              </span>
+              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
+                Caller Operations Portal
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            {onNavigateHome && (
+              <button
+                onClick={onNavigateHome}
+                className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              >
+                <Home className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">Website</span>
+              </button>
+            )}
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden xs:inline">Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-8">
       
       {/* Upper Banner using user requested #1D3530 */}
       <div className="bg-[#1D3530] text-white rounded-xl p-6 shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -547,21 +936,16 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
                     )}
                   </div>
 
-                  {/* Direct Call Button (User requested #245348) */}
-                  <div className="flex flex-row lg:flex-col gap-2 justify-end">
+                  {/* Direct Call Button (User requested #245348 - Single One-Click Action) */}
+                  <div className="flex justify-end">
                     <button
                       onClick={() => handleStartCall(lead)}
-                      className="px-4 py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 shadow-sm"
+                      className="px-4 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                      title="Direct Call & Rate Disposition"
                     >
-                      <PhoneCall className="w-4 h-4" />
+                      <PhoneCall className="w-4 h-4 text-[#DFBE79]" />
                       <span>Direct Call</span>
                     </button>
-                    <a
-                      href={`tel:${lead.mobile.replace(/\s+/g, '')}`}
-                      className="px-3 py-1.5 rounded border border-[#EAE6DF] hover:border-black text-gray-700 text-center text-xs"
-                    >
-                      Native Phone
-                    </a>
                   </div>
                 </div>
               </div>
@@ -652,6 +1036,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout }) {
         </div>
       )}
 
+      </div>
     </div>
   );
 }

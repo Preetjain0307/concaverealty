@@ -1,11 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /caller
 Disallow: /api/
-Disallow: /vault/
 
 # Host & Sitemap Definition
 Host: https://concaverealty.com
 Sitemap: https://concaverealty.com/sitemap.xml
-
