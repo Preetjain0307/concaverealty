@@ -43,8 +43,11 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               <span className="font-serif text-[15px] xs:text-[17px] sm:text-[22px] md:text-[24px] lg:text-[26px] font-bold tracking-[0.08em] sm:tracking-[0.14em] text-white whitespace-nowrap select-none leading-tight">
                 CONCAVE REALTY
               </span>
-              <span className="text-[7.5px] xs:text-[8px] sm:text-[9.5px] md:text-[10px] uppercase font-sans tracking-[0.16em] sm:tracking-[0.24em] text-[#DFBE79] font-medium whitespace-nowrap block mt-0.5">
+              <span className="text-[6.5px] xs:text-[7px] sm:text-[8px] md:text-[9px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.2em] text-[#DFBE79] font-medium whitespace-nowrap block mt-0.5 leading-tight">
                 Where Legacy Meets Luxury
+              </span>
+              <span className="text-[6.5px] xs:text-[7px] sm:text-[7.5px] md:text-[8.5px] font-mono tracking-wider text-[#00D6A3] font-semibold whitespace-nowrap block leading-tight mt-0.5">
+                MahaRERA: A51900045781
               </span>
             </div>
           </div>
