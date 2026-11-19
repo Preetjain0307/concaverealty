@@ -24,33 +24,28 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-[#1D3530] text-white border-b border-[#284F45] transition-all">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2.5 xs:px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
 
           {/* Brand Logo & Slogan (Lodha minimalist style) */}
           <div
             onClick={() => onNavigate('home')}
-            className="flex items-center gap-2 sm:gap-3.5 cursor-pointer group min-w-0"
+            className="flex items-center gap-2 xs:gap-2.5 sm:gap-3.5 cursor-pointer group min-w-0"
           >
-            <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform shadow-xs">
               <img
                 src="/logo_icon.jpg"
                 alt="Concave Realty"
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="font-serif text-[14px] xs:text-[16px] sm:text-xl lg:text-2xl font-bold tracking-tight xs:tracking-normal sm:tracking-widest text-white whitespace-nowrap select-none">
+            <div className="flex flex-col justify-center min-w-0">
+              <span className="font-serif text-[15px] xs:text-[17px] sm:text-[22px] md:text-[24px] lg:text-[26px] font-bold tracking-[0.08em] sm:tracking-[0.14em] text-white whitespace-nowrap select-none leading-tight">
                 CONCAVE REALTY
               </span>
-              <div className="flex flex-col md:flex-row md:items-center md:gap-2 -mt-0.5">
-                <span className="text-[8px] xs:text-[9px] sm:text-[10px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.25em] text-[#C59B4E] whitespace-nowrap block leading-tight">
-                  Where Legacy Meets Luxury
-                </span>
-                <span className="text-[8px] xs:text-[9px] font-mono tracking-wider text-[#00D6A3] md:text-emerald-300/80 md:border-l md:border-white/20 md:pl-2 leading-tight mt-0.5 md:mt-0 whitespace-nowrap block">
-                  MahaRERA: A51900045781
-                </span>
-              </div>
+              <span className="text-[7.5px] xs:text-[8px] sm:text-[9.5px] md:text-[10px] uppercase font-sans tracking-[0.16em] sm:tracking-[0.24em] text-[#DFBE79] font-medium whitespace-nowrap block mt-0.5">
+                Where Legacy Meets Luxury
+              </span>
             </div>
           </div>
 
