@@ -766,13 +766,24 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     return () => clearInterval(interval);
   }, [callingLead]);
 
-  const handleStartAdminCall = (lead) => {
+  // 1. Direct Call Handler (Dials phone immediately)
+  const handleDirectCall = (lead) => {
     if (lead?.mobile) {
       window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
+      setFeedbackToast(`Initiating direct call to ${lead.name} (${lead.mobile})...`);
+      setTimeout(() => setFeedbackToast(null), 4000);
+      setCallingLead(lead);
+      setSelectedDisposition(lead.statusCode || 1);
+      setCallerRemark('');
     }
+  };
+
+  // 2. Status & Description Modal Handler (Opens modal for giving status & notes)
+  const handleOpenStatusModal = (lead) => {
     setCallingLead(lead);
     setSelectedDisposition(lead.statusCode || 1);
-    setCallerRemark('');
+    const latestNote = lead.notes && lead.notes.length > 0 ? lead.notes[0].txt : '';
+    setCallerRemark(latestNote || '');
   };
 
   const handleFinishAdminCall = () => {
@@ -780,11 +791,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     dbStore.updateLeadDisposition(callingLead.id, {
       statusCode: selectedDisposition,
       noteText: callerRemark,
-      callerName: 'Admin (Master Console)'
+      callerName: callers.length === 0 ? 'Admin (Direct)' : 'Admin (Master Console)'
     });
     setCallingLead(null);
     setCallerRemark('');
-    setFeedbackToast(`Lead CON-${callingLead.id} updated with new call disposition & cadence.`);
+    setFeedbackToast(`Lead CON-${callingLead.id} status & discussion notes successfully updated.`);
     setTimeout(() => setFeedbackToast(null), 4000);
     refreshAdminData();
   };
@@ -1664,7 +1675,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       <td className="py-3 px-4 whitespace-nowrap">
                         <span className="font-semibold text-[#245348] flex items-center gap-1.5 text-xs">
                           <Users className="w-3.5 h-3.5 text-[#DFBE79]" />
-                          <span>{lead.callerName}</span>
+                          <span>{callers.length === 0 ? "Admin Desk (Direct)" : lead.callerName}</span>
                         </span>
                       </td>
 
@@ -1688,38 +1699,29 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </td>
 
-                      {/* Action: Direct Call & Caller-Grade Disposition */}
+                      {/* Action: 2 Main Buttons (1. Direct Call, 2. Status & Description) */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        {(() => {
-                          const hasCallDone = Boolean((lead.callStatusCode && lead.callStatusCode > 0) || (lead.notes && lead.notes.length > 0));
-                          if (!hasCallDone) {
-                            return (
-                              <button
-                                onClick={() => handleStartAdminCall(lead)}
-                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
-                                title="Direct Call & Give Feedback / Disposition"
-                              >
-                                <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
-                                <span>Direct Call</span>
-                              </button>
-                            );
-                          }
-                          return (
-                            <div className="flex items-center justify-end gap-1.5">
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
-                                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                                <span>Call Done</span>
-                              </span>
-                              <button
-                                onClick={() => handleStartAdminCall(lead)}
-                                className="p-1.5 rounded-lg border border-[#EAE6DF] hover:border-[#245348] text-gray-500 hover:text-[#245348] transition-colors"
-                                title="Re-dial / Update Call Feedback"
-                              >
-                                <PhoneCall className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          );
-                        })()}
+                        <div className="flex items-center justify-end gap-2">
+                          {/* 1st Main Button: Direct Call */}
+                          <button
+                            onClick={() => handleDirectCall(lead)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+                            title={`Direct Phone Call to ${lead.name}`}
+                          >
+                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                            <span>Direct Call</span>
+                          </button>
+
+                          {/* 2nd Main Button: Status & Description */}
+                          <button
+                            onClick={() => handleOpenStatusModal(lead)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+                            title="Update Status (Interested, Not Interested, Fake) & Discussion Description"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
+                            <span>Status & Notes</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1762,7 +1764,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     </span>
                   </div>
 
-                  {/* Customer Header & Quick Direct Call Action */}
+                  {/* Customer Header */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <h3 className="font-serif font-bold text-base text-[#14221F] tracking-tight truncate">
@@ -1775,38 +1777,6 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         <PhoneCall className="w-3 h-3 text-[#C59B4E] shrink-0" />
                         <span>{lead.mobile}</span>
                       </a>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {(() => {
-                        const hasCallDone = Boolean((lead.callStatusCode && lead.callStatusCode > 0) || (lead.notes && lead.notes.length > 0));
-                        if (!hasCallDone) {
-                          return (
-                            <button
-                              onClick={() => handleStartAdminCall(lead)}
-                              className="px-3.5 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center gap-1.5 shadow-xs cursor-pointer"
-                              title="Direct Call & Give Feedback / Disposition"
-                            >
-                              <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
-                              <span>Direct Call</span>
-                            </button>
-                          );
-                        }
-                        return (
-                          <div className="flex items-center gap-1.5">
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-semibold border border-emerald-200">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                              <span>Call Done</span>
-                            </span>
-                            <button
-                              onClick={() => handleStartAdminCall(lead)}
-                              className="p-1.5 rounded-lg border border-[#EAE6DF] text-gray-500 hover:text-[#245348]"
-                              title="Re-dial / Update Call Feedback"
-                            >
-                              <PhoneCall className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        );
-                      })()}
                     </div>
                   </div>
 
@@ -1834,7 +1804,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       </span>
                       <p className="font-semibold text-[#245348] flex items-center gap-1 text-xs mt-0.5">
                         <Users className="w-3 h-3 text-[#DFBE79] shrink-0" />
-                        <span>{lead.callerName}</span>
+                        <span className="truncate">{callers.length === 0 ? "Admin Desk (Direct)" : lead.callerName}</span>
                       </p>
                     </div>
 
@@ -1862,6 +1832,29 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         {new Date(lead.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}, {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
+                  </div>
+
+                  {/* Actions: 2 Main Buttons for Mobile View (1: Direct Call, 2: Status & Description) */}
+                  <div className="flex items-center gap-2 pt-1 border-t border-[#EAE6DF]">
+                    {/* 1st Main Button: Direct Call */}
+                    <button
+                      onClick={() => handleDirectCall(lead)}
+                      className="flex-1 py-2 px-3 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                      title={`Direct Phone Call to ${lead.name}`}
+                    >
+                      <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                      <span>Direct Call</span>
+                    </button>
+
+                    {/* 2nd Main Button: Status & Description */}
+                    <button
+                      onClick={() => handleOpenStatusModal(lead)}
+                      className="flex-1 py-2 px-3 rounded-lg bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                      title="Update Status (Interested, Fake, etc.) & Description"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
+                      <span>Status & Notes</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -3810,39 +3803,46 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
         </div>
       )}
 
-      {/* ── ADMIN IN-APP CALLING & DISPOSITION MODAL (Full Caller Access) ── */}
+      {/* ── ADMIN STATUS, CALL & DISPOSITION MODAL ── */}
       {callingLead && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-5 border border-emerald-500/30 anim-fade-scale">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-4 border border-emerald-500/30 anim-fade-scale">
             <div className="text-center space-y-1 pb-3 border-b border-[#EAE6DF]">
-              <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mb-2 animate-pulse shadow-xs">
-                <PhoneCall className="w-7 h-7" />
+              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1.5 shadow-xs">
+                <FileText className="w-6 h-6 text-[#245348]" />
               </div>
               <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-                Calling {callingLead.name}
+                Update Status & Description
               </h3>
-              <p className="font-mono text-xs text-gray-600">
-                {callingLead.mobile} • {callingLead.locationName} ({callingLead.projectName})
+              <p className="font-mono text-xs text-gray-700">
+                {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline">{callingLead.mobile}</a>
               </p>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#14221F] text-xs font-mono text-[#DFBE79] mt-1 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                <span>CALL DURATION: {formatCallTime(callDuration)}</span>
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
+                <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold">CON-{callingLead.id}</span>
+                <span>•</span>
+                <span>{callingLead.locationName} ({callingLead.projectName})</span>
               </div>
+              {callDuration > 0 && (
+                <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-[#14221F] text-[10px] font-mono text-[#DFBE79] mt-1 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  <span>CALL TIME: {formatCallTime(callDuration)}</span>
+                </div>
+              )}
             </div>
 
-            {/* Disposition Rating Options */}
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-700 block">
-                Call Disposition & Customer Rating:
+            {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-800 block">
+                Select Customer Status:
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                 {[
-                  { code: 1, label: "Hot Lead (1)", desc: "Ready to book" },
-                  { code: 2, label: "Interested (2)", desc: "Schedule site visit" },
-                  { code: 4, label: "Not Picking (4)", desc: "Auto 4h/10d retry" },
-                  { code: 3, label: "Okay (3)", desc: "Follow up needed" },
-                  { code: 5, label: "Not Interested", desc: "No interest" },
-                  { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
+                  { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                  { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                  { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                  { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                  { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                  { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
                 ].map(disp => (
                   <button
                     key={disp.code}
@@ -3850,8 +3850,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     onClick={() => setSelectedDisposition(disp.code)}
                     className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       selectedDisposition === disp.code
-                        ? 'bg-[#245348] text-white border-[#245348] shadow-xs'
-                        : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-black'
+                        ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                        : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
                     }`}
                   >
                     <div className="font-bold text-xs">{disp.label}</div>
@@ -3861,17 +3861,30 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
               </div>
             </div>
 
-            {/* Discussion Remarks */}
+            {/* Discussion Description & Remarks */}
             <div className="space-y-1">
-              <label className="text-xs text-gray-700 font-medium">Remarks & Call Discussion Notes:</label>
+              <label className="text-xs text-gray-800 font-semibold">Discussion Description & Client Notes:</label>
               <textarea
                 rows={3}
                 value={callerRemark}
                 onChange={(e) => setCallerRemark(e.target.value)}
-                placeholder="e.g., Client wants 3 BHK Sea View in Versova, budget ₹5.5 Cr, invited for Saturday consultation."
-                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
+                placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
+                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
               />
             </div>
+
+            {/* Previous Notes History (if any) */}
+            {callingLead.notes && callingLead.notes.length > 0 && (
+              <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
+                <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
+                {callingLead.notes.map((note, idx) => (
+                  <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
+                    <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
+                    <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="flex items-center gap-3 pt-2">
               <button
@@ -3879,14 +3892,14 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 onClick={() => setCallingLead(null)}
                 className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
               >
-                Cancel Call
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleFinishAdminCall}
                 className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
               >
-                Save Disposition
+                Save Status & Notes
               </button>
             </div>
           </div>
