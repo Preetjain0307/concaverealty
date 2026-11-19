@@ -36,9 +36,11 @@ import {
   RotateCcw,
   Users,
   X,
-  Phone
+  Phone,
+  Plus,
+  FileText
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, verifyPassword } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword } from '../data/dbStore';
 
 export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   const [callers, setCallers] = useState([]);
@@ -78,8 +80,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
   // Direct Call Dialer Modal State
   const [callingLead, setCallingLead] = useState(null);
-  const [callDuration, setCallDuration] = useState(0);
-  const [callActive, setCallActive] = useState(false);
   const [selectedDisposition, setSelectedDisposition] = useState(1);
   const [callerRemark, setCallerRemark] = useState('');
 
@@ -105,6 +105,18 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     }
   };
 
+  // Manual Lead Creation State ("ADD NEW LEAD")
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [newLeadName, setNewLeadName] = useState('');
+  const [newLeadMobile, setNewLeadMobile] = useState('');
+  const [newLeadEmail, setNewLeadEmail] = useState('');
+  const [newLeadLocation, setNewLeadLocation] = useState(1);
+  const [newLeadProject, setNewLeadProject] = useState(1);
+  const [newLeadStatus, setNewLeadStatus] = useState(1); // 1 = Hot Lead
+  const [newLeadCallStatus, setNewLeadCallStatus] = useState(1); // 1 = Connected & Discussed
+  const [newLeadNotes, setNewLeadNotes] = useState('');
+  const [newLeadError, setNewLeadError] = useState('');
+
   const refreshData = () => {
     try {
       const allCallers = dbStore.getCallers();
@@ -122,19 +134,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   useEffect(() => {
     refreshData();
   }, [currentUser]);
-
-  // Call timer simulation
-  useEffect(() => {
-    let interval = null;
-    if (callActive) {
-      interval = setInterval(() => {
-        setCallDuration(prev => prev + 1);
-      }, 1000);
-    } else {
-      setCallDuration(0);
-    }
-    return () => clearInterval(interval);
-  }, [callActive]);
 
   // Login Handlers
   const handleCredentialsLogin = async (e) => {
@@ -343,7 +342,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
     }
     setCallingLead(lead);
-    setCallActive(true);
     setSelectedDisposition(lead.statusCode || 1);
     setCallerRemark('');
   };
@@ -357,16 +355,62 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       callerName: currentUser.name
     });
 
-    setCallActive(false);
     setCallingLead(null);
     setCallerRemark('');
     refreshData();
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  const handleOpenDisposition = (lead) => {
+    setCallingLead(lead);
+    setSelectedDisposition(lead.statusCode || 1);
+    setCallerRemark('');
+  };
+
+  // Manual Lead Creator Handler ("ADD NEW LEAD")
+  const handleCreateManualLead = (e) => {
+    e.preventDefault();
+    setNewLeadError('');
+
+    const cleanMobile = newLeadMobile.replace(/\D/g, '');
+    if (!cleanMobile || cleanMobile.length !== 10 || !/^[6-9]\d{9}$/.test(cleanMobile)) {
+      setNewLeadError('Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9).');
+      return;
+    }
+    if (!newLeadName.trim() || newLeadName.trim().length < 2) {
+      setNewLeadError('Please enter customer full name (minimum 2 characters).');
+      return;
+    }
+
+    const res = dbStore.createManualLead({
+      name: newLeadName,
+      mobile: cleanMobile,
+      email: newLeadEmail,
+      locationId: newLeadLocation,
+      projectId: newLeadProject,
+      statusCode: newLeadStatus,
+      callStatusCode: newLeadCallStatus,
+      callerId: currentUser ? currentUser.id : 0,
+      callerName: currentUser ? currentUser.name : "Caller Desk",
+      description: newLeadNotes,
+      noteText: newLeadNotes
+    });
+
+    if (res.success) {
+      setShowAddLeadModal(false);
+      // Reset form
+      setNewLeadName('');
+      setNewLeadMobile('');
+      setNewLeadEmail('');
+      setNewLeadLocation(currentUser?.assignedLocations?.[0] || 1);
+      setNewLeadProject(1);
+      setNewLeadStatus(1);
+      setNewLeadCallStatus(1);
+      setNewLeadNotes('');
+      setNewLeadError('');
+      refreshData();
+    } else {
+      setNewLeadError(res.error || 'Failed to create lead.');
+    }
   };
 
   const displayedLeads = leads.filter(l => {
@@ -903,6 +947,33 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
         </div>
       </div>
 
+      {/* Enquiry Records Header with "ADD NEW LEAD" button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
+        <div className="flex items-center gap-2.5">
+          <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
+            Enquiry Records
+          </h3>
+          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF]">
+            {leads.length} Records
+          </span>
+        </div>
+
+        {/* ADD NEW LEAD Button */}
+        <button
+          type="button"
+          onClick={() => {
+            setNewLeadLocation(currentUser?.assignedLocations?.[0] || 1);
+            setNewLeadError('');
+            setShowAddLeadModal(true);
+          }}
+          className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-[#DFBE79]/50 w-fit"
+          title="Manually Add New Customer Lead"
+        >
+          <Plus className="w-4 h-4 text-[#DFBE79]" />
+          <span>Add New Lead</span>
+        </button>
+      </div>
+
       {/* Filter Tabs & Real-Time Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-[#EAE6DF] shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2 text-xs">
@@ -1131,22 +1202,24 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     )}
                   </div>
 
-                  {/* HERO DIRECT CALL BUTTON (Attention-Grabbing One-Click Dial) */}
-                  <div className="flex lg:flex-col items-center justify-end shrink-0 gap-2">
+                  {/* Direct Call & Status Notes Buttons */}
+                  <div className="flex flex-wrap items-center justify-end gap-2">
                     <button
                       onClick={() => handleStartCall(lead)}
-                      className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#245348] via-[#1D3530] to-[#14221F] hover:from-[#1D3530] hover:to-[#0A1412] active:scale-95 text-white text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2.5 shadow-[0_6px_20px_rgba(36,83,72,0.35)] hover:shadow-[0_8px_25px_rgba(197,155,78,0.5)] border border-[#C59B4E]/60 cursor-pointer group"
-                      title="Direct Call & Log Disposition"
+                      className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                      title="Direct Call Customer"
                     >
-                      <div className="w-7 h-7 rounded-full bg-[#C59B4E]/25 border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] group-hover:bg-[#C59B4E] group-hover:text-[#14221F] transition-colors shadow-xs">
-                        <PhoneCall className="w-3.5 h-3.5 animate-pulse" />
-                      </div>
-                      <span className="font-serif tracking-widest text-sm">DIRECT CALL</span>
-                      <ArrowRight className="w-4 h-4 text-[#DFBE79] group-hover:translate-x-1 transition-transform" />
+                      <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                      <span>Direct Call</span>
                     </button>
-                    <span className="hidden lg:block text-[10px] font-mono text-gray-400 text-center">
-                      1-Click Web Dialer
-                    </span>
+                    <button
+                      onClick={() => handleOpenDisposition(lead)}
+                      className="px-3 py-2 rounded-xl bg-white hover:bg-gray-50 border border-[#EAE6DF] hover:border-[#245348] text-[#14221F] text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                      title="Update Status & Description Notes"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
+                      <span>Status & Notes</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1180,10 +1253,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 <span>•</span>
                 <span className="text-[#C59B4E]">{callingLead.projectName}</span>
               </p>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-mono font-bold shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                CALL DURATION: {formatTime(callDuration)}
-              </div>
             </div>
 
             {/* Rate Disposition / Call Rating */}
@@ -1275,6 +1344,228 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 Save Disposition
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── ADD NEW LEAD MODAL (Manual Entry by Caller) ── */}
+      {showAddLeadModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+          <div className="w-full max-w-xl bg-white rounded-2xl shadow-2xl p-5 sm:p-7 space-y-4 border border-[#245348]/30 my-auto anim-fade-scale">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[#EAE6DF] pb-3.5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#245348] text-[#DFBE79] flex items-center justify-center shadow-xs">
+                  <Plus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#14221F]">
+                    Add New Customer Lead
+                  </h3>
+                  <p className="text-xs text-gray-500 font-sans">
+                    Register manual enquiry, offline phone call, or walk-in consultation
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddLeadModal(false)}
+                className="text-gray-400 hover:text-black p-1 text-base cursor-pointer rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Error Message */}
+            {newLeadError && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-medium">
+                {newLeadError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateManualLead} className="space-y-4">
+              {/* Row 1: Customer Name & Mobile */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Customer Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={newLeadName}
+                    onChange={(e) => setNewLeadName(e.target.value)}
+                    placeholder="e.g. Vikram Malhotra"
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Mobile Number <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-2 text-xs font-mono font-bold text-gray-500">+91</span>
+                    <input
+                      type="tel"
+                      required
+                      maxLength={10}
+                      value={newLeadMobile}
+                      onChange={(e) => setNewLeadMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      placeholder="98200 12345"
+                      className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl pl-11 pr-3 py-2 text-xs font-mono text-[#14221F] focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 2: Email & Assigned Caller (Auto assigned to logged in caller) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Email Address <span className="text-gray-400 font-normal">(Optional)</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={newLeadEmail}
+                    onChange={(e) => setNewLeadEmail(e.target.value)}
+                    placeholder="vikram@example.com"
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Assigned Caller
+                  </label>
+                  <div className="w-full bg-gray-100 border border-[#EAE6DF] rounded-xl px-3 py-2 text-xs text-[#14221F] font-semibold flex items-center justify-between">
+                    <span>{currentUser?.name || "Caller"}</span>
+                    <span className="text-[10px] text-[#245348] font-mono font-bold bg-[#FAF9F6] px-2 py-0.5 rounded border border-[#EAE6DF]">
+                      {currentUser?.callerCode || "CALLER"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 3: Location Enquiry & Project */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Location Enquiry <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={newLeadLocation}
+                    onChange={(e) => setNewLeadLocation(Number(e.target.value))}
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
+                  >
+                    {Object.entries(LOCATION_CODES).map(([code, name]) => {
+                      const isAssigned = currentUser?.assignedLocations?.includes(Number(code));
+                      return (
+                        <option key={code} value={code}>
+                          {name} {isAssigned ? '★ (Your Territory)' : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-gray-800">
+                    Project Interested <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={newLeadProject}
+                    onChange={(e) => setNewLeadProject(Number(e.target.value))}
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
+                  >
+                    {Object.entries(PROJECT_CODES).map(([code, name]) => (
+                      <option key={code} value={code}>{name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 4: Response Type / Lead Rating */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-gray-800 block">
+                  Response Type / Rating:
+                </label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                  {[
+                    { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                    { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                    { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                    { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                    { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                    { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                  ].map(disp => (
+                    <button
+                      key={disp.code}
+                      type="button"
+                      onClick={() => setNewLeadStatus(disp.code)}
+                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                        newLeadStatus === disp.code
+                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                      }`}
+                    >
+                      <div className="font-bold text-xs">{disp.label}</div>
+                      <div className={`text-[10px] mt-0.5 ${newLeadStatus === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Row 5: Call Status & Cadence */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-800">
+                  Call Status & Cadence:
+                </label>
+                <select
+                  value={newLeadCallStatus}
+                  onChange={(e) => setNewLeadCallStatus(Number(e.target.value))}
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
+                >
+                  <option value={1}>Connected & Discussed</option>
+                  <option value={6}>Call Back Scheduled</option>
+                  <option value={0}>Uncalled (Fresh Entry)</option>
+                  <option value={2}>Not Answered (Pending Retry)</option>
+                  <option value={7}>Line Busy (Pending Retry)</option>
+                </select>
+              </div>
+
+              {/* Row 6: Discussion Description & Client Notes */}
+              <div className="space-y-1">
+                <label className="text-xs text-gray-800 font-semibold">
+                  Discussion Description & Client Notes:
+                </label>
+                <textarea
+                  rows={3}
+                  value={newLeadNotes}
+                  onChange={(e) => setNewLeadNotes(e.target.value)}
+                  placeholder="Enter offline discussion summary, budget, preferred configuration (e.g. 3 BHK Sea View), visit timing, etc."
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowAddLeadModal(false)}
+                  className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Plus className="w-4 h-4 text-[#DFBE79]" />
+                  <span>Save & Register Lead</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

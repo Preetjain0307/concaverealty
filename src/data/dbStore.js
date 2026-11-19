@@ -894,6 +894,105 @@ export const dbStore = {
     }
   },
 
+  // Create Manual Lead (Manually entered by Admin or Caller)
+  createManualLead({
+    name,
+    mobile,
+    email = "",
+    locationId = 1,
+    locationName = "",
+    projectId = 1,
+    projectName = "",
+    statusCode = 1, // Default 1: Hot Lead
+    callStatusCode = 1, // Default 1: Connected & Discussed
+    callerId = 0,
+    callerName = "Admin Desk (Direct)",
+    description = "",
+    noteText = ""
+  }) {
+    try {
+      this.init();
+      const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+
+      const cleanName = sanitizeInput(name, 60);
+      const cleanMobile = String(mobile || '').replace(/\D/g, '').slice(0, 10);
+      const cleanEmail = sanitizeInput(email, 80).toLowerCase();
+
+      if (!cleanMobile || !/^[6-9]\d{9}$/.test(cleanMobile)) {
+        return { success: false, error: "Please enter a valid 10-digit Indian mobile number." };
+      }
+      if (!cleanName || cleanName.length < 2) {
+        return { success: false, error: "Please enter a valid customer name (minimum 2 characters)." };
+      }
+
+      // Resolve location ID
+      let locId = parseInt(locationId, 10) || 1;
+      if (locationName && !locationId) {
+        const normLoc = locationName.toLowerCase().trim();
+        locId = REVERSE_LOCATION_CODES[normLoc] || 1;
+      }
+
+      // Resolve project ID
+      let projId = parseInt(projectId, 10) || 1;
+      if (projectName && !projectId) {
+        const normProj = projectName.toLowerCase();
+        if (normProj.includes("skyshore")) projId = 2;
+        else if (normProj.includes("reserve")) projId = 3;
+        else if (normProj.includes("signature")) projId = 4;
+        else if (normProj.includes("lodha") || normProj.includes("world")) projId = 5;
+        else if (normProj.includes("mira") || normProj.includes("bhayander")) projId = 6;
+        else projId = 1;
+      }
+
+      const newId = rawLeads.length > 0 ? Math.max(...rawLeads.map(l => l.i)) + 1 : 101;
+
+      const initialNotes = [];
+      const noteContent = (noteText || description || '').trim();
+      if (noteContent) {
+        initialNotes.push({
+          by: callerName || "Admin (Direct)",
+          at: Date.now(),
+          txt: noteContent
+        });
+      } else {
+        initialNotes.push({
+          by: callerName || "Admin (Direct)",
+          at: Date.now(),
+          txt: `Lead manually registered and assigned to ${callerName || 'Admin Desk (Direct)'}.`
+        });
+      }
+
+      const compactRecord = {
+        i: newId,
+        n: cleanName,
+        m: cleanMobile,
+        e: cleanEmail || "",
+        l: locId,
+        p: projId,
+        t: 1, // Direct Entry
+        s: parseInt(statusCode, 10) || 1, // Hot Lead, Interested, etc.
+        c: callerId ? parseInt(callerId, 10) : 0, // 0 = Admin
+        cs: parseInt(callStatusCode, 10) || 1, // Connected & Discussed
+        rc: 0,
+        na: null,
+        ts: Date.now(),
+        d: description.trim() || `Manual lead entry for ${PROJECT_CODES[projId] || projectName || 'Luxury Property'} at ${LOCATION_CODES[locId] || locationName || 'Mumbai'}`,
+        nt: initialNotes
+      };
+
+      rawLeads.unshift(compactRecord);
+      setRawData(DB_KEY, rawLeads);
+
+      return {
+        success: true,
+        lead: this.decodeLead(compactRecord)
+      };
+    } catch (e) {
+      console.error("Error creating manual lead:", e);
+      return { success: false, error: e.message || "Failed to create manual lead." };
+    }
+  },
+
   // Decode a compact record into user-friendly object
   decodeLead(raw) {
     if (!raw) return null;
@@ -916,7 +1015,7 @@ export const dbStore = {
       isHotLead: raw.s === 1,
       isInterested: raw.s === 2,
       callerId: raw.c || null,
-      callerName: caller ? caller.name : (callers.length === 0 ? "Super Admin (Direct)" : "Admin Desk (Unassigned)"),
+      callerName: caller ? caller.name : "Admin Desk (Direct)",
       callerPhone: caller ? caller.phone : "",
       callStatusCode: raw.cs,
       callStatusName: CALL_STATUS_CODES[raw.cs] || "Uncalled",
