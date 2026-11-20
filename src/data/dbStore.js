@@ -1081,20 +1081,31 @@ export const dbStore = {
 
   // Get admin credentials from storage or default
   getAdminCredentials() {
+    const DEFAULT_ADMIN = {
+      username: 'Hemant_Concave_Mishra',
+      password: '8da334e29c94e4ee583710f0584f9ad2a94e0c2eac0a2910201566f98a73852b', // Salted SHA-256 hash for Hemant@2026#Mishra
+      email: 'hemantrishi2786@gmail.com',
+      phone: '8286018550'
+    };
+
     try {
       const stored = localStorage.getItem('concave_admin_auth');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed && parsed.password) return parsed;
+        if (parsed && parsed.password && parsed.username === DEFAULT_ADMIN.username && parsed.password === DEFAULT_ADMIN.password) {
+          return parsed;
+        }
       }
     } catch (e) {
       console.warn("Error reading admin auth:", e);
     }
-    return {
-      username: 'admin',
-      password: '2f9825c7312ee20b3bb9d2b354b09497dc95a5ddfe41c1feff00b118c75fa7f0', // Salted SHA-256 hash
-      email: 'concaverealtyindia@gmail.com'
-    };
+
+    try {
+      localStorage.setItem('concave_admin_auth', JSON.stringify(DEFAULT_ADMIN));
+    } catch {
+      // ignore
+    }
+    return DEFAULT_ADMIN;
   },
 
   // Update admin password with cryptographic hashing

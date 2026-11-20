@@ -46,7 +46,7 @@ if (!$validation['valid']) {
 
 // 2b. Strict Role-Based Identity Authorization (Prevents Privilege Escalation)
 $normalizedEmail = strtolower($email);
-$superAdminEmail = 'concaverealtyindia@gmail.com';
+$superAdminEmail = 'hemantrishi2786@gmail.com';
 
 if ($role === 'admin') {
     if ($normalizedEmail !== strtolower($superAdminEmail)) {
@@ -98,7 +98,7 @@ try {
     if ($role === 'admin') {
         // Strictly require BOTH email AND username match
         $stmt = SafeDB::execute(
-            "UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND `username` = 'admin'",
+            "UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND (`username` = 'Hemant_Concave_Mishra' OR `username` = 'admin')",
             [$passwordHash, $normalizedEmail]
         );
         if ($stmt) $dbUpdated = true;

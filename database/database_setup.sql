@@ -109,8 +109,8 @@ CREATE TABLE IF NOT EXISTS `otp_logs` (
 
 INSERT INTO `admins` (`id`, `username`, `email`, `password_hash`, `role`)
 VALUES
-  (1, 'admin', 'admin@concaverealty.com', 'c715e2918d6233e9949dc45bdfa5a710d216a3113aa9702907c3d71bcd7ed36e', 'SUPER_ADMIN')
-ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
+  (1, 'Hemant_Concave_Mishra', 'hemantrishi2786@gmail.com', '8da334e29c94e4ee583710f0584f9ad2a94e0c2eac0a2910201566f98a73852b', 'SUPER_ADMIN')
+ON DUPLICATE KEY UPDATE `email` = VALUES(`email`), `password_hash` = VALUES(`password_hash`), `username` = VALUES(`username`);
 
 INSERT INTO `callers` (`id`, `caller_code`, `name`, `email`, `phone`, `territory`, `role`, `password_hash`, `status`)
 VALUES

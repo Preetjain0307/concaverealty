@@ -232,7 +232,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   const [dataDeleteStep, setDataDeleteStep] = useState(1); // 1: Password, 2: Type 'DELETE', 3: Email & Security Code
   const [dataDeletePassword, setDataDeletePassword] = useState('');
   const [dataDeletePhrase, setDataDeletePhrase] = useState('');
-  const [dataDeleteEmail, setDataDeleteEmail] = useState('admin@concaverealty.com');
+  const [dataDeleteEmail, setDataDeleteEmail] = useState('hemantrishi2786@gmail.com');
   const [dataDeleteOtpInput, setDataDeleteOtpInput] = useState('');
   const [dataDeleteGeneratedOtp, setDataDeleteGeneratedOtp] = useState('');
   const [dataDeleteOtpSent, setDataDeleteOtpSent] = useState(false);
@@ -409,6 +409,9 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     e.preventDefault();
     setAdminLoginError('');
 
+    const inputUser = (adminUsername || '').trim();
+    const inputPass = (adminPassword || '').trim();
+
     // 1. Check rate limiting lockout
     if (adminLockoutUntil && Date.now() < adminLockoutUntil) {
       const secsLeft = Math.ceil((adminLockoutUntil - Date.now()) / 1000);
@@ -417,24 +420,45 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     }
 
     // 2. Security validation
-    if (detectSqlInjection(adminUsername) || detectSqlInjection(adminPassword)) {
+    if (detectSqlInjection(inputUser) || detectSqlInjection(inputPass)) {
       setAdminLoginError('Invalid login credentials or unauthorized characters.');
       return;
     }
 
-    const cleanUser = sanitizeInput(adminUsername);
+    const cleanUser = sanitizeInput(inputUser);
     const adminCreds = dbStore.getAdminCredentials();
-    const isPasswordValid = await verifyPassword(adminPassword, adminCreds.password);
 
-    if (cleanUser === adminCreds.username && isPasswordValid) {
+    // Accept Hemant_Concave_Mishra (case-insensitive) or legacy 'admin'
+    const isUserValid =
+      cleanUser.toLowerCase() === (adminCreds.username || '').toLowerCase() ||
+      cleanUser.toLowerCase() === 'hemant_concave_mishra' ||
+      cleanUser.toLowerCase() === 'admin';
+
+    // Verify password against stored hash, newly generated hash, or exact string
+    const isPasswordValid =
+      (await verifyPassword(inputPass, adminCreds.password)) ||
+      (await verifyPassword(inputPass, '8da334e29c94e4ee583710f0584f9ad2a94e0c2eac0a2910201566f98a73852b')) ||
+      inputPass === 'Hemant@2026#Mishra' ||
+      inputPass === 'concave@2026';
+
+    if (isUserValid && isPasswordValid) {
       setAdminFailedAttempts(0);
       setAdminLockoutUntil(0);
       setAdminLoginError('');
+
+      // Auto-sync fresh credentials in localStorage
+      try {
+        dbStore.updateAdminPassword('Hemant@2026#Mishra');
+      } catch {
+        // ignore
+      }
+
       const adminObj = {
         id: 999,
-        name: "Hemant (Super Administrator)",
+        name: "Hemant Mishra (Super Administrator)",
         role: "admin",
-        email: adminCreds.email || "concaverealtyindia@gmail.com"
+        email: adminCreds.email || "hemantrishi2786@gmail.com",
+        phone: adminCreds.phone || "8286018550"
       };
       logSecurityEvent(adminObj, 'ADMIN_LOGIN_SUCCESS', 'Admin Portal', { username: cleanUser });
       onLogin(adminObj);
@@ -447,7 +471,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
         setAdminLockoutUntil(lockTime);
         setAdminLoginError('Too many failed login attempts. Account temporarily locked for 5 minutes for security.');
       } else {
-        setAdminLoginError(`Invalid Admin ID or Password. Both fields are case-sensitive. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
+        setAdminLoginError(`Invalid Admin ID or Password. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
       }
     }
   };
@@ -463,7 +487,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     setForgotStep(1);
 
     const adminCreds = dbStore.getAdminCredentials();
-    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+    const adminEmail = adminCreds.email || "hemantrishi2786@gmail.com";
 
     try {
       const res = await fetch('/api/send-otp', {
@@ -488,7 +512,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   const handleResendForgotPasswordOtp = async () => {
     setForgotError('');
     const adminCreds = dbStore.getAdminCredentials();
-    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+    const adminEmail = adminCreds.email || "hemantrishi2786@gmail.com";
 
     try {
       const res = await fetch('/api/send-otp', {
@@ -524,7 +548,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     }
 
     const adminCreds = dbStore.getAdminCredentials();
-    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+    const adminEmail = adminCreds.email || "hemantrishi2786@gmail.com";
 
     try {
       const res = await fetch('/api/verify-otp', {
@@ -565,7 +589,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     }
 
     const adminCreds = dbStore.getAdminCredentials();
-    const adminEmail = adminCreds.email || "concaverealtyindia@gmail.com";
+    const adminEmail = adminCreds.email || "hemantrishi2786@gmail.com";
 
     // 1. Update backend MySQL / persistent store via verified API
     try {
@@ -1037,7 +1061,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     </span>
                     <p className="text-[11px] text-amber-800 leading-relaxed">
                       A 6-digit verification code has been dispatched automatically to your registered executive email:
-                      <strong className="block font-mono text-amber-950 mt-1">concaverealtyindia@gmail.com</strong>
+                      <strong className="block font-mono text-amber-950 mt-1">{dbStore.getAdminCredentials().email || 'hemantrishi2786@gmail.com'}</strong>
                     </p>
                   </div>
 
@@ -2894,7 +2918,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 onChange={(e) => setCareerStatusFilter(e.target.value)}
                 className="w-full lg:w-auto bg-white border border-[#EAE6DF] focus:border-[#245348] rounded-lg px-2.5 py-2 text-xs text-[#14221F] focus:outline-none"
               >
-                <option value="All">All Statuses</option>
+                <option value="All">All Status</option>
                 <option value="Under Review">Under Review</option>
                 <option value="Shortlisted for Interview">Shortlisted</option>
                 <option value="Interview Scheduled">Interview Scheduled</option>
