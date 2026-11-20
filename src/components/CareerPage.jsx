@@ -517,26 +517,8 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
         <div className="max-w-6xl mx-auto px-3.5 xs:px-4 sm:px-6 lg:px-8 text-center space-y-8">
 
-          {/* Statutory MahaRERA Tag (Off-White & Deep Forest Green Luxury Pill) */}
-          <div className="flex justify-center">
-            <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-[#FAF9F6]/95 backdrop-blur-md border border-[#EAE6DF] shadow-[0_10px_30px_rgba(20,34,31,0.2)] hover:border-[#C59B4E] transition-all duration-300">
-              <ShieldCheck className="w-4 h-4 text-[#C59B4E] shrink-0" />
-              <span className="text-xs sm:text-sm font-mono font-bold tracking-wide text-[#1D3530]">
-                MahaRERA Registered Agent: <span className="text-[#C59B4E] font-bold">A51900045781</span>
-              </span>
-            </div>
-          </div>
-
           {/* Main Title & Slogan */}
           <div className="space-y-5 max-w-5xl mx-auto">
-            {/* Careers Eyebrow Badge (Forest Green & Gold High-Contrast Pill) */}
-            <div className="flex justify-center">
-              <span className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#1D3530] border border-[#C59B4E]/60 text-xs sm:text-sm uppercase tracking-[0.25em] text-[#DFBE79] font-bold font-mono shadow-[0_8px_25px_rgba(20,34,31,0.35)]">
-                <span className="w-2 h-2 rounded-full bg-[#C59B4E] animate-pulse" />
-                <span>CAREERS AT CONCAVE REALTY</span>
-              </span>
-            </div>
-
             <h1
               className="anim-luxury-title text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight uppercase leading-tight font-serif"
               style={{ fontFamily: '"Cormorant Garamond", Cinzel, serif' }}
