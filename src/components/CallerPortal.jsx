@@ -356,7 +356,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     if (lead?.mobile) {
       window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
     }
-    handleOpenDisposition(lead);
   };
 
   const handleFinishCall = () => {
@@ -1057,15 +1056,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-2.5 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer truncate"
                   >
                     <option value="All">All Locations</option>
-                    {Object.entries(LOCATION_CODES).map(([code, name]) => {
-                      const userLocs = currentUser?.callerCode === 'CALLER-101' ? [3] : (currentUser?.assignedLocations || []);
-                      const isAssigned = userLocs.includes(Number(code));
-                      return (
-                        <option key={code} value={code}>
-                          {name} {isAssigned ? '★' : ''}
-                        </option>
-                      );
-                    })}
+                    {Object.entries(LOCATION_CODES).map(([code, name]) => (
+                      <option key={code} value={code}>
+                        {name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -1725,15 +1720,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       onChange={(e) => setNewLeadLocation(Number(e.target.value))}
                       className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
                     >
-                      {Object.entries(LOCATION_CODES).map(([code, name]) => {
-                        const userLocs = currentUser?.callerCode === 'CALLER-101' ? [3] : (currentUser?.assignedLocations || []);
-                        const isAssigned = userLocs.includes(Number(code));
-                        return (
-                          <option key={code} value={code}>
-                            {name} {isAssigned ? '★ (Your Location)' : ''}
-                          </option>
-                        );
-                      })}
+                      {Object.entries(LOCATION_CODES).map(([code, name]) => (
+                        <option key={code} value={code}>
+                          {name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

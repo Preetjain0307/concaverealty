@@ -780,9 +780,6 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
       setFeedbackToast(`Initiating direct call to ${lead.name} (${lead.mobile})...`);
       setTimeout(() => setFeedbackToast(null), 4000);
-      setCallingLead(lead);
-      setSelectedDisposition(lead.statusCode || 1);
-      setCallerRemark('');
     }
   };
 
