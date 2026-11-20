@@ -405,9 +405,9 @@ function dispatch_resend_email($toEmail, $subject, $htmlContent) {
 function dispatch_smtp_email($toEmail, $subject, $htmlContent) {
     $smtpHost = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
     $smtpPort = intval(getenv('SMTP_PORT') ?: 465);
-    $smtpUser = getenv('SMTP_USER') ?: '';
-    $smtpPass = getenv('SMTP_PASS') ?: '';
-    $fromEmail = getenv('SMTP_FROM') ?: $smtpUser;
+    $smtpUser = getenv('SMTP_USER') ?: 'noreply@concaverealty.com';
+    $smtpPass = getenv('SMTP_PASS') ?: 'Hemant_Concave_Mishra@email#2026';
+    $fromEmail = getenv('SMTP_FROM') ?: 'noreply@concaverealty.com';
 
     if (empty($smtpUser) || empty($smtpPass)) {
         return ['success' => false, 'error' => 'SMTP credentials not configured'];
@@ -474,18 +474,18 @@ function dispatch_smtp_email($toEmail, $subject, $htmlContent) {
     return ['success' => false, 'error' => 'SMTP dispatch rejected: ' . trim($sendRes)];
 }
 
-// 9. Hybrid Email Dispatch Engine (Resend API -> Hostinger SMTP -> Native Mail Fallback)
+// 9. Hybrid Email Dispatch Engine (Hostinger Direct SMTP -> Resend API -> Native Mail Fallback)
 function dispatch_email($toEmail, $subject, $htmlContent) {
-    // Attempt 1: Fast delivery via Resend API
-    $resendResult = dispatch_resend_email($toEmail, $subject, $htmlContent);
-    if ($resendResult['success']) {
-        return $resendResult;
-    }
-
-    // Attempt 2: Direct Hostinger SMTP delivery (if configured)
+    // Attempt 1: Direct Hostinger SSL SMTP delivery
     $smtpResult = dispatch_smtp_email($toEmail, $subject, $htmlContent);
     if ($smtpResult['success']) {
         return $smtpResult;
+    }
+
+    // Attempt 2: Fast delivery via Resend API (if configured)
+    $resendResult = dispatch_resend_email($toEmail, $subject, $htmlContent);
+    if ($resendResult['success']) {
+        return $resendResult;
     }
 
     // Attempt 3: Fallback to Hostinger's native server mail()
