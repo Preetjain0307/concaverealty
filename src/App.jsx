@@ -181,6 +181,12 @@ export function App() {
         }
       } else if (path === '/careers' || hash === '#careers' || hash === '#career') {
         setCurrentView('careers');
+      } else if (hash === '#projects') {
+        setCurrentView('projects');
+      } else if (hash === '#amenities') {
+        setCurrentView('amenities');
+      } else if (hash === '#contact') {
+        setCurrentView('contact');
       } else if (hash === '#terms' || hash === '#terms-and-conditions' || path === '/terms') {
         setLegalTab('terms');
         setCurrentView('legal');
@@ -196,6 +202,8 @@ export function App() {
       } else if (hash === '#legal' || path === '/legal') {
         setLegalTab('terms');
         setCurrentView('legal');
+      } else if (path === '' || path === '/' || hash === '' || hash === '#home') {
+        setCurrentView('home');
       }
     };
     handleRoute();
@@ -259,16 +267,68 @@ export function App() {
     }
   }, [currentView]);
 
+  // Unified Navigation & Hash Sync Engine
+  const handleNavigate = (view) => {
+    if (['terms', 'privacy', 'disclaimer', 'cookies', 'cookie-policy', 'legal'].includes(view)) {
+      const doc = view === 'cookie-policy' ? 'cookies' : (view === 'legal' ? 'terms' : view);
+      setLegalTab(doc);
+      setCurrentView('legal');
+      window.location.hash = doc;
+    } else {
+      setCurrentView(view);
+      if (view === 'home') {
+        // Clean up hash completely so refreshing on home stays on home!
+        if (window.location.hash) {
+          try {
+            window.history.pushState(null, '', window.location.pathname);
+          } catch {
+            window.location.hash = '';
+          }
+        }
+      } else {
+        window.location.hash = view;
+      }
+    }
+    // Instant & reliable scroll to top across mobile and desktop
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
+  };
+
+  // iOS Safari & Mobile Scroll-To-Top Anchor (Guarantees top scroll on tab switch)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    const t1 = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 50);
+    const t2 = setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 150);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [currentView]);
+
   const handleSearch = (filters) => {
     setSearchFilter(filters);
-    setCurrentView('projects');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleNavigate('projects');
   };
 
   const handleSelectLocation = (locName) => {
     setSearchFilter(prev => ({ ...prev, location: locName }));
-    setCurrentView('projects');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleNavigate('projects');
   };
 
   const handleLogout = () => {
@@ -300,10 +360,7 @@ export function App() {
         {/* Navigation Bar: Hidden on standalone Admin and Caller portals */}
         {!isPortalView && (
           <Navbar
-            onNavigate={(view) => {
-              setCurrentView(view);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+            onNavigate={handleNavigate}
             currentView={currentView}
             onOpenEnquiry={handleOpenEnquiry}
             activeUser={activeUser}
@@ -331,10 +388,7 @@ export function App() {
 
               {/* Explore Our Projects CTA (Light Luxury Banner before Dark Footer with smooth scroll reveal) */}
               <HomeCtaBanner
-                onExplore={() => {
-                  setCurrentView('projects');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onExplore={() => handleNavigate('projects')}
               />
             </>
           )}
@@ -374,10 +428,7 @@ export function App() {
           {currentView === 'contact' && (
             <ErrorBoundary>
               <ContactPage
-                onNavigateHome={() => {
-                  setCurrentView('home');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onNavigateHome={() => handleNavigate('home')}
                 onOpenEnquiry={handleOpenEnquiry}
               />
             </ErrorBoundary>
@@ -386,10 +437,7 @@ export function App() {
           {currentView === 'careers' && (
             <ErrorBoundary>
               <CareerPage
-                onNavigateHome={() => {
-                  setCurrentView('home');
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onNavigateHome={() => handleNavigate('home')}
                 onOpenEnquiry={handleOpenEnquiry}
               />
             </ErrorBoundary>
@@ -402,7 +450,7 @@ export function App() {
                 onLogin={(user) => setActiveUser(user)}
                 onLogout={handleLogout}
                 onNavigateHome={() => {
-                  setCurrentView('home');
+                  handleNavigate('home');
                   window.history.pushState(null, '', '/');
                 }}
               />
@@ -416,7 +464,7 @@ export function App() {
                 onLogin={(admin) => setActiveUser(admin)}
                 onLogout={handleLogout}
                 onNavigateHome={() => {
-                  setCurrentView('home');
+                  handleNavigate('home');
                   window.history.pushState(null, '', '/');
                 }}
               />
@@ -427,11 +475,7 @@ export function App() {
             <ErrorBoundary>
               <LegalPage
                 initialTab={legalTab}
-                onNavigateHome={() => {
-                  setCurrentView('home');
-                  window.location.hash = '';
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onNavigateHome={() => handleNavigate('home')}
                 onSelectDocument={(tab) => {
                   setLegalTab(tab);
                   window.location.hash = tab;
@@ -471,18 +515,7 @@ export function App() {
         {!isPortalView && (
           <ErrorBoundary>
             <Footer
-              onNavigate={(view) => {
-                if (['terms', 'privacy', 'disclaimer', 'cookies', 'cookie-policy', 'legal'].includes(view)) {
-                  const doc = view === 'cookie-policy' ? 'cookies' : (view === 'legal' ? 'terms' : view);
-                  setLegalTab(doc);
-                  setCurrentView('legal');
-                  window.location.hash = doc;
-                } else {
-                  setCurrentView(view);
-                  window.location.hash = view === 'home' ? '' : view;
-                }
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              onNavigate={handleNavigate}
               onSelectLocation={handleSelectLocation}
               onOpenEnquiry={handleOpenEnquiry}
             />
