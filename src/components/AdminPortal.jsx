@@ -3928,82 +3928,113 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
       {/* ── ADMIN STATUS, CALL & DISPOSITION MODAL ── */}
       {callingLead && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-4 border border-emerald-500/30 anim-fade-scale">
-            <div className="text-center space-y-1 pb-3 border-b border-[#EAE6DF]">
-              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1.5 shadow-xs">
-                <FileText className="w-6 h-6 text-[#245348]" />
-              </div>
-              <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-                Update Status & Description
-              </h3>
-              <p className="font-mono text-xs text-gray-700">
-                {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline">{callingLead.mobile}</a>
-              </p>
-              <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
-                <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold">CON-{callingLead.id}</span>
-                <span>•</span>
-                <span>{callingLead.locationName} ({callingLead.projectName})</span>
-              </div>
-            </div>
-
-            {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-800 block">
-                Select Customer Status:
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                {[
-                  { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                  { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                  { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                  { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                  { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                  { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
-                ].map(disp => (
-                  <button
-                    key={disp.code}
-                    type="button"
-                    onClick={() => setSelectedDisposition(disp.code)}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                      selectedDisposition === disp.code
-                        ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                        : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
-                    }`}
-                  >
-                    <div className="font-bold text-xs">{disp.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Discussion Description & Remarks */}
-            <div className="space-y-1">
-              <label className="text-xs text-gray-800 font-semibold">Discussion Description & Client Notes:</label>
-              <textarea
-                rows={3}
-                value={callerRemark}
-                onChange={(e) => setCallerRemark(e.target.value)}
-                placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
-                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
-              />
-            </div>
-
-            <div className="flex items-center gap-3 pt-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-4 sm:p-6 border border-[#245348]/30 anim-fade-scale my-auto relative max-h-[92vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="text-center relative pb-3 border-b border-[#EAE6DF] shrink-0">
               <button
                 type="button"
                 onClick={() => setCallingLead(null)}
-                className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
+                className="absolute right-0 top-0 text-gray-400 hover:text-black p-1 text-base cursor-pointer rounded-lg hover:bg-gray-100 transition-colors"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="w-10 h-10 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1 shadow-xs">
+                <FileText className="w-5 h-5 text-[#245348]" />
+              </div>
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-[#14221F]">
+                Update Status & Description
+              </h3>
+              <p className="font-mono text-xs text-gray-700 mt-0.5">
+                {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline hover:text-[#1B3F37]">{callingLead.mobile}</a>
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
+                <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold whitespace-nowrap shrink-0">CON-{callingLead.id}</span>
+                <span className="text-gray-400">•</span>
+                <span className="font-medium text-gray-700 text-center">{callingLead.locationName} ({callingLead.projectName})</span>
+              </div>
+            </div>
+
+            {/* Scrollable Content Body */}
+            <div className="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-left">
+              {/* Status Selection Options with Scroll Feature */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-gray-800 block">
+                    Select Customer Status:
+                  </label>
+                  <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                </div>
+                <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    {[
+                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                    ].map(disp => (
+                      <button
+                        key={disp.code}
+                        type="button"
+                        onClick={() => setSelectedDisposition(disp.code)}
+                        className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          selectedDisposition === disp.code
+                            ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                            : 'bg-white border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                        }`}
+                      >
+                        <div className="font-bold text-[11px] sm:text-xs">{disp.label}</div>
+                        <div className={`text-[9px] sm:text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Discussion Description & Remarks */}
+              <div className="space-y-1">
+                <label className="text-xs text-gray-800 font-semibold block">Discussion Description & Client Notes:</label>
+                <textarea
+                  rows={3}
+                  value={callerRemark}
+                  onChange={(e) => setCallerRemark(e.target.value)}
+                  placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
+                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-2.5 sm:p-3 text-xs text-[#14221F] focus:outline-none"
+                />
+              </div>
+
+              {/* Previous Notes History */}
+              {callingLead.notes && callingLead.notes.length > 0 && (
+                <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
+                  <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
+                  {callingLead.notes.map((note, idx) => (
+                    <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
+                      <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
+                      <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Pinned Action Buttons Footer */}
+            <div className="flex items-center gap-2.5 pt-3 border-t border-[#EAE6DF] shrink-0 mt-1">
+              <button
+                type="button"
+                onClick={() => setCallingLead(null)}
+                className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleFinishAdminCall}
-                className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
+                className="flex-1 py-2 sm:py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
               >
-                Save Status & Notes
+                SAVE & UPDATE RECORD
               </button>
             </div>
           </div>
@@ -4150,32 +4181,37 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
               {/* Row 4: Response Type / Lead Rating */}
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-800 block">
-                  Response Type / Rating:
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                  {[
-                    { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                    { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                    { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                    { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                    { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                    { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
-                  ].map(disp => (
-                    <button
-                      key={disp.code}
-                      type="button"
-                      onClick={() => setNewLeadStatus(disp.code)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                        newLeadStatus === disp.code
-                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
-                      }`}
-                    >
-                      <div className="font-bold text-xs">{disp.label}</div>
-                      <div className={`text-[10px] mt-0.5 ${newLeadStatus === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
-                    </button>
-                  ))}
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-gray-800 block">
+                    Response Type / Rating:
+                  </label>
+                  <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                </div>
+                <div className="max-h-40 sm:max-h-48 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    {[
+                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                    ].map(disp => (
+                      <button
+                        key={disp.code}
+                        type="button"
+                        onClick={() => setNewLeadStatus(disp.code)}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                          newLeadStatus === disp.code
+                            ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                            : 'bg-white border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                        }`}
+                      >
+                        <div className="font-bold text-xs">{disp.label}</div>
+                        <div className={`text-[10px] mt-0.5 ${newLeadStatus === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 

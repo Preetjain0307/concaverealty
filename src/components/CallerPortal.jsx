@@ -1087,12 +1087,12 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             </div>
           </div>
 
-          {/* 4 Filter Tabs: 2x2 Grid on Mobile, Flex on Tablet/Desktop */}
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 text-xs pt-1">
+          {/* 4 Filter Tabs: Horizontal Scroll on Mobile, Flex on Tablet/Desktop */}
+          <div className="flex overflow-x-auto sm:flex-wrap gap-2 text-xs pt-1 pb-1 scrollbar-none">
             <button
               type="button"
               onClick={() => { setActiveTab('active'); setEnquiryPage(1); }}
-              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'active'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer shrink-0 ${activeTab === 'active'
                 ? 'bg-[#245348] text-white shadow-md'
                 : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
                 }`}
@@ -1106,7 +1106,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('callback'); setEnquiryPage(1); }}
-              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'callback'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer shrink-0 ${activeTab === 'callback'
                 ? 'bg-amber-600 text-white shadow-md'
                 : 'bg-amber-50/80 text-amber-800 hover:bg-amber-100 border border-amber-200'
                 }`}
@@ -1123,7 +1123,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('leads'); setEnquiryPage(1); }}
-              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'leads'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer shrink-0 ${activeTab === 'leads'
                 ? 'bg-emerald-700 text-white shadow-md'
                 : 'bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
                 }`}
@@ -1140,7 +1140,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('all'); setEnquiryPage(1); }}
-              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'all'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer shrink-0 ${activeTab === 'all'
                 ? 'bg-[#14221F] text-white shadow-md'
                 : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
                 }`}
@@ -1525,33 +1525,38 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
               {/* Scrollable Content Body */}
               <div className="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-left">
-                {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
+                {/* Status Selection Options with Scroll Feature */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-800 block">
-                    Select Customer Status:
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                    {[
-                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
-                    ].map(disp => (
-                      <button
-                        key={disp.code}
-                        type="button"
-                        onClick={() => setSelectedDisposition(disp.code)}
-                        className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${selectedDisposition === disp.code
-                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
-                          }`}
-                      >
-                        <div className="font-bold text-[11px] sm:text-xs">{disp.label}</div>
-                        <div className={`text-[9px] sm:text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-gray-800 block">
+                      Select Customer Status:
+                    </label>
+                    <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                  </div>
+                  <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                      {[
+                        { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                        { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                        { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                        { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                        { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                        { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                      ].map(disp => (
+                        <button
+                          key={disp.code}
+                          type="button"
+                          onClick={() => setSelectedDisposition(disp.code)}
+                          className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${selectedDisposition === disp.code
+                            ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                            : 'bg-white border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                            }`}
+                        >
+                          <div className="font-bold text-[11px] sm:text-xs">{disp.label}</div>
+                          <div className={`text-[9px] sm:text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -1746,31 +1751,36 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
                 {/* Row 4: Response Type / Lead Rating */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-gray-800 block">
-                    Response Type / Rating:
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                    {[
-                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
-                    ].map(disp => (
-                      <button
-                        key={disp.code}
-                        type="button"
-                        onClick={() => setNewLeadStatus(disp.code)}
-                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${newLeadStatus === disp.code
-                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
-                          }`}
-                      >
-                        <div className="font-bold text-xs">{disp.label}</div>
-                        <div className={`text-[10px] mt-0.5 ${newLeadStatus === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-gray-800 block">
+                      Response Type / Rating:
+                    </label>
+                    <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                  </div>
+                  <div className="max-h-40 sm:max-h-48 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                      {[
+                        { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                        { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                        { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                        { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                        { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                        { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                      ].map(disp => (
+                        <button
+                          key={disp.code}
+                          type="button"
+                          onClick={() => setNewLeadStatus(disp.code)}
+                          className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${newLeadStatus === disp.code
+                            ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                            : 'bg-white border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                            }`}
+                        >
+                          <div className="font-bold text-xs">{disp.label}</div>
+                          <div className={`text-[10px] mt-0.5 ${newLeadStatus === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
