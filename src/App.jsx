@@ -121,7 +121,13 @@ export function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [tourModalOpen, setTourModalOpen] = useState(false);
   const [tourProjectId, setTourProjectId] = useState(1);
-  const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
+  const [enquiryModalOpen, setEnquiryModalOpen] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && window.location.search.includes('previewConfirmation=1');
+    } catch {
+      return false;
+    }
+  });
   const [enquiryInitialData, setEnquiryInitialData] = useState({});
 
   const [searchFilter, setSearchFilter] = useState({ location: 'All', type: 'All', budget: 'All' });

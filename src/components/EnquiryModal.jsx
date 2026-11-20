@@ -103,8 +103,35 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
   // 5-minute (300s) OTP expiry timer
   const [otpExpirySeconds, setOtpExpirySeconds] = useState(0);
 
-  const [submittedLead, setSubmittedLead] = useState(null);
+  const [submittedLead, setSubmittedLead] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.location.search.includes('previewConfirmation=1')) {
+        return {
+          id: 109,
+          locationName: 'Goregaon',
+          projectName: 'Kalpataru Advay',
+          callerName: 'Rahul Sharma (Senior Specialist)',
+          name: 'Aarav Singhania'
+        };
+      }
+    } catch {}
+    return null;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showTick, setShowTick] = useState(false);
+
+  // Animated tick entrance when confirmation screen opens
+  useEffect(() => {
+    if (submittedLead) {
+      setShowTick(false);
+      const timer = setTimeout(() => {
+        setShowTick(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setShowTick(false);
+    }
+  }, [submittedLead]);
 
   // 60-Second Cooldown Timer (Resets after every send/resend)
   useEffect(() => {
@@ -365,6 +392,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
   const handleReset = () => {
     setSubmittedLead(null);
+    setShowTick(false);
     setEnteredOtp('');
     setGeneratedOtp('');
     setOtpSent(false);
@@ -384,17 +412,17 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
         aria-labelledby="enq-title"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Top Header: Title replaced with "Book Consultation" */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3.5 bg-[#1D3530] text-white shrink-0">
-          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#284F45] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] shrink-0">
-              <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        {/* Top Header */}
+        <div className={`flex items-center justify-between ${submittedLead ? 'px-6 sm:px-8 py-4 sm:py-5' : 'px-4 sm:px-6 py-2.5 sm:py-3.5'} bg-[#1D3530] text-white shrink-0 transition-all border-b border-[#C59B4E]/30`}>
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <div className={`${submittedLead ? 'w-10 h-10 sm:w-12 sm:h-12' : 'w-7 h-7 sm:w-8 sm:h-8'} rounded-full bg-[#284F45] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] shrink-0 shadow-md`}>
+              {submittedLead ? <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" /> : <PhoneCall className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
             </div>
             <div className="min-w-0">
-              <h3 id="enq-title" className="font-serif text-base sm:text-xl font-bold truncate">
-                Book Consultation
+              <h3 id="enq-title" className={`font-serif ${submittedLead ? 'text-xl sm:text-2xl' : 'text-base sm:text-xl'} font-bold truncate tracking-wide text-white`}>
+                {submittedLead ? 'Consultation Confirmed' : 'Book Consultation'}
               </h3>
-              <p className="text-[9px] sm:text-[10px] font-mono tracking-wider text-[#DFBE79] hidden sm:block">
+              <p className={`${submittedLead ? 'text-[11px] sm:text-xs' : 'text-[9px] sm:text-[10px]'} font-mono tracking-wider text-[#DFBE79] mt-0.5`}>
                 MahaRERA: A51900045781
               </p>
             </div>
@@ -403,55 +431,79 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
           <button
             onClick={onClose}
             aria-label="Close enquiry modal"
-            className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 ml-2 cursor-pointer"
+            className={`${submittedLead ? 'p-2' : 'p-1'} rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 ml-2 cursor-pointer`}
           >
-            <X className="w-5 h-5" />
+            <X className={`${submittedLead ? 'w-6 h-6' : 'w-5 h-5'}`} />
           </button>
         </div>
 
         {submittedLead ? (
-          /* Confirmation Screen */
-          <div className="p-4 sm:p-6 text-center space-y-4 overflow-y-auto flex-1">
-            <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
-              <CheckCircle2 className="w-8 h-8" />
+          /* Confirmation Screen - Ultra Attractive Luxury Layout */
+          <div className="p-6 sm:p-8 text-center space-y-6 overflow-y-auto flex-1 bg-gradient-to-b from-white via-[#FAF9F6] to-white">
+            {/* Luxury Medallion Seal with Ambient Halo (Star removed, animated tick entrance) */}
+            <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center pt-1">
+              <div className="absolute inset-0 rounded-full bg-[#DFBE79]/25 animate-ping opacity-30" />
+              <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-[#DFBE79]/50 via-[#C59B4E]/20 to-[#245348]/20 blur-md" />
+              
+              <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#245348] via-[#1D3530] to-[#122420] border-2 border-[#C59B4E] shadow-2xl flex items-center justify-center overflow-hidden">
+                <svg
+                  className={`w-10 h-10 sm:w-11 sm:h-11 text-[#DFBE79] transition-all duration-700 ease-out transform ${
+                    showTick ? 'scale-100 opacity-100 rotate-0' : 'scale-0 opacity-0 -rotate-45'
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" strokeOpacity="0.25" strokeWidth="1.5" />
+                  <path
+                    d="m8 12 3 3 5-6"
+                    style={{
+                      strokeDasharray: 24,
+                      strokeDashoffset: showTick ? 0 : 24,
+                      transition: 'stroke-dashoffset 0.5s ease-in-out 0.15s'
+                    }}
+                  />
+                </svg>
+              </div>
             </div>
 
-            <h4 className="font-serif text-2xl font-bold text-[#14221F]">
-              Enquiry Submitted Successfully
-            </h4>
-
-            <div className="p-4 rounded bg-[#FAF9F6] border border-[#EAE6DF] text-left text-xs space-y-2">
-              <div className="flex items-center justify-between text-gray-600">
-                <span>Reference ID:</span>
-                <span className="font-mono text-black font-bold">CON-{submittedLead.id}</span>
-              </div>
-              <div className="flex items-center justify-between text-gray-600">
-                <span>Location:</span>
-                <span className="font-semibold text-[#14221F]">{submittedLead.locationName}</span>
-              </div>
-              <div className="flex items-center justify-between text-gray-600">
-                <span>Project:</span>
-                <span className="font-semibold text-[#14221F]">{submittedLead.projectName}</span>
-              </div>
-              <div className="flex items-center justify-between text-gray-600">
-                <span>Advisory License:</span>
-                <span className="font-mono text-emerald-800 font-bold">MahaRERA A51900045781</span>
-              </div>
-              <div className="pt-2 border-t border-gray-200 flex items-center gap-2 text-emerald-800 font-medium">
-                <UserCheck className="w-4 h-4" />
-                <span>Relationship Manager: Assigned (Priority Advisory Desk)</span>
-              </div>
+            {/* Title & Status */}
+            <div className="space-y-1.5">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#245348]/10 text-[#245348] text-[10px] sm:text-[11px] font-sans font-bold uppercase tracking-[0.24em] border border-[#245348]/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#245348] animate-pulse"></span>
+                Consultation Confirmed
+              </span>
+              <h4 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F] tracking-tight">
+                Enquiry Submitted Successfully
+              </h4>
             </div>
 
-            <p className="text-xs text-gray-600 leading-relaxed">
-              Your inquiry has been submitted successfully. Our certified <strong>{submittedLead.locationName}</strong> property consultant will connect with you shortly.
-            </p>
+            {/* Gold Flourish Divider */}
+            <div className="flex items-center justify-center gap-3 py-0.5">
+              <div className="h-[1px] w-14 bg-gradient-to-r from-transparent to-[#C59B4E]/60" />
+              <div className="w-1.5 h-1.5 rotate-45 bg-[#C59B4E]" />
+              <div className="h-[1px] w-14 bg-gradient-to-l from-transparent to-[#C59B4E]/60" />
+            </div>
 
+            {/* Thank you message & Consultant connection note */}
+            <div className="space-y-2 max-w-md mx-auto py-1">
+              <h5 className="font-serif text-3xl sm:text-4xl font-bold text-[#14221F] tracking-tight whitespace-nowrap">
+                Thank You!
+              </h5>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-medium">
+                Our consultant will get back to you shortly.
+              </p>
+            </div>
+
+            {/* Primary Action Button */}
             <button
               onClick={handleReset}
-              className="w-full py-2.5 rounded bg-[#245348] hover:bg-[#1B3F37] text-white font-semibold text-xs uppercase tracking-wider"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#245348] via-[#1D3530] to-[#245348] hover:from-[#1B3F37] hover:to-[#162B25] text-white font-serif font-bold text-xs sm:text-sm uppercase tracking-[0.2em] shadow-lg hover:shadow-xl transition-all border border-[#C59B4E]/40 cursor-pointer flex items-center justify-center gap-2"
             >
-              Done & Return
+              <span>Done & Return</span>
             </button>
           </div>
         ) : (
