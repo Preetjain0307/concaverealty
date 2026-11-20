@@ -89,6 +89,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
   const [fileError, setFileError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
+  const [showTick, setShowTick] = useState(false);
   const [formError, setFormError] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
@@ -153,6 +154,19 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isApplyModalOpen]);
+
+  // Animated tick entrance when confirmation screen opens
+  useEffect(() => {
+    if (submissionSuccess) {
+      setShowTick(false);
+      const timer = setTimeout(() => {
+        setShowTick(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    } else {
+      setShowTick(false);
+    }
+  }, [submissionSuccess]);
 
   // When clicking "APPLY NOW →" on an open position or direct apply button
   const handleApplyRole = (roleTitle) => {
@@ -805,15 +819,15 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
             {/* Modal Header (Deep Forest Green with Gold Accents matching Website Theme) */}
             <div className="flex items-center justify-between px-5 sm:px-7 py-3 sm:py-3.5 bg-[#1D3530] text-white shrink-0 border-b-2 border-[#C59B4E]/40 shadow-sm">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-white/10 border border-[#C59B4E]/60 flex items-center justify-center text-[#DFBE79] shrink-0">
-                  <Briefcase className="w-4 h-4" />
+                <div className={`${submissionSuccess ? 'w-10 h-10 sm:w-11 sm:h-11' : 'w-8 h-8'} rounded-xl bg-white/10 border border-[#C59B4E]/60 flex items-center justify-center text-[#DFBE79] shrink-0`}>
+                  {submissionSuccess ? <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-[#DFBE79]" /> : <Briefcase className="w-4 h-4" />}
                 </div>
                 <div className="min-w-0">
-                  <h3 id="career-modal-title" className="font-serif text-base sm:text-xl font-bold truncate text-white tracking-wide">
-                    {formData.position ? `Join Our Team: ${formData.position}` : 'Join Our Team'}
+                  <h3 id="career-modal-title" className={`font-serif ${submissionSuccess ? 'text-lg sm:text-2xl' : 'text-base sm:text-xl'} font-bold truncate text-white tracking-wide`}>
+                    {submissionSuccess ? 'Application Confirmed' : (formData.position ? `Join Our Team: ${formData.position}` : 'Join Our Team')}
                   </h3>
                   <p className="text-[10px] sm:text-[11px] font-mono tracking-wider text-[#DFBE79]">
-                    Concave Realty • MahaRERA: A51900045781
+                    Concave Realty • Talent Acquisition Desk
                   </p>
                 </div>
               </div>
@@ -830,70 +844,114 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
             {/* Modal Content */}
             <div className="px-4 xs:px-5 sm:px-7 pt-1.5 pb-5 sm:pt-2.5 sm:pb-6 overflow-y-auto flex-1 bg-[#FAF9F6]">
 
-              {/* Success Notification Banner */}
+              {/* Success Notification Banner - Ultra Attractive Luxury Layout matching Enquiry Form */}
               {submissionSuccess ? (
-                <div className="p-6 sm:p-8 rounded-2xl bg-[#FAF9F6] border-2 border-[#C59B4E] text-center space-y-5">
-                  <div className="w-14 h-14 mx-auto rounded-full bg-[#1D3530] border-2 border-[#C59B4E] text-[#DFBE79] flex items-center justify-center shadow-md">
-                    <CheckCircle2 className="w-7 h-7" />
+                <div className="p-6 sm:p-8 text-center space-y-6 overflow-y-auto flex-1 bg-gradient-to-b from-white via-[#FAF9F6] to-white">
+                  {/* Luxury Medallion Seal with Ambient Halo & Animated Tick Entrance */}
+                  <div className="relative mx-auto w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center pt-1">
+                    <div className="absolute inset-0 rounded-full bg-[#DFBE79]/25 animate-ping opacity-30" />
+                    <div className="absolute -inset-2 rounded-full bg-gradient-to-br from-[#DFBE79]/50 via-[#C59B4E]/20 to-[#245348]/20 blur-md" />
+                    
+                    <div className="relative w-18 h-18 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#245348] via-[#1D3530] to-[#122420] border-2 border-[#C59B4E] shadow-2xl flex items-center justify-center overflow-hidden">
+                      <svg
+                        className={`w-10 h-10 sm:w-11 sm:h-11 text-[#DFBE79] transition-all duration-700 ease-out transform ${
+                          showTick ? 'scale-100 opacity-100 rotate-0' : 'scale-0 opacity-0 -rotate-45'
+                        }`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.6"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" strokeOpacity="0.25" strokeWidth="1.5" />
+                        <path
+                          d="m8 12 3 3 5-6"
+                          style={{
+                            strokeDasharray: 24,
+                            strokeDashoffset: showTick ? 0 : 24,
+                            transition: 'stroke-dashoffset 0.5s ease-in-out 0.15s'
+                          }}
+                        />
+                      </svg>
+                    </div>
                   </div>
 
+                  {/* Title & Status */}
                   <div className="space-y-1.5">
-                    <span className="px-3 py-1 rounded-full bg-[#1D3530]/10 border border-[#245348]/20 text-[#245348] font-mono text-xs font-semibold uppercase tracking-wider">
-                      Application ID: {submissionSuccess.id}
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#245348]/10 text-[#245348] text-[10px] sm:text-[11px] font-sans font-bold uppercase tracking-[0.24em] border border-[#245348]/20">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#245348] animate-pulse"></span>
+                      Application Confirmed
                     </span>
-                    <h4 className="font-serif text-2xl font-bold text-[#1D3530] pt-2">
-                      Application Received Successfully!
+                    <h4 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F] tracking-tight">
+                      Application Submitted Successfully
                     </h4>
-                    <p className="text-xs sm:text-sm text-[#4A5854] max-w-lg mx-auto leading-relaxed">
-                      Thank you, <strong className="text-[#1D3530]">{submissionSuccess.name}</strong>. Your profile for <strong className="text-[#C59B4E]">{submissionSuccess.position}</strong> has been logged into our talent database.
+                  </div>
+
+                  {/* Gold Flourish Divider */}
+                  <div className="flex items-center justify-center gap-3 py-0.5">
+                    <div className="h-[1px] w-14 bg-gradient-to-r from-transparent to-[#C59B4E]/60" />
+                    <div className="w-1.5 h-1.5 rotate-45 bg-[#C59B4E]" />
+                    <div className="h-[1px] w-14 bg-gradient-to-l from-transparent to-[#C59B4E]/60" />
+                  </div>
+
+                  {/* Direct Thank You Message with Candidate Name */}
+                  <div className="space-y-2 max-w-md mx-auto py-1">
+                    <h5 className="font-serif text-3xl sm:text-4xl font-bold text-[#1D3530] tracking-tight">
+                      Thank You, {submissionSuccess.name}!
+                    </h5>
+                    <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-medium">
+                      Your application for <strong className="text-[#1D3530] font-semibold">{submissionSuccess.position}</strong> has been received successfully. Our Talent Acquisition desk will review your profile and get in touch with you shortly.
                     </p>
                   </div>
 
-                  {/* Status Details Box */}
-                  <div className="max-w-md mx-auto p-4 rounded-xl bg-[#F4F1EA] border border-[#E2DDD3] text-xs text-left space-y-2 font-mono shadow-xs">
-                    <div className="flex justify-between border-b border-[#EAE6DF] pb-1">
-                      <span className="text-[#63706B]">Candidate:</span>
-                      <span className="text-[#1D3530] font-bold">{submissionSuccess.name}</span>
+                  {/* Candidate Summary Card */}
+                  <div className="max-w-md mx-auto p-4 sm:p-5 rounded-2xl bg-white border border-[#EAE6DF] shadow-xs text-xs text-left space-y-2.5">
+                    <div className="flex justify-between items-center border-b border-[#EAE6DF] pb-2">
+                      <span className="text-gray-500 font-medium">Application Ref ID:</span>
+                      <span className="font-mono font-bold text-[#1D3530] bg-[#FAF9F6] px-2.5 py-0.5 rounded border border-[#E2DDD3]">
+                        {submissionSuccess.id}
+                      </span>
                     </div>
-                    <div className="flex justify-between border-b border-[#EAE6DF] pb-1">
-                      <span className="text-[#63706B]">Position:</span>
-                      <span className="text-[#1D3530] font-bold">{submissionSuccess.position}</span>
+                    <div className="flex justify-between items-center border-b border-[#EAE6DF] pb-2">
+                      <span className="text-gray-500 font-medium">Position Applied:</span>
+                      <span className="font-bold text-[#1D3530]">{submissionSuccess.position}</span>
                     </div>
-                    <div className="flex justify-between border-b border-[#EAE6DF] pb-1">
-                      <span className="text-[#63706B]">Contact:</span>
-                      <span className="text-[#1D3530]">+91 {submissionSuccess.mobile}</span>
+                    <div className="flex justify-between items-center border-b border-[#EAE6DF] pb-2">
+                      <span className="text-gray-500 font-medium">Candidate Name:</span>
+                      <span className="font-bold text-[#1D3530]">{submissionSuccess.name}</span>
                     </div>
-                    <div className="flex justify-between border-b border-[#EAE6DF] pb-1">
-                      <span className="text-[#63706B]">Verification:</span>
-                      <span className="text-emerald-700 font-bold flex items-center gap-1">
+                    <div className="flex justify-between items-center border-b border-[#EAE6DF] pb-2">
+                      <span className="text-gray-500 font-medium">Contact Number:</span>
+                      <span className="font-mono text-[#1D3530]">+91 {submissionSuccess.mobile}</span>
+                    </div>
+                    <div className="flex justify-between items-center pt-0.5">
+                      <span className="text-gray-500 font-medium">Email Verification:</span>
+                      <span className="text-emerald-700 font-bold flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         OTP Verified (Security Authenticated)
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-[#63706B]">Initial Status:</span>
-                      <span className="text-amber-800 font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-300">Under Review</span>
-                    </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  {/* Action Buttons */}
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                    <button
+                      onClick={handleCloseModal}
+                      className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md cursor-pointer border border-[#C59B4E]/40 active:scale-95"
+                    >
+                      Done / Close
+                    </button>
+
                     <a
                       href={`https://wa.me/91${PHONE_NUMBER}?text=Hello%20Concave%20Realty%20Talent%20Acquisition%2C%20I%20have%20submitted%20my%20application%20(Ref%3A%20${submissionSuccess.id})%20for%20${encodeURIComponent(submissionSuccess.position)}%20and%20would%20like%20to%20connect.`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-xs uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95 cursor-pointer"
+                      className="w-full sm:flex-1 py-3 px-5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-semibold text-xs uppercase tracking-wider shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                     >
                       <PhoneCall className="w-3.5 h-3.5" />
-                      <span>WhatsApp Talent Desk</span>
+                      <span>WhatsApp Desk</span>
                     </a>
-
-                    <button
-                      onClick={handleCloseModal}
-                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer border border-[#C59B4E]/40"
-                    >
-                      Close Window
-                    </button>
                   </div>
                 </div>
               ) : (
