@@ -200,6 +200,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   const [excelExportSuccess, setExcelExportSuccess] = useState(false);
   const [feedbackToast, setFeedbackToast] = useState(null);
 
+  // Auto-dismiss floating notifications after 4.5 seconds
+  useEffect(() => {
+    if (!feedbackToast) return;
+    const timer = setTimeout(() => setFeedbackToast(null), 4500);
+    return () => clearTimeout(timer);
+  }, [feedbackToast]);
+
+  useEffect(() => {
+    if (!excelExportSuccess) return;
+    const timer = setTimeout(() => setExcelExportSuccess(false), 4500);
+    return () => clearTimeout(timer);
+  }, [excelExportSuccess]);
+
   // Date Range Export State
   const [dateRangeStart, setDateRangeStart] = useState(() => {
     const d = new Date();
@@ -428,18 +441,17 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     const cleanUser = sanitizeInput(inputUser);
     const adminCreds = dbStore.getAdminCredentials();
 
-    // Accept Hemant_Concave_Mishra (case-insensitive) or legacy 'admin'
+    // Exclusively accept ONLY Hemant_Concave_Mishra
     const isUserValid =
-      cleanUser.toLowerCase() === (adminCreds.username || '').toLowerCase() ||
+      cleanUser === 'Hemant_Concave_Mishra' ||
       cleanUser.toLowerCase() === 'hemant_concave_mishra' ||
-      cleanUser.toLowerCase() === 'admin';
+      cleanUser.toLowerCase() === (adminCreds.username || '').toLowerCase();
 
-    // Verify password against stored hash, newly generated hash, or exact string
+    // Exclusively accept ONLY Hemant@2026#Mishra (hash or exact string)
     const isPasswordValid =
       (await verifyPassword(inputPass, adminCreds.password)) ||
       (await verifyPassword(inputPass, '8da334e29c94e4ee583710f0584f9ad2a94e0c2eac0a2910201566f98a73852b')) ||
-      inputPass === 'Hemant@2026#Mishra' ||
-      inputPass === 'concave@2026';
+      inputPass === 'Hemant@2026#Mishra';
 
     if (isUserValid && isPasswordValid) {
       setAdminFailedAttempts(0);
@@ -1335,27 +1347,45 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
       {/* Floating Success Toast for Excel Export */}
       {excelExportSuccess && (
-        <div className="fixed top-24 right-6 z-50 bg-[#1D3530] border border-[#C59B4E] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 anim-fade-scale">
-          <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-            <Check className="w-4 h-4" />
+        <div className="fixed top-24 right-6 z-50 bg-[#1D3530] border border-[#C59B4E] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center justify-between gap-3 anim-fade-scale">
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+              <Check className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Master Excel Exported</p>
+              <p className="text-[11px] text-gray-300">CONCAVE_Master_Leads.xlsx downloaded to your computer.</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-bold text-white">Master Excel Exported</p>
-            <p className="text-[11px] text-gray-300">CONCAVE_Master_Leads.xlsx downloaded to your computer.</p>
-          </div>
+          <button
+            onClick={() => setExcelExportSuccess(false)}
+            className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors ml-2 cursor-pointer"
+            title="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 
       {/* General Feedback Toast */}
       {feedbackToast && (
-        <div className="fixed top-24 right-6 z-50 bg-[#1D3530] border border-emerald-400 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 anim-fade-scale">
-          <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
-            <Check className="w-4 h-4" />
+        <div className="fixed top-24 right-6 z-50 bg-[#1D3530] border border-emerald-400 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center justify-between gap-3 anim-fade-scale">
+          <div className="flex items-center gap-3">
+            <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+              <Check className="w-4 h-4" />
+            </div>
+            <div>
+              <p className="text-xs font-bold text-white">Action Completed</p>
+              <p className="text-[11px] text-gray-300">{feedbackToast}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-bold text-white">Action Completed</p>
-            <p className="text-[11px] text-gray-300">{feedbackToast}</p>
-          </div>
+          <button
+            onClick={() => setFeedbackToast(null)}
+            className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors ml-2 cursor-pointer"
+            title="Close"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
 

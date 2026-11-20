@@ -98,7 +98,7 @@ try {
     if ($role === 'admin') {
         // Strictly require BOTH email AND username match
         $stmt = SafeDB::execute(
-            "UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND (`username` = 'Hemant_Concave_Mishra' OR `username` = 'admin')",
+            "UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND `username` = 'Hemant_Concave_Mishra'",
             [$passwordHash, $normalizedEmail]
         );
         if ($stmt) $dbUpdated = true;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, X } from 'lucide-react';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { SplashIntro } from './components/SplashIntro';
 import { Navbar } from './components/Navbar';
@@ -273,8 +273,15 @@ export function App() {
 
   const handleLogout = () => {
     setActiveUser(null);
-    setCurrentView('home');
-    window.history.pushState(null, '', '/');
+    // When logging out from Admin or Caller panel, stay on that portal's login screen instead of going to website
+    if (currentView === 'admin') {
+      window.history.replaceState(null, '', '/concave-admin');
+    } else if (currentView === 'caller') {
+      window.history.replaceState(null, '', '/concave-caller');
+    } else {
+      setCurrentView('home');
+      window.history.pushState(null, '', '/');
+    }
   };
 
   const isPortalView = currentView === 'admin' || currentView === 'caller';
@@ -486,8 +493,16 @@ export function App() {
         {!isPortalView && cookieConsentVisible && (
           <aside 
             aria-label="Privacy and Cookie Preferences"
-            className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 p-4 sm:p-5 rounded-2xl bg-[#14221F]/95 backdrop-blur-md border border-[#C59B4E]/50 text-white shadow-2xl animate-fade-up space-y-3"
+            className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-40 p-4 sm:p-5 rounded-2xl bg-[#14221F]/95 backdrop-blur-md border border-[#C59B4E]/50 text-white shadow-2xl animate-fade-up space-y-3 relative"
           >
+            <button
+              onClick={handleDismissCookieBanner}
+              className="absolute top-3.5 right-3.5 text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
+              title="Dismiss"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-full bg-[#183C32] border border-[#C59B4E] flex items-center justify-center text-[#DFBE79] shrink-0">
                 <span className="font-serif font-bold text-xs">CR</span>

@@ -88,6 +88,13 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   const [copiedLeadId, setCopiedLeadId] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
 
+  // Auto-dismiss floating notifications after 4.5 seconds
+  useEffect(() => {
+    if (!feedbackToast) return;
+    const timer = setTimeout(() => setFeedbackToast(null), 4500);
+    return () => clearTimeout(timer);
+  }, [feedbackToast]);
+
   // Direct Call Dialer Modal State
   const [callingLead, setCallingLead] = useState(null);
   const [selectedDisposition, setSelectedDisposition] = useState(null); // Null by default - full empty, not prefilled
@@ -1858,9 +1865,18 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
         {/* Floating Feedback Toast Notification */}
         {feedbackToast && (
-          <div className="fixed bottom-6 right-6 z-50 bg-[#14221F] text-[#DFBE79] px-4 py-3 rounded-xl shadow-2xl border border-[#C59B4E] flex items-center gap-2.5 animate-fadeIn">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span className="text-xs font-semibold text-white">{feedbackToast}</span>
+          <div className="fixed bottom-6 right-6 z-50 bg-[#14221F] text-[#DFBE79] px-4 py-3 rounded-xl shadow-2xl border border-[#C59B4E] flex items-center justify-between gap-3 animate-fadeIn">
+            <div className="flex items-center gap-2.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span className="text-xs font-semibold text-white">{feedbackToast}</span>
+            </div>
+            <button
+              onClick={() => setFeedbackToast(null)}
+              className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors ml-2 cursor-pointer"
+              title="Close notification"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         )}
 
