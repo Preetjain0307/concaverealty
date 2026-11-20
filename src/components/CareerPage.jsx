@@ -658,7 +658,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                 {OPEN_POSITIONS_LIST.map((pos) => (
                   <div
                     key={pos.id}
-                    className="group rounded-2xl border border-[#E2DDD3] bg-[#FAF9F6] hover:bg-[#F4F1EA] hover:border-[#1D3530] p-4 xs:p-5 sm:p-6 transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5"
+                    className="group rounded-2xl border border-[#E2DDD3] bg-[#FAF9F6] hover:bg-[#F4F1EA] hover:border-[#1D3530] p-4 xs:p-5 sm:p-6 transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 overflow-hidden"
                   >
                     {/* Two-Column Responsive Layout: Serial Number + Job Details & Action */}
                     <div className="grid grid-cols-[auto_1fr] gap-3 xs:gap-4 sm:gap-5 items-start">
@@ -679,18 +679,29 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                             {pos.title}
                           </h3>
                           
-                          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-sm text-[#4A5854]">
-                            <div className="flex items-center gap-1.5 min-w-0">
+                          <div className="flex flex-wrap items-center gap-x-2.5 sm:gap-x-3 gap-y-1.5 text-xs sm:text-sm text-[#4A5854]">
+                            <div className="flex items-center gap-1.5 min-w-0 max-w-full">
                               <MapPin className="w-3.5 h-3.5 text-[#245348] shrink-0" />
                               <span className="truncate">{pos.location}</span>
                             </div>
                             <span className="text-gray-300 hidden sm:inline">•</span>
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#1D3530]/5 text-[#1D3530] font-mono text-[11px] sm:text-xs font-semibold">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 sm:shrink-0 min-w-0">
+                              <span className="inline-flex items-center px-2 py-0.5 rounded bg-[#1D3530]/5 text-[#1D3530] font-mono text-[10.5px] xs:text-[11px] sm:text-xs font-semibold shrink-0">
                                 Exp: {pos.exp}
                               </span>
-                              <span className="text-gray-300 hidden xs:inline">•</span>
-                              <span className="text-[11px] text-[#63706B] font-mono hidden xs:inline">
+                              <span className="text-gray-300 hidden sm:inline">•</span>
+                              {/* Mobile View: Clean, non-overflowing tokens that wrap seamlessly */}
+                              {pos.type.split('•').map((item, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex sm:hidden items-center gap-1 text-[10.5px] xs:text-[11px] text-[#63706B] font-mono shrink-0"
+                                >
+                                  <span className="text-gray-300">•</span>
+                                  <span>{item.trim()}</span>
+                                </span>
+                              ))}
+                              {/* Desktop View (sm: and up): Unchanged original line */}
+                              <span className="text-[11px] sm:text-xs text-[#63706B] font-mono hidden sm:inline shrink-0">
                                 {pos.type}
                               </span>
                             </div>
