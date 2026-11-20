@@ -1038,19 +1038,36 @@ export const dbStore = {
   // Real-time bidirectional synchronization with Hostinger MySQL server
   async syncWithServer() {
     try {
-      const res = await fetch('/api/leads');
-      if (!res.ok) return false;
+      let res = await fetch(`/api/leads.php?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      if (!res || !res.ok) {
+        res = await fetch(`/api/leads?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      }
+      if (!res || !res.ok) return false;
       const data = await res.json();
       if (data && data.success && Array.isArray(data.leads) && data.leads.length > 0) {
         this.init();
         const local = getRawData(DB_KEY, INITIAL_SEED_LEADS);
-        const localIds = new Set(local.map(l => l.i));
         let updated = false;
 
         data.leads.forEach(serverLead => {
-          if (!localIds.has(serverLead.i)) {
+          const sId = String(serverLead.i);
+          const sMobile = String(serverLead.m || '').replace(/\D/g, '');
+          // Check if lead already exists in local (by server ID or matching phone number)
+          const existingIdx = local.findIndex(l => 
+            String(l.i) === sId || 
+            (sMobile && String(l.m || '').replace(/\D/g, '') === sMobile && Math.abs((l.ts || 0) - (serverLead.ts || 0)) < 3600000)
+          );
+
+          if (existingIdx !== -1) {
+            const existing = local[existingIdx];
+            // Ensure ID and server state are synced
+            if (String(existing.i) !== sId || existing.s !== serverLead.s || existing.c !== serverLead.c || (serverLead.nt && serverLead.nt.length > (existing.nt || []).length)) {
+              local[existingIdx] = { ...existing, ...serverLead };
+              updated = true;
+            }
+          } else {
+            // New incoming server lead - place right at the very top of the list
             local.unshift(serverLead);
-            localIds.add(serverLead.i);
             updated = true;
           }
         });
@@ -1060,8 +1077,8 @@ export const dbStore = {
           return true;
         }
       }
-    } catch {
-      // Offline fallback
+    } catch (e) {
+      console.warn("[dbStore] Sync error:", e);
     }
     return false;
   },
@@ -1478,7 +1495,7 @@ export const dbStore = {
       locationId: raw.l,
       locationName: LOCATION_CODES[raw.l] || "Mumbai Suburbs",
       projectId: raw.p,
-      projectName: PROJECT_CODES[raw.p] || "Signature Project",
+      projectName: raw.pr || PROJECT_CODES[raw.p] || "Signature Project",
       typeId: raw.t,
       typeName: TYPE_CODES[raw.t] || "General Enquiry",
       statusCode: raw.s,

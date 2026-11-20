@@ -273,48 +273,65 @@ export function App() {
       const doc = view === 'cookie-policy' ? 'cookies' : (view === 'legal' ? 'terms' : view);
       setLegalTab(doc);
       setCurrentView('legal');
-      window.location.hash = doc;
+      try {
+        window.history.replaceState(null, '', `${window.location.pathname}#${doc}`);
+      } catch {
+        window.location.hash = doc;
+      }
     } else {
       setCurrentView(view);
       if (view === 'home') {
         // Clean up hash completely so refreshing on home stays on home!
-        if (window.location.hash) {
-          try {
-            window.history.pushState(null, '', window.location.pathname);
-          } catch {
-            window.location.hash = '';
-          }
+        try {
+          window.history.replaceState(null, '', window.location.pathname.replace(/#.*$/, '') || '/');
+        } catch {
+          window.location.hash = '';
         }
       } else {
-        window.location.hash = view;
+        try {
+          window.history.replaceState(null, '', `${window.location.pathname}#${view}`);
+        } catch {
+          window.location.hash = view;
+        }
       }
     }
-    // Instant & reliable scroll to top across mobile and desktop
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 50);
+
+    // Comprehensive Mobile & iOS Safari Scroll-to-Top
+    const scrollToTop = () => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+      const rootEl = document.getElementById('root');
+      if (rootEl) rootEl.scrollTop = 0;
+    };
+
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
+    setTimeout(scrollToTop, 50);
+    setTimeout(scrollToTop, 150);
   };
 
   // iOS Safari & Mobile Scroll-To-Top Anchor (Guarantees top scroll on tab switch)
   useEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    const t1 = setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 50);
-    const t2 = setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }, 150);
+    const scrollToTop = () => {
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      } catch {
+        window.scrollTo(0, 0);
+      }
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+      const rootEl = document.getElementById('root');
+      if (rootEl) rootEl.scrollTop = 0;
+    };
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
+    const t1 = setTimeout(scrollToTop, 50);
+    const t2 = setTimeout(scrollToTop, 150);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);

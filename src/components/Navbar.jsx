@@ -169,8 +169,8 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
                   key={item.id}
                   type="button"
                   onClick={() => {
-                    onNavigate(item.id);
                     setMobileMenuOpen(false);
+                    onNavigate(item.id);
                   }}
                   className={`group relative w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer active:scale-[0.99] ${
                     isActive

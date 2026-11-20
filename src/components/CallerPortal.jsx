@@ -156,7 +156,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
         // Real-time server sync
         dbStore.syncWithServer().then(synced => {
-          if (synced && currentUser && currentUser.id) {
+          if (currentUser && currentUser.id) {
             setLeads(dbStore.getLeadsForCaller(currentUser.id));
           }
         }).catch(() => {});
@@ -168,6 +168,17 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
   useEffect(() => {
     refreshData();
+    // Real-time 15s auto-polling: fetch newly incoming enquiries for caller without manual page refresh
+    const pollTimer = setInterval(() => {
+      if (currentUser && currentUser.id) {
+        dbStore.syncWithServer().then(synced => {
+          if (synced && currentUser && currentUser.id) {
+            setLeads(dbStore.getLeadsForCaller(currentUser.id));
+          }
+        }).catch(() => {});
+      }
+    }, 15000);
+    return () => clearInterval(pollTimer);
   }, [currentUser]);
 
   // Login Handlers
@@ -504,7 +515,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     if (!matchesSearch) return false;
 
     // 2. Dropdown Location filter
-    if (selectedLocationFilter !== 'All' && String(l.location) !== String(selectedLocationFilter)) {
+    if (selectedLocationFilter !== 'All' && String(l.locationId) !== String(selectedLocationFilter) && String(l.locationName) !== String(selectedLocationFilter)) {
       return false;
     }
 

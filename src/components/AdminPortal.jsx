@@ -370,6 +370,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       dbStore.syncWithServer().then(synced => {
         if (synced) {
           setLeads(dbStore.getLeads(currentUser));
+          setStorageStats(dbStore.getStorageStats());
         }
       }).catch(() => {});
 
@@ -401,6 +402,18 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
   useEffect(() => {
     refreshAdminData();
+    // Real-time 15s auto-polling: continuously fetch any new live enquiries submitted by customers
+    const pollTimer = setInterval(() => {
+      if (currentUser && currentUser.role === 'admin') {
+        dbStore.syncWithServer().then(synced => {
+          if (synced) {
+            setLeads(dbStore.getLeads(currentUser));
+            setStorageStats(dbStore.getStorageStats());
+          }
+        }).catch(() => {});
+      }
+    }, 15000);
+    return () => clearInterval(pollTimer);
   }, [currentUser]);
 
   // Reset pagination on filter or search changes
