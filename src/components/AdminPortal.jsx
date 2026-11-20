@@ -866,27 +866,29 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     return (
       <div className="min-h-screen bg-[#FAF9F6] flex flex-col justify-between">
         {/* Standalone Minimal Header */}
-        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#C59B4E] bg-[#245348] p-0.5 shrink-0">
+        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3 px-3 sm:px-8 flex items-center justify-between shadow-md shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#C59B4E]/70 p-0.5 bg-[#284F45] shrink-0 shadow-xs">
               <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
             </div>
-            <div>
-              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+            <div className="flex flex-col justify-center text-left min-w-0">
+              <span className="font-serif text-[13px] xs:text-sm sm:text-base font-bold text-white tracking-[0.08em] sm:tracking-widest block leading-tight whitespace-nowrap">
                 CONCAVE REALTY
               </span>
-              <span className="text-[9px] uppercase font-mono tracking-widest text-[#DFBE79]">
+              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-[0.14em] text-[#DFBE79] block mt-0.5 leading-none whitespace-nowrap">
                 Executive Portal
               </span>
             </div>
           </div>
           {onNavigateHome && (
             <button
+              type="button"
               onClick={onNavigateHome}
-              className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="px-2.5 sm:px-3.5 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 whitespace-nowrap shadow-xs"
             >
-              <Home className="w-3.5 h-3.5" />
-              <span>Return to Website</span>
+              <Home className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline">Return to Website</span>
+              <span className="sm:hidden">Website</span>
             </button>
           )}
         </header>
