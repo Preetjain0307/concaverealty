@@ -105,6 +105,16 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     return () => clearInterval(timer);
   }, []);
 
+  // Security: Prevent search indexing of Caller Portal via dynamic meta tag
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]');
+    const prev = meta ? meta.getAttribute('content') : 'index, follow';
+    if (meta) meta.setAttribute('content', 'noindex, nofollow, noarchive');
+    return () => {
+      if (meta) meta.setAttribute('content', prev);
+    };
+  }, []);
+
   const handleCopyPhone = (leadId, phone) => {
     if (!phone) return;
     try {

@@ -83,8 +83,13 @@ function send_json_headers() {
         // Same-origin request
         header('Access-Control-Allow-Origin: *');
     } else {
-        // Non-whitelisted origin: deny credentials
+        // Non-whitelisted origin: strictly reject POST requests
         header('Access-Control-Allow-Origin: null');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            http_response_code(403);
+            echo json_encode(['error' => 'Forbidden: Cross-origin request blocked by security policy.']);
+            exit;
+        }
     }
     header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
@@ -149,8 +154,8 @@ function write_json_data($filename, $data) {
     return false;
 }
 
-// 5. Rate Limiting Check
-function check_rate_limit($identifier) {
+// 5. Rate Limiting Check (Dual Layer: Email & IP)
+function check_rate_limit($identifier, $maxAttempts = MAX_ATTEMPTS_PER_WINDOW, $cooldown = SEND_COOLDOWN_SECONDS) {
     $cleanId = strtolower(trim($identifier));
     if (empty($cleanId)) return ['allowed' => true];
 
@@ -163,8 +168,8 @@ function check_rate_limit($identifier) {
         return ($now - $ts) < FOUR_HOURS_SECONDS;
     }));
 
-    // Check maximum 5 attempts per 4 hours
-    if (count($recentAttempts) >= MAX_ATTEMPTS_PER_WINDOW) {
+    // Check maximum attempts per 4 hours
+    if (count($recentAttempts) >= $maxAttempts) {
         $oldest = min($recentAttempts);
         $resetAt = $oldest + FOUR_HOURS_SECONDS;
         $remainingSec = max(0, $resetAt - $now);
@@ -175,16 +180,16 @@ function check_rate_limit($identifier) {
         return [
             'allowed' => false,
             'code' => 'MAX_ATTEMPTS_EXCEEDED',
-            'message' => "Security limit reached: Maximum 5 OTP attempts allowed per 4 hours. Cooldown active for another {$timeStr}."
+            'message' => "Security limit reached: Maximum {$maxAttempts} OTP attempts allowed per 4 hours. Cooldown active for another {$timeStr}."
         ];
     }
 
-    // Check 60-second cooldown between consecutive requests
-    if (count($recentAttempts) > 0) {
+    // Check cooldown between consecutive requests if cooldown > 0
+    if ($cooldown > 0 && count($recentAttempts) > 0) {
         $lastAttempt = end($recentAttempts);
         $diff = $now - $lastAttempt;
-        if ($diff < SEND_COOLDOWN_SECONDS) {
-            $remainingSeconds = SEND_COOLDOWN_SECONDS - $diff;
+        if ($diff < $cooldown) {
+            $remainingSeconds = $cooldown - $diff;
             return [
                 'allowed' => false,
                 'code' => 'COOLDOWN_ACTIVE',
@@ -196,7 +201,7 @@ function check_rate_limit($identifier) {
 
     return [
         'allowed' => true,
-        'remainingAttempts' => MAX_ATTEMPTS_PER_WINDOW - count($recentAttempts)
+        'remainingAttempts' => $maxAttempts - count($recentAttempts)
     ];
 }
 

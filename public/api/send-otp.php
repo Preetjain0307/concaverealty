@@ -36,8 +36,21 @@ if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 $normalizedEmail = strtolower($email);
+$clientIp = get_client_ip();
+$ipRateKey = 'ip_' . md5($clientIp);
 
-// 2. Check Rate Limits (60s cooldown, max 5 per 4h)
+// 2. Dual-Layer Rate Limiting (Check IP first, then Email)
+$ipRateCheck = check_rate_limit($ipRateKey, 15, 0); // Max 15 per IP per 4 hours
+if (!$ipRateCheck['allowed']) {
+    http_response_code(429);
+    echo json_encode([
+        'success' => false,
+        'code' => 'IP_RATE_LIMITED',
+        'message' => 'Too many requests from your network. Please wait before requesting another OTP.'
+    ]);
+    exit;
+}
+
 $rateCheck = check_rate_limit($normalizedEmail);
 if (!$rateCheck['allowed']) {
     http_response_code(429);
@@ -175,6 +188,7 @@ $dispatchResult = dispatch_email($normalizedEmail, $subject, $htmlContent);
 
 // 6. Record Rate Limit Attempt
 record_rate_limit_attempt($normalizedEmail);
+record_rate_limit_attempt($ipRateKey);
 
 // 7. Store Hashed OTP in Secure Atomic JSON Store
 $now = time();

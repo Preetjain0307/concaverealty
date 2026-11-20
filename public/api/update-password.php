@@ -44,6 +44,22 @@ if (!$validation['valid']) {
     exit;
 }
 
+// 2b. Strict Role-Based Identity Authorization (Prevents Privilege Escalation)
+$normalizedEmail = strtolower($email);
+$superAdminEmail = 'concaverealtyindia@gmail.com';
+
+if ($role === 'admin') {
+    if ($normalizedEmail !== strtolower($superAdminEmail)) {
+        http_response_code(403);
+        echo json_encode([
+            'success' => false,
+            'code' => 'FORBIDDEN_ROLE_MISMATCH',
+            'message' => 'Unauthorized: This email address is not registered for super-administrator privileges.'
+        ]);
+        exit;
+    }
+}
+
 // 3. Enforce Strong Password Policy (Min 8 chars, Upper, Lower, Number, Special)
 if (strlen($newPassword) < 8) {
     http_response_code(400);
@@ -82,12 +98,14 @@ $pdo = get_db_connection();
 if ($pdo) {
     try {
         if ($role === 'admin') {
-            $stmt = $pdo->prepare("UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? OR `username` = 'admin'");
-            $stmt->execute([$passwordHash, $email]);
+            // Strictly require BOTH email AND username match
+            $stmt = $pdo->prepare("UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND `username` = 'admin'");
+            $stmt->execute([$passwordHash, $normalizedEmail]);
             $dbUpdated = true;
         } else {
-            $stmt = $pdo->prepare("UPDATE `callers` SET `password_hash` = ? WHERE `caller_code` = ? OR `email` = ?");
-            $stmt->execute([$passwordHash, $callerCode, $email]);
+            // Strictly require caller account ownership matching verified email
+            $stmt = $pdo->prepare("UPDATE `callers` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ?");
+            $stmt->execute([$passwordHash, $normalizedEmail]);
             $dbUpdated = true;
         }
     } catch (Exception $e) {

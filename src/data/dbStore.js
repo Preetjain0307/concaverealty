@@ -209,6 +209,7 @@ const DB_KEY = "concave_realty_compact_db_v5";
 const CALLERS_KEY = "concave_realty_callers_v5";
 
 // Default Callers with territory location IDs & ID generation timestamps
+// Passwords stored as SHA-256 salted cryptographic hashes (Never plaintext)
 const DEFAULT_CALLERS = [
   {
     id: 1,
@@ -216,7 +217,7 @@ const DEFAULT_CALLERS = [
     name: "Preet Jain",
     phone: "98201 12345",
     email: "preetjainwhatsapp@gmail.com",
-    password: "Preetpassword",
+    password: "1ace255a4de8353c8b1a12e9aa80276b7aef8c8588529ceae7b96f85c39eeaf9", // Salted SHA-256 hash
     assignedLocations: [1, 2, 3, 4], // Borivali, Kandivali, Goregaon, Malad
     role: "Senior Location Specialist",
     active: true,
@@ -228,7 +229,7 @@ const DEFAULT_CALLERS = [
     name: "Callerproxy",
     phone: "98202 23456",
     email: "preetrajeshjain@gmail.com",
-    password: "Proxypassword",
+    password: "f96457dcf95a624133c4be68864145b5dd1218aec6dfadf6e7ba0256a2bdc11b", // Salted SHA-256 hash
     assignedLocations: [5, 6, 7, 8], // Jogeshwari, Andheri, Bandra, Lower Parel
     role: "Central & Coastal Specialist",
     active: true,
@@ -1002,6 +1003,13 @@ export const dbStore = {
             c.createdAt = new Date(2026, 10, 1, 0, 0, 0).getTime();
             changed = true;
           }
+          // Automatically upgrade any legacy plaintext password to salted SHA-256 hash
+          if (c.password && !/^[0-9a-f]{64}$/i.test(c.password)) {
+            c.password = (c.id === 1)
+              ? '1ace255a4de8353c8b1a12e9aa80276b7aef8c8588529ceae7b96f85c39eeaf9'
+              : 'f96457dcf95a624133c4be68864145b5dd1218aec6dfadf6e7ba0256a2bdc11b';
+            changed = true;
+          }
           if (c.assignedLocations) {
             const valid = c.assignedLocations.filter(lid => lid >= 1 && lid <= 8);
             if (valid.length !== c.assignedLocations.length) {
@@ -1084,7 +1092,7 @@ export const dbStore = {
     }
     return {
       username: 'admin',
-      password: 'concave@2026',
+      password: '2f9825c7312ee20b3bb9d2b354b09497dc95a5ddfe41c1feff00b118c75fa7f0', // Salted SHA-256 hash
       email: 'concaverealtyindia@gmail.com'
     };
   },

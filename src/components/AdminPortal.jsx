@@ -78,6 +78,16 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     setCanScrollRight(current < maxScroll - 8);
   };
 
+  // Security: Prevent search indexing of Admin Portal via dynamic meta tag
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="robots"]');
+    const prev = meta ? meta.getAttribute('content') : 'index, follow';
+    if (meta) meta.setAttribute('content', 'noindex, nofollow, noarchive');
+    return () => {
+      if (meta) meta.setAttribute('content', prev);
+    };
+  }, []);
+
   useEffect(() => {
     const el = tabsContainerRef.current;
     if (!el) return;
@@ -637,9 +647,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     setShowDataDeleteModal(true);
   };
 
-  const handleVerifyDataDeleteStep1 = (e) => {
+  const handleVerifyDataDeleteStep1 = async (e) => {
     e.preventDefault();
-    if (dataDeletePassword === 'concave@2026' || dataDeletePassword === adminPassword) {
+    const adminCreds = dbStore.getAdminCredentials();
+    const isMatch = await verifyPassword(dataDeletePassword, adminCreds.password);
+    if (isMatch) {
       setDataDeleteError('');
       setDataDeleteStep(2);
     } else {
@@ -739,9 +751,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     setCallerDeleteError('');
   };
 
-  const handleVerifyCallerDeleteStep1 = (e) => {
+  const handleVerifyCallerDeleteStep1 = async (e) => {
     e.preventDefault();
-    if (callerDeletePassword === 'concave@2026' || callerDeletePassword === adminPassword) {
+    const adminCreds = dbStore.getAdminCredentials();
+    const isMatch = await verifyPassword(callerDeletePassword, adminCreds.password);
+    if (isMatch) {
       setCallerDeleteError('');
       setCallerDeleteStep(2);
     } else {

@@ -17,9 +17,10 @@
   RewriteRule ^api/verify-otp/?$ api/verify-otp.php [QSA,L]
   RewriteRule ^api/career-apply/?$ api/career-apply.php [QSA,L]
   RewriteRule ^api/update-password/?$ api/update-password.php [QSA,L]
+  RewriteRule ^api/storage-info/?$ api/storage-info.php [QSA,L]
 
-  # 2. Block direct access to sensitive configuration files & directories
-  <FilesMatch "^\.env|\.git|composer\.(json|lock)">
+  # 2. Block direct access to sensitive configuration files, databases & internal logs
+  <FilesMatch "(\.env|\.git|composer\.(json|lock)|\.(sql|log|bak|sh|md|sqlite)$|credentials_store\.json|otp_store\.json|verified_sessions\.json|rate_limits\.json)">
     <IfModule mod_authz_core.c>
       Require all denied
     </IfModule>
@@ -28,11 +29,8 @@
     </IfModule>
   </FilesMatch>
 
-  # 3. Clean Portal Route Rewrites
-  RewriteRule ^concave-admin/?$ /index.html [L]
-  RewriteRule ^concave-caller/?$ /index.html [L]
-  RewriteRule ^admin/?$ /index.html [L]
-  RewriteRule ^caller/?$ /index.html [L]
+  # 3. Clean Portal Route Rewrites & Search Engine Noindex Directives
+  RewriteRule ^(concave-admin|concave-caller|admin|caller)/?$ /index.html [E=PORTAL_ROUTE:1,L]
 
   # 4. React SPA Fallback: Route all non-file/non-directory requests to index.html
   RewriteCond %{REQUEST_FILENAME} !-f
@@ -88,4 +86,10 @@
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+  
+  # Prevent search engine indexing of administrative and caller portals
+  Header always set X-Robots-Tag "noindex, nofollow, noarchive" env=PORTAL_ROUTE
+
+  # Content-Security-Policy (Allows self, Google Fonts, YouTube/video media, and HTTPS APIs)
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https: blob:; media-src 'self' data: blob:; connect-src 'self' https://api.resend.com; frame-ancestors 'self'; form-action 'self';"
 </IfModule>

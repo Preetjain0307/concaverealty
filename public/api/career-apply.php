@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/db.php';
 send_json_headers();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -25,8 +26,14 @@ if (!is_array($data)) {
 
 $email = isset($data['email']) ? filter_var(trim($data['email']), FILTER_SANITIZE_EMAIL) : '';
 $token = isset($data['verificationToken']) ? trim($data['verificationToken']) : '';
+$name = isset($data['name']) ? strip_tags(trim($data['name'])) : '';
+$phone = isset($data['phone']) ? preg_replace('/\D/', '', $data['phone']) : '';
+$jobId = isset($data['jobId']) ? strip_tags(trim($data['jobId'])) : 'GENERAL';
+$jobTitle = isset($data['jobTitle']) ? strip_tags(trim($data['jobTitle'])) : 'General Application';
+$experience = isset($data['experience']) ? strip_tags(trim($data['experience'])) : '';
+$portfolioLink = isset($data['portfolioLink']) ? filter_var(trim($data['portfolioLink']), FILTER_SANITIZE_URL) : '';
 
-// 2. Validate Verification Token
+// 2. Validate Verification Token (Guarantees OTP was verified on server)
 $validation = validate_verification_token($email, $token);
 
 if (!$validation['valid']) {
@@ -39,7 +46,29 @@ if (!$validation['valid']) {
     exit;
 }
 
-// 3. Return Confirmed Application Acceptance
+// 3. Insert into MySQL with strict parameterized query if connected
+$pdo = get_db_connection();
+if ($pdo) {
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO `job_applications` (`job_id`, `job_title`, `applicant_name`, `email`, `phone`, `experience`, `portfolio_link`, `status`, `verified_at`, `created_at`)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'Under Review', NOW(), NOW())
+        ");
+        $stmt->execute([
+            $jobId,
+            $jobTitle,
+            $name,
+            strtolower($email),
+            $phone,
+            $experience,
+            $portfolioLink
+        ]);
+    } catch (Exception $e) {
+        error_log("[Career Apply] Database insert notice: " . $e->getMessage());
+    }
+}
+
+// 4. Return Confirmed Application Acceptance
 http_response_code(200);
 echo json_encode([
     'success' => true,
