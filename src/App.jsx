@@ -345,7 +345,7 @@ export function App() {
   };
 
   const isPortalView = currentView === 'admin' || currentView === 'caller';
-  const tourProject = PROJECTS_DATA.find(p => p.id === tourProjectId) || PROJECTS_DATA[0];
+  const tourProject = PROJECTS_DATA.find(p => String(p.id) === String(tourProjectId)) || PROJECTS_DATA[0];
 
   return (
     <ErrorBoundary>

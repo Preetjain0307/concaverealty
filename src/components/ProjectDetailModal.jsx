@@ -285,7 +285,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <button
                     type="button"
                     onClick={() => {
-                      onClose();
                       onOpenTour(project.id);
                     }}
                     aria-label={`Open 360° virtual tour for ${project.name}`}
@@ -544,66 +543,93 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               )}
             </div>
 
-            <div className="overflow-x-auto overflow-y-hidden rounded-xl border border-[#EAE6DF] scrollbar-luxury-green shadow-2xs bg-white pb-0.5">
-              <table className="min-w-[620px] w-full text-left text-xs">
-                <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
-                  <tr>
-                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
-                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Carpet Area</th>
-                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Quoted Value*</th>
-                    <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Possession</th>
-                    <th className="py-3 px-3.5 text-right whitespace-nowrap font-semibold">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
-                  {project.configurations && project.configurations.length > 0 ? (
-                    project.configurations.map((cfg, idx) => (
-                      <tr key={idx} className="hover:bg-[#FAF9F6] transition-colors">
-                        <td className="py-3 px-3.5 font-semibold text-[#14221F] whitespace-nowrap">
-                          <div>{cfg.bhk}</div>
-                          {cfg.floorPlanLabel && (
-                            <span className="text-[10px] text-gray-500 block font-normal">
-                              {cfg.floorPlanLabel}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3.5 font-mono text-[11.5px] text-gray-700 whitespace-nowrap font-medium">
-                          {cfg.carpetArea}
-                        </td>
-                        <td className="py-3 px-3.5 font-semibold text-[#245348] whitespace-nowrap text-sm">
-                          {cfg.price}
-                        </td>
-                        <td className="py-3 px-3.5 text-gray-600 whitespace-nowrap text-[11px] font-mono">
-                          {cfg.possessionDate || project.possession}
-                        </td>
-                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              onClose();
-                              onOpenEnquiry({
-                                projectName: project.name,
-                                location: project.location,
-                                configuration: cfg.bhk,
-                                project
-                              });
-                            }}
-                            className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs whitespace-nowrap active:scale-95 cursor-pointer"
-                          >
-                            Enquire Unit
-                          </button>
+            {/* Mobile Scroll Indicator Banner: Always highlights that pricing table scrolls horizontally */}
+            <div className="flex items-center justify-between text-[11px] bg-gradient-to-r from-[#245348]/10 via-[#FAF9F6] to-[#C59B4E]/15 px-3 py-2 rounded-xl border border-[#C59B4E]/40 text-[#14221F] sm:hidden shadow-2xs">
+              <span className="flex items-center gap-1.5 font-semibold text-[#183C32]">
+                <span className="w-2 h-2 rounded-full bg-[#C59B4E] animate-ping shrink-0" />
+                <span>Swipe table to view Price & Possession</span>
+              </span>
+              <span className="font-mono font-bold text-[#8B6846] shrink-0 flex items-center gap-1 animate-pulse">
+                Scroll Table ➔
+              </span>
+            </div>
+
+            {/* Table Container with Right Edge Gradient Indicator & Always-Visible High-Contrast Scrollbar */}
+            <div className="relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white">
+              {/* Right edge shadow indicator to visually signal off-screen content on mobile */}
+              <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#183C32]/20 to-transparent z-10 rounded-r-xl sm:hidden flex items-center justify-end pr-1 text-[#C59B4E] font-bold">
+                ›
+              </div>
+
+              <div className="overflow-x-auto overflow-y-hidden rounded-xl scrollbar-luxury-green pb-1.5">
+                <table className="min-w-[620px] w-full text-left text-xs">
+                  <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
+                    <tr>
+                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
+                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Carpet Area</th>
+                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold text-[#245348]">Quoted Value*</th>
+                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Possession</th>
+                      <th className="py-3 px-3.5 text-right whitespace-nowrap font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
+                    {project.configurations && project.configurations.length > 0 ? (
+                      project.configurations.map((cfg, idx) => (
+                        <tr key={idx} className="hover:bg-[#FAF9F6] transition-colors">
+                          <td className="py-3 px-3.5 font-semibold text-[#14221F] whitespace-nowrap">
+                            <div>{cfg.bhk}</div>
+                            {cfg.floorPlanLabel && (
+                              <span className="text-[10px] text-gray-500 block font-normal">
+                                {cfg.floorPlanLabel}
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3.5 font-mono text-[11.5px] text-gray-700 whitespace-nowrap font-medium">
+                            {cfg.carpetArea}
+                          </td>
+                          <td className="py-3 px-3.5 font-semibold text-[#245348] whitespace-nowrap text-sm">
+                            {cfg.price}
+                          </td>
+                          <td className="py-3 px-3.5 text-gray-600 whitespace-nowrap text-[11px] font-mono">
+                            {cfg.possessionDate || project.possession}
+                          </td>
+                          <td className="py-3 px-3.5 text-right whitespace-nowrap">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                onClose();
+                                onOpenEnquiry({
+                                  projectName: project.name,
+                                  location: project.location,
+                                  configuration: cfg.bhk,
+                                  project
+                                });
+                              }}
+                              className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs whitespace-nowrap active:scale-95 cursor-pointer"
+                            >
+                              Enquire Unit
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="py-6 text-center text-gray-500 font-mono text-xs">
+                          Configurations and quotation available on request
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="py-6 text-center text-gray-500 font-mono text-xs">
-                        Configurations and quotation available on request
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Persistent Mobile Scroll Notice & Visual Guide */}
+            <div className="flex items-center justify-between text-[10px] text-gray-500 font-mono pt-0.5 sm:hidden px-1">
+              <span className="flex items-center gap-1 text-[#8B6846]">
+                <span>◀ Swipe horizontally to explore all 5 columns ▶</span>
+              </span>
+              <span className="text-[#245348] font-bold">Quoted Value &amp; Action</span>
             </div>
 
           </div>
@@ -654,6 +680,66 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     <span>Click to Enquire & Unlock Floor View</span>
                   </span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section: 360° Immersive Virtual Tour Showcase Card */}
+          <div className="pt-2 border-t border-[#EAE6DF]">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 mb-2.5">
+              <div>
+                <span className="text-[10px] uppercase font-mono tracking-[0.25em] text-[#C59B4E] font-bold block">
+                  Immersive Technology
+                </span>
+                <h4 className="font-serif text-lg sm:text-xl font-bold text-[#14221F] flex items-center gap-2">
+                  <span>360° Virtual Walkthrough & Horizon Panorama</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#245348]/10 text-[#245348] border border-[#245348]/20 font-semibold">
+                    Interactive
+                  </span>
+                </h4>
+              </div>
+            </div>
+
+            <div
+              onClick={() => {
+                if (project.virtualTourUrl) {
+                  onOpenTour(project.id);
+                } else {
+                  onClose();
+                  onOpenEnquiry({
+                    projectName: project.name,
+                    location: project.location,
+                    configuration: '360° Guided Virtual Walkthrough',
+                    project
+                  });
+                }
+              }}
+              className="group relative rounded-2xl overflow-hidden border-2 border-[#C59B4E]/60 bg-gradient-to-br from-[#0B1E19] via-[#142C25] to-[#0A1A15] p-4 sm:p-5 text-white cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 hover:border-[#DFBE79]"
+            >
+              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-white/10 border border-[#DFBE79]/60 flex items-center justify-center text-[#DFBE79] shrink-0 group-hover:scale-110 transition-transform shadow-md">
+                    <Compass className="w-5 h-5 animate-spin" style={{ animationDuration: '8s' }} />
+                  </div>
+                  <div>
+                    <h5 className="font-serif text-base sm:text-lg font-bold text-white group-hover:text-[#DFBE79] transition-colors">
+                      {project.virtualTourUrl ? `Explore ${project.name} in 360°` : `Request 360° Private Walkthrough`}
+                    </h5>
+                    <p className="text-xs text-gray-300 leading-snug">
+                      {project.virtualTourUrl
+                        ? 'Rotate 360°, zoom into living suites, rooftop decks, and club horizons in real-time.'
+                        : 'Connect with our luxury advisory desk for a private live guided 360° virtual walkthrough.'}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#DFBE79] to-[#C59B4E] text-[#14221F] font-bold text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2 shadow-md group-hover:brightness-110 transition-all cursor-pointer"
+                >
+                  <Compass className="w-4 h-4 text-[#14221F]" />
+                  <span>{project.virtualTourUrl ? 'Launch 360° Tour' : 'Request Tour'}</span>
+                </button>
               </div>
             </div>
           </div>
