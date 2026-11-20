@@ -366,6 +366,13 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       setQueueInfo(qInfo);
       setJobApplications(allApplications);
 
+      // Real-time synchronization with Hostinger MySQL Database
+      dbStore.syncWithServer().then(synced => {
+        if (synced) {
+          setLeads(dbStore.getLeads(currentUser));
+        }
+      }).catch(() => {});
+
       // Dynamically fetch live Hostinger SSD storage metrics when deployed
       try {
         fetch('/api/storage-info')

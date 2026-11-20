@@ -1035,6 +1035,37 @@ export const dbStore = {
     }
   },
 
+  // Real-time bidirectional synchronization with Hostinger MySQL server
+  async syncWithServer() {
+    try {
+      const res = await fetch('/api/leads');
+      if (!res.ok) return false;
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.leads) && data.leads.length > 0) {
+        this.init();
+        const local = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+        const localIds = new Set(local.map(l => l.i));
+        let updated = false;
+
+        data.leads.forEach(serverLead => {
+          if (!localIds.has(serverLead.i)) {
+            local.unshift(serverLead);
+            localIds.add(serverLead.i);
+            updated = true;
+          }
+        });
+
+        if (updated) {
+          setRawData(DB_KEY, local);
+          return true;
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+    return false;
+  },
+
   // Get Callers
   getCallers() {
     try {

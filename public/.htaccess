@@ -16,6 +16,7 @@
   RewriteRule ^api/send-otp/?$ api/send-otp.php [QSA,L]
   RewriteRule ^api/verify-otp/?$ api/verify-otp.php [QSA,L]
   RewriteRule ^api/career-apply/?$ api/career-apply.php [QSA,L]
+  RewriteRule ^api/leads/?$ api/leads.php [QSA,L]
   RewriteRule ^api/update-password/?$ api/update-password.php [QSA,L]
   RewriteRule ^api/storage-info/?$ api/storage-info.php [QSA,L]
 

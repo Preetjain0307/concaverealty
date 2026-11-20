@@ -153,6 +153,13 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       if (currentUser && currentUser.id) {
         const callerLeads = dbStore.getLeadsForCaller(currentUser.id);
         setLeads(callerLeads);
+
+        // Real-time server sync
+        dbStore.syncWithServer().then(synced => {
+          if (synced && currentUser && currentUser.id) {
+            setLeads(dbStore.getLeadsForCaller(currentUser.id));
+          }
+        }).catch(() => {});
       }
     } catch (err) {
       console.error("Error refreshing caller data:", err);
