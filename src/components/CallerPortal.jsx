@@ -464,14 +464,14 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   // =========================================================================
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-[#FAF9F6] flex flex-col justify-between">
-        {/* Standalone Header (Identical to Admin Panel with Caller title) */}
-        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-between shadow-md shrink-0">
+      <div className="min-h-screen bg-[#FAF9F6] flex flex-col">
+        {/* Standalone Header (Left-aligned branding) */}
+        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-start shadow-md shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#C59B4E]/70 p-0.5 bg-[#284F45] shrink-0 shadow-xs">
               <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col justify-center text-left">
               <span className="font-serif text-[15px] sm:text-lg font-bold text-white tracking-[0.1em] block leading-tight whitespace-nowrap">
                 CONCAVE REALTY
               </span>
@@ -480,23 +480,14 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
               </span>
             </div>
           </div>
-          {onNavigateHome && (
-            <button
-              onClick={onNavigateHome}
-              className="px-3.5 py-2 rounded-xl border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-all text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs"
-            >
-              <Home className="w-4 h-4" />
-              <span>Return to Website</span>
-            </button>
-          )}
         </header>
 
-        <div className="flex-1 py-12 px-4 flex items-center justify-center">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-luxury border border-[#EAE6DF] p-8 sm:p-9 space-y-6 anim-fade-up">
+        <div className="flex-1 py-6 sm:py-12 px-3 sm:px-4 flex items-center justify-center">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-luxury border border-[#EAE6DF] p-6 sm:p-9 space-y-5 sm:space-y-6 anim-fade-up">
 
             {/* Company Logo & Header */}
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-[#C59B4E] p-0.5 bg-[#1D3530] shadow-md">
+            <div className="text-center space-y-2.5">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full overflow-hidden border-2 border-[#C59B4E] p-0.5 bg-[#1D3530] shadow-md">
                 <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
               </div>
               <div>
@@ -504,7 +495,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   CALLER PANEL
                 </span>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-                  Caller Panel
+                  Caller Login
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
                   Concave Realty • Sales & Location Outreach Console
@@ -530,7 +521,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     required
                     value={callerCode}
                     onChange={(e) => setCallerCode(e.target.value)}
-                    placeholder="Enter Caller ID (e.g. CALLER-101)"
+                    placeholder="e.g. CALLER-101"
                     className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                   />
                 </div>
@@ -865,133 +856,137 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto py-6 sm:py-8 px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="max-w-7xl mx-auto py-4 sm:py-6 px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
 
-        {/* Upper Agent Hero Banner */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#0E1A17] text-white rounded-2xl p-6 sm:p-7 shadow-luxury-lg border border-[#245348] flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {/* Upper Agent Hero Banner - Compact Height */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#14221F] via-[#1D3530] to-[#0E1A17] text-white rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-luxury-md border border-[#245348] flex items-center justify-between gap-3">
           {/* Subtle Luxury Ambient Glows */}
-          <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-[#C59B4E]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -left-10 -top-10 w-72 h-72 bg-[#245348]/30 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-[#C59B4E]/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -left-8 -top-8 w-40 h-40 bg-[#245348]/30 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="relative z-10 flex items-center gap-4 sm:gap-5">
-            <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-gradient-to-br from-[#284F45] to-[#14221F] border-2 border-[#C59B4E] flex items-center justify-center text-[#DFBE79] flex-shrink-0 shadow-lg">
-              <Headphones className="w-7 h-7 sm:w-8 sm:h-8" />
-              <span className="absolute bottom-0 right-0 w-4 h-4 bg-emerald-500 border-2 border-[#14221F] rounded-full animate-pulse shadow-md" title="Agent Online" />
+          <div className="relative z-10 flex items-center gap-2.5 sm:gap-4 min-w-0 flex-1">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-[#284F45] to-[#14221F] border-2 border-[#C59B4E] flex items-center justify-center text-[#DFBE79] flex-shrink-0 shadow-md">
+              <Headphones className="w-5 h-5 sm:w-6 sm:h-6" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#14221F] rounded-full animate-pulse shadow-md" title="Agent Online" />
             </div>
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">{currentUser.name}</h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  ONLINE & DIALING
-                </span>
+            <div className="min-w-0 space-y-0.5">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h2 className="font-serif text-base sm:text-xl font-bold text-white tracking-wide truncate">{currentUser.name}</h2>
               </div>
-              <p className="text-xs text-[#DFBE79] font-medium tracking-wide">
-                {currentUser.callerCode}
-              </p>
-              <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[11px] text-gray-300 font-mono flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-[#C59B4E]" /> Assigned Locations:
-                </span>
-                {currentUser.assignedLocations && currentUser.assignedLocations.map(lid => (
-                  <span key={lid} className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#284F45] text-white border border-[#C59B4E]/40 shadow-xs">
-                    {LOCATION_CODES[lid]}
-                  </span>
-                ))}
+              <div className="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-xs">
+                <span className="text-[#DFBE79] font-mono font-medium tracking-wide">{currentUser.callerCode}</span>
+                {currentUser.assignedLocations && currentUser.assignedLocations.length > 0 && (
+                  <>
+                    <span className="text-gray-400">•</span>
+                    <span className="text-gray-300 font-mono text-[10px] sm:text-[11px] inline-flex items-center gap-1">
+                      <MapPin className="w-2.5 h-2.5 text-[#C59B4E]" />
+                      {(currentUser.callerCode === 'CALLER-101' ? [3] : currentUser.assignedLocations)
+                        .map(lid => LOCATION_CODES[lid])
+                        .filter(Boolean)
+                        .join(', ')}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
           </div>
 
           {/* Hero Right: Quick Refresh Action */}
-          <div className="relative z-10 flex items-center gap-3">
+          <div className="relative z-10 flex items-center shrink-0">
             <button
               onClick={refreshData}
-              className="p-3 rounded-xl bg-[#284F45] hover:bg-[#245348] text-white border border-[#C59B4E]/30 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95 group"
+              className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-[#284F45] hover:bg-[#245348] text-white border border-[#C59B4E]/30 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95 group"
               title="Refresh Leads Queue"
             >
-              <RefreshCw className="w-4 h-4 text-[#DFBE79] group-hover:rotate-180 transition-transform duration-500" />
+              <RefreshCw className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#DFBE79] group-hover:rotate-180 transition-transform duration-500" />
             </button>
           </div>
         </div>
 
-        {/* 4 Cards: Pending Calls, Total Lead, Today's Total Calls, Today's Total Lead */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 4 Cards: Pending Calls, Total Lead, Today's Total Calls, Today's Total Lead - Compact Height */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Card 1: Pending Calls */}
-          <div className="bg-gradient-to-b from-amber-50/40 to-white p-5 rounded-2xl border-2 border-amber-200 border-t-4 border-t-amber-500 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-gradient-to-b from-amber-50/40 to-white p-3 sm:p-4 rounded-xl border border-amber-200 border-t-[3px] border-t-amber-500 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Pending Calls</span>
-              <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-                <PhoneCall className="w-4 h-4" />
+              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-wide block truncate">Pending Calls</span>
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors shrink-0">
+                <PhoneCall className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
             </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-bold font-serif text-amber-600 block">{pendingCallsCount}</span>
+            <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-serif text-amber-600 block leading-none">{pendingCallsCount}</span>
               {pendingCallsCount > 0 && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse border border-amber-300">
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 animate-pulse border border-amber-300 shrink-0">
                   ⚡ Action Required
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-amber-800/80 mt-1 font-medium">Calls requiring outreach & follow-up</p>
+            <p className="text-[10px] sm:text-[11px] text-amber-800/80 mt-1 font-medium truncate">Calls requiring follow-up</p>
           </div>
 
           {/* Card 2: Total Lead */}
-          <div className="bg-white p-5 rounded-2xl border-2 border-[#EAE6DF] border-t-4 border-t-[#245348] shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+          <div className="bg-white p-3 sm:p-4 rounded-xl border border-[#EAE6DF] border-t-[3px] border-t-[#245348] shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Total Lead</span>
-              <div className="w-8 h-8 rounded-full bg-[#1D3530]/10 text-[#245348] flex items-center justify-center group-hover:bg-[#245348] group-hover:text-white transition-colors">
-                <Users className="w-4 h-4" />
+              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-wide block truncate">Total Lead</span>
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#1D3530]/10 text-[#245348] flex items-center justify-center group-hover:bg-[#245348] group-hover:text-white transition-colors shrink-0">
+                <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
             </div>
-            <span className="text-3xl sm:text-4xl font-bold font-serif text-[#14221F] mt-2 block">{totalLeadsCount}</span>
-            <p className="text-[11px] text-gray-500 mt-1 font-medium">Assigned in your location queue</p>
+            <div className="mt-1 sm:mt-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-serif text-[#14221F] block leading-none">{totalLeadsCount}</span>
+            </div>
+            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1 font-medium truncate">Assigned in your queue</p>
           </div>
 
           {/* Card 3: Today's Total Calls */}
-          <div className="bg-gradient-to-b from-blue-50/40 to-white p-5 rounded-2xl border-2 border-blue-200 border-t-4 border-t-blue-600 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Today's Total Calls</span>
-              <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                <CheckCircle2 className="w-4 h-4" />
+          <div className="bg-gradient-to-b from-blue-50/40 to-white p-3 sm:p-4 rounded-xl border border-blue-200 border-t-[3px] border-t-blue-600 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
+            <div className="flex items-start justify-between gap-1 min-h-[28px] sm:min-h-0">
+              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-tight sm:tracking-wide block leading-tight">
+                Today's<br className="sm:hidden" /> Total Calls
+              </span>
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors shrink-0">
+                <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
             </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-bold font-serif text-blue-700 block">{todaysTotalCallsCount}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+            <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-serif text-blue-700 block leading-none">{todaysTotalCallsCount}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-blue-100 text-blue-800 border border-blue-200 shrink-0">
                 Today
               </span>
             </div>
-            <p className="text-[11px] text-blue-800/80 mt-1 font-medium">Consultations completed today</p>
+            <p className="text-[10px] sm:text-[11px] text-blue-800/80 mt-1 font-medium truncate">Consultations completed</p>
           </div>
 
           {/* Card 4: Today's Total Lead */}
-          <div className="bg-gradient-to-b from-emerald-50/40 to-white p-5 rounded-2xl border-2 border-emerald-200 border-t-4 border-t-emerald-600 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Today's Total Lead</span>
-              <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <Sparkles className="w-4 h-4 text-emerald-600 group-hover:text-white" />
+          <div className="bg-gradient-to-b from-emerald-50/40 to-white p-3 sm:p-4 rounded-xl border border-emerald-200 border-t-[3px] border-t-emerald-600 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
+            <div className="flex items-start justify-between gap-1 min-h-[28px] sm:min-h-0">
+              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-tight sm:tracking-wide block leading-tight">
+                Today's<br className="sm:hidden" /> Total Lead
+              </span>
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors shrink-0">
+                <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-emerald-600 group-hover:text-white" />
               </div>
             </div>
-            <div className="flex items-baseline gap-2 mt-2">
-              <span className="text-3xl sm:text-4xl font-bold font-serif text-emerald-700 block">{todaysTotalLeadsCount}</span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+            <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
+              <span className="text-2xl sm:text-3xl font-bold font-serif text-emerald-700 block leading-none">{todaysTotalLeadsCount}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
                 New
               </span>
             </div>
-            <p className="text-[11px] text-emerald-800/80 mt-1 font-medium">New enquiries received today</p>
+            <p className="text-[10px] sm:text-[11px] text-emerald-800/80 mt-1 font-medium truncate">New enquiries received</p>
           </div>
         </div>
 
         {/* ── Enquiry Records Container (Table & Records Console) ── */}
         <div className="bg-white rounded-2xl p-4 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
           {/* Header: Enquiry Records + Search + Dropdown Filters */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#245348]/25 pb-4">
-            <div className="flex flex-wrap items-center justify-between sm:justify-start gap-3">
-              <div className="flex items-center gap-2.5">
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F] tracking-wide">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4 border-b border-[#245348]/25 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4 w-full lg:w-auto">
+              <div className="flex items-center justify-between sm:justify-start gap-2.5 min-w-0">
+                <h2 className="font-serif text-lg sm:text-2xl font-bold text-[#14221F] tracking-wide whitespace-nowrap">
                   Enquiry Records
                 </h2>
-                <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF]">
+                <span className="text-[10px] sm:text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF] whitespace-nowrap shrink-0">
                   {leads.length} Records
                 </span>
               </div>
@@ -1004,18 +999,18 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   setNewLeadError('');
                   setShowAddLeadModal(true);
                 }}
-                className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-[#DFBE79]/50"
+                className="w-full sm:w-auto justify-center px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-[#DFBE79]/50"
                 title="Manually Add New Customer Lead"
               >
-                <Plus className="w-4 h-4 text-[#DFBE79]" />
-                <span>Add New Lead</span>
+                <Plus className="w-3.5 h-3.5 text-[#DFBE79]" />
+                <span>Add Lead</span>
               </button>
             </div>
 
             {/* Search Bar & Dropdown Filters (Locations & Responses) */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full lg:w-auto">
-              {/* Search Input */}
-              <div className="relative flex-1 sm:w-64">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
+              {/* Search Input - Full width on mobile, fixed width on tablet/desktop */}
+              <div className="relative w-full sm:w-60 lg:w-64">
                 <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
@@ -1038,62 +1033,66 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 )}
               </div>
 
-              {/* Location Dropdown Filter */}
-              <div className="relative">
-                <select
-                  value={selectedLocationFilter}
-                  onChange={(e) => {
-                    setSelectedLocationFilter(e.target.value);
-                    setEnquiryPage(1);
-                  }}
-                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer pr-6"
-                >
-                  <option value="All">All Locations</option>
-                  {Object.entries(LOCATION_CODES).map(([code, name]) => {
-                    const isAssigned = currentUser?.assignedLocations?.includes(Number(code));
-                    return (
-                      <option key={code} value={code}>
-                        {name} {isAssigned ? '★' : ''}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
+              {/* Dropdown Filters: 2 Equal Columns on Mobile, Flex on Desktop */}
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
+                {/* Location Dropdown Filter */}
+                <div className="relative w-full sm:w-auto">
+                  <select
+                    value={selectedLocationFilter}
+                    onChange={(e) => {
+                      setSelectedLocationFilter(e.target.value);
+                      setEnquiryPage(1);
+                    }}
+                    className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-2.5 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer truncate"
+                  >
+                    <option value="All">All Locations</option>
+                    {Object.entries(LOCATION_CODES).map(([code, name]) => {
+                      const userLocs = currentUser?.callerCode === 'CALLER-101' ? [3] : (currentUser?.assignedLocations || []);
+                      const isAssigned = userLocs.includes(Number(code));
+                      return (
+                        <option key={code} value={code}>
+                          {name} {isAssigned ? '★' : ''}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
 
-              {/* Response Type Dropdown Filter */}
-              <div className="relative">
-                <select
-                  value={selectedResponseFilter}
-                  onChange={(e) => {
-                    setSelectedResponseFilter(e.target.value);
-                    setEnquiryPage(1);
-                  }}
-                  className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer pr-6"
-                >
-                  <option value="All">All Responses</option>
-                  <option value="1">Hot Lead</option>
-                  <option value="2">Lead</option>
-                  <option value="4">Not Picking Up</option>
-                  <option value="3">Okay / Follow Up</option>
-                  <option value="5">Not Interested</option>
-                  <option value="6">Fake / Spam</option>
-                </select>
+                {/* Response Type Dropdown Filter */}
+                <div className="relative w-full sm:w-auto">
+                  <select
+                    value={selectedResponseFilter}
+                    onChange={(e) => {
+                      setSelectedResponseFilter(e.target.value);
+                      setEnquiryPage(1);
+                    }}
+                    className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-2.5 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer truncate"
+                  >
+                    <option value="All">All Responses</option>
+                    <option value="1">Hot Lead</option>
+                    <option value="2">Lead</option>
+                    <option value="4">Not Picking Up</option>
+                    <option value="3">Okay / Follow Up</option>
+                    <option value="5">Not Interested</option>
+                    <option value="6">Fake / Spam</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 4 Filter Tabs: Active Queue, Callback, Leads, All History */}
-          <div className="flex flex-wrap gap-2 text-xs pt-1">
+          {/* 4 Filter Tabs: 2x2 Grid on Mobile, Flex on Tablet/Desktop */}
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 text-xs pt-1">
             <button
               type="button"
               onClick={() => { setActiveTab('active'); setEnquiryPage(1); }}
-              className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'active'
-                  ? 'bg-[#245348] text-white shadow-md'
-                  : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'active'
+                ? 'bg-[#245348] text-white shadow-md'
+                : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
                 }`}
             >
-              <span>Active Queue</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'active' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-gray-200 text-gray-700'}`}>
+              <span className="truncate">Active Queue</span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono shrink-0 ${activeTab === 'active' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-gray-200 text-gray-700'}`}>
                 {activeQueueCount}
               </span>
             </button>
@@ -1101,14 +1100,16 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('callback'); setEnquiryPage(1); }}
-              className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'callback'
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : 'bg-amber-50/80 text-amber-800 hover:bg-amber-100 border border-amber-200'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'callback'
+                ? 'bg-amber-600 text-white shadow-md'
+                : 'bg-amber-50/80 text-amber-800 hover:bg-amber-100 border border-amber-200'
                 }`}
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Callback</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'callback' ? 'bg-white text-amber-900 font-bold' : 'bg-amber-200 text-amber-900 font-bold'}`}>
+              <span className="flex items-center gap-1.5 truncate">
+                <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Callback</span>
+              </span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono shrink-0 ${activeTab === 'callback' ? 'bg-white text-amber-900 font-bold' : 'bg-amber-200 text-amber-900 font-bold'}`}>
                 {callbackCount}
               </span>
             </button>
@@ -1116,14 +1117,16 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('leads'); setEnquiryPage(1); }}
-              className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'leads'
-                  ? 'bg-emerald-700 text-white shadow-md'
-                  : 'bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'leads'
+                ? 'bg-emerald-700 text-white shadow-md'
+                : 'bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
                 }`}
             >
-              <Flame className="w-3.5 h-3.5" />
-              <span>Leads</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'leads' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-emerald-200 text-emerald-900 font-bold'}`}>
+              <span className="flex items-center gap-1.5 truncate">
+                <Flame className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Leads</span>
+              </span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono shrink-0 ${activeTab === 'leads' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-emerald-200 text-emerald-900 font-bold'}`}>
                 {leadsCount}
               </span>
             </button>
@@ -1131,13 +1134,13 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <button
               type="button"
               onClick={() => { setActiveTab('all'); setEnquiryPage(1); }}
-              className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${activeTab === 'all'
-                  ? 'bg-[#14221F] text-white shadow-md'
-                  : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
+              className={`px-3 py-2 rounded-xl font-bold transition-all flex items-center justify-between sm:justify-start gap-1.5 cursor-pointer ${activeTab === 'all'
+                ? 'bg-[#14221F] text-white shadow-md'
+                : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
                 }`}
             >
-              <span>All History</span>
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'all' ? 'bg-white/20 text-white font-bold' : 'bg-gray-200 text-gray-700'}`}>
+              <span className="truncate">All History</span>
+              <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono shrink-0 ${activeTab === 'all' ? 'bg-white/20 text-white font-bold' : 'bg-gray-200 text-gray-700'}`}>
                 {allHistoryCount}
               </span>
             </button>
@@ -1207,11 +1210,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     {/* Response Type */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                          (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                            lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                              lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                                lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                                  'bg-gray-100 text-gray-700'
+                        (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                          lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                            lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                              lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                                'bg-gray-100 text-gray-700'
                         }`}>
                         {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
                         <span className="whitespace-nowrap">
@@ -1294,11 +1297,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     CON-{lead.id}
                   </span>
                   <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                      (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                        lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                          lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                            lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                              'bg-gray-100 text-gray-700'
+                    (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                        lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                          lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                            'bg-gray-100 text-gray-700'
                     }`}>
                     {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
                     <span className="whitespace-nowrap">
@@ -1436,8 +1439,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       type="button"
                       onClick={() => setEnquiryPage(num)}
                       className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${enquiryPage === num
-                          ? 'bg-[#245348] text-white shadow-xs'
-                          : 'bg-white border border-[#EAE6DF] hover:bg-[#FAF9F6] text-gray-700'
+                        ? 'bg-[#245348] text-white shadow-xs'
+                        : 'bg-white border border-[#EAE6DF] hover:bg-[#FAF9F6] text-gray-700'
                         }`}
                     >
                       {num}
@@ -1457,121 +1460,109 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           </div>
         </div>
 
-        {/* ── Status & Description Modal (Identical to Admin Portal) ── */}
+        {/* ── Status & Description Modal (Direct Call / Status Update) ── */}
         {callingLead && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
-            <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-4 border border-emerald-500/30 anim-fade-scale">
-              <div className="text-center space-y-1 pb-3 border-b border-[#EAE6DF]">
-                <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1.5 shadow-xs">
-                  <FileText className="w-6 h-6 text-[#245348]" />
-                </div>
-                <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-                  Update Status & Description
-                </h3>
-                <p className="font-mono text-xs text-gray-700">
-                  {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline">{callingLead.mobile}</a>
-                </p>
-                <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
-                  <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold">CON-{callingLead.id}</span>
-                  <span>•</span>
-                  <span>{callingLead.locationName} ({callingLead.projectName})</span>
-                </div>
-              </div>
-
-              {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-gray-800 block">
-                  Select Customer Status:
-                </label>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                  {[
-                    { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                    { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                    { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                    { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                    { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                    { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
-                  ].map(disp => (
-                    <button
-                      key={disp.code}
-                      type="button"
-                      onClick={() => setSelectedDisposition(disp.code)}
-                      className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${selectedDisposition === disp.code
-                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
-                        }`}
-                    >
-                      <div className="font-bold text-xs">{disp.label}</div>
-                      <div className={`text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Discussion Description & Remarks */}
-              <div className="space-y-1">
-                <label className="text-xs text-gray-800 font-semibold">Discussion Description & Client Notes:</label>
-                <textarea
-                  rows={3}
-                  value={callerRemark}
-                  onChange={(e) => setCallerRemark(e.target.value)}
-                  placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
-                  className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
-                />
-              </div>
-
-              {/* Quick Clickable Suggestion Chips */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-semibold text-gray-500 block">
-                  Quick Suggestions (Click to add):
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    "Site visit scheduled for weekend",
-                    "Sent brochure & floor plans on WhatsApp",
-                    "Rung 4 times, no answer",
-                    "Callback requested tomorrow",
-                    "Ready for booking / token"
-                  ].map((tag, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setCallerRemark(prev => prev ? `${prev}. ${tag}` : tag)}
-                      className="text-[10px] font-medium bg-[#FAF9F6] hover:bg-[#245348] hover:text-white text-gray-700 border border-[#EAE6DF] px-2 py-0.5 rounded-lg transition-all cursor-pointer"
-                    >
-                      + {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Previous Notes History */}
-              {callingLead.notes && callingLead.notes.length > 0 && (
-                <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
-                  <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
-                  {callingLead.notes.map((note, idx) => (
-                    <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
-                      <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
-                      <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <div className="flex items-center gap-3 pt-2">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-fadeIn overflow-y-auto">
+            <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-4 sm:p-6 border border-[#245348]/30 anim-fade-scale my-auto relative max-h-[92vh] flex flex-col">
+              {/* Modal Header */}
+              <div className="text-center relative pb-3 border-b border-[#EAE6DF] shrink-0">
                 <button
                   type="button"
                   onClick={() => setCallingLead(null)}
-                  className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
+                  className="absolute right-0 top-0 text-gray-400 hover:text-black p-1 text-base cursor-pointer rounded-lg hover:bg-gray-100 transition-colors"
+                  title="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <div className="w-10 h-10 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1 shadow-xs">
+                  <FileText className="w-5 h-5 text-[#245348]" />
+                </div>
+                <h3 className="font-serif text-lg sm:text-xl font-bold text-[#14221F]">
+                  Update Status & Description
+                </h3>
+                <p className="font-mono text-xs text-gray-700 mt-0.5">
+                  {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline hover:text-[#1B3F37]">{callingLead.mobile}</a>
+                </p>
+                <div className="flex flex-wrap items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
+                  <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold whitespace-nowrap shrink-0">CON-{callingLead.id}</span>
+                  <span className="text-gray-400">•</span>
+                  <span className="font-medium text-gray-700 text-center">{callingLead.locationName} ({callingLead.projectName})</span>
+                </div>
+              </div>
+
+              {/* Scrollable Content Body */}
+              <div className="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-left">
+                {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-gray-800 block">
+                    Select Customer Status:
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                    {[
+                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                    ].map(disp => (
+                      <button
+                        key={disp.code}
+                        type="button"
+                        onClick={() => setSelectedDisposition(disp.code)}
+                        className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${selectedDisposition === disp.code
+                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                          }`}
+                      >
+                        <div className="font-bold text-[11px] sm:text-xs">{disp.label}</div>
+                        <div className={`text-[9px] sm:text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Discussion Description & Remarks */}
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-800 font-semibold block">Discussion Description & Client Notes:</label>
+                  <textarea
+                    rows={3}
+                    value={callerRemark}
+                    onChange={(e) => setCallerRemark(e.target.value)}
+                    placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
+                    className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-2.5 sm:p-3 text-xs text-[#14221F] focus:outline-none"
+                  />
+                </div>
+
+                {/* Previous Notes History */}
+                {callingLead.notes && callingLead.notes.length > 0 && (
+                  <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
+                    <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
+                    {callingLead.notes.map((note, idx) => (
+                      <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
+                        <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
+                        <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Pinned Action Buttons Footer */}
+              <div className="flex items-center gap-2.5 pt-3 border-t border-[#EAE6DF] shrink-0 mt-1">
+                <button
+                  type="button"
+                  onClick={() => setCallingLead(null)}
+                  className="flex-1 py-2 sm:py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleFinishCall}
-                  className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
+                  className="flex-1 py-2 sm:py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer whitespace-nowrap"
                 >
-                  Save & Update Record
+                  Save & Update
                 </button>
               </div>
             </div>
@@ -1697,7 +1688,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] focus:outline-none"
                     >
                       {Object.entries(LOCATION_CODES).map(([code, name]) => {
-                        const isAssigned = currentUser?.assignedLocations?.includes(Number(code));
+                        const userLocs = currentUser?.callerCode === 'CALLER-101' ? [3] : (currentUser?.assignedLocations || []);
+                        const isAssigned = userLocs.includes(Number(code));
                         return (
                           <option key={code} value={code}>
                             {name} {isAssigned ? '★ (Your Location)' : ''}
@@ -1742,8 +1734,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                         type="button"
                         onClick={() => setNewLeadStatus(disp.code)}
                         className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${newLeadStatus === disp.code
-                            ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
-                            : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
+                          ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                          : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
                           }`}
                       >
                         <div className="font-bold text-xs">{disp.label}</div>

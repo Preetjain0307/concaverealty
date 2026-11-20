@@ -52,33 +52,46 @@ export const CALL_STATUS_CODES = {
 };
 
 export const LOCATION_CODES = {
-  1: "Borivali West",
-  2: "Versova",
+  1: "Borivali",
+  2: "Kandivali",
   3: "Goregaon",
-  4: "Bhayander",
-  5: "Mira Road",
-  6: "Kandivali",
-  7: "Worli",
-  8: "Bandra",
-  9: "Powai",
-  10: "Lower Parel"
+  4: "Malad",
+  5: "Jogeshwari",
+  6: "Andheri",
+  7: "Bandra",
+  8: "Lower Parel"
 };
 
 export const REVERSE_LOCATION_CODES = {
-  "borivali west": 1,
   "borivali": 1,
-  "versova": 2,
+  "borivali west": 1,
+  "borivali east": 1,
+  "kandivali": 2,
+  "kandivali west": 2,
+  "kandivali east": 2,
   "goregaon": 3,
   "goregaon west": 3,
-  "bhayander": 4,
-  "bhayandar": 4,
-  "mira road": 5,
-  "miraroad": 5,
-  "kandivali": 6,
-  "worli": 7,
-  "bandra": 8,
-  "powai": 9,
-  "lower parel": 10
+  "goregaon east": 3,
+  "malad": 4,
+  "malad west": 4,
+  "malad east": 4,
+  "jogeshwari": 5,
+  "jogeshwari west": 5,
+  "jogeshwari east": 5,
+  "andheri": 6,
+  "andheri west": 6,
+  "andheri east": 6,
+  "versova": 6,
+  "bandra": 7,
+  "bandra west": 7,
+  "bandra east": 7,
+  "lower parel": 8,
+  "worli": 8,
+  "powai": 6,
+  "bhayander": 3,
+  "bhayandar": 3,
+  "mira road": 1,
+  "miraroad": 1
 };
 
 export const PROJECT_CODES = {
@@ -101,7 +114,7 @@ export const TYPE_CODES = {
 const DB_KEY = "concave_realty_compact_db_v2";
 const CALLERS_KEY = "concave_realty_callers_v2";
 
-// Default Callers with territory location IDs
+// Default Callers with territory location IDs (strictly from 8 Our Projects locations)
 const DEFAULT_CALLERS = [
   {
     id: 1,
@@ -110,7 +123,7 @@ const DEFAULT_CALLERS = [
     phone: "98201 12345",
     email: "rahul.sharma@concaverealty.com",
     password: "caller123",
-    assignedLocations: [3, 4], // Goregaon, Bhayander
+    assignedLocations: [3], // Goregaon
     role: "Senior Location Specialist",
     active: true
   },
@@ -121,7 +134,7 @@ const DEFAULT_CALLERS = [
     phone: "98202 23456",
     email: "priya.deshmukh@concaverealty.com",
     password: "caller123",
-    assignedLocations: [1, 5], // Borivali West, Mira Road
+    assignedLocations: [1, 2], // Borivali, Kandivali
     role: "North Suburb Specialist",
     active: true
   },
@@ -132,7 +145,7 @@ const DEFAULT_CALLERS = [
     phone: "98203 34567",
     email: "sneha.kapadia@concaverealty.com",
     password: "caller123",
-    assignedLocations: [2, 7, 8], // Versova, Worli, Bandra
+    assignedLocations: [6, 7], // Andheri, Bandra
     role: "Luxury Coastal Specialist",
     active: true
   },
@@ -143,7 +156,7 @@ const DEFAULT_CALLERS = [
     phone: "98204 45678",
     email: "vikram.mehta@concaverealty.com",
     password: "caller123",
-    assignedLocations: [6, 9, 10], // Kandivali, Powai, Lower Parel
+    assignedLocations: [4, 5, 8], // Malad, Jogeshwari, Lower Parel
     role: "Central & Commercial Hub Specialist",
     active: true
   }
@@ -595,6 +608,23 @@ export const dbStore = {
       }
       if (!localStorage.getItem(CALLERS_KEY)) {
         setRawData(CALLERS_KEY, DEFAULT_CALLERS);
+      } else {
+        // Guarantee callers in localStorage only reference valid canonical Our Projects locations (1..8)
+        const storedCallers = getRawData(CALLERS_KEY, DEFAULT_CALLERS);
+        let changed = false;
+        storedCallers.forEach(c => {
+          if (c.id === 1) {
+            c.assignedLocations = [3]; // Rahul Sharma -> Goregaon
+            changed = true;
+          } else if (c.assignedLocations) {
+            const valid = c.assignedLocations.filter(lid => lid >= 1 && lid <= 8);
+            if (valid.length !== c.assignedLocations.length) {
+              c.assignedLocations = valid.length > 0 ? valid : [3];
+              changed = true;
+            }
+          }
+        });
+        if (changed) setRawData(CALLERS_KEY, storedCallers);
       }
     } catch (e) {
       console.warn("DB init warning:", e);
