@@ -44,7 +44,7 @@ import {
   ArrowUpDown,
   Inbox
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead, isPendingEnquiry, isCallbackLead } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, detectSqlInjection, sanitizeInput, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead, isPendingEnquiry, isCallbackLead } from '../data/dbStore';
 
 export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   const [callers, setCallers] = useState([]);
@@ -163,6 +163,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
     if (!callerCode.trim() || !password) {
       setLoginError("Please enter both Caller ID and password.");
+      return;
+    }
+
+    if (detectSqlInjection(callerCode) || detectSqlInjection(password)) {
+      setLoginError("Security Warning: Prohibited special characters detected in credentials.");
       return;
     }
 
@@ -295,6 +300,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       setForgotError('Please enter the 6-digit code received in your email.');
       return;
     }
+    if (detectSqlInjection(forgotOtp)) {
+      setForgotError('Security Warning: Prohibited special characters detected.');
+      return;
+    }
     setForgotLoading(true);
     try {
       const res = await fetch('/api/verify-otp', {
@@ -325,6 +334,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     }
     if (newCallerPassword.length < 8) {
       setForgotError('Password must be at least 8 characters long.');
+      return;
+    }
+    if (detectSqlInjection(newCallerPassword) || detectSqlInjection(confirmCallerPassword)) {
+      setForgotError('Security Warning: Prohibited special characters detected in password.');
       return;
     }
 
@@ -422,18 +435,26 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       return;
     }
 
+    if (detectSqlInjection(newLeadName) || detectSqlInjection(newLeadNotes) || (newLeadEmail && detectSqlInjection(newLeadEmail))) {
+      setNewLeadError('Security Alert: Prohibited characters or SQL patterns detected.');
+      return;
+    }
+
+    const safeName = sanitizeInput(newLeadName.trim());
+    const safeNotes = sanitizeInput(newLeadNotes.trim());
+
     const res = dbStore.createManualLead({
-      name: newLeadName,
+      name: safeName,
       mobile: cleanMobile,
-      email: newLeadEmail,
+      email: newLeadEmail ? sanitizeInput(newLeadEmail.trim()) : '',
       locationId: newLeadLocation,
       projectId: newLeadProject,
       statusCode: newLeadStatus,
       callStatusCode: newLeadCallStatus,
       callerId: currentUser ? currentUser.id : 0,
       callerName: currentUser ? currentUser.name : "Caller Desk",
-      description: newLeadNotes,
-      noteText: newLeadNotes
+      description: safeNotes,
+      noteText: safeNotes
     });
 
     if (res.success) {

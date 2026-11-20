@@ -93,24 +93,25 @@ $passwordHash = hash_otp_code($newPassword, 'concave_auth_salt_2026');
 $dbUpdated = false;
 $storageUpdated = false;
 
-// 5. Update MySQL Database if connected
-$pdo = get_db_connection();
-if ($pdo) {
-    try {
-        if ($role === 'admin') {
-            // Strictly require BOTH email AND username match
-            $stmt = $pdo->prepare("UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND `username` = 'admin'");
-            $stmt->execute([$passwordHash, $normalizedEmail]);
-            $dbUpdated = true;
-        } else {
-            // Strictly require caller account ownership matching verified email
-            $stmt = $pdo->prepare("UPDATE `callers` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ?");
-            $stmt->execute([$passwordHash, $normalizedEmail]);
-            $dbUpdated = true;
-        }
-    } catch (Exception $e) {
-        error_log("[Update Password] Database update notice: " . $e->getMessage());
+// 5. Update MySQL Database via SafeDB with strict parameterized execution
+try {
+    if ($role === 'admin') {
+        // Strictly require BOTH email AND username match
+        $stmt = SafeDB::execute(
+            "UPDATE `admins` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ? AND `username` = 'admin'",
+            [$passwordHash, $normalizedEmail]
+        );
+        if ($stmt) $dbUpdated = true;
+    } else {
+        // Strictly require caller account ownership matching verified email
+        $stmt = SafeDB::execute(
+            "UPDATE `callers` SET `password_hash` = ?, `updated_at` = NOW() WHERE `email` = ?",
+            [$passwordHash, $normalizedEmail]
+        );
+        if ($stmt) $dbUpdated = true;
     }
+} catch (Exception $e) {
+    error_log("[Update Password] SafeDB update notice: " . $e->getMessage());
 }
 
 // 6. Update Persistent Credentials JSON Store

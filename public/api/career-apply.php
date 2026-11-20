@@ -46,26 +46,22 @@ if (!$validation['valid']) {
     exit;
 }
 
-// 3. Insert into MySQL with strict parameterized query if connected
-$pdo = get_db_connection();
-if ($pdo) {
-    try {
-        $stmt = $pdo->prepare("
-            INSERT INTO `job_applications` (`job_id`, `job_title`, `applicant_name`, `email`, `phone`, `experience`, `portfolio_link`, `status`, `verified_at`, `created_at`)
-            VALUES (?, ?, ?, ?, ?, ?, ?, 'Under Review', NOW(), NOW())
-        ");
-        $stmt->execute([
-            $jobId,
-            $jobTitle,
-            $name,
-            strtolower($email),
-            $phone,
-            $experience,
-            $portfolioLink
-        ]);
-    } catch (Exception $e) {
-        error_log("[Career Apply] Database insert notice: " . $e->getMessage());
-    }
+// 3. Insert into MySQL via SafeDB with strict parameterized query
+try {
+    SafeDB::insert('job_applications', [
+        'job_id' => $jobId,
+        'job_title' => $jobTitle,
+        'applicant_name' => $name,
+        'email' => strtolower($email),
+        'phone' => $phone,
+        'experience' => $experience,
+        'portfolio_link' => $portfolioLink,
+        'status' => 'Under Review',
+        'verified_at' => date('Y-m-d H:i:s'),
+        'created_at' => date('Y-m-d H:i:s')
+    ]);
+} catch (Exception $e) {
+    error_log("[Career Apply] SafeDB insert notice: " . $e->getMessage());
 }
 
 // 4. Return Confirmed Application Acceptance

@@ -11,7 +11,7 @@ import {
   Sparkles,
   UserCheck
 } from 'lucide-react';
-import { dbStore, LOCATION_CODES, checkRateLimit, recordRateLimitAttempt, sanitizeInput } from '../data/dbStore';
+import { dbStore, LOCATION_CODES, checkRateLimit, recordRateLimitAttempt, sanitizeInput, detectSqlInjection } from '../data/dbStore';
 import { PROJECTS_DATA, LOCATIONS_LIST } from '../data/projectsData';
 
 // Exclusively valid project locations from actual catalog
@@ -296,6 +296,11 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       return;
     }
 
+    if (detectSqlInjection(formData.name) || detectSqlInjection(formData.email) || (formData.description && detectSqlInjection(formData.description))) {
+      setSecurityError("Security Violation: Prohibited special characters detected in submission.");
+      return;
+    }
+
     const cleanName = sanitizeInput(formData.name, 60);
     const cleanMobile = (formData.mobile || '').replace(/\D/g, '').slice(0, 10);
     const cleanEmail = sanitizeInput(formData.email, 80).toLowerCase();
@@ -339,12 +344,12 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       });
       const verifyData = await verifyRes.json();
 
-      if (!verifyData.success && enteredOtp.trim() !== generatedOtp && enteredOtp.trim() !== '1234') {
+      if (!verifyData.success && enteredOtp.trim() !== generatedOtp) {
         setOtpError(verifyData.message || "Wrong OTP entered. Please check your code or request a new one.");
         return;
       }
     } catch (verErr) {
-      if (enteredOtp.trim() !== generatedOtp && enteredOtp.trim() !== '1234') {
+      if (enteredOtp.trim() !== generatedOtp) {
         setOtpError("Wrong OTP entered. Please check the code sent to your email.");
         return;
       }

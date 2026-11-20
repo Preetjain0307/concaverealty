@@ -117,3 +117,18 @@ VALUES
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- =============================================================================
+-- PRODUCTION DEFENSE-IN-DEPTH: LEAST-PRIVILEGE MYSQL USER
+-- Run this in Hostinger phpMyAdmin or MySQL console to restrict web app database permissions.
+-- Prevents schema destruction, DROP TABLE, LOAD_FILE, and RCE at the database engine level.
+-- =============================================================================
+-- CREATE USER IF NOT EXISTS 'concave_web_user'@'localhost' IDENTIFIED BY 'CHANGE_TO_A_STRONG_PASSWORD';
+-- GRANT SELECT, INSERT, UPDATE ON `u123456789_concave_db`.`leads` TO 'concave_web_user'@'localhost';
+-- GRANT SELECT, INSERT, UPDATE ON `u123456789_concave_db`.`job_applications` TO 'concave_web_user'@'localhost';
+-- GRANT SELECT, INSERT, UPDATE ON `u123456789_concave_db`.`otp_logs` TO 'concave_web_user'@'localhost';
+-- GRANT SELECT, UPDATE ON `u123456789_concave_db`.`admins` TO 'concave_web_user'@'localhost';
+-- GRANT SELECT, UPDATE ON `u123456789_concave_db`.`callers` TO 'concave_web_user'@'localhost';
+-- REVOKE DROP, ALTER, CREATE, GRANT OPTION, FILE, SUPER ON *.* FROM 'concave_web_user'@'localhost';
+-- FLUSH PRIVILEGES;
+

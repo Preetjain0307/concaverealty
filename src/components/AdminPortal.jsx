@@ -855,21 +855,29 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       return;
     }
 
+    if (detectSqlInjection(newLeadName) || detectSqlInjection(newLeadNotes) || (newLeadEmail && detectSqlInjection(newLeadEmail))) {
+      setNewLeadError('Security Alert: Prohibited characters or SQL injection patterns detected.');
+      return;
+    }
+
+    const safeName = sanitizeInput(newLeadName.trim());
+    const safeNotes = sanitizeInput(newLeadNotes.trim());
+
     const assignedCaller = callers.find(c => c.id === parseInt(newLeadCallerId, 10));
     const callerDisplayName = assignedCaller ? assignedCaller.name : "Admin Desk (Direct)";
 
     const res = dbStore.createManualLead({
-      name: newLeadName,
+      name: safeName,
       mobile: cleanMobile,
-      email: newLeadEmail,
+      email: newLeadEmail ? sanitizeInput(newLeadEmail.trim()) : '',
       locationId: newLeadLocation,
       projectId: newLeadProject,
       statusCode: newLeadStatus,
       callStatusCode: newLeadCallStatus,
       callerId: assignedCaller ? assignedCaller.id : 0,
       callerName: callerDisplayName,
-      description: newLeadNotes,
-      noteText: newLeadNotes
+      description: safeNotes,
+      noteText: safeNotes
     });
 
     if (res.success) {

@@ -99,6 +99,85 @@ function send_json_headers() {
         http_response_code(204);
         exit;
     }
+
+    // 2b. Application Security Firewall: Real-Time Anti-SQLi Request Inspector
+    inspect_request_for_sqli();
+}
+
+// 2c. Real-Time SQL Injection WAF Shield
+function inspect_request_for_sqli() {
+    $sqliSignatures = [
+        '/\b(union\s+(all\s+)?select)\b/i',
+        '/\b(information_schema|sys\.tables|pg_catalog|sqlite_master)\b/i',
+        '/\b(sleep|benchmark)\s*\(/i',
+        '/\b(into\s+(outfile|dumpfile))\b/i',
+        '/\b(load_file)\s*\(/i',
+        '/\b(waitfor\s+delay)\b/i',
+        '/\b(exec|execute)\s*\(.*xp_/i',
+        '/(--\s*$|\/\*.*?\*\/|;\s*(select|insert|update|delete|drop|alter|truncate|create|exec)\b)/is',
+        '/\b(or|and)\s+[\d\w\'"]+\s*=\s*[\d\w\'"]+/i'
+    ];
+
+    $checkValue = function($val, $key = '') use (&$checkValue, $sqliSignatures) {
+        if (is_array($val)) {
+            foreach ($val as $k => $v) {
+                $checkValue($v, $k);
+            }
+            return;
+        }
+
+        if (is_string($val) && strlen($val) > 1) {
+            // Check for null-byte injection
+            if (strpos($val, "\0") !== false) {
+                block_sqli_attack('Null byte injection detected in parameter: ' . $key);
+            }
+
+            foreach ($sqliSignatures as $pattern) {
+                if (preg_match($pattern, $val)) {
+                    block_sqli_attack("SQLi signature matched in parameter [{$key}]: pattern {$pattern}");
+                }
+            }
+        }
+    };
+
+    if (!empty($_GET)) {
+        $checkValue($_GET);
+    }
+    if (!empty($_POST)) {
+        $checkValue($_POST);
+    }
+    $contentType = isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : '';
+    if (stripos($contentType, 'application/json') !== false) {
+        $raw = file_get_contents('php://input');
+        if (!empty($raw)) {
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                $checkValue($decoded);
+            }
+        }
+    }
+}
+
+function block_sqli_attack($reason) {
+    $ip = get_client_ip();
+    $logEntry = sprintf(
+        "[%s] [SECURITY ALERT - SQLi BLOCKED] IP: %s | URL: %s | Reason: %s | User-Agent: %s\n",
+        date('Y-m-d H:i:s'),
+        $ip,
+        isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown',
+        $reason,
+        isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown'
+    );
+    
+    @file_put_contents(DATA_DIR . '/security_violations.log', $logEntry, FILE_APPEND | LOCK_EX);
+    
+    http_response_code(403);
+    echo json_encode([
+        'success' => false,
+        'code' => 'WAF_SQLI_BLOCKED',
+        'message' => 'Request blocked by Application Security Firewall (Anti-SQLi Rule Triggered).'
+    ]);
+    exit;
 }
 
 // 3. Client IP Resolver
