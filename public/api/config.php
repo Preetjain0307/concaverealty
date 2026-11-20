@@ -317,7 +317,80 @@ function dispatch_resend_email($toEmail, $subject, $htmlContent) {
     ];
 }
 
-// 8. Hybrid Email Dispatch Engine (Resend API with Hostinger Native Mail Fallback)
+// 8. Direct Hostinger SMTP Client (Pure PHP - SSL Port 465 / TLS Port 587)
+function dispatch_smtp_email($toEmail, $subject, $htmlContent) {
+    $smtpHost = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
+    $smtpPort = intval(getenv('SMTP_PORT') ?: 465);
+    $smtpUser = getenv('SMTP_USER') ?: '';
+    $smtpPass = getenv('SMTP_PASS') ?: '';
+    $fromEmail = getenv('SMTP_FROM') ?: $smtpUser;
+
+    if (empty($smtpUser) || empty($smtpPass)) {
+        return ['success' => false, 'error' => 'SMTP credentials not configured'];
+    }
+
+    $socketProtocol = ($smtpPort === 465) ? 'ssl://' : '';
+    $socket = @fsockopen($socketProtocol . $smtpHost, $smtpPort, $errno, $errstr, 15);
+    if (!$socket) {
+        return ['success' => false, 'error' => "SMTP Connection failed: {$errstr} ({$errno})"];
+    }
+
+    $read = function() use ($socket) {
+        $res = '';
+        while ($line = fgets($socket, 515)) {
+            $res .= $line;
+            if (substr($line, 3, 1) === ' ') break;
+        }
+        return $res;
+    };
+
+    $write = function($cmd) use ($socket) {
+        fputs($socket, $cmd . "\r\n");
+    };
+
+    $read();
+    $write("EHLO " . (!empty($_SERVER['HTTP_HOST']) ? preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']) : 'concaverealty.com'));
+    $read();
+
+    $write("AUTH LOGIN");
+    $read();
+    $write(base64_encode($smtpUser));
+    $read();
+    $write(base64_encode($smtpPass));
+    $authRes = $read();
+
+    if (strpos($authRes, '235') === false) {
+        fclose($socket);
+        return ['success' => false, 'error' => 'SMTP Authentication failed: ' . trim($authRes)];
+    }
+
+    $write("MAIL FROM: <{$fromEmail}>");
+    $read();
+    $write("RCPT TO: <{$toEmail}>");
+    $read();
+    $write("DATA");
+    $read();
+
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: Concave Realty <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: concaverealtyindia@gmail.com\r\n";
+    $headers .= "To: {$toEmail}\r\n";
+    $headers .= "Subject: {$subject}\r\n";
+
+    $write($headers . "\r\n" . $htmlContent . "\r\n.");
+    $sendRes = $read();
+    $write("QUIT");
+    fclose($socket);
+
+    if (strpos($sendRes, '250') !== false) {
+        return ['success' => true, 'id' => 'smtp_' . time()];
+    }
+
+    return ['success' => false, 'error' => 'SMTP dispatch rejected: ' . trim($sendRes)];
+}
+
+// 9. Hybrid Email Dispatch Engine (Resend API -> Hostinger SMTP -> Native Mail Fallback)
 function dispatch_email($toEmail, $subject, $htmlContent) {
     // Attempt 1: Fast delivery via Resend API
     $resendResult = dispatch_resend_email($toEmail, $subject, $htmlContent);
@@ -325,7 +398,13 @@ function dispatch_email($toEmail, $subject, $htmlContent) {
         return $resendResult;
     }
 
-    // Attempt 2: Fallback to Hostinger's native server mail()
+    // Attempt 2: Direct Hostinger SMTP delivery (if configured)
+    $smtpResult = dispatch_smtp_email($toEmail, $subject, $htmlContent);
+    if ($smtpResult['success']) {
+        return $smtpResult;
+    }
+
+    // Attempt 3: Fallback to Hostinger's native server mail()
     $host = !empty($_SERVER['HTTP_HOST']) ? preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']) : 'concaverealty.com';
     $fromEmail = "no-reply@" . $host;
 

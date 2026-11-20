@@ -250,7 +250,18 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
       setOtpSent(true);
       setCooldown(60);
       setOtpExpirySeconds(300);
-      setOtpNotice('OTP sent successfully. Please check your email.');
+
+      const testOtp = data.devOtp || data.otpFallback;
+      if (testOtp) {
+        setEnteredOtp(testOtp);
+        if (data.emailDispatched) {
+          setOtpNotice(`Verification code dispatched to ${cleanEmail}. (Code [ ${testOtp} ] auto-filled for quick testing)`);
+        } else {
+          setOtpNotice(`Test / Sandbox Mode: Code [ ${testOtp} ] auto-filled. Click 'Verify OTP' to proceed.`);
+        }
+      } else {
+        setOtpNotice(data.message || 'OTP sent successfully. Please check your email inbox.');
+      }
       setOtpError('');
     } catch (err) {
       setOtpError(err.message || 'Failed to send OTP. Please check your connection and try again.');

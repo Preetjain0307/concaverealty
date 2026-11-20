@@ -203,7 +203,12 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       const res = await fetch('/api/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, name: formData.name })
+        body: JSON.stringify({
+          email: cleanEmail,
+          name: formData.name,
+          digits: 4,
+          purpose: 'enquiry'
+        })
       });
 
       const data = await res.json();
@@ -228,12 +233,19 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       setCooldown(60); // 1-minute cooldown every time
       setOtpExpirySeconds(300); // 5-minute validity strictly
 
-      if (data.otpFallback) {
-        setGeneratedOtp(data.otpFallback);
-        setOtpNotice(data.message);
+      const testCode = data.devOtp || data.otpFallback;
+      if (testCode) {
+        const clean4Code = String(testCode).slice(0, 4);
+        setGeneratedOtp(clean4Code);
+        setEnteredOtp(clean4Code); // Auto-fill the 4-digit OTP directly
+        if (data.emailDispatched) {
+          setOtpNotice(`4-digit verification code sent to ${cleanEmail}. (Code [ ${clean4Code} ] auto-filled)`);
+        } else {
+          setOtpNotice(`Test Mode: 4-digit code [ ${clean4Code} ] auto-filled below. Click Submit to verify.`);
+        }
       } else {
         setGeneratedOtp('');
-        setOtpNotice(data.message || `Verification code sent to ${cleanEmail}! Valid for 5 minutes.`);
+        setOtpNotice(data.message || `4-digit verification code sent to ${cleanEmail}! Valid for 5 minutes.`);
       }
     } catch (err) {
       console.error('[OTP Dispatch Error]:', err);

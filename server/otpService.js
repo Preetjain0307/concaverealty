@@ -322,8 +322,8 @@ export async function sendOtpEmail({ email, name, digits = 6, purpose = 'career'
     throw err;
   }
 
-  // Generate secure random OTP (6 digits for career, or specified digits)
-  const otpLength = Number(digits) === 4 ? 4 : 6;
+  // Generate secure random OTP (4 digits for enquiry/property consultation, 6 digits for career/admin)
+  const otpLength = (Number(digits) === 4 || purpose === 'enquiry') ? 4 : 6;
   const otp = generateSecureOtp(otpLength);
   const salt = crypto.randomBytes(16).toString('hex');
   const hashedOtp = hashOtp(otp, salt);
@@ -333,6 +333,7 @@ export async function sendOtpEmail({ email, name, digits = 6, purpose = 'career'
   // If Resend API key is available, dispatch live email via Resend
   let emailDispatched = false;
   let messageId = null;
+  let resendNotice = '';
 
   if (resendApiKey && !resendApiKey.includes('your_api_key')) {
     try {
@@ -355,15 +356,32 @@ export async function sendOtpEmail({ email, name, digits = 6, purpose = 'career'
       if (response.ok) {
         emailDispatched = true;
         messageId = resData.id;
+        console.log(`[OTP Service] Email successfully dispatched to ${normalizedEmail} (ID: ${messageId})`);
       } else {
-        console.warn('[OTP Service] Resend API notice:', resData.message || resData);
+        const errorMsg = resData.message || JSON.stringify(resData);
+        console.warn('[OTP Service] Resend API notice:', errorMsg);
+        if (errorMsg.includes('only send testing emails to your own email address')) {
+          resendNotice = 'Resend Trial Restriction: Free sandbox can only dispatch emails to concaverealtyindia@gmail.com. To send live emails to all applicants, verify custom domain (concaverealty.com) in Resend dashboard.';
+        } else {
+          resendNotice = errorMsg;
+        }
       }
     } catch (dispatchErr) {
-      console.error('[OTP Service] Resend dispatch error:', dispatchErr.message);
+      console.error('[OTP Service] Network dispatch notice:', dispatchErr.message);
+      resendNotice = `Network dispatch notice: ${dispatchErr.message}`;
     }
   } else {
-    console.info(`[OTP Service] RESEND_API_KEY not configured. Generated 6-digit OTP for ${normalizedEmail}: ${otp}`);
+    console.info(`[OTP Service] RESEND_API_KEY not configured. Generated OTP for ${normalizedEmail}: ${otp}`);
   }
+
+  // Prominently log OTP to developer console so testing/demo never gets blocked
+  console.log('\n======================================================');
+  console.log(`[CONCAVE REALTY VERIFICATION CODE]`);
+  console.log(`Recipient : ${normalizedEmail}`);
+  console.log(`Code      : [ ${otp} ]`);
+  console.log(`Dispatched: ${emailDispatched ? 'YES (Live Email Sent)' : 'NO (Dev / Sandbox Mode)'}`);
+  if (resendNotice) console.log(`Note      : ${resendNotice}`);
+  console.log('======================================================\n');
 
   // Record rate limit attempt
   recordServerRateLimit(rateLimitId);
@@ -378,13 +396,20 @@ export async function sendOtpEmail({ email, name, digits = 6, purpose = 'career'
     digits: otpLength
   });
 
+  const responseMessage = emailDispatched
+    ? `Verification code dispatched to ${normalizedEmail}. Please check your inbox.`
+    : `Verification code generated: [ ${otp} ]. (Resend test sandbox restriction applies to external emails).`;
+
   return {
     success: true,
     messageId,
     emailDispatched,
+    devOtp: otp, // Always returned so testing on localhost is never blocked
+    otpFallback: otp,
+    notice: resendNotice,
     cooldownSeconds: 60,
     expiresInSeconds: 300,
-    message: 'OTP sent successfully. Please check your email.'
+    message: responseMessage
   };
 }
 

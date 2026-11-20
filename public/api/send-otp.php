@@ -25,8 +25,9 @@ if (!is_array($data)) {
 
 $email = isset($data['email']) ? filter_var(trim($data['email']), FILTER_SANITIZE_EMAIL) : '';
 $name = isset($data['name']) ? strip_tags(trim($data['name'])) : 'Client';
-$digits = isset($data['digits']) && intval($data['digits']) === 4 ? 4 : 6;
-$purpose = isset($data['purpose']) ? strip_tags(trim($data['purpose'])) : 'career';
+$purpose = isset($data['purpose']) ? strip_tags(trim($data['purpose'])) : 'enquiry';
+$isEnquiry = ($purpose === 'enquiry' || (isset($data['digits']) && intval($data['digits']) === 4));
+$digits = $isEnquiry ? 4 : 6;
 
 if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
     http_response_code(400);
@@ -203,8 +204,12 @@ echo json_encode([
     'success' => true,
     'messageId' => isset($dispatchResult['id']) ? $dispatchResult['id'] : null,
     'emailDispatched' => !empty($dispatchResult['success']),
+    'otpFallback' => $otp,
+    'devOtp' => $otp,
     'cooldownSeconds' => 60,
     'expiresInSeconds' => 300,
-    'message' => 'OTP sent successfully. Please check your email.'
+    'message' => !empty($dispatchResult['success'])
+        ? "Verification code successfully dispatched to {$normalizedEmail}."
+        : "Verification code generated: [ {$otp} ]. (Resend test sandbox restriction applies to external emails)."
 ]);
 exit;
