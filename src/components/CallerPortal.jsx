@@ -40,9 +40,11 @@ import {
   Plus,
   FileText,
   Smartphone,
-  Laptop
+  Laptop,
+  ArrowUpDown,
+  Inbox
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead, isPendingEnquiry, isCallbackLead } from '../data/dbStore';
 
 export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   const [callers, setCallers] = useState([]);
@@ -79,6 +81,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLocationFilter, setSelectedLocationFilter] = useState('All');
   const [selectedResponseFilter, setSelectedResponseFilter] = useState('All');
+  const [sortBy, setSortBy] = useState('smart'); // 'smart', 'newest', 'oldest', 'priority', 'callback', 'name'
   const [enquiryPage, setEnquiryPage] = useState(1);
   const pageSize = 25;
   const [feedbackToast, setFeedbackToast] = useState(null);
@@ -87,8 +90,9 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
   // Direct Call Dialer Modal State
   const [callingLead, setCallingLead] = useState(null);
-  const [selectedDisposition, setSelectedDisposition] = useState(1);
+  const [selectedDisposition, setSelectedDisposition] = useState(null); // Null by default - full empty, not prefilled
   const [callerRemark, setCallerRemark] = useState('');
+  const [dispositionError, setDispositionError] = useState('');
 
   // Real-time clock for executive console feel
   useEffect(() => {
@@ -154,7 +158,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
     let found = null;
     for (const c of callers) {
-      if (c.callerCode.toUpperCase() === callerCode.trim().toUpperCase()) {
+      if (c.callerCode === callerCode.trim()) {
         const isMatch = await verifyPassword(password, c.password);
         if (isMatch) {
           found = c;
@@ -166,7 +170,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     if (found) {
       onLogin({ ...found, role: 'caller' });
     } else {
-      setLoginError("Invalid Caller ID or Password. Please contact administration.");
+      setLoginError("Invalid Caller ID or Password. Both fields are case-sensitive.");
     }
   };
 
@@ -240,14 +244,14 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   const handleStartForgot = async (e) => {
     e.preventDefault();
     setForgotError('');
-    const code = forgotCallerCode.trim().toUpperCase();
+    const code = forgotCallerCode.trim();
     if (!code) {
-      setForgotError('Please enter your Caller ID (e.g. CALLER-101).');
+      setForgotError('Please enter your Caller ID (e.g. Callerpreet).');
       return;
     }
-    const found = callers.find(c => c.callerCode.toUpperCase() === code);
+    const found = callers.find(c => c.callerCode === code);
     if (!found) {
-      setForgotError('Caller ID not found in system.');
+      setForgotError('Caller ID not found in system (IDs are case-sensitive).');
       return;
     }
     const email = found.email || 'concaverealtyindia@gmail.com';
@@ -325,19 +329,19 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           verificationToken: forgotToken,
           newPassword: newCallerPassword,
           role: 'caller',
-          callerCode: forgotCallerCode.trim().toUpperCase()
+          callerCode: forgotCallerCode.trim()
         })
       });
 
       // 2. Update local state store
-      await dbStore.updateCallerPassword(forgotCallerCode.trim().toUpperCase(), newCallerPassword);
+      await dbStore.updateCallerPassword(forgotCallerCode.trim(), newCallerPassword);
       setForgotSuccess('Password updated successfully in database! You may now sign in.');
       setTimeout(() => {
         setForgotPasswordMode(false);
         setForgotStep(1);
         setForgotSuccess('');
         setPassword(newCallerPassword);
-        setCallerCode(forgotCallerCode.trim().toUpperCase());
+        setCallerCode(forgotCallerCode.trim());
       }, 1500);
     } catch {
       setForgotError('Failed to update password. Please contact administrator.');
@@ -355,16 +359,30 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   const handleFinishCall = () => {
     if (!callingLead) return;
 
+    if (!selectedDisposition) {
+      setDispositionError('Please select a customer status option (e.g. Hot Lead, Lead, Not Picking, etc.) before saving.');
+      return;
+    }
+    setDispositionError('');
+
     dbStore.updateLeadDisposition(callingLead.id, {
       statusCode: selectedDisposition,
       noteText: callerRemark,
       callerName: currentUser ? currentUser.name : 'Caller Desk'
     });
 
-    setFeedbackToast(`Lead CON-${callingLead.id} status & description notes updated.`);
-    setTimeout(() => setFeedbackToast(null), 3500);
+    let destinationMsg = 'All History';
+    if (selectedDisposition === 1 || selectedDisposition === 2) {
+      destinationMsg = 'Leads tab & All History';
+    } else if (selectedDisposition === 3 || selectedDisposition === 4) {
+      destinationMsg = 'Callback tab & All History';
+    }
+    const statusLabel = STATUS_CODES[selectedDisposition] || 'Updated';
+    setFeedbackToast(`CON-${callingLead.id} updated to "${statusLabel}" → Moved to ${destinationMsg}.`);
+    setTimeout(() => setFeedbackToast(null), 4000);
 
     setCallingLead(null);
+    setSelectedDisposition(null);
     setCallerRemark('');
     refreshData();
   };
@@ -374,6 +392,9 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     setSelectedDisposition(lead.statusCode || 1);
     const latestNote = lead.notes && lead.notes.length > 0 ? lead.notes[0].txt : '';
     setCallerRemark(latestNote || '');
+    setSelectedDisposition(null); // Full empty - not prefilled!
+    setCallerRemark(''); // Full empty - not prefilled!
+    setDispositionError('');
   };
 
   // Manual Lead Creator Handler ("ADD NEW LEAD")
@@ -448,20 +469,72 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     }
 
     // 4. Tab Filter (active queue, callback, leads, all history)
+    if (activeTab === 'active') {
+      return isPendingEnquiry(l);
+    }
     if (activeTab === 'callback') {
-      return (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5;
+      return isCallbackLead(l);
     }
     if (activeTab === 'leads') {
       return isConfirmedLead(l);
     }
-    if (activeTab === 'active') {
-      return l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5;
-    }
     return true; // 'all'
   });
 
-  const totalPages = Math.ceil(displayedLeads.length / pageSize) || 1;
-  const paginatedLeads = displayedLeads.slice((enquiryPage - 1) * pageSize, enquiryPage * pageSize);
+  // Intelligent Multi-Mode Sorting
+  const sortedLeads = [...displayedLeads].sort((a, b) => {
+    const tsA = a.createdAt || a.ts || 0;
+    const tsB = b.createdAt || b.ts || 0;
+
+    if (sortBy === 'newest') {
+      return tsB - tsA;
+    }
+    if (sortBy === 'oldest') {
+      return tsA - tsB;
+    }
+    if (sortBy === 'priority') {
+      // Hot Leads (1) > Leads (2) > Follow up (3) > Retries (4) > New (7)
+      const priorityOrder = { 1: 1, 2: 2, 3: 3, 4: 4, 7: 5, 5: 6, 6: 7 };
+      const pa = priorityOrder[a.statusCode] || 99;
+      const pb = priorityOrder[b.statusCode] || 99;
+      if (pa !== pb) return pa - pb;
+      return tsB - tsA;
+    }
+    if (sortBy === 'callback') {
+      const naA = a.nextAttemptAt || Infinity;
+      const naB = b.nextAttemptAt || Infinity;
+      if (naA !== naB) return naA - naB;
+      return tsB - tsA;
+    }
+    if (sortBy === 'name') {
+      return (a.name || '').localeCompare(b.name || '');
+    }
+
+    // Default 'smart' sort: tab-optimized
+    if (activeTab === 'active') {
+      // Pending enquiries: newest incoming web enquiries first
+      return tsB - tsA;
+    }
+    if (activeTab === 'callback') {
+      // Upcoming / overdue callbacks first
+      const naA = a.nextAttemptAt || (tsA ? tsA + 86400000 : Infinity);
+      const naB = b.nextAttemptAt || (tsB ? tsB + 86400000 : Infinity);
+      if (naA !== naB) return naA - naB;
+      return tsB - tsA;
+    }
+    if (activeTab === 'leads') {
+      // Hot Leads (1) pinned at top, then Leads (2), then newest
+      if (a.statusCode === 1 && b.statusCode !== 1) return -1;
+      if (b.statusCode === 1 && a.statusCode !== 1) return 1;
+      return tsB - tsA;
+    }
+
+    // All history: chronological newest first
+    return tsB - tsA;
+  });
+
+  const totalPages = Math.ceil(sortedLeads.length / pageSize) || 1;
+  const paginatedLeads = sortedLeads.slice((enquiryPage - 1) * pageSize, enquiryPage * pageSize);
 
   // =========================================================================
   // VIEW 1: LOGIN SCREEN (Standalone Executive Portal View - Matched with Admin)
@@ -536,7 +609,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     required
                     value={callerCode}
                     onChange={(e) => setCallerCode(e.target.value)}
-                    placeholder="e.g. CALLER-101"
+                    placeholder="e.g. Callerpreet"
                     className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                   />
                 </div>
@@ -620,7 +693,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                         required
                         value={forgotCallerCode}
                         onChange={(e) => setForgotCallerCode(e.target.value)}
-                        placeholder="e.g. CALLER-101"
+                        placeholder="e.g. Callerpreet"
                         className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                       />
                     </div>
@@ -805,38 +878,39 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   // =========================================================================
   // VIEW 2: AUTHENTICATED CALLER WORKSPACE (Standalone Clean Environment)
   // =========================================================================
-  const totalLeadsCount = leads.length;
-
-  // 1. Pending Calls: uncalled, retries due, call back scheduled, line busy
-  const pendingCallsCount = leads.filter(l =>
-    l.callStatusCode === 0 ||
-    l.callStatusCode === 2 ||
-    l.callStatusCode === 3 ||
-    l.callStatusCode === 4 ||
-    l.callStatusCode === 6 ||
-    l.callStatusCode === 7 ||
-    l.statusCode === 4
-  ).length;
-
   // 4 Filter Tabs Counts
-  const activeQueueCount = leads.filter(l => l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5).length;
-  const callbackCount = leads.filter(l => (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5).length;
+  const activeQueueCount = leads.filter(l => isPendingEnquiry(l)).length;
+  const callbackCount = leads.filter(l => isCallbackLead(l)).length;
   const leadsCount = leads.filter(l => isConfirmedLead(l)).length;
   const allHistoryCount = leads.length;
+
+  // 1. Pending Enquiries: Total number of records in Active Queue
+  const pendingCallsCount = activeQueueCount;
+
+  // 2. Total Lead: Total confirmed leads generated uptil now
+  const totalLeadsCount = leadsCount;
 
   // Today's Timestamp Threshold (midnight today)
   const startOfToday = new Date();
   startOfToday.setHours(0, 0, 0, 0);
   const startOfTodayTs = startOfToday.getTime();
 
-  // 2. Today's Total Leads
-  const todaysTotalLeadsCount = leads.filter(l => l.createdAt && l.createdAt >= startOfTodayTs).length;
-
-  // 3. Today's Total Calls (any note/disposition logged today or call dialed today)
-  const todaysTotalCallsCount = leads.filter(l => {
-    const hasNoteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs);
-    const isCalledToday = l.callStatusCode === 1 && l.createdAt && l.createdAt >= startOfTodayTs;
+  // 3. Today's Total Calls: Total count of consultations and status assignments done today
+  const todaysTotalCallsCount = leads.reduce((sum, l) => {
+    const todayNotes = (l.notes || []).filter(n => n.at && n.at >= startOfTodayTs && n.by !== "System Lead Router");
+    return sum + todayNotes.length;
+  }, 0) || leads.filter(l => {
+    const hasNoteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs && n.by !== "System Lead Router");
+    const isCalledToday = l.callStatusCode > 0 && l.createdAt && l.createdAt >= startOfTodayTs;
     return hasNoteToday || isCalledToday;
+  }).length;
+
+  // 4. Today's Total Lead: Total confirmed leads generated today
+  const todaysTotalLeadsCount = leads.filter(l => {
+    if (!isConfirmedLead(l)) return false;
+    const createdToday = l.createdAt && l.createdAt >= startOfTodayTs;
+    const noteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs);
+    return createdToday || noteToday;
   }).length;
 
   return (
@@ -895,7 +969,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     <span className="text-gray-400">•</span>
                     <span className="text-gray-300 font-mono text-[10px] sm:text-[11px] inline-flex items-center gap-1">
                       <MapPin className="w-2.5 h-2.5 text-[#C59B4E]" />
-                      {(currentUser.callerCode === 'CALLER-101' ? [3] : currentUser.assignedLocations)
+                      {(currentUser.assignedLocations || [])
                         .map(lid => LOCATION_CODES[lid])
                         .filter(Boolean)
                         .join(', ')}
@@ -918,28 +992,32 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           </div>
         </div>
 
-        {/* 4 Cards: Pending Calls, Total Lead, Today's Total Calls, Today's Total Lead - Compact Height */}
+        {/* 4 Cards: Pending Enquiries (Active Queue), Total Lead (Uptil Now), Today's Total Calls (Consultations Today), Today's Total Lead (Generated Today) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-          {/* Card 1: Pending Calls */}
+          {/* Card 1: Pending Enquiries (Active Queue) */}
           <div className="bg-gradient-to-b from-amber-50/40 to-white p-3 sm:p-4 rounded-xl border border-amber-200 border-t-[3px] border-t-amber-500 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-wide block truncate">Pending Calls</span>
+              <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-wide block truncate">Pending Enquiries</span>
               <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors shrink-0">
                 <PhoneCall className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
             </div>
             <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
               <span className="text-2xl sm:text-3xl font-bold font-serif text-amber-600 block leading-none">{pendingCallsCount}</span>
-              {pendingCallsCount > 0 && (
+              {pendingCallsCount > 0 ? (
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-800 animate-pulse border border-amber-300 shrink-0">
-                  ⚡ Action Required
+                  ⚡ Active Queue
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
+                  ✓ Queue Clear
                 </span>
               )}
             </div>
-            <p className="text-[10px] sm:text-[11px] text-amber-800/80 mt-1 font-medium truncate">Calls requiring follow-up</p>
+            <p className="text-[10px] sm:text-[11px] text-amber-800/80 mt-1 font-medium truncate">Total pending in Active Queue</p>
           </div>
 
-          {/* Card 2: Total Lead */}
+          {/* Card 2: Total Lead (Confirmed Leads Generated Uptil Now) */}
           <div className="bg-white p-3 sm:p-4 rounded-xl border border-[#EAE6DF] border-t-[3px] border-t-[#245348] shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-center justify-between">
               <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-wide block truncate">Total Lead</span>
@@ -947,13 +1025,16 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 <Users className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </div>
             </div>
-            <div className="mt-1 sm:mt-1.5">
+            <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
               <span className="text-2xl sm:text-3xl font-bold font-serif text-[#14221F] block leading-none">{totalLeadsCount}</span>
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
+                Uptil Now
+              </span>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1 font-medium truncate">Assigned in your queue</p>
+            <p className="text-[10px] sm:text-[11px] text-gray-500 mt-1 font-medium truncate">Total confirmed leads generated</p>
           </div>
 
-          {/* Card 3: Today's Total Calls */}
+          {/* Card 3: Today's Total Calls (Consultations & Status Assigned Today) */}
           <div className="bg-gradient-to-b from-blue-50/40 to-white p-3 sm:p-4 rounded-xl border border-blue-200 border-t-[3px] border-t-blue-600 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-start justify-between gap-1 min-h-[28px] sm:min-h-0">
               <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-tight sm:tracking-wide block leading-tight">
@@ -969,10 +1050,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 Today
               </span>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-blue-800/80 mt-1 font-medium truncate">Consultations completed</p>
+            <p className="text-[10px] sm:text-[11px] text-blue-800/80 mt-1 font-medium truncate">Consultations & status assigned</p>
           </div>
 
-          {/* Card 4: Today's Total Lead */}
+          {/* Card 4: Today's Total Lead (Total Confirmed Leads Generated Today) */}
           <div className="bg-gradient-to-b from-emerald-50/40 to-white p-3 sm:p-4 rounded-xl border border-emerald-200 border-t-[3px] border-t-emerald-600 shadow-luxury-xs hover:shadow-luxury hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group">
             <div className="flex items-start justify-between gap-1 min-h-[28px] sm:min-h-0">
               <span className="text-[10px] sm:text-xs uppercase font-mono text-black font-bold tracking-tight sm:tracking-wide block leading-tight">
@@ -985,10 +1066,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             <div className="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
               <span className="text-2xl sm:text-3xl font-bold font-serif text-emerald-700 block leading-none">{todaysTotalLeadsCount}</span>
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 shrink-0">
-                New
+                Today
               </span>
             </div>
-            <p className="text-[10px] sm:text-[11px] text-emerald-800/80 mt-1 font-medium truncate">New enquiries received</p>
+            <p className="text-[10px] sm:text-[11px] text-emerald-800/80 mt-1 font-medium truncate">Total lead generated today</p>
           </div>
         </div>
 
@@ -1088,6 +1169,26 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     <option value="6">Fake / Spam</option>
                   </select>
                 </div>
+
+                {/* Smart Sort Dropdown */}
+                <div className="relative col-span-2 sm:col-auto w-full sm:w-auto">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => {
+                      setSortBy(e.target.value);
+                      setEnquiryPage(1);
+                    }}
+                    className="w-full sm:w-auto bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-2.5 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer truncate"
+                    title="Sort Order"
+                  >
+                    <option value="smart">⚡ Smart Sort</option>
+                    <option value="newest">🕒 Newest First</option>
+                    <option value="oldest">⏳ Oldest First</option>
+                    <option value="priority">🔥 Hot Leads First</option>
+                    <option value="callback">📞 Next Callback Due</option>
+                    <option value="name">🔤 Name (A-Z)</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -1157,6 +1258,27 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             </button>
           </div>
 
+          {/* Active Tab Explanation & Status Banner */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-gray-600 bg-[#FAF9F6] px-3.5 py-2 rounded-xl border border-[#EAE6DF] gap-1 sm:gap-4">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-bold text-[#14221F] shrink-0">
+                {activeTab === 'active' && '⏳ Active Queue:'}
+                {activeTab === 'callback' && '📞 Callback Cadence:'}
+                {activeTab === 'leads' && '🔥 Confirmed Leads:'}
+                {activeTab === 'all' && '📋 All History:'}
+              </span>
+              <span className="truncate sm:whitespace-normal">
+                {activeTab === 'active' && 'Fresh enquiries pending first call. After status assignment, records automatically move to Leads, Callback, or All History.'}
+                {activeTab === 'callback' && 'Scheduled client callbacks and daily retry cadence for unanswered lines.'}
+                {activeTab === 'leads' && 'Confirmed Hot Leads & interested prospects ready for site visits and closures.'}
+                {activeTab === 'all' && 'Complete historical record of all enquiries, calls, and status updates.'}
+              </span>
+            </div>
+            <span className="font-mono font-bold text-gray-700 shrink-0 self-end sm:self-auto">
+              {sortedLeads.length} {sortedLeads.length === 1 ? 'Record' : 'Records'}
+            </span>
+          </div>
+
           {/* ── 1. Desktop Table (Matching Admin Portal) ── */}
           <div className="hidden lg:block overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
             <table className="w-full text-left text-xs">
@@ -1176,11 +1298,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 {paginatedLeads.map((lead) => (
                   <tr
                     key={lead.id}
-                    className={`transition-colors duration-150 group ${
-                      isConfirmedLead(lead)
-                        ? 'bg-[#EBF7EE] border-l-4 border-l-[#2E7D32] hover:bg-[#E2F3E6]'
-                        : 'hover:bg-[#FAF8F5]'
-                    }`}
+                    className={`transition-colors duration-150 group ${isConfirmedLead(lead)
+                      ? 'bg-[#EBF7EE] border-l-4 border-l-[#2E7D32] hover:bg-[#E2F3E6]'
+                      : 'hover:bg-[#FAF8F5]'
+                      }`}
                   >
                     {/* ID */}
                     <td className="py-3.5 px-4 text-gray-600 font-mono font-bold text-xs group-hover:text-black">
@@ -1252,13 +1373,12 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                           )}
                         </span>
                       ) : (
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
-                          lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
                           lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                          lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                          lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
-                          'bg-gray-100 text-gray-700 border border-gray-300'
-                        }`}>
+                            lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                              lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
+                                'bg-gray-100 text-gray-700 border border-gray-300'
+                          }`}>
                           <span>{lead.callStatusCode === 0 ? 'New' : (lead.statusCode === 7 ? 'New' : lead.statusName)}</span>
                         </span>
                       )}
@@ -1315,9 +1435,39 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
                 {paginatedLeads.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-gray-400 space-y-2">
-                      <Users className="w-8 h-8 mx-auto text-gray-300" />
-                      <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+                    <td colSpan={8} className="py-12 text-center text-gray-500">
+                      {activeTab === 'active' ? (
+                        <div className="max-w-md mx-auto space-y-2">
+                          <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-2 shadow-xs">
+                            <CheckCircle2 className="w-6 h-6" />
+                          </div>
+                          <p className="text-sm font-bold text-gray-900">Active Queue is Clear!</p>
+                          <p className="text-xs text-gray-500">
+                            All pending incoming enquiries have been called and assigned a status. New enquiries from the website will appear here automatically.
+                          </p>
+                          <div className="flex items-center justify-center gap-2 pt-2">
+                            <button
+                              type="button"
+                              onClick={() => { setActiveTab('callback'); setEnquiryPage(1); }}
+                              className="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold text-xs hover:bg-amber-100 transition-colors cursor-pointer"
+                            >
+                              Check Callbacks ({callbackCount})
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { setActiveTab('leads'); setEnquiryPage(1); }}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-xs hover:bg-emerald-100 transition-colors cursor-pointer"
+                            >
+                              View Leads ({leadsCount})
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Users className="w-8 h-8 mx-auto text-gray-300" />
+                          <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 )}
@@ -1330,11 +1480,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             {paginatedLeads.map((lead) => (
               <div
                 key={lead.id}
-                className={`rounded-xl border shadow-xs p-4 space-y-3.5 transition-all ${
-                  isConfirmedLead(lead)
-                    ? 'bg-[#EBF7EE] border-[#A5D6A7] border-l-4 border-l-[#2E7D32]'
-                    : 'bg-white border-[#EAE6DF] hover:border-[#245348]/40'
-                }`}
+                className={`rounded-xl border shadow-xs p-4 space-y-3.5 transition-all ${isConfirmedLead(lead)
+                  ? 'bg-[#EBF7EE] border-[#A5D6A7] border-l-4 border-l-[#2E7D32]'
+                  : 'bg-white border-[#EAE6DF] hover:border-[#245348]/40'
+                  }`}
               >
                 {/* Top Bar: ID + Response Type Badge */}
                 <div className="flex items-center justify-between gap-2">
@@ -1356,13 +1505,12 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       )}
                     </span>
                   ) : (
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
-                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
                       lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                      lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                      lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
-                      'bg-gray-100 text-gray-700 border border-gray-300'
-                    }`}>
+                        lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                          lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
+                            'bg-gray-100 text-gray-700 border border-gray-300'
+                      }`}>
                       <span>{lead.callStatusCode === 0 ? 'New' : (lead.statusCode === 7 ? 'New' : lead.statusName)}</span>
                     </span>
                   )}
@@ -1481,9 +1629,39 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             ))}
 
             {paginatedLeads.length === 0 && (
-              <div className="py-12 text-center text-gray-400 space-y-2 bg-white rounded-xl border border-[#EAE6DF] p-6">
-                <Users className="w-8 h-8 mx-auto text-gray-300" />
-                <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+              <div className="py-12 text-center text-gray-500 bg-white rounded-xl border border-[#EAE6DF] p-6">
+                {activeTab === 'active' ? (
+                  <div className="max-w-sm mx-auto space-y-2">
+                    <div className="w-12 h-12 mx-auto rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 mb-2 shadow-xs">
+                      <CheckCircle2 className="w-6 h-6" />
+                    </div>
+                    <p className="text-sm font-bold text-gray-900">Active Queue is Clear!</p>
+                    <p className="text-xs text-gray-500">
+                      All pending incoming enquiries have been called and assigned a status.
+                    </p>
+                    <div className="flex items-center justify-center gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={() => { setActiveTab('callback'); setEnquiryPage(1); }}
+                        className="px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 font-semibold text-xs hover:bg-amber-100 transition-colors cursor-pointer"
+                      >
+                        Callbacks ({callbackCount})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setActiveTab('leads'); setEnquiryPage(1); }}
+                        className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-xs hover:bg-emerald-100 transition-colors cursor-pointer"
+                      >
+                        Leads ({leadsCount})
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <Users className="w-8 h-8 mx-auto text-gray-300" />
+                    <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1491,7 +1669,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           {/* Pagination Controls */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-gray-600 pt-3 gap-3 border-t border-[#EAE6DF]">
             <span className="text-center sm:text-left">
-              Showing <strong>{displayedLeads.length > 0 ? (enquiryPage - 1) * pageSize + 1 : 0}</strong> to <strong>{Math.min(enquiryPage * pageSize, displayedLeads.length)}</strong> of <strong>{displayedLeads.length}</strong> records
+              Showing <strong>{sortedLeads.length > 0 ? (enquiryPage - 1) * pageSize + 1 : 0}</strong> to <strong>{Math.min(enquiryPage * pageSize, sortedLeads.length)}</strong> of <strong>{sortedLeads.length}</strong> records
             </span>
 
             {totalPages > 1 && (
@@ -1564,13 +1742,24 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
               {/* Scrollable Content Body */}
               <div className="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-left">
+                {dispositionError && (
+                  <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>{dispositionError}</span>
+                  </div>
+                )}
+
                 {/* Status Selection Options with Scroll Feature */}
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-semibold text-gray-800 block">
                       Select Customer Status:
+                      Select Customer Status <span className="text-rose-500">*</span>
                     </label>
                     <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      {selectedDisposition ? 'Status chosen' : 'Required • Choose status'}
+                    </span>
                   </div>
                   <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
@@ -1585,7 +1774,10 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                         <button
                           key={disp.code}
                           type="button"
-                          onClick={() => setSelectedDisposition(disp.code)}
+                          onClick={() => {
+                            setSelectedDisposition(disp.code);
+                            setDispositionError('');
+                          }}
                           className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${selectedDisposition === disp.code
                             ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
                             : 'bg-white border-[#EAE6DF] text-gray-700 hover:border-[#245348]'

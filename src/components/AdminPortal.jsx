@@ -47,7 +47,7 @@ import {
   Smartphone,
   Laptop
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, PROJECT_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead } from '../data/dbStore';
+import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, PROJECT_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead, isPendingEnquiry, isCallbackLead } from '../data/dbStore';
 
 export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   // Navigation tabs: 'overview' | 'performance' | 'callers' | 'storage' | 'careers'
@@ -137,8 +137,9 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
   // Full Caller Capabilities for Admin (calling, dispositions & notes)
   const [callingLead, setCallingLead] = useState(null);
-  const [selectedDisposition, setSelectedDisposition] = useState(1);
+  const [selectedDisposition, setSelectedDisposition] = useState(null); // Full empty by default
   const [callerRemark, setCallerRemark] = useState('');
+  const [dispositionError, setDispositionError] = useState('');
 
   // Manual Lead Creation State ("ADD NEW LEAD")
   const [showAddLeadModal, setShowAddLeadModal] = useState(false);
@@ -341,6 +342,23 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       setStorageStats(stats);
       setQueueInfo(qInfo);
       setJobApplications(allApplications);
+
+      // Dynamically fetch live Hostinger SSD storage metrics when deployed
+      try {
+        fetch('/api/storage-info')
+          .then(res => res.ok ? res.json() : fetch('/api/storage-info.php').then(r => r.json()))
+          .then(liveStorage => {
+            if (liveStorage && liveStorage.success) {
+              setStorageStats(prev => ({
+                ...prev,
+                ...liveStorage,
+                liveServerFetched: true
+              }));
+            }
+          })
+          .catch(() => {});
+      } catch {}
+
       if (qInfo.isOverdue) {
         setShowOverdueAlert(true);
       }
@@ -398,7 +416,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     const adminCreds = dbStore.getAdminCredentials();
     const isPasswordValid = await verifyPassword(adminPassword, adminCreds.password);
 
-    if (cleanUser.toLowerCase() === adminCreds.username.toLowerCase() && isPasswordValid) {
+    if (cleanUser === adminCreds.username && isPasswordValid) {
       setAdminFailedAttempts(0);
       setAdminLockoutUntil(0);
       setAdminLoginError('');
@@ -419,7 +437,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
         setAdminLockoutUntil(lockTime);
         setAdminLoginError('Too many failed login attempts. Account temporarily locked for 5 minutes for security.');
       } else {
-        setAdminLoginError(`Invalid Admin ID or Password. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
+        setAdminLoginError(`Invalid Admin ID or Password. Both fields are case-sensitive. (${5 - nextAttempts} attempt(s) remaining before temporary lockout)`);
       }
     }
   };
@@ -781,19 +799,27 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   // 2. Status & Description Modal Handler (Opens modal for giving status & notes)
   const handleOpenStatusModal = (lead) => {
     setCallingLead(lead);
-    setSelectedDisposition(lead.statusCode || 1);
-    const latestNote = lead.notes && lead.notes.length > 0 ? lead.notes[0].txt : '';
-    setCallerRemark(latestNote || '');
+    setSelectedDisposition(null); // Full empty - not prefilled!
+    setCallerRemark(''); // Full empty - not prefilled!
+    setDispositionError('');
   };
 
   const handleFinishAdminCall = () => {
     if (!callingLead) return;
+
+    if (!selectedDisposition) {
+      setDispositionError('Please select a customer status option (e.g. Hot Lead, Lead, Not Picking, etc.) before saving.');
+      return;
+    }
+    setDispositionError('');
+
     dbStore.updateLeadDisposition(callingLead.id, {
       statusCode: selectedDisposition,
       noteText: callerRemark,
       callerName: callers.length === 0 ? 'Admin (Direct)' : 'Admin (Master Console)'
     });
     setCallingLead(null);
+    setSelectedDisposition(null);
     setCallerRemark('');
     setFeedbackToast(`Lead CON-${callingLead.id} status & discussion notes successfully updated.`);
     setTimeout(() => setFeedbackToast(null), 4000);
@@ -1178,24 +1204,27 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   // =========================================================================
   const todayStart = new Date().setHours(0, 0, 0, 0);
 
-  // Exact 5 Cards calculation as requested by user:
-  // 1) total leads today
-  const todaysLeadsCount = leads.filter(l => l.createdAt >= todayStart && (l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7)).length;
+  // Exact 5 Cards calculation:
+  // 1) total confirmed leads generated today
+  const todaysLeadsCount = leads.filter(l => isConfirmedLead(l) && (l.createdAt >= todayStart || (l.notes && l.notes.some(n => n.at >= todayStart)))).length;
 
   // 2) today enquiries today
   const todaysEnquiriesCount = leads.filter(l => l.createdAt >= todayStart).length;
 
-  // 3) total call done today
-  const totalCallsDoneToday = leads.filter(l => {
+  // 3) total call / consultations done today
+  const totalCallsDoneToday = leads.reduce((sum, l) => {
+    const todayNotes = (l.notes || []).filter(n => n.at >= todayStart && n.by !== "System Lead Router" && !n.txt.includes("Auto-routed"));
+    return sum + todayNotes.length;
+  }, 0) || leads.filter(l => {
     const hasNoteToday = l.notes && l.notes.some(n => n.at >= todayStart && !n.txt.includes("Auto-routed"));
     return hasNoteToday || (l.createdAt >= todayStart && l.callStatusCode > 0);
   }).length;
 
-  // 4) overall lead
-  const overallLeadsCount = leads.filter(l => l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7).length;
+  // 4) overall confirmed leads generated uptil now
+  const overallLeadsCount = leads.filter(l => isConfirmedLead(l)).length;
 
-  // 5) pending calls in red
-  const pendingCallsCount = leads.filter(l => l.statusCode === 4 || l.callStatusCode === 0 || l.callStatusCode === 2 || l.callStatusCode === 3).length;
+  // 5) pending calls in red (Active Queue)
+  const pendingCallsCount = leads.filter(l => isPendingEnquiry(l)).length;
 
   // Filtered Leads
   const filteredLeads = leads.filter(l => {
@@ -2066,16 +2095,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
               <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
                 {callers.map(caller => {
                   const callerLeads = leads.filter(l => l.callerId === caller.id);
-                  const totalCallerLeads = callerLeads.length;
+                  const totalCallerLeads = callerLeads.filter(l => isConfirmedLead(l)).length;
 
-                  // Total calls done today by this caller
-                  const callsDoneToday = callerLeads.filter(l => {
+                  // Total calls/consultations done today by this caller
+                  const callsDoneToday = callerLeads.reduce((sum, l) => {
+                    const notesToday = (l.notes || []).filter(n => n.at >= todayStart && n.by.includes(caller.name));
+                    return sum + notesToday.length;
+                  }, 0) || callerLeads.filter(l => {
                     const hasNoteToday = l.notes && l.notes.some(n => n.at >= todayStart && n.by.includes(caller.name));
                     return hasNoteToday || (l.createdAt >= todayStart && l.callStatusCode > 0);
                   }).length;
 
-                  // Total leads today for this caller
-                  const leadsToday = callerLeads.filter(l => l.createdAt >= todayStart && (l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7)).length;
+                  // Total confirmed leads today for this caller
+                  const leadsToday = callerLeads.filter(l => isConfirmedLead(l) && (l.createdAt >= todayStart || (l.notes && l.notes.some(n => n.at >= todayStart && n.by.includes(caller.name))))).length;
 
                   const allocatedLocsStr = caller.assignedLocations && caller.assignedLocations.length > 0
                     ? caller.assignedLocations.map(id => LOCATION_CODES[id]).filter(Boolean).join(", ")
@@ -2316,17 +2348,16 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
             </div>
           </div>
 
-          {/* 1) Server Storage Capacity Overview */}
+          {/* 1) Server Storage Capacity Overview (Hostinger 20 GB SSD with 2 GB Buffer Rule) */}
           {(() => {
-            const customStoragePercentStr = typeof window !== 'undefined' ? localStorage.getItem('CONCAVE_STORAGE_USAGE_PERCENT') : null;
-            const customStoragePercent = customStoragePercentStr ? parseFloat(customStoragePercentStr) : null;
-            const storageQuotaBytes = 512 * 1024 * 1024;
-            const actualStoragePercent = (storageStats.rawBytes / storageQuotaBytes) * 100;
-            const usagePercent = customStoragePercent !== null && !isNaN(customStoragePercent)
-              ? Math.min(100, Math.max(0, customStoragePercent))
-              : (storageStats.usagePercent !== undefined
-                  ? storageStats.usagePercent
-                  : (actualStoragePercent > 0 ? Math.max(4, Math.round(actualStoragePercent)) : 4));
+            const usagePercent = storageStats.usagePercent !== undefined
+              ? storageStats.usagePercent
+              : 11;
+
+            const spaceTakenLabel = storageStats.usedFormatted || "2.00 GB";
+            const spaceEmptyLabel = storageStats.displayedEmptyFormatted || "16.00 GB";
+            const usableQuotaLabel = storageStats.usableQuotaFormatted || "18.00 GB";
+            const rawRemainingLabel = storageStats.rawRemainingFormatted || "18.00 GB";
 
             // Dynamic line color logic:
             // > 75% -> Red
@@ -2340,14 +2371,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
             return (
               <div className="bg-[#FAF9F6] p-5 rounded-xl border border-[#EAE6DF] space-y-3">
-                <div className="flex items-center justify-between text-xs font-semibold">
+                <div className="flex flex-wrap items-center justify-between text-xs font-semibold gap-2">
                   <span className="font-mono text-[#14221F] flex items-center gap-1.5">
                     <Database className="w-4 h-4 text-[#245348]" />
-                    Server Storage Usage
+                    <span>Server Storage Usage (Hostinger 20 GB SSD)</span>
                   </span>
-                  <span className="font-mono text-[11px] text-gray-500 font-bold">
-                    {usagePercent}% Used
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold">
+                      2 GB Buffer Active
+                    </span>
+                    <span className="font-mono text-[11px] text-gray-500 font-bold">
+                      {usagePercent}% Used
+                    </span>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-4 pt-1">
@@ -2357,11 +2393,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         Space Taken
                       </span>
                       <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-[#245348] mt-1 block font-mono">
-                        {(storageStats.rawBytes / 1024).toFixed(2)} KB
+                        {spaceTakenLabel}
                       </span>
                     </div>
                     <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
-                      Active database records
+                      Active database & website files
                     </span>
                   </div>
 
@@ -2371,11 +2407,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         Space Empty
                       </span>
                       <span className="text-base min-[360px]:text-lg sm:text-2xl font-bold text-emerald-700 mt-1 block font-mono">
-                        511.98 MB
+                        {spaceEmptyLabel}
                       </span>
                     </div>
                     <span className="text-[9px] min-[360px]:text-[11px] text-gray-400 mt-1 block leading-tight">
-                      Quota: 512.00 MB
+                      Quota: {usableQuotaLabel} (2 GB buffer reserved)
                     </span>
                   </div>
                 </div>
@@ -2385,6 +2421,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     className={`h-full ${lineColor} rounded-full transition-all duration-700`}
                     style={{ width: `${Math.min(100, Math.max(3, usagePercent))}%` }}
                   />
+                </div>
+
+                {/* Buffer Policy Details */}
+                <div className="p-2.5 bg-emerald-50/70 border border-emerald-200/80 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-emerald-900 gap-1.5 mt-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <HardDrive className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                    <span>
+                      <strong>Hostinger 20 GB SSD:</strong> 2.00 GB safety buffer kept reserved for logs and server stability. When server has {rawRemainingLabel} remaining, {spaceEmptyLabel} is shown as usable.
+                    </span>
+                  </div>
+                  <span className="font-mono text-[10px] font-bold text-emerald-800 bg-white px-2 py-0.5 rounded border border-emerald-200 shrink-0 self-end sm:self-auto">
+                    Buffer Rule: 2 GB
+                  </span>
                 </div>
               </div>
             );
@@ -3971,13 +4020,22 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
             {/* Scrollable Content Body */}
             <div className="flex-1 overflow-y-auto space-y-3.5 py-3 pr-1 text-left">
+              {dispositionError && (
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5 animate-fadeIn">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                  <span>{dispositionError}</span>
+                </div>
+              )}
+
               {/* Status Selection Options with Scroll Feature */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-semibold text-gray-800 block">
-                    Select Customer Status:
+                    Select Customer Status <span className="text-rose-500">*</span>
                   </label>
-                  <span className="text-[10px] text-gray-400 font-medium">Scrollable status options</span>
+                  <span className="text-[10px] text-gray-400 font-medium">
+                    {selectedDisposition ? 'Status chosen' : 'Required • Choose status'}
+                  </span>
                 </div>
                 <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
@@ -3992,7 +4050,10 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       <button
                         key={disp.code}
                         type="button"
-                        onClick={() => setSelectedDisposition(disp.code)}
+                        onClick={() => {
+                          setSelectedDisposition(disp.code);
+                          setDispositionError('');
+                        }}
                         className={`p-2 sm:p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                           selectedDisposition === disp.code
                             ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'

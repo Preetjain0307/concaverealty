@@ -112,9 +112,8 @@ ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 INSERT INTO `callers` (`id`, `caller_code`, `name`, `email`, `phone`, `territory`, `role`, `password_hash`, `status`)
 VALUES
-  (1, 'CALLER-101', 'Rahul Sharma', 'rahul.sharma@concaverealty.com', '98201 12345', 'Goregaon, Bhayander', 'Senior Location Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active'),
-  (2, 'CALLER-102', 'Priya Deshmukh', 'priya.deshmukh@concaverealty.com', '98202 23456', 'Borivali West, Mira Road', 'North Suburb Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active'),
-  (3, 'CALLER-103', 'Sneha Kapadia', 'sneha.kapadia@concaverealty.com', '98203 34567', 'Versova, Worli, Bandra', 'South Mumbai Luxury Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active')
+  (1, 'Callerpreet', 'Preet Jain', 'preetjainwhatsapp@gmail.com', '98201 12345', 'Borivali, Kandivali, Goregaon, Malad', 'Senior Location Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active'),
+  (2, 'Callerproxy', 'Callerproxy', 'preetrajeshjain@gmail.com', '98202 23456', 'Jogeshwari, Andheri, Bandra, Lower Parel', 'Central & Coastal Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active')
 ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
 
 SET FOREIGN_KEY_CHECKS = 1;

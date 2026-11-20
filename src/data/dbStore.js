@@ -185,317 +185,433 @@ export function isConfirmedLead(lead) {
   return lead.statusCode === 1 || lead.statusCode === 2 || lead.statusCode === 8 || lead.isHotLead === true;
 }
 
-const DB_KEY = "concave_realty_compact_db_v2";
-const CALLERS_KEY = "concave_realty_callers_v2";
+// Check if a record is a callback / retry follow-up
+export function isCallbackLead(lead) {
+  if (!lead) return false;
+  const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+  if (isUncalled) return false; // Uncalled enquiries stay in Active Queue until dialed
+  if (lead.statusCode === 5 || lead.statusCode === 6 || lead.s === 5 || lead.s === 6 || lead.callStatusCode === 5) return false;
+  const cs = lead.callStatusCode ?? lead.cs;
+  const s = lead.statusCode ?? lead.s;
+  const isRetryCall = cs === 2 || cs === 3 || cs === 6 || cs === 7;
+  const isFollowUpStatus = s === 3 || s === 4;
+  return isRetryCall || isFollowUpStatus;
+}
 
-// Default Callers with territory location IDs (strictly from 8 Our Projects locations)
+// Check if a record is a pending enquiry (Active Queue)
+// In Active Queue there should be pending calls only where callers need to make a call (Uncalled)
+export function isPendingEnquiry(lead) {
+  if (!lead) return false;
+  return lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+}
+
+const DB_KEY = "concave_realty_compact_db_v5";
+const CALLERS_KEY = "concave_realty_callers_v5";
+
+// Default Callers with territory location IDs & ID generation timestamps
 const DEFAULT_CALLERS = [
   {
     id: 1,
-    callerCode: "CALLER-101",
-    name: "Rahul Sharma",
+    callerCode: "Callerpreet",
+    name: "Preet Jain",
     phone: "98201 12345",
-    email: "rahul.sharma@concaverealty.com",
-    password: "caller123",
-    assignedLocations: [3], // Goregaon
+    email: "preetjainwhatsapp@gmail.com",
+    password: "Preetpassword",
+    assignedLocations: [1, 2, 3, 4], // Borivali, Kandivali, Goregaon, Malad
     role: "Senior Location Specialist",
-    active: true
+    active: true,
+    createdAt: new Date(2026, 10, 1, 0, 0, 0).getTime() // 1 Nov 2026
   },
   {
     id: 2,
-    callerCode: "CALLER-102",
-    name: "Priya Deshmukh",
+    callerCode: "Callerproxy",
+    name: "Callerproxy",
     phone: "98202 23456",
-    email: "priya.deshmukh@concaverealty.com",
-    password: "caller123",
-    assignedLocations: [1, 2], // Borivali, Kandivali
-    role: "North Suburb Specialist",
-    active: true
-  },
-  {
-    id: 3,
-    callerCode: "CALLER-103",
-    name: "Sneha Kapadia",
-    phone: "98203 34567",
-    email: "sneha.kapadia@concaverealty.com",
-    password: "caller123",
-    assignedLocations: [6, 7], // Andheri, Bandra
-    role: "Luxury Coastal Specialist",
-    active: true
-  },
-  {
-    id: 4,
-    callerCode: "CALLER-104",
-    name: "Vikram Mehta",
-    phone: "98204 45678",
-    email: "vikram.mehta@concaverealty.com",
-    password: "caller123",
-    assignedLocations: [4, 5, 8], // Malad, Jogeshwari, Lower Parel
-    role: "Central & Commercial Hub Specialist",
-    active: true
+    email: "preetrajeshjain@gmail.com",
+    password: "Proxypassword",
+    assignedLocations: [5, 6, 7, 8], // Jogeshwari, Andheri, Bandra, Lower Parel
+    role: "Central & Coastal Specialist",
+    active: true,
+    createdAt: new Date(2026, 10, 1, 0, 0, 0).getTime() // 1 Nov 2026
   }
 ];
 
 // Initial Seed Leads (Stored with compact single-letter keys)
 // { i: id, n: name, m: mobile, e: email, l: locId, p: projId, t: typeId, s: statusId, c: callerId, cs: callStatusId, rc: retryCount, na: nextAttempt, ts: createdAt, nt: notes }
 const INITIAL_SEED_LEADS = [
-  // ── HISTORICAL RECORDS (July - September 2026) for Quarterly Queue Engine ──
+  // ── HISTORICAL RECORDS (July - August 2026: Strictly Admin only, created before caller ID generation) ──
   {
     i: 91,
     n: "Kunal Shah",
     m: "98200 44111",
     e: "kunal.shah@example.com",
-    l: 2, // Versova
+    l: 6, // Andheri
     p: 2, // Godrej Skyshore
     t: 1,
-    s: 5, // Not Interested (Disposable non-lead)
-    c: 3,
+    s: 5, // Not Interested
+    c: null,
     cs: 1,
     rc: 0,
     na: null,
     ts: new Date(2026, 6, 15, 11, 30).getTime(), // 15 Jul 2026
     d: "Budget mismatch for 4 BHK sky bungalow. Customer looking under 5 Cr.",
-    nt: [{ by: "Sneha Kapadia", at: new Date(2026, 6, 15, 12, 0).getTime(), txt: "Client budget is too low for Versova luxury tier. Marked Not Interested." }]
+    dv: "Apple iPhone",
+    nt: [{ by: "Admin Desk", at: new Date(2026, 6, 15, 12, 0).getTime(), txt: "Client budget is too low for Versova luxury tier. Marked Not Interested." }]
   },
   {
     i: 92,
-    n: "Sanjay Singhal",
-    m: "98190 22334",
-    e: "sanjay.s@corp.in",
-    l: 1, // Borivali West
-    p: 1, // Kalpataru Advay
-    t: 2,
-    s: 1, // Hot Lead (1) -> PROTECTED FOREVER!
-    c: 2,
-    cs: 1,
-    rc: 0,
-    na: null,
-    ts: new Date(2026, 6, 22, 14, 15).getTime(), // 22 Jul 2026
-    d: "Booked 3 BHK royal suite with custom wooden deck.",
-    nt: [{ by: "Priya Deshmukh", at: new Date(2026, 6, 22, 15, 0).getTime(), txt: "Hot Lead from July. Token paid. High value VIP account." }]
-  },
-  {
-    i: 93,
     n: "Meera Nair",
     m: "98201 99881",
     e: "meera.test@fake.com",
     l: 3, // Goregaon
     p: 4, // Concave Signature
     t: 1,
-    s: 6, // Fake / Spam (Disposable non-lead)
-    c: 1,
+    s: 6, // Fake / Spam
+    c: null,
     cs: 1,
     rc: 0,
     na: null,
     ts: new Date(2026, 7, 10, 16, 45).getTime(), // 10 Aug 2026
     d: "Invalid contact inquiry from aggregator.",
-    nt: [{ by: "Rahul Sharma", at: new Date(2026, 7, 10, 17, 0).getTime(), txt: "Phone number invalid, bot lead. Marked Fake/Spam." }]
-  },
-  {
-    i: 94,
-    n: "Vikramaditya Roy",
-    m: "98203 11223",
-    e: "v.roy@conglomerate.com",
-    l: 7, // Worli
-    p: 5, // Lodha World Towers
-    t: 5,
-    s: 2, // Lead (2) -> PROTECTED FOREVER!
-    c: 3,
-    cs: 1,
-    rc: 0,
-    na: null,
-    ts: new Date(2026, 7, 28, 10, 20).getTime(), // 28 Aug 2026
-    d: "Evaluating 4 BHK sea-facing suite in World View tower.",
-    nt: [{ by: "Sneha Kapadia", at: new Date(2026, 7, 28, 11, 0).getTime(), txt: "Active HNI lead from August. Discussing payment milestones." }]
-  },
-  {
-    i: 95,
-    n: "Harsh Vardhan",
-    m: "98204 77665",
-    e: "harsh.v@outlook.com",
-    l: 6, // Kandivali
-    p: 3, // Godrej Reserve
-    t: 1,
-    s: 5, // Not Interested (Disposable non-lead)
-    c: 4,
-    cs: 1,
-    rc: 0,
-    na: null,
-    ts: new Date(2026, 8, 14, 18, 0).getTime(), // 14 Sep 2026
-    d: "Relocating to Bangalore corporate office.",
-    nt: [{ by: "Vikram Mehta", at: new Date(2026, 8, 14, 18, 30).getTime(), txt: "Customer shifting cities. Not Interested in Mumbai properties." }]
-  },
-  {
-    i: 96,
-    n: "Nisha Patel",
-    m: "91670 55443",
-    e: "nisha.p@gmail.com",
-    l: 5, // Mira Road
-    p: 6, // Mira-Bhayander Waterfront
-    t: 3,
-    s: 4, // Not Picking Up -> PROTECTED PENDING CALL!
-    c: 2,
-    cs: 3, // Daily retry pending
-    rc: 3,
-    na: Date.now() + 3600 * 1000 * 20,
-    ts: new Date(2026, 8, 29, 12, 10).getTime(), // 29 Sep 2026
-    d: "Requested callback regarding 2 BHK waterfront facing unit.",
-    nt: [{ by: "Priya Deshmukh", at: new Date(2026, 8, 29, 12, 30).getTime(), txt: "Pending caller follow-up." }]
+    dv: "Windows PC",
+    nt: [{ by: "Admin Desk", at: new Date(2026, 7, 10, 17, 0).getTime(), txt: "Phone number invalid, bot lead. Marked Fake/Spam." }]
   },
 
-  // ── RECENT RECORDS (Past 30 Days / November 2026) 100% IMMUNE FROM PURGE ──
+  // ── CALLER 1: Preet Jain (Locations: Borivali [1], Kandivali [2], Goregaon [3], Malad [4]) ──
+  // 1. Pending Enquiries (Active Queue - Uncalled: cs: 0, s: 7) - New incoming web enquiries
   {
     i: 101,
-    n: "Aarav Mehta",
-    m: "98765 43210",
-    e: "aarav.mehta@example.com",
-    l: 1, // Borivali West
-    p: 1, // Kalpataru Advay
-    t: 2, // Site Visit
-    s: 1, // Hot Lead (1)
-    c: 2, // Priya Deshmukh (assigned for Borivali)
-    cs: 1, // Connected
+    n: "Ananya Sharma",
+    m: "98201 55667",
+    e: "ananya.s@example.com",
+    l: 3, // Goregaon
+    p: 4, // Concave Signature Residences
+    t: 1, // General Enquiry
+    s: 7, // New
+    c: 1, // Preet Jain
+    cs: 0, // Uncalled
     rc: 0,
     na: null,
-    ts: Date.now() - 3600 * 1000 * 5,
-    d: "Interested in 3 BHK 1319 CA on 30+ floor. Ready for booking token next week.",
-    nt: [
-      { by: "Priya Deshmukh", at: Date.now() - 3600 * 1000 * 3, txt: "Spoke for 12 mins. Client works in BKC, looking for sea-view deck unit. Marked as HOT LEAD." }
-    ]
+    ts: Date.now() - 3600 * 1000 * 1.5,
+    d: "Interested in 3 BHK high floor unit near Inorbit Mall.",
+    dv: "Windows PC",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Goregaon." }]
   },
   {
     i: 102,
-    n: "Diya Kapoor",
-    m: "98200 11882",
-    e: "diya.k@example.com",
-    l: 2, // Versova
-    p: 2, // Godrej Skyshore
-    t: 1, // Enquiry
-    s: 1, // Hot Lead (1)
-    c: 3, // Sneha Kapadia (Versova Specialist)
-    cs: 1,
+    n: "Vikramaditya Roy",
+    m: "98192 33445",
+    e: "v.roy@example.com",
+    l: 4, // Malad
+    p: 6, // Mira-Bhayander Waterfront Enclave
+    t: 1,
+    s: 7,
+    c: 1, // Preet Jain
+    cs: 0,
     rc: 0,
     na: null,
-    ts: Date.now() - 3600 * 1000 * 8,
-    d: "Looking for 4 Bed Royal Residence with 25:25:50 Diwali payment plan.",
-    nt: [
-      { by: "Sneha Kapadia", at: Date.now() - 3600 * 1000 * 6, txt: "Scheduled private virtual tour review and site-visit on Saturday 4 PM." }
-    ]
+    ts: Date.now() - 3600 * 1000 * 2.5,
+    d: "Enquiry for 2 BHK waterfront facing apartment with deck.",
+    dv: "Apple iPhone",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Malad." }]
   },
   {
     i: 103,
+    n: "Kavita Rao",
+    m: "98205 66789",
+    e: "kavita.rao@example.com",
+    l: 1, // Borivali
+    p: 1, // Kalpataru Advay
+    t: 1,
+    s: 7,
+    c: 1, // Preet Jain
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 3.8,
+    d: "Interested in 3 BHK sea-view residence. Requested brochure and floor plans.",
+    dv: "Android Smartphone",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 3.8, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Borivali." }]
+  },
+  {
+    i: 104,
+    n: "Siddharth Patel",
+    m: "98206 11224",
+    e: "siddharth.p@example.com",
+    l: 2, // Kandivali
+    p: 3, // Godrej Reserve
+    t: 1,
+    s: 7,
+    c: 1, // Preet Jain
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 4.2,
+    d: "Inquiry for 2 BHK luxury apartment with club view.",
+    dv: "OnePlus",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.2, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Kandivali." }]
+  },
+  {
+    i: 105,
+    n: "Neha Singhania",
+    m: "98207 44332",
+    e: "neha.s@example.com",
+    l: 3, // Goregaon
+    p: 4, // Concave Signature Residences
+    t: 2, // Site Visit
+    s: 7,
+    c: 1, // Preet Jain
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 5.5,
+    d: "Requested Sunday site visit for 4 BHK duplex suite.",
+    dv: "Samsung Galaxy",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 5.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Goregaon." }]
+  },
+  // 2. Confirmed Leads (Called and marked: Hot Lead / Lead)
+  {
+    i: 106,
+    n: "Sanjay Singhal",
+    m: "98190 22334",
+    e: "sanjay.s@corp.in",
+    l: 1, // Borivali
+    p: 1, // Kalpataru Advay
+    t: 2,
+    s: 1, // Hot Lead
+    c: 1, // Preet Jain
+    cs: 1, // Connected & Discussed
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 7,
+    d: "Booked 3 BHK royal suite with custom wooden deck.",
+    dv: "Apple iPhone",
+    nt: [{ by: "Preet Jain", at: Date.now() - 3600 * 1000 * 6, txt: "Spoke for 15 mins. Client confirmed 3 BHK booking token for this Saturday. High value VIP lead." }]
+  },
+  {
+    i: 107,
+    n: "Rohan Varma",
+    m: "98199 44321",
+    e: "rohan.v@example.com",
+    l: 4, // Malad
+    p: 6, // Mira-Bhayander Waterfront Enclave
+    t: 1,
+    s: 2, // Lead (Interested)
+    c: 1, // Preet Jain
+    cs: 1, // Connected & Discussed
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 12,
+    d: "Looking for 2 BHK budget around 1.15 Cr all-in.",
+    dv: "Samsung Galaxy",
+    nt: [{ by: "Preet Jain", at: Date.now() - 3600 * 1000 * 10, txt: "Interested in payment milestone schedule. Sent brochure via WhatsApp." }]
+  },
+  // 3. Non-Leads / Callbacks
+  {
+    i: 108,
     n: "Kabir Singh",
     m: "90040 22119",
     e: "kabir.singh@example.com",
     l: 3, // Goregaon
     p: 4, // Concave Signature
     t: 3, // Callback
-    s: 4, // Not Picking Up (4)
-    c: 1, // Rahul Sharma (Goregaon Specialist)
+    s: 4, // Not Answered
+    c: 1, // Preet Jain
     cs: 2, // 4hr retry pending
     rc: 1,
-    na: Date.now() + 3600 * 1000 * 2.5, // Due in 2.5 hours
-    ts: Date.now() - 3600 * 1000 * 1.5,
+    na: Date.now() + 3600 * 1000 * 2,
+    ts: Date.now() - 3600 * 1000 * 8,
     d: "Requested callback regarding ready-to-move units near Inorbit.",
-    nt: [
-      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 1.5, txt: "Rung 4 times, no response. Scheduled 4-hour automatic re-dial." }
-    ]
+    dv: "Android Smartphone",
+    nt: [{ by: "Preet Jain", at: Date.now() - 3600 * 1000 * 7.5, txt: "Rung 4 times, no response. Scheduled 4-hour automatic re-dial." }]
   },
   {
-    i: 104,
-    n: "Rohan Varma",
-    m: "98199 44321",
-    e: "rohan.v@example.com",
-    l: 4, // Bhayander
-    p: 6, // Mira-Bhayander Waterfront
+    i: 109,
+    n: "Rajesh Kothari",
+    m: "98208 99881",
+    e: "rajesh.k@example.com",
+    l: 2, // Kandivali
+    p: 3, // Godrej Reserve
     t: 1,
-    s: 2, // Interested (2)
-    c: 1, // Rahul Sharma (Bhayander Specialist)
-    cs: 1,
+    s: 5, // Not Interested
+    c: 1, // Preet Jain
+    cs: 1, // Connected & Discussed
     rc: 0,
     na: null,
-    ts: Date.now() - 3600 * 1000 * 24,
-    d: "Looking for 2 BHK budget around 1.15 Cr all-in.",
-    nt: [
-      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 20, txt: "Interested in payment milestone schedule. Sent brochure via WhatsApp." }
-    ]
+    ts: Date.now() - 3600 * 1000 * 16,
+    d: "Purchased commercial property elsewhere.",
+    dv: "Windows PC",
+    nt: [{ by: "Preet Jain", at: Date.now() - 3600 * 1000 * 15, txt: "Client purchased commercial office in BKC. Not interested in residential property." }]
   },
+
+  // ── CALLER 2: Callerproxy (Locations: Jogeshwari [5], Andheri [6], Bandra [7], Lower Parel [8]) ──
+  // 1. Pending Enquiries (Active Queue - Uncalled: cs: 0, s: 7) - New incoming web enquiries
   {
-    i: 105,
-    n: "Amitabh Singhania",
-    m: "98205 99887",
-    e: "singhania@corp.in",
-    l: 7, // Worli
-    p: 5, // Lodha World Towers
-    t: 5, // VIP Consultation
-    s: 1, // Hot Lead
-    c: 3, // Sneha Kapadia (Worli Specialist)
-    cs: 1,
-    rc: 0,
-    na: null,
-    ts: Date.now() - 3600 * 1000 * 14,
-    d: "Seeking 5 BHK Duplex Sky Mansion in Worli.",
-    nt: [
-      { by: "Sneha Kapadia", at: Date.now() - 3600 * 1000 * 12, txt: "High net-worth buyer. Arranged private presentation with senior director." }
-    ]
-  },
-  {
-    i: 106,
+    i: 110,
     n: "Pooja Hegde",
     m: "91672 88771",
     e: "pooja.h@gmail.com",
-    l: 5, // Mira Road
-    p: 6, // Mira-Bhayander
-    t: 4,
-    s: 4, // Not Picking Up
-    c: 2, // Priya Deshmukh (Mira Road Specialist)
+    l: 5, // Jogeshwari
+    p: 6, // Mira-Bhayander Waterfront Enclave
+    t: 1,
+    s: 7,
+    c: 2, // Callerproxy
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 1.8,
+    d: "Downloaded digital brochure for waterfront facing residences.",
+    dv: "Samsung Galaxy",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Jogeshwari." }]
+  },
+  {
+    i: 111,
+    n: "Amit Deshmukh",
+    m: "98209 33221",
+    e: "amit.d@example.com",
+    l: 6, // Andheri
+    p: 2, // Godrej Skyshore
+    t: 1,
+    s: 7,
+    c: 2, // Callerproxy
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 2.8,
+    d: "Interested in 3 BHK sea-view penthouse in Versova.",
+    dv: "Apple iPhone",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Andheri." }]
+  },
+  {
+    i: 112,
+    n: "Ritu Kapoor",
+    m: "98210 77665",
+    e: "ritu.k@example.com",
+    l: 7, // Bandra
+    p: 5, // Lodha World Towers Collection
+    t: 2, // Site Visit
+    s: 7,
+    c: 2, // Callerproxy
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 4.0,
+    d: "Inquiry for 4 BHK sea-view residential suite.",
+    dv: "Mac / MacBook",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.0, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Bandra." }]
+  },
+  {
+    i: 113,
+    n: "Kunal Shah",
+    m: "98211 44556",
+    e: "kunal.shah99@example.com",
+    l: 8, // Lower Parel
+    p: 5, // Lodha World Towers Collection
+    t: 5, // Private Consultation
+    s: 7,
+    c: 2, // Callerproxy
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 4.7,
+    d: "VIP consultation request for high floor duplex suite.",
+    dv: "OnePlus",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.7, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Lower Parel." }]
+  },
+  {
+    i: 114,
+    n: "Farhan Merchant",
+    m: "98212 88990",
+    e: "farhan.m@example.com",
+    l: 6, // Andheri
+    p: 2, // Godrej Skyshore
+    t: 1,
+    s: 7,
+    c: 2, // Callerproxy
+    cs: 0,
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 5.8,
+    d: "Enquiry for 3 BHK luxury layout and payment plans.",
+    dv: "Android Smartphone",
+    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 5.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Andheri." }]
+  },
+  // 2. Confirmed Leads (Called and marked: Hot Lead / Lead)
+  {
+    i: 115,
+    n: "Amitabh Singhania",
+    m: "98205 99887",
+    e: "singhania@corp.in",
+    l: 8, // Lower Parel
+    p: 5, // Lodha World Towers Collection
+    t: 5,
+    s: 1, // Hot Lead
+    c: 2, // Callerproxy
+    cs: 1, // Connected & Discussed
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 14,
+    d: "Seeking 5 BHK Duplex Sky Mansion in Worli/Lower Parel.",
+    dv: "Apple iPhone",
+    nt: [{ by: "Callerproxy", at: Date.now() - 3600 * 1000 * 12, txt: "High net-worth buyer. Arranged private presentation with senior director for this Friday." }]
+  },
+  {
+    i: 116,
+    n: "Diya Kapoor",
+    m: "98200 11882",
+    e: "diya.k@example.com",
+    l: 6, // Andheri
+    p: 2, // Godrej Skyshore
+    t: 1,
+    s: 2, // Lead (Interested)
+    c: 2, // Callerproxy
+    cs: 1, // Connected & Discussed
+    rc: 0,
+    na: null,
+    ts: Date.now() - 3600 * 1000 * 18,
+    d: "Looking for 4 Bed Royal Residence with 25:25:50 Diwali plan.",
+    dv: "Google Pixel",
+    nt: [{ by: "Callerproxy", at: Date.now() - 3600 * 1000 * 16, txt: "Scheduled private virtual tour review and site-visit on Saturday 4 PM." }]
+  },
+  // 3. Non-Leads / Callbacks
+  {
+    i: 117,
+    n: "Nisha Patel",
+    m: "91670 55443",
+    e: "nisha.p@gmail.com",
+    l: 5, // Jogeshwari
+    p: 6, // Mira-Bhayander Waterfront Enclave
+    t: 3, // Callback
+    s: 4, // Not Answered
+    c: 2, // Callerproxy
     cs: 3, // Daily retry pending
     rc: 2,
-    na: Date.now() + 3600 * 1000 * 14, // Tomorrow
-    ts: Date.now() - 3600 * 1000 * 28,
-    d: "Downloaded digital kit for Mira Road project.",
+    na: Date.now() + 3600 * 1000 * 18,
+    ts: Date.now() - 3600 * 1000 * 20,
+    d: "Requested callback regarding 2 BHK waterfront facing unit.",
+    dv: "Samsung Galaxy",
     nt: [
-      { by: "Priya Deshmukh", at: Date.now() - 3600 * 1000 * 28, txt: "Attempt 1: No answer." },
-      { by: "Priya Deshmukh", at: Date.now() - 3600 * 1000 * 24, txt: "Attempt 2 (4h retry): Switched off. Moved to daily retry schedule (Day 2 of 10)." }
+      { by: "Callerproxy", at: Date.now() - 3600 * 1000 * 20, txt: "Attempt 1: No answer." },
+      { by: "Callerproxy", at: Date.now() - 3600 * 1000 * 16, txt: "Attempt 2 (4h retry): Line busy. Moved to daily retry schedule." }
     ]
   },
   {
-    i: 107,
-    n: "Ananya Sharma",
-    m: "98201 55667",
-    e: "ananya.s@example.com",
-    l: 3, // Goregaon
-    p: 4, // Concave Signature
-    t: 1, // General Enquiry
-    s: 7, // New Lead / Enquiry record
-    c: 1, // Rahul Sharma
-    cs: 0, // Uncalled
+    i: 118,
+    n: "Harsh Vardhan",
+    m: "98204 77665",
+    e: "harsh.v@outlook.com",
+    l: 7, // Bandra
+    p: 5, // Lodha World Towers Collection
+    t: 1,
+    s: 5, // Not Interested
+    c: 2, // Callerproxy
+    cs: 1, // Connected & Discussed
     rc: 0,
     na: null,
-    ts: Date.now() - 3600 * 1000 * 2,
-    d: "Interested in 3 BHK high floor unit near Inorbit Mall.",
-    nt: [
-      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Goregaon." }
-    ]
-  },
-  {
-    i: 108,
-    n: "Vikramaditya Roy",
-    m: "98192 33445",
-    e: "v.roy@example.com",
-    l: 4, // Bhayander
-    p: 6, // Mira-Bhayander
-    t: 1, // General Enquiry
-    s: 7, // New Lead / Enquiry record
-    c: 1, // Rahul Sharma
-    cs: 0, // Uncalled
-    rc: 0,
-    na: null,
-    ts: Date.now() - 3600 * 1000 * 1,
-    d: "Enquiry for 2 BHK waterfront facing apartment.",
-    nt: [
-      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Bhayander." }
-    ]
+    ts: Date.now() - 3600 * 1000 * 22,
+    d: "Relocating to Bangalore corporate office.",
+    dv: "OnePlus",
+    nt: [{ by: "Callerproxy", at: Date.now() - 3600 * 1000 * 21, txt: "Customer shifting cities to Bangalore. Not interested in Mumbai properties." }]
   }
 ];
 
@@ -852,6 +968,16 @@ export const dbStore = {
   // Initialize storage if empty
   init() {
     try {
+      // Clear legacy storage versions to purge all old caller & lead data cleanly
+      if (typeof localStorage !== 'undefined') {
+        ['v1', 'v2', 'v3', 'v4'].forEach(v => {
+          try {
+            localStorage.removeItem(`concave_realty_compact_db_${v}`);
+            localStorage.removeItem(`concave_realty_callers_${v}`);
+          } catch {}
+        });
+      }
+
       const existing = getRawData(DB_KEY, null);
       if (!existing || existing.length === 0) {
         setRawData(DB_KEY, INITIAL_SEED_LEADS);
@@ -865,20 +991,21 @@ export const dbStore = {
         });
         if (updated) setRawData(DB_KEY, existing);
       }
+
       if (!localStorage.getItem(CALLERS_KEY)) {
         setRawData(CALLERS_KEY, DEFAULT_CALLERS);
       } else {
-        // Guarantee callers in localStorage only reference valid canonical Our Projects locations (1..8)
         const storedCallers = getRawData(CALLERS_KEY, DEFAULT_CALLERS);
         let changed = false;
         storedCallers.forEach(c => {
-          if (c.id === 1) {
-            c.assignedLocations = [3]; // Rahul Sharma -> Goregaon
+          if (!c.createdAt) {
+            c.createdAt = new Date(2026, 10, 1, 0, 0, 0).getTime();
             changed = true;
-          } else if (c.assignedLocations) {
+          }
+          if (c.assignedLocations) {
             const valid = c.assignedLocations.filter(lid => lid >= 1 && lid <= 8);
             if (valid.length !== c.assignedLocations.length) {
-              c.assignedLocations = valid.length > 0 ? valid : [3];
+              c.assignedLocations = valid.length > 0 ? valid : [1];
               changed = true;
             }
           }
@@ -916,10 +1043,12 @@ export const dbStore = {
           callerCode: `CALLER-${100 + newId}`,
           name: callerData.name || "New Caller",
           phone: callerData.phone || "",
+          email: callerData.email || "",
           password: callerData.password || "caller123",
           assignedLocations: callerData.assignedLocations || [1],
           role: callerData.role || "Location Sales Specialist",
-          active: true
+          active: true,
+          createdAt: callerData.createdAt || Date.now() // Timestamp of ID generation
         };
         callers.push(newCaller);
       }
@@ -980,7 +1109,7 @@ export const dbStore = {
       const callers = this.getCallers();
       const idx = callers.findIndex(c =>
         c.id === callerIdOrCode ||
-        c.callerCode.toUpperCase() === String(callerIdOrCode).trim().toUpperCase()
+        c.callerCode === String(callerIdOrCode).trim()
       );
       if (idx !== -1) {
         callers[idx].password = await hashPassword(newPassword);
@@ -1336,6 +1465,8 @@ export const dbStore = {
   },
 
   // Get leads for a specific caller based on their assigned locations & assigned IDs
+  // CRITICAL RULE: A caller ONLY sees enquiries that arrived AFTER their ID generation.
+  // Historical enquiries of that location from before their ID generation are strictly for Admin only.
   getLeadsForCaller(callerId) {
     try {
       const all = this.getAllLeads();
@@ -1343,10 +1474,24 @@ export const dbStore = {
       const currentCaller = callers.find(c => c.id === callerId);
       if (!currentCaller) return [];
 
+      const callerCreatedTs = currentCaller.createdAt || new Date(2026, 10, 1, 0, 0, 0).getTime();
+
       return all.filter(l => {
-        // Direct assignment OR matches caller's specialized locations
-        return l.callerId === callerId ||
-          (currentCaller.assignedLocations && currentCaller.assignedLocations.includes(l.locationId));
+        const leadTs = l.createdAt || l.ts || 0;
+
+        // Strictly hide past enquiries created before this caller's ID was generated (Admin only)
+        if (leadTs < callerCreatedTs) {
+          return false;
+        }
+
+        // Single-caller isolation: An enquiry record is strictly visible to ONLY 1 caller and Admin
+        if (l.callerId) {
+          return l.callerId === callerId;
+        }
+
+        // If unassigned (callerId is null/0), fallback to location only if caller covers it
+        const matchesLocation = currentCaller.assignedLocations && currentCaller.assignedLocations.includes(l.locationId);
+        return matchesLocation;
       });
     } catch (e) {
       console.error("Error getting caller leads:", e);
@@ -1452,7 +1597,7 @@ export const dbStore = {
     }
   },
 
-  // Storage Stats (Showing Space Saved via Numeric Compression)
+  // Storage Stats (Hostinger 20 GB SSD with 2 GB Buffer Rule)
   getStorageStats() {
     try {
       const rawStr = localStorage.getItem(DB_KEY) || "";
@@ -1464,14 +1609,59 @@ export const dbStore = {
         ? Math.round(((uncompressedBytes - rawBytes) / uncompressedBytes) * 100)
         : 72;
 
+      // Hostinger 20 GB SSD Plan specifications
+      const totalPlanBytes = 20 * 1024 * 1024 * 1024; // 20.00 GB
+      const bufferBytes = 2 * 1024 * 1024 * 1024;    // 2.00 GB buffer
+      const usableQuotaBytes = totalPlanBytes - bufferBytes; // 18.00 GB
+
+      // Local / Client fallback: Baseline website files + database records
+      const estimatedUsedBytes = Math.round(1.85 * 1024 * 1024 * 1024) + rawBytes;
+      const rawRemainingBytes = Math.max(0, totalPlanBytes - estimatedUsedBytes);
+      // User rule: if remaining is 18gb then show only 16gb (keep 2gb buffer)
+      const displayedEmptyBytes = Math.max(0, rawRemainingBytes - bufferBytes);
+      const usagePercent = Math.min(100, Math.max(1, Math.round((estimatedUsedBytes / usableQuotaBytes) * 100)));
+
       return {
         recordCount: allLeads.length,
         rawBytes,
         uncompressedBytes,
-        savingsPercent: savings > 0 ? savings : 72
+        savingsPercent: savings > 0 ? savings : 72,
+        planName: "Hostinger 20 GB SSD",
+        totalPlanBytes,
+        totalPlanFormatted: "20.00 GB",
+        bufferBytes,
+        bufferFormatted: "2.00 GB",
+        usableQuotaBytes,
+        usableQuotaFormatted: "18.00 GB",
+        usedBytes: estimatedUsedBytes,
+        usedFormatted: (estimatedUsedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB",
+        rawRemainingBytes,
+        rawRemainingFormatted: (rawRemainingBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB",
+        displayedEmptyBytes,
+        displayedEmptyFormatted: (displayedEmptyBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB",
+        usagePercent
       };
     } catch {
-      return { recordCount: 6, rawBytes: 1200, uncompressedBytes: 4500, savingsPercent: 73 };
+      return {
+        recordCount: 6,
+        rawBytes: 1200,
+        uncompressedBytes: 4500,
+        savingsPercent: 73,
+        planName: "Hostinger 20 GB SSD",
+        totalPlanBytes: 20 * 1024 * 1024 * 1024,
+        totalPlanFormatted: "20.00 GB",
+        bufferBytes: 2 * 1024 * 1024 * 1024,
+        bufferFormatted: "2.00 GB",
+        usableQuotaBytes: 18 * 1024 * 1024 * 1024,
+        usableQuotaFormatted: "18.00 GB",
+        usedBytes: 2 * 1024 * 1024 * 1024,
+        usedFormatted: "2.00 GB",
+        rawRemainingBytes: 18 * 1024 * 1024 * 1024,
+        rawRemainingFormatted: "18.00 GB",
+        displayedEmptyBytes: 16 * 1024 * 1024 * 1024,
+        displayedEmptyFormatted: "16.00 GB",
+        usagePercent: 11
+      };
     }
   },
 

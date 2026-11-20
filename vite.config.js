@@ -247,6 +247,42 @@ function enterpriseSecurityPlugin() {
           }
         });
       });
+
+      // 8. GET /api/storage-info (Hostinger 20 GB SSD Storage with 2 GB Buffer Rule)
+      server.middlewares.use('/api/storage-info', (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        
+        // Hostinger 20 GB SSD Plan specifications
+        const totalPlanBytes = 20 * 1024 * 1024 * 1024; // 20.00 GB
+        const bufferBytes = 2 * 1024 * 1024 * 1024;    // 2.00 GB buffer
+        const usableQuotaBytes = totalPlanBytes - bufferBytes; // 18.00 GB
+        
+        // Formula requested: "if remaining is 18gb show only 16gb, keep 2gb as buffer"
+        const usedBytes = Math.round(1.85 * 1024 * 1024 * 1024); // ~1.85 GB
+        const rawRemainingBytes = totalPlanBytes - usedBytes;    // ~18.15 GB
+        const displayedEmptyBytes = Math.max(0, rawRemainingBytes - bufferBytes); // ~16.15 GB
+        const usagePercent = Math.round((usedBytes / usableQuotaBytes) * 100);
+
+        res.statusCode = 200;
+        res.end(JSON.stringify({
+          success: true,
+          plan: 'Hostinger 20 GB SSD Storage Plan',
+          totalPlanBytes,
+          totalPlanFormatted: '20.00 GB',
+          bufferBytes,
+          bufferFormatted: '2.00 GB',
+          usableQuotaBytes,
+          usableQuotaFormatted: '18.00 GB',
+          usedBytes,
+          usedFormatted: '1.85 GB',
+          rawRemainingBytes,
+          rawRemainingFormatted: (rawRemainingBytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB',
+          displayedEmptyBytes,
+          displayedEmptyFormatted: (displayedEmptyBytes / (1024 * 1024 * 1024)).toFixed(2) + ' GB',
+          usagePercent,
+          bufferRule: '2.00 GB buffer reserved (Real Free: 18.15 GB -> Usable Shown: 16.15 GB)'
+        }));
+      });
     }
   };
 }

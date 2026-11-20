@@ -110,7 +110,7 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
           id: 109,
           locationName: 'Goregaon',
           projectName: 'Kalpataru Advay',
-          callerName: 'Rahul Sharma (Senior Specialist)',
+          callerName: 'Preet Jain (Senior Specialist)',
           name: 'Aarav Singhania'
         };
       }
