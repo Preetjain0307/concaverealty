@@ -1571,19 +1571,6 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-2.5 sm:p-3 text-xs text-[#14221F] focus:outline-none"
                   />
                 </div>
-
-                {/* Previous Notes History */}
-                {callingLead.notes && callingLead.notes.length > 0 && (
-                  <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
-                    <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
-                    {callingLead.notes.map((note, idx) => (
-                      <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
-                        <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
-                        <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* Pinned Action Buttons Footer */}
@@ -1600,7 +1587,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   onClick={handleFinishCall}
                   className="flex-1 py-2 sm:py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer whitespace-nowrap"
                 >
-                  Save & Update
+                  SAVE & UPDATE
                 </button>
               </div>
             </div>
