@@ -1034,22 +1034,22 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                         </div>
 
                         {/* Email Input + Send OTP Button */}
-                        <div className="flex gap-2">
-                          <div className="relative flex-1">
+                        <div className="flex gap-2 items-center">
+                          <div className="relative min-w-0 flex-1">
                             <input
                               type="email"
                               required
                               value={formData.email}
                               onChange={handleEmailChange}
-                              placeholder="rahul.sharma@example.com"
-                              className={`w-full bg-[#FAF9F6] border ${
+                              placeholder="official.email@company.com"
+                              className={`w-full min-w-0 bg-[#FAF9F6] border ${
                                 otpVerified
-                                  ? 'border-emerald-500 bg-emerald-50/20 text-emerald-950 pr-9'
+                                  ? 'border-emerald-500 bg-emerald-50/20 text-emerald-950 pr-8'
                                   : 'border-[#EAE6DF] focus:border-[#1D3530]'
-                              } focus:ring-1 focus:ring-[#1D3530]/20 rounded-xl px-3.5 py-2.5 text-sm text-[#14221F] placeholder-gray-400 focus:outline-none transition-colors`}
+                              } focus:ring-1 focus:ring-[#1D3530]/20 rounded-xl px-3 sm:px-3.5 py-2.5 text-xs sm:text-sm text-[#14221F] placeholder-gray-400 focus:outline-none transition-colors`}
                             />
                             {otpVerified && (
-                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-600">
+                              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-600">
                                 <CheckCircle2 className="w-4 h-4" />
                               </span>
                             )}
@@ -1060,7 +1060,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                               type="button"
                               disabled={!isEmailValid || isSendingOtp || cooldown > 0}
                               onClick={handleSendOtp}
-                              className={`px-4 py-2.5 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shrink-0 cursor-pointer flex items-center justify-center gap-1.5 ${
+                              className={`px-3 sm:px-4 py-2.5 rounded-xl text-[11px] sm:text-xs font-bold tracking-wider uppercase transition-all shrink-0 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
                                 !isEmailValid || isSendingOtp || cooldown > 0
                                   ? 'bg-[#FAF9F6] border border-[#EAE6DF] text-[#A09A8E] cursor-not-allowed'
                                   : 'bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white border border-[#C59B4E]/40 active:scale-95 shadow-xs'
@@ -1068,7 +1068,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                             >
                               {isSendingOtp ? (
                                 <>
-                                  <span className="inline-block w-3.5 h-3.5 border-2 border-[#DFBE79]/30 border-t-[#DFBE79] rounded-full animate-spin" />
+                                  <span className="inline-block w-3 h-3 border-2 border-[#DFBE79]/30 border-t-[#DFBE79] rounded-full animate-spin" />
                                   <span>Sending...</span>
                                 </>
                               ) : cooldown > 0 ? (
@@ -1082,22 +1082,25 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
                         {/* Inline OTP Input & Verify OTP (Displayed immediately below when OTP is sent) */}
                         {otpSent && !otpVerified && (
-                          <div className="p-3.5 rounded-xl bg-white border border-[#EAE6DF] shadow-xs space-y-2.5">
-                            <div className="flex items-center justify-between text-xs">
-                              <span className="text-[#1D3530] font-semibold flex items-center gap-1.5">
-                                <ShieldCheck className="w-3.5 h-3.5 text-[#C59B4E]" />
-                                <span>Enter 6-digit OTP sent to your email:</span>
+                          <div className="p-3 sm:p-3.5 rounded-xl bg-white border border-[#EAE6DF] shadow-xs space-y-2.5 overflow-hidden">
+                            <div className="flex items-center justify-between text-xs gap-1.5 flex-wrap">
+                              <span className="text-[#1D3530] font-semibold flex items-center gap-1.5 min-w-0">
+                                <ShieldCheck className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                                <span className="text-[11px] sm:text-xs">Enter 6-digit OTP sent to your email:</span>
                               </span>
                               {otpExpirySeconds > 0 && (
-                                <span className="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                                <span className="font-mono font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[10px] sm:text-[11px] shrink-0">
                                   ⏱️ {Math.floor(otpExpirySeconds / 60)}:{(otpExpirySeconds % 60).toString().padStart(2, '0')}
                                 </span>
                               )}
                             </div>
 
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 items-center">
                               <input
                                 type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                autoComplete="one-time-code"
                                 maxLength={6}
                                 value={enteredOtp}
                                 onChange={(e) => {
@@ -1105,14 +1108,14 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                                   if (otpError) setOtpError('');
                                 }}
                                 placeholder="6-digit OTP"
-                                className="flex-1 bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#1D3530] focus:ring-1 focus:ring-[#1D3530]/20 rounded-xl px-3.5 py-2 text-sm font-mono tracking-widest text-[#1D3530] placeholder:font-sans placeholder:tracking-normal placeholder-gray-400 focus:outline-none text-center font-bold"
+                                className="min-w-0 flex-1 bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#1D3530] focus:ring-1 focus:ring-[#1D3530]/20 rounded-xl px-2.5 sm:px-3.5 py-2 text-sm font-mono tracking-widest text-[#1D3530] placeholder:font-sans placeholder:tracking-normal placeholder-gray-400 focus:outline-none text-center font-bold"
                               />
 
                               <button
                                 type="button"
                                 disabled={isVerifyingOtp || enteredOtp.length !== 6}
                                 onClick={handleVerifyOtp}
-                                className={`px-5 py-2 rounded-xl text-xs font-bold tracking-wider uppercase transition-all shrink-0 cursor-pointer flex items-center justify-center gap-1.5 ${
+                                className={`px-3 sm:px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold tracking-wider uppercase transition-all shrink-0 cursor-pointer flex items-center justify-center gap-1.5 whitespace-nowrap ${
                                   isVerifyingOtp || enteredOtp.length !== 6
                                     ? 'bg-[#FAF9F6] border border-[#EAE6DF] text-[#A09A8E] cursor-not-allowed'
                                     : 'bg-[#1D3530] hover:bg-[#284F45] text-[#DFBE79] hover:text-white border border-[#C59B4E]/40 active:scale-95 shadow-xs'
@@ -1120,7 +1123,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                               >
                                 {isVerifyingOtp ? (
                                   <>
-                                    <span className="inline-block w-3.5 h-3.5 border-2 border-[#DFBE79]/30 border-t-[#DFBE79] rounded-full animate-spin" />
+                                    <span className="inline-block w-3 h-3 border-2 border-[#DFBE79]/30 border-t-[#DFBE79] rounded-full animate-spin" />
                                     <span>Verifying...</span>
                                   </>
                                 ) : (

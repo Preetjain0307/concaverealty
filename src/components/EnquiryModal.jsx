@@ -641,6 +641,9 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
                 <input
                   id="enq-otp"
                   type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="one-time-code"
                   maxLength={4}
                   required
                   aria-required="true"
