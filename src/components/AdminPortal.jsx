@@ -875,8 +875,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
               <span className="font-serif text-[13px] xs:text-sm sm:text-base font-bold text-white tracking-[0.08em] sm:tracking-widest block leading-tight whitespace-nowrap">
                 CONCAVE REALTY
               </span>
-              <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-[0.14em] text-[#DFBE79] block mt-0.5 leading-none whitespace-nowrap">
-                Executive Portal
+              <span className="text-[9px] sm:text-[10px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.18em] text-[#DFBE79] font-semibold block mt-0.5 leading-none whitespace-nowrap">
+                Admin Panel
               </span>
             </div>
           </div>
