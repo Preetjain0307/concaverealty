@@ -204,12 +204,8 @@ echo json_encode([
     'success' => true,
     'messageId' => isset($dispatchResult['id']) ? $dispatchResult['id'] : null,
     'emailDispatched' => !empty($dispatchResult['success']),
-    'otpFallback' => $otp,
-    'devOtp' => $otp,
     'cooldownSeconds' => 60,
     'expiresInSeconds' => 300,
-    'message' => !empty($dispatchResult['success'])
-        ? "Verification code successfully dispatched to {$normalizedEmail}."
-        : "Verification code generated: [ {$otp} ]. (Resend test sandbox restriction applies to external emails)."
+    'message' => "Verification code successfully dispatched to {$normalizedEmail}."
 ]);
 exit;

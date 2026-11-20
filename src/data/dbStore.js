@@ -12,7 +12,7 @@ export const STATUS_CODES = {
   4: "Not Answered",
   5: "Not Interested",
   6: "Fake / Spam",
-  7: "Lead",
+  7: "New",
   8: "Interested",
   9: "Call Back",
   10: "Busy"
@@ -37,7 +37,7 @@ export const REVERSE_STATUS_CODES = {
   "fake": 6,
   "fake / spam": 6,
   "fake/spam": 6,
-  "new": 2
+  "new": 7
 };
 
 export const CALL_STATUS_CODES = {
@@ -174,6 +174,15 @@ export function formatCompactDevice(device) {
 export function isDesktopDevice(device) {
   if (!device) return false;
   return /PC|Mac|Windows|Linux|Desktop|Laptop/i.test(String(device));
+}
+
+// Check if a record is a confirmed Lead or Hot Lead
+// Uncalled / new online enquiries are NOT confirmed leads until called!
+export function isConfirmedLead(lead) {
+  if (!lead) return false;
+  const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+  if (isUncalled) return false;
+  return lead.statusCode === 1 || lead.statusCode === 2 || lead.statusCode === 8 || lead.isHotLead === true;
 }
 
 const DB_KEY = "concave_realty_compact_db_v2";
@@ -648,6 +657,191 @@ export function getAuditLogs(actor) {
     return [];
   }
   return getRawData(AUDIT_LOGS_KEY, []);
+}
+
+// ==========================================
+// STYLED EXCEL WORKBOOK EXPORTER
+// 1. Removes unnecessary non-provided columns (Caller Contact, Enquiry Type, Customer Requirement, Retry Count)
+// 2. Highlights confirmed Lead and Hot Lead FULL ROWS in GREEN (#00FF00) in Excel
+// 3. Styled header with bright Yellow (#FFFF00) and bold black text
+// 4. Strict plain-text status labels without any emojis
+// ==========================================
+export function exportStyledLeadsWorkbook(leads, sheetTitle, fileName) {
+  const excelRows = leads.map((l, index) => {
+    const isConfirmed = isConfirmedLead(l);
+    const isUncalled = l.callStatusCode === 0 || l.cs === 0 || l.callStatusName === 'Uncalled';
+
+    let ratingLabel = "New";
+    if (isConfirmed) {
+      ratingLabel = (l.statusCode === 1 || l.isHotLead) ? "Hot Lead" : "Lead (Interested)";
+    } else if (isUncalled) {
+      ratingLabel = "New";
+    } else {
+      ratingLabel = l.statusName || "New";
+    }
+    // Remove any accidental emojis from labels
+    ratingLabel = String(ratingLabel).replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
+
+    return {
+      "Sr No": index + 1,
+      "Lead ID": `CON-${l.id}`,
+      "Customer Name": l.name,
+      "Mobile Number": l.mobile,
+      "Email Address": l.email || "N/A",
+      "Preferred Location": l.locationName,
+      "Project Interest": l.projectName,
+      "Customer Device": l.deviceName || "Mobile Device",
+      "Lead Rating": ratingLabel,
+      "Assigned Caller": l.callerName || "Admin Desk (Direct)",
+      "Call Status": l.callStatusName || "Uncalled",
+      "Enquiry Date & Time": new Date(l.createdAt).toLocaleString(),
+      "Latest Caller Remark": l.notes && l.notes.length > 0 ? l.notes[0].txt : "Pending call"
+    };
+  });
+
+  const worksheet = XLSX.utils.json_to_sheet(excelRows);
+
+  // Auto-fit column widths
+  worksheet['!cols'] = [
+    { wch: 7 },  // Sr No
+    { wch: 12 }, // Lead ID
+    { wch: 22 }, // Customer Name
+    { wch: 16 }, // Mobile Number
+    { wch: 24 }, // Email Address
+    { wch: 18 }, // Preferred Location
+    { wch: 24 }, // Project Interest
+    { wch: 18 }, // Customer Device
+    { wch: 24 }, // Lead Rating
+    { wch: 22 }, // Assigned Caller
+    { wch: 22 }, // Call Status
+    { wch: 22 }, // Enquiry Date & Time
+    { wch: 45 }  // Latest Caller Remark
+  ];
+
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetTitle);
+
+  try {
+    const bin = XLSX.write(workbook, { type: 'binary', bookType: 'xlsx' });
+    const cfb = XLSX.CFB.read(bin, { type: 'binary' });
+
+    // 1. Inject styles into styles.xml
+    const stylesFile = cfb.FileIndex.find(f => f.name === 'styles.xml');
+    if (stylesFile) {
+      const customStylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <fonts count="2">
+    <!-- Font 0: Regular Calibri 11pt, Black -->
+    <font><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+    <!-- Font 1: Bold Calibri 11pt, Black -->
+    <font><b/><sz val="11"/><color rgb="FF000000"/><name val="Calibri"/></font>
+  </fonts>
+  <fills count="4">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <!-- Fill 2: Bright Yellow Header #FFFF00 -->
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFF00"/><bgColor indexed="64"/></patternFill></fill>
+    <!-- Fill 3: Bright Green Confirmed Lead Highlight #00FF00 -->
+    <fill><patternFill patternType="solid"><fgColor rgb="FF00FF00"/><bgColor indexed="64"/></patternFill></fill>
+  </fills>
+  <borders count="2">
+    <border><left/><right/><top/><bottom/><diagonal/></border>
+    <border>
+      <left style="thin"><color rgb="FFD0D0D0"/></left>
+      <right style="thin"><color rgb="FFD0D0D0"/></right>
+      <top style="thin"><color rgb="FFD0D0D0"/></top>
+      <bottom style="thin"><color rgb="FFD0D0D0"/></bottom>
+    </border>
+  </borders>
+  <cellStyleXfs count="1">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0"/>
+  </cellStyleXfs>
+  <cellXfs count="3">
+    <!-- 0: Default Normal Data Cell -->
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1"/>
+    <!-- 1: Header Row (Yellow Fill + Bold Black Text + Centered) -->
+    <xf numFmtId="0" fontId="1" fillId="2" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1">
+      <alignment horizontal="center" vertical="center"/>
+    </xf>
+    <!-- 2: Confirmed Lead Full Row (Green Fill + Regular Black Text) -->
+    <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1">
+      <alignment vertical="center"/>
+    </xf>
+  </cellXfs>
+  <cellStyles count="1">
+    <cellStyle name="Normal" xfId="0" builtinId="0"/>
+  </cellStyles>
+</styleSheet>`;
+      stylesFile.content = new TextEncoder().encode(customStylesXml);
+      stylesFile.size = stylesFile.content.length;
+    }
+
+    // 2. Identify rows to style green: strictly ONLY confirmed leads (called and marked as Lead / Hot Lead)
+    const greenRowNumbers = new Set();
+    leads.forEach((l, idx) => {
+      if (isConfirmedLead(l)) {
+        greenRowNumbers.add(idx + 2); // Excel 1-based, row 1 is header
+      }
+    });
+
+    const sheetFile = cfb.FileIndex.find(f => f.name === 'sheet1.xml');
+    if (sheetFile) {
+      let sheetXml = new TextDecoder().decode(sheetFile.content);
+
+      function applyStyleToCells(cellsXml, rowNum, styleIndex) {
+        const cellRegex = new RegExp(`<c r="([A-Z]+${rowNum})"([^>]*)>`, 'g');
+        return cellsXml.replace(cellRegex, (m, cellRef, rest) => {
+          if (/s="\d+"/.test(rest)) {
+            return `<c r="${cellRef}"${rest.replace(/s="\d+"/, `s="${styleIndex}"`)}>`;
+          }
+          return `<c r="${cellRef}" s="${styleIndex}"${rest}>`;
+        });
+      }
+
+      // Style header row 1 (Yellow)
+      sheetXml = sheetXml.replace(/<row r="1"([^>]*)>([\s\S]*?)<\/row>/, (m, attrs, cells) => {
+        const styledCells = applyStyleToCells(cells, 1, 1);
+        return `<row r="1" s="1" customFormat="1"${attrs}>${styledCells}</row>`;
+      });
+
+      // Style all confirmed Lead / Hot Lead full rows with s="2" (Green across all columns A-M)
+      greenRowNumbers.forEach(rowNum => {
+        const reg = new RegExp(`(<row r="${rowNum}"[^>]*>)([\\s\\S]*?)(<\\/row>)`);
+        sheetXml = sheetXml.replace(reg, (m, openTag, cells, closeTag) => {
+          const styledCells = applyStyleToCells(cells, rowNum, 2);
+          return `<row r="${rowNum}" s="2" customFormat="1">${styledCells}</row>`;
+        });
+      });
+
+      sheetFile.content = new TextEncoder().encode(sheetXml);
+      sheetFile.size = sheetFile.content.length;
+    }
+
+    const outBin = XLSX.CFB.write(cfb, { fileType: 'zip', type: 'binary' });
+
+    if (typeof window !== 'undefined' && window.document) {
+      const buf = new ArrayBuffer(outBin.length);
+      const view = new Uint8Array(buf);
+      for (let i = 0; i < outBin.length; i++) view[i] = outBin.charCodeAt(i) & 0xFF;
+
+      const blob = new Blob([view], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      return true;
+    }
+  } catch (err) {
+    console.warn("Styled Excel export fallback to standard writer:", err);
+  }
+
+  // Fallback to standard XLSX.writeFile
+  XLSX.writeFile(workbook, fileName);
+  return true;
 }
 
 // ==========================================
@@ -1281,66 +1475,17 @@ export const dbStore = {
     }
   },
 
-  // ==========================================
   // 1-CLICK EXCEL EXPORT (Decoded Master Data)
   // ==========================================
   exportMasterLeadsToExcel(user = null) {
     try {
       const leads = this.getAllLeads();
-      const excelRows = leads.map((l, index) => ({
-        "Sr No": index + 1,
-        "Lead ID": `CON-${l.id}`,
-        "Customer Name": l.name,
-        "Mobile Number": l.mobile,
-        "Email Address": l.email || "N/A",
-        "Preferred Location": l.locationName,
-        "Project Interest": l.projectName,
-        "Customer Device": l.deviceName || "Mobile Device",
-        "Enquiry Type": l.typeName,
-        "Lead Rating": l.statusName,
-        "Is Hot Lead?": l.isHotLead ? "YES (Hot Lead)" : "Normal",
-        "Assigned Caller": l.callerName,
-        "Caller Contact": l.callerPhone,
-        "Call Status": l.callStatusName,
-        "Retry Count": l.retryCount,
-        "Next Followup Scheduled": l.nextAttemptAt ? new Date(l.nextAttemptAt).toLocaleString() : "None",
-        "Enquiry Date & Time": new Date(l.createdAt).toLocaleString(),
-        "Customer Requirement / Description": l.description,
-        "Latest Caller Remark": l.notes.length > 0 ? l.notes[0].txt : "Pending call"
-      }));
-
-      const worksheet = XLSX.utils.json_to_sheet(excelRows);
-
-      // Auto-fit column widths
-      const colWidths = [
-        { wch: 6 },  // Sr No
-        { wch: 10 }, // Lead ID
-        { wch: 20 }, // Name
-        { wch: 15 }, // Mobile
-        { wch: 22 }, // Email
-        { wch: 18 }, // Location
-        { wch: 26 }, // Project
-        { wch: 18 }, // Type
-        { wch: 24 }, // Rating
-        { wch: 14 }, // Hot lead
-        { wch: 18 }, // Caller
-        { wch: 14 }, // Caller phone
-        { wch: 22 }, // Call status
-        { wch: 12 }, // Retry count
-        { wch: 24 }, // Next followup
-        { wch: 22 }, // Date
-        { wch: 40 }, // Requirement
-        { wch: 45 }  // Latest remark
-      ];
-      worksheet['!cols'] = colWidths;
-
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Concave Realty Master Leads");
-
       const todayStr = new Date().toISOString().split('T')[0];
-      XLSX.writeFile(workbook, `Concave_Realty_Master_Leads_${todayStr}.xlsx`);
-      logSecurityEvent(user || { role: 'admin', username: 'Super Admin' }, 'EXPORT_MASTER_EXCEL', 'Concave_Realty_Master_Leads.xlsx', { totalExported: leads.length });
-      return true;
+      const fileName = `Concave_Realty_Master_Leads_${todayStr}.xlsx`;
+      
+      const ok = exportStyledLeadsWorkbook(leads, "Concave Realty Master Leads", fileName);
+      logSecurityEvent(user || { role: 'admin', username: 'Super Admin' }, 'EXPORT_MASTER_EXCEL', fileName, { totalExported: leads.length });
+      return ok;
     } catch (e) {
       console.error("Excel generation error:", e);
       return false;
@@ -1405,30 +1550,8 @@ export const dbStore = {
         return { success: false, count: 0, message: "No records found in selected date range." };
       }
 
-      const excelRows = filtered.map((l, index) => ({
-        "Sr No": index + 1,
-        "Lead ID": `CON-${l.id}`,
-        "Customer Name": l.name,
-        "Mobile Number": l.mobile,
-        "Email Address": l.email || "N/A",
-        "Preferred Location": l.locationName,
-        "Project Interest": l.projectName,
-        "Customer Device": l.deviceName || "Mobile Device",
-        "Enquiry Type": l.typeName,
-        "Response Type": l.statusName,
-        "Is Hot Lead?": l.isHotLead ? "YES (Hot Lead)" : "Normal",
-        "Assigned Caller": l.callerName,
-        "Caller Contact": l.callerPhone,
-        "Call Status": l.callStatusName,
-        "Retry Count": l.retryCount,
-        "Enquiry Date & Time": new Date(l.createdAt).toLocaleString(),
-        "Requirement": l.description
-      }));
-
-      const worksheet = XLSX.utils.json_to_sheet(excelRows);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Selected Period Leads");
-      XLSX.writeFile(workbook, `Concave_Leads_${startDateStr}_to_${endDateStr}.xlsx`);
+      const fileName = `Concave_Leads_${startDateStr}_to_${endDateStr}.xlsx`;
+      exportStyledLeadsWorkbook(filtered, "Selected Period Leads", fileName);
 
       return { success: true, count: filtered.length };
     } catch (e) {
@@ -1542,24 +1665,8 @@ export const dbStore = {
       const windowLeads = this.getAllLeads().filter(l => l.createdAt >= windowStart && l.createdAt <= safeWindowEnd);
 
       if (windowLeads.length > 0) {
-        const excelRows = windowLeads.map((l, index) => ({
-          "Sr No": index + 1,
-          "Lead ID": `CON-${l.id}`,
-          "Customer Name": l.name,
-          "Mobile Number": l.mobile,
-          "Email Address": l.email || "N/A",
-          "Preferred Location": l.locationName,
-          "Project Interest": l.projectName,
-          "Response Type": l.statusName,
-          "Assigned Caller": l.callerName,
-          "Call Status": l.callStatusName,
-          "Enquiry Date": new Date(l.createdAt).toLocaleDateString()
-        }));
-
-        const worksheet = XLSX.utils.json_to_sheet(excelRows);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Quarterly Backup");
-        XLSX.writeFile(workbook, `Concave_Quarterly_Backup_${queueInfo.batchStartStr.replace(/ /g, '_')}_to_${queueInfo.batchEndStr.replace(/ /g, '_')}.xlsx`);
+        const backupFileName = `Concave_Quarterly_Backup_${queueInfo.batchStartStr.replace(/ /g, '_')}_to_${queueInfo.batchEndStr.replace(/ /g, '_')}.xlsx`;
+        exportStyledLeadsWorkbook(windowLeads, "Quarterly Backup", backupFileName);
       }
 
       // Step 2: Delete ONLY non-lead data (Not Interested: 5, Fake: 6, Okay: 3).

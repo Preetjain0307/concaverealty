@@ -100,7 +100,7 @@ export function PrivacyPolicyModal({ isOpen, onClose }) {
             <li><strong>Email Address</strong> — to send project brochures and consultation confirmations (with your consent).</li>
             <li><strong>Location Preference</strong> — the Mumbai micro-market you are interested in (e.g., Borivali, Kandivali, Malad, Andheri, Bandra, Lower Parel).</li>
             <li><strong>Project of Interest</strong> — the specific development(s) you have expressed interest in.</li>
-            <li><strong>OTP Verification Record</strong> — a one-time password generated and verified in-browser for form authentication. No SMS is sent; the OTP is displayed on-screen.</li>
+            <li><strong>OTP Verification Record</strong> — a time-stamped one-time verification code dispatched to your email for authenticating consultation requests.</li>
           </ul>
           <p className="text-xs text-[#6A5F52] pt-1">We do <strong>not</strong> collect payment details, Aadhaar numbers, PAN numbers, or any sensitive personal data.</p>
         </section>

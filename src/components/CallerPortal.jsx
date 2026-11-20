@@ -42,7 +42,7 @@ import {
   Smartphone,
   Laptop
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword, formatCompactDevice, isDesktopDevice } from '../data/dbStore';
+import { dbStore, STATUS_CODES, CALL_STATUS_CODES, LOCATION_CODES, PROJECT_CODES, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead } from '../data/dbStore';
 
 export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   const [callers, setCallers] = useState([]);
@@ -196,10 +196,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       const data = await res.json();
       if (data.success) {
         setOtpSent(true);
-        const testOtp = data.devOtp || data.otpFallback;
-        if (testOtp) {
-          setEnteredOtp(testOtp);
-        }
+        setEnteredOtp('');
       } else {
         setLoginError(data.message || "Failed to dispatch verification code.");
       }
@@ -266,10 +263,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       const data = await res.json();
       if (data.success) {
         setForgotStep(2);
-        const testOtp = data.devOtp || data.otpFallback;
-        if (testOtp) {
-          setForgotOtp(testOtp);
-        }
+        setForgotOtp('');
       } else {
         setForgotError(data.message || 'Failed to dispatch verification code.');
       }
@@ -458,7 +452,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       return (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5;
     }
     if (activeTab === 'leads') {
-      return l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7;
+      return isConfirmedLead(l);
     }
     if (activeTab === 'active') {
       return l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5;
@@ -827,7 +821,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   // 4 Filter Tabs Counts
   const activeQueueCount = leads.filter(l => l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5).length;
   const callbackCount = leads.filter(l => (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5).length;
-  const leadsCount = leads.filter(l => l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7).length;
+  const leadsCount = leads.filter(l => isConfirmedLead(l)).length;
   const allHistoryCount = leads.length;
 
   // Today's Timestamp Threshold (midnight today)
@@ -1182,7 +1176,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                 {paginatedLeads.map((lead) => (
                   <tr
                     key={lead.id}
-                    className="hover:bg-[#FAF8F5] transition-colors duration-150 group"
+                    className={`transition-colors duration-150 group ${
+                      isConfirmedLead(lead)
+                        ? 'bg-[#EBF7EE] border-l-4 border-l-[#2E7D32] hover:bg-[#E2F3E6]'
+                        : 'hover:bg-[#FAF8F5]'
+                    }`}
                   >
                     {/* ID */}
                     <td className="py-3.5 px-4 text-gray-600 font-mono font-bold text-xs group-hover:text-black">
@@ -1228,7 +1226,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     {/* Device Used */}
                     <td className="py-3 px-2 text-center whitespace-nowrap">
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#FAF9F6] border border-[#EAE6DF] font-mono text-[10.5px] font-semibold text-gray-700">
-                        {isDesktopDevice(lead.deviceName) ? (
+                        {isDesktopDevice(lead.deviceName) || formatCompactDevice(lead.deviceName) === 'PC' || formatCompactDevice(lead.deviceName) === 'Mac' ? (
                           <Laptop className="w-3 h-3 text-[#C59B4E] shrink-0" />
                         ) : (
                           <Smartphone className="w-3 h-3 text-[#C59B4E] shrink-0" />
@@ -1239,18 +1237,31 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
                     {/* Response Type */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                        (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                          lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                            lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                              lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                                'bg-gray-100 text-gray-700'
-                        }`}>
-                        {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
-                        <span className="whitespace-nowrap">
-                          {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                      {isConfirmedLead(lead) ? (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-emerald-100 text-emerald-800 border border-emerald-300">
+                          {lead.statusCode === 1 ? (
+                            <>
+                              <Flame className="w-3 h-3 text-emerald-700" />
+                              <span>Hot Lead</span>
+                            </>
+                          ) : (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+                              <span>Lead</span>
+                            </>
+                          )}
                         </span>
-                      </span>
+                      ) : (
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                          lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                          lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                          lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                          lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
+                          'bg-gray-100 text-gray-700 border border-gray-300'
+                        }`}>
+                          <span>{lead.callStatusCode === 0 ? 'New' : (lead.statusCode === 7 ? 'New' : lead.statusName)}</span>
+                        </span>
+                      )}
                     </td>
 
                     {/* Call Status & Cadence */}
@@ -1319,25 +1330,42 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             {paginatedLeads.map((lead) => (
               <div
                 key={lead.id}
-                className="bg-white rounded-xl border border-[#EAE6DF] shadow-xs p-4 space-y-3.5 hover:border-[#245348]/40 transition-all"
+                className={`rounded-xl border shadow-xs p-4 space-y-3.5 transition-all ${
+                  isConfirmedLead(lead)
+                    ? 'bg-[#EBF7EE] border-[#A5D6A7] border-l-4 border-l-[#2E7D32]'
+                    : 'bg-white border-[#EAE6DF] hover:border-[#245348]/40'
+                }`}
               >
                 {/* Top Bar: ID + Response Type Badge */}
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] whitespace-nowrap shrink-0">
                     CON-{lead.id}
                   </span>
-                  <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                    (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
-                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                        lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
-                          lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                            'bg-gray-100 text-gray-700'
-                    }`}>
-                    {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
-                    <span className="whitespace-nowrap">
-                      {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                  {isConfirmedLead(lead) ? (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      {lead.statusCode === 1 ? (
+                        <>
+                          <Flame className="w-3 h-3 text-emerald-700" />
+                          <span>Hot Lead</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+                          <span>Lead</span>
+                        </>
+                      )}
                     </span>
-                  </span>
+                  ) : (
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                      lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                      lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                      lead.statusCode === 6 ? 'bg-gray-200 text-gray-700 border border-gray-300' :
+                      'bg-gray-100 text-gray-700 border border-gray-300'
+                    }`}>
+                      <span>{lead.callStatusCode === 0 ? 'New' : (lead.statusCode === 7 ? 'New' : lead.statusName)}</span>
+                    </span>
+                  )}
                 </div>
 
                 {/* Customer Name & Phone */}
@@ -1387,7 +1415,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       DEVICE USED
                     </span>
                     <p className="font-semibold text-[#14221F] text-xs mt-0.5 flex items-center gap-1.5">
-                      {isDesktopDevice(lead.deviceName) ? (
+                      {isDesktopDevice(lead.deviceName) || formatCompactDevice(lead.deviceName) === 'PC' || formatCompactDevice(lead.deviceName) === 'Mac' ? (
                         <Laptop className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
                       ) : (
                         <Smartphone className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
@@ -1547,12 +1575,12 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                       {[
-                        { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                        { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                        { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                        { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                        { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                        { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                        { code: 1, label: "Hot Lead", desc: "High interest / urgent" },
+                        { code: 2, label: "Lead (Interested)", desc: "Wants site visit / brochure" },
+                        { code: 3, label: "Okay / Follow up", desc: "Deciding / callback" },
+                        { code: 4, label: "Not Picking", desc: "Auto 4h/10d retry cadence" },
+                        { code: 5, label: "Not Interested", desc: "Client declined" },
+                        { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
                       ].map(disp => (
                         <button
                           key={disp.code}
@@ -1758,12 +1786,12 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   <div className="max-h-40 sm:max-h-48 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                       {[
-                        { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                        { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                        { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                        { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                        { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                        { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                        { code: 1, label: "Hot Lead", desc: "High interest / urgent" },
+                        { code: 2, label: "Lead (Interested)", desc: "Wants site visit / brochure" },
+                        { code: 3, label: "Okay / Follow up", desc: "Deciding / callback" },
+                        { code: 4, label: "Not Picking", desc: "Auto 4h/10d retry cadence" },
+                        { code: 5, label: "Not Interested", desc: "Client declined" },
+                        { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
                       ].map(disp => (
                         <button
                           key={disp.code}

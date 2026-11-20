@@ -47,7 +47,7 @@ import {
   Smartphone,
   Laptop
 } from 'lucide-react';
-import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, PROJECT_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs, verifyPassword, formatCompactDevice, isDesktopDevice } from '../data/dbStore';
+import { dbStore, STATUS_CODES, LOCATION_CODES, CALL_STATUS_CODES, PROJECT_CODES, detectSqlInjection, sanitizeInput, validatePasswordPolicy, logSecurityEvent, getAuditLogs, verifyPassword, formatCompactDevice, isDesktopDevice, isConfirmedLead } from '../data/dbStore';
 
 export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) {
   // Navigation tabs: 'overview' | 'performance' | 'callers' | 'storage' | 'careers'
@@ -447,13 +447,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       if (data.success) {
         setOtpExpiresAt(Date.now() + 5 * 60 * 1000);
         setOtpRemainingSeconds(300);
-        const testOtp = data.devOtp || data.otpFallback;
-        if (testOtp) {
-          setEnteredForgotOtp(testOtp);
-          setFeedbackToast(`Security Code [ ${testOtp} ] generated & auto-filled for quick reset.`);
-        } else {
-          setFeedbackToast(`A 6-digit verification code has been dispatched to ${adminEmail}. Please check your inbox.`);
-        }
+        setEnteredForgotOtp('');
+        setFeedbackToast(`A 6-digit verification code has been dispatched to ${adminEmail}. Please check your inbox.`);
       } else {
         setForgotError(data.message || 'Failed to dispatch verification code. Please check rate limits.');
       }
@@ -654,7 +649,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     setDataDeleteGeneratedOtp(code);
     setDataDeleteOtpSent(true);
     setDataDeleteError('');
-    setFeedbackToast(`Security OTP sent to ${dataDeleteEmail}: ${code}`);
+    setFeedbackToast(`Security OTP sent to ${dataDeleteEmail}. Please check your email inbox.`);
     setTimeout(() => setFeedbackToast(null), 7000);
   };
 
@@ -665,7 +660,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
       return;
     }
     if (dataDeleteOtpInput.trim() !== dataDeleteGeneratedOtp) {
-      setDataDeleteError(`Invalid security verification code. Please enter ${dataDeleteGeneratedOtp}.`);
+      setDataDeleteError('Invalid security verification code. Please check your email and try again.');
       return;
     }
 
@@ -1694,10 +1689,17 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
-                  {paginatedLeads.map((lead) => (
+                  {paginatedLeads.map((lead) => {
+                    const isLeadOrHotLead = isConfirmedLead(lead);
+                    const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+                    return (
                     <tr
                       key={lead.id}
-                      className="hover:bg-[#FAF8F5] transition-colors duration-150 group"
+                      className={`transition-colors duration-150 group ${
+                        isLeadOrHotLead 
+                          ? 'bg-[#EBF7EE] hover:bg-[#DDF2E2] border-l-4 border-l-[#2E7D32]' 
+                          : 'hover:bg-[#FAF8F5]'
+                      }`}
                     >
                       {/* ID */}
                       <td className="py-2.5 px-3 text-gray-600 font-mono font-bold text-xs group-hover:text-black whitespace-nowrap">
@@ -1731,7 +1733,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       {/* Device Name (Ultra-Compact Slim Width) */}
                       <td className="py-2.5 px-2 text-center whitespace-nowrap">
                         <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] text-[10.5px] font-semibold text-[#14221F] shadow-xs" title={lead.deviceName}>
-                          {isDesktopDevice(lead.deviceName) ? (
+                          {isDesktopDevice(lead.deviceName) || formatCompactDevice(lead.deviceName) === 'PC' || formatCompactDevice(lead.deviceName) === 'Mac' ? (
                             <Laptop className="w-3 h-3 text-[#C59B4E] shrink-0" />
                           ) : (
                             <Smartphone className="w-3 h-3 text-[#C59B4E] shrink-0" />
@@ -1743,15 +1745,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       {/* Response Type */}
                       <td className="py-2.5 px-2.5 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap ${
-                          lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                          (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                          isLeadOrHotLead ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                          (isUncalled || lead.statusCode === 7) ? 'bg-gray-100 text-gray-700 border border-gray-200' :
                           lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
                           lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                          'bg-gray-100 text-gray-700'
+                          lead.statusCode === 6 ? 'bg-red-100 text-red-800 border border-red-300' :
+                          'bg-gray-100 text-gray-700 border border-gray-200'
                         }`}>
-                          {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                          {isLeadOrHotLead && (lead.statusCode === 1 || lead.isHotLead) && <Flame className="w-3 h-3 text-emerald-700" />}
+                          {isLeadOrHotLead && (lead.statusCode === 2 || lead.statusCode === 8) && <CheckCircle2 className="w-3 h-3 text-emerald-700" />}
                           <span className="whitespace-nowrap">
-                            {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                            {isLeadOrHotLead 
+                              ? ((lead.statusCode === 1 || lead.isHotLead) ? 'Hot Lead' : 'Lead') 
+                              : ((isUncalled || lead.statusCode === 7) ? 'New' : lead.statusName)}
                           </span>
                         </span>
                       </td>
@@ -1805,7 +1811,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  );})}
 
                   {paginatedLeads.length === 0 && (
                     <tr>
@@ -1821,10 +1827,17 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
             {/* ── 2. Mobile & Tablet Cards Feed (Dedicated View Below 1024px) ── */}
             <div className="block lg:hidden space-y-3.5">
-              {paginatedLeads.map((lead) => (
+              {paginatedLeads.map((lead) => {
+                const isLeadOrHotLead = isConfirmedLead(lead);
+                const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+                return (
                 <div
                   key={lead.id}
-                  className="bg-white rounded-xl border border-[#EAE6DF] shadow-xs p-4 space-y-3.5 hover:border-[#245348]/40 transition-all"
+                  className={`rounded-xl shadow-xs p-4 space-y-3.5 transition-all ${
+                    isLeadOrHotLead
+                      ? 'bg-[#EBF7EE] border-2 border-[#2E7D32]/50 ring-2 ring-[#2E7D32]/20'
+                      : 'bg-white border border-[#EAE6DF] hover:border-[#245348]/40'
+                  }`}
                 >
                   {/* Top Bar: ID + Response Type Badge */}
                   <div className="flex items-center justify-between gap-2">
@@ -1832,15 +1845,19 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       CON-{lead.id}
                     </span>
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
-                      lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                      (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      isLeadOrHotLead ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                      (isUncalled || lead.statusCode === 7) ? 'bg-gray-100 text-gray-700 border border-gray-200' :
                       lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
                       lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
-                      'bg-gray-100 text-gray-700'
+                      lead.statusCode === 6 ? 'bg-red-100 text-red-800 border border-red-300' :
+                      'bg-gray-100 text-gray-700 border border-gray-200'
                     }`}>
-                      {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                      {isLeadOrHotLead && (lead.statusCode === 1 || lead.isHotLead) && <Flame className="w-3 h-3 text-emerald-700" />}
+                      {isLeadOrHotLead && (lead.statusCode === 2 || lead.statusCode === 8) && <CheckCircle2 className="w-3 h-3 text-emerald-700" />}
                       <span>
-                        {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                        {isLeadOrHotLead 
+                          ? ((lead.statusCode === 1 || lead.isHotLead) ? 'Hot Lead' : 'Lead') 
+                          : ((isUncalled || lead.statusCode === 7) ? 'New' : lead.statusName)}
                       </span>
                     </span>
                   </div>
@@ -1884,7 +1901,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         Customer Device
                       </span>
                       <p className="font-semibold text-[#14221F] text-xs mt-0.5 flex items-center gap-1.5">
-                        {isDesktopDevice(lead.deviceName) ? (
+                        {isDesktopDevice(lead.deviceName) || formatCompactDevice(lead.deviceName) === 'PC' || formatCompactDevice(lead.deviceName) === 'Mac' ? (
                           <Laptop className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
                         ) : (
                           <Smartphone className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
@@ -1955,7 +1972,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     </button>
                   </div>
                 </div>
-              ))}
+              );})}
 
               {paginatedLeads.length === 0 && (
                 <div className="py-12 text-center text-gray-400 space-y-2 bg-white rounded-xl border border-[#EAE6DF] p-6">
@@ -3601,12 +3618,6 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                         Resend
                       </button>
                     </div>
-                    <div className="flex items-center gap-2 pt-0.5">
-                      <span className="text-[11px] text-amber-800">Use Verification Code:</span>
-                      <span className="px-2 py-0.5 bg-amber-200/80 rounded font-mono font-bold text-amber-950 text-sm tracking-wider">
-                        {dataDeleteGeneratedOtp}
-                      </span>
-                    </div>
                   </div>
                 )}
 
@@ -3971,12 +3982,12 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 <div className="max-h-44 sm:max-h-52 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     {[
-                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                      { code: 1, label: "Hot Lead", desc: "High interest / urgent" },
+                      { code: 2, label: "Lead (Interested)", desc: "Wants site visit / brochure" },
+                      { code: 3, label: "Okay / Follow up", desc: "Deciding / callback" },
+                      { code: 4, label: "Not Picking", desc: "Auto 4h/10d retry cadence" },
+                      { code: 5, label: "Not Interested", desc: "Client declined" },
+                      { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
                     ].map(disp => (
                       <button
                         key={disp.code}
@@ -4179,12 +4190,12 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 <div className="max-h-40 sm:max-h-48 overflow-y-auto pr-1 rounded-xl border border-[#EAE6DF] p-2 bg-[#FAF9F6]/50">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                     {[
-                      { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
-                      { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
-                      { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
-                      { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
-                      { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
-                      { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
+                      { code: 1, label: "Hot Lead", desc: "High interest / urgent" },
+                      { code: 2, label: "Lead (Interested)", desc: "Wants site visit / brochure" },
+                      { code: 3, label: "Okay / Follow up", desc: "Deciding / callback" },
+                      { code: 4, label: "Not Picking", desc: "Auto 4h/10d retry cadence" },
+                      { code: 5, label: "Not Interested", desc: "Client declined" },
+                      { code: 6, label: "Fake / Spam", desc: "Invalid enquiry" },
                     ].map(disp => (
                       <button
                         key={disp.code}

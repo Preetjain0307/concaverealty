@@ -396,16 +396,12 @@ export async function sendOtpEmail({ email, name, digits = 6, purpose = 'career'
     digits: otpLength
   });
 
-  const responseMessage = emailDispatched
-    ? `Verification code dispatched to ${normalizedEmail}. Please check your inbox.`
-    : `Verification code generated: [ ${otp} ]. (Resend test sandbox restriction applies to external emails).`;
+  const responseMessage = `Verification code dispatched to ${normalizedEmail}. Please check your inbox.`;
 
   return {
     success: true,
     messageId,
     emailDispatched,
-    devOtp: otp, // Always returned so testing on localhost is never blocked
-    otpFallback: otp,
     notice: resendNotice,
     cooldownSeconds: 60,
     expiresInSeconds: 300,

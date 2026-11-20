@@ -264,21 +264,17 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
       if (testCode) {
         const clean4Code = String(testCode).slice(0, 4);
         setGeneratedOtp(clean4Code);
-        setEnteredOtp(clean4Code); // Auto-fill the 4-digit OTP directly
-        if (data.emailDispatched) {
-          setOtpNotice(`4-digit verification code sent to ${cleanEmail}. (Code [ ${clean4Code} ] auto-filled)`);
-        } else {
-          setOtpNotice(`Test Mode: 4-digit code [ ${clean4Code} ] auto-filled below. Click Submit to verify.`);
-        }
       } else {
         setGeneratedOtp('');
-        setOtpNotice(data.message || `4-digit verification code sent to ${cleanEmail}! Valid for 5 minutes.`);
       }
+      setEnteredOtp(''); // Strictly blank: never auto-fill or expose OTP on frontend
+      setOtpNotice(data.message || `4-digit verification code sent to ${cleanEmail}! Valid for 5 minutes.`);
     } catch (err) {
       console.error('[OTP Dispatch Error]:', err);
       // Local fallback in case of local network restriction
       const fallbackCode = generateDifferentCode(generatedOtp);
       setGeneratedOtp(fallbackCode);
+      setEnteredOtp('');
       setOtpSent(true);
       setCooldown(60);
       setOtpExpirySeconds(300);
