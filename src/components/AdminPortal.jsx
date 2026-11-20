@@ -2603,16 +2603,16 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
               <button
                 onClick={handleOpenDataDeleteModal}
                 disabled={isRunningQuarterly}
-                className="px-6 py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-md disabled:opacity-75"
+                className="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-3 sm:gap-2 shadow-md disabled:opacity-75"
               >
                 {isRunningQuarterly ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin text-white" />
+                    <RefreshCw className="w-6 h-6 sm:w-4 sm:h-4 animate-spin text-white shrink-0" />
                     <span>Processing Queue & Saving Backup...</span>
                   </>
                 ) : (
                   <>
-                    <Trash2 className="w-4 h-4 text-[#DFBE79]" />
+                    <Trash2 className="w-6 h-6 sm:w-4 sm:h-4 text-[#DFBE79] shrink-0" />
                     <span>Run Quarterly Cleanup (3-Step Authorization)</span>
                   </>
                 )}
@@ -3759,9 +3759,9 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 rounded-lg bg-red-800 hover:bg-red-900 text-white font-bold uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-1.5"
+                    className="flex-1 py-2.5 rounded-lg bg-red-800 hover:bg-red-900 text-white font-bold uppercase tracking-wider shadow-sm transition-all flex items-center justify-center gap-2 sm:gap-1.5"
                   >
-                    <Trash2 className="w-4 h-4 text-[#DFBE79]" />
+                    <Trash2 className="w-5 h-5 sm:w-4 sm:h-4 text-[#DFBE79] shrink-0" />
                     <span>Authorize & Purge Data</span>
                   </button>
                 </div>
