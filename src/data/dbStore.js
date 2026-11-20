@@ -52,53 +52,42 @@ export const CALL_STATUS_CODES = {
 };
 
 export const LOCATION_CODES = {
-  1: "Borivali",
-  2: "Kandivali",
-  3: "Malad",
-  4: "Goregaon",
-  5: "Jogeshwari",
-  6: "Andheri",
-  7: "Bandra",
-  8: "Lower Parel"
+  1: "Borivali West",
+  2: "Versova",
+  3: "Goregaon",
+  4: "Bhayander",
+  5: "Mira Road",
+  6: "Kandivali",
+  7: "Worli",
+  8: "Bandra",
+  9: "Powai",
+  10: "Lower Parel"
 };
 
 export const REVERSE_LOCATION_CODES = {
-  "borivali": 1,
   "borivali west": 1,
-  "borivali east": 1,
-  "kandivali": 2,
-  "kandivali east": 2,
-  "kandivali west": 2,
-  "malad": 3,
-  "malad west": 3,
-  "malad east": 3,
-  "goregaon": 4,
-  "goregaon west": 4,
-  "goregaon east": 4,
-  "jogeshwari": 5,
-  "jogeshwari west": 5,
-  "jogeshwari east": 5,
-  "andheri": 6,
-  "andheri west": 6,
-  "andheri east": 6,
-  "versova": 6,
-  "bandra": 7,
-  "bandra west": 7,
-  "bandra east": 7,
-  "lower parel": 8,
-  "lower parel west": 8,
-  "lower parel east": 8
+  "borivali": 1,
+  "versova": 2,
+  "goregaon": 3,
+  "goregaon west": 3,
+  "bhayander": 4,
+  "bhayandar": 4,
+  "mira road": 5,
+  "miraroad": 5,
+  "kandivali": 6,
+  "worli": 7,
+  "bandra": 8,
+  "powai": 9,
+  "lower parel": 10
 };
 
 export const PROJECT_CODES = {
   1: "Kalpataru Advay",
   2: "Godrej Skyshore",
   3: "Godrej Reserve",
-  4: "Lodha Altus",
-  5: "Lodha Woods",
-  6: "Lodha Sovrano",
-  7: "Oberoi Sky City",
-  8: "Mahindra Vista"
+  4: "Concave Signature Residences",
+  5: "Lodha World Towers Collection",
+  6: "Mira-Bhayander Waterfront Enclave"
 };
 
 export const TYPE_CODES = {
@@ -121,7 +110,7 @@ const DEFAULT_CALLERS = [
     phone: "98201 12345",
     email: "rahul.sharma@concaverealty.com",
     password: "caller123",
-    assignedLocations: [3, 4], // Malad, Goregaon
+    assignedLocations: [3, 4], // Goregaon, Bhayander
     role: "Senior Location Specialist",
     active: true
   },
@@ -132,7 +121,7 @@ const DEFAULT_CALLERS = [
     phone: "98202 23456",
     email: "priya.deshmukh@concaverealty.com",
     password: "caller123",
-    assignedLocations: [1, 2], // Borivali, Kandivali
+    assignedLocations: [1, 5], // Borivali West, Mira Road
     role: "North Suburb Specialist",
     active: true
   },
@@ -143,7 +132,7 @@ const DEFAULT_CALLERS = [
     phone: "98203 34567",
     email: "sneha.kapadia@concaverealty.com",
     password: "caller123",
-    assignedLocations: [6, 7], // Andheri, Bandra
+    assignedLocations: [2, 7, 8], // Versova, Worli, Bandra
     role: "Luxury Coastal Specialist",
     active: true
   },
@@ -154,7 +143,7 @@ const DEFAULT_CALLERS = [
     phone: "98204 45678",
     email: "vikram.mehta@concaverealty.com",
     password: "caller123",
-    assignedLocations: [5, 8], // Jogeshwari, Lower Parel
+    assignedLocations: [6, 9, 10], // Kandivali, Powai, Lower Parel
     role: "Central & Commercial Hub Specialist",
     active: true
   }
@@ -255,7 +244,7 @@ const INITIAL_SEED_LEADS = [
     m: "91670 55443",
     e: "nisha.p@gmail.com",
     l: 5, // Mira Road
-    p: 6, // Lodha Sovrano
+    p: 6, // Mira-Bhayander Waterfront
     t: 3,
     s: 4, // Not Picking Up -> PROTECTED PENDING CALL!
     c: 2,
@@ -320,25 +309,29 @@ const INITIAL_SEED_LEADS = [
     rc: 1,
     na: Date.now() + 3600 * 1000 * 2.5, // Due in 2.5 hours
     ts: Date.now() - 3600 * 1000 * 1.5,
-    d: "",
-    nt: []
+    d: "Requested callback regarding ready-to-move units near Inorbit.",
+    nt: [
+      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 1.5, txt: "Rung 4 times, no response. Scheduled 4-hour automatic re-dial." }
+    ]
   },
   {
     i: 104,
     n: "Rohan Varma",
     m: "98199 44321",
     e: "rohan.v@example.com",
-    l: 4, // Goregaon
-    p: 6, // Lodha Sovrano
+    l: 4, // Bhayander
+    p: 6, // Mira-Bhayander Waterfront
     t: 1,
     s: 2, // Interested (2)
-    c: 1, // Rahul Sharma (Goregaon Specialist)
+    c: 1, // Rahul Sharma (Bhayander Specialist)
     cs: 1,
     rc: 0,
     na: null,
     ts: Date.now() - 3600 * 1000 * 24,
-    d: "",
-    nt: []
+    d: "Looking for 2 BHK budget around 1.15 Cr all-in.",
+    nt: [
+      { by: "Rahul Sharma", at: Date.now() - 3600 * 1000 * 20, txt: "Interested in payment milestone schedule. Sent brochure via WhatsApp." }
+    ]
   },
   {
     i: 105,
@@ -365,7 +358,7 @@ const INITIAL_SEED_LEADS = [
     m: "91672 88771",
     e: "pooja.h@gmail.com",
     l: 5, // Mira Road
-    p: 6, // Lodha Sovrano
+    p: 6, // Mira-Bhayander
     t: 4,
     s: 4, // Not Picking Up
     c: 2, // Priya Deshmukh (Mira Road Specialist)
@@ -403,8 +396,8 @@ const INITIAL_SEED_LEADS = [
     n: "Vikramaditya Roy",
     m: "98192 33445",
     e: "v.roy@example.com",
-    l: 4, // Goregaon
-    p: 6, // Lodha Sovrano
+    l: 4, // Bhayander
+    p: 6, // Mira-Bhayander
     t: 1, // General Enquiry
     s: 7, // New Lead / Enquiry record
     c: 1, // Rahul Sharma
@@ -412,8 +405,10 @@ const INITIAL_SEED_LEADS = [
     rc: 0,
     na: null,
     ts: Date.now() - 3600 * 1000 * 1,
-    d: "",
-    nt: []
+    d: "Enquiry for 2 BHK waterfront facing apartment.",
+    nt: [
+      { by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1, txt: "New enquiry received from website. Auto-assigned to Caller #1 for Bhayander." }
+    ]
   }
 ];
 
@@ -590,16 +585,6 @@ export const dbStore = {
         setRawData(DB_KEY, INITIAL_SEED_LEADS);
       } else {
         let updated = false;
-        // Strip the requested requirement & notes text from existing browser storage
-        existing.forEach(l => {
-          if (l.i === 103 || l.i === 104 || l.i === 108) {
-            if (l.d || (l.nt && l.nt.length > 0)) {
-              l.d = "";
-              l.nt = [];
-              updated = true;
-            }
-          }
-        });
         INITIAL_SEED_LEADS.forEach(seed => {
           if (!existing.some(l => l.i === seed.i)) {
             existing.push(seed);
@@ -704,8 +689,8 @@ export const dbStore = {
     try {
       this.init();
       const callers = this.getCallers();
-      const idx = callers.findIndex(c => 
-        c.id === callerIdOrCode || 
+      const idx = callers.findIndex(c =>
+        c.id === callerIdOrCode ||
         c.callerCode.toUpperCase() === String(callerIdOrCode).trim().toUpperCase()
       );
       if (idx !== -1) {
@@ -729,9 +714,9 @@ export const dbStore = {
         return null; // No caller registered by admin - direct to Super Admin!
       }
       const matches = callers.filter(c => c.assignedLocations && c.assignedLocations.includes(locId));
-      
+
       if (matches.length === 1) return matches[0].id;
-      
+
       if (matches.length > 1) {
         // Equal load balancing: find caller who currently has the fewest active leads
         const rawLeads = getRawData(DB_KEY, []);
@@ -746,7 +731,7 @@ export const dbStore = {
         matches.sort((a, b) => (countMap[a.id] || 0) - (countMap[b.id] || 0));
         return matches[0].id;
       }
-      
+
       // Fallback: pick caller with least leads
       return callers.length > 0 ? callers[0].id : null;
     } catch {
@@ -812,9 +797,9 @@ export const dbStore = {
       // 3. Security Rate Limit Enforcement (5 submissions per 4-hour window)
       const rateCheck = checkRateLimit(cleanMobile, 'enquiry');
       if (!rateCheck.allowed) {
-        return { 
-          error: rateCheck.message, 
-          rateLimited: true, 
+        return {
+          error: rateCheck.message,
+          rateLimited: true,
           remainingMinutes: rateCheck.remainingMinutes,
           remainingHours: rateCheck.remainingHours
         };
@@ -834,9 +819,7 @@ export const dbStore = {
       else if (normProj.includes("reserve")) projId = 3;
       else if (normProj.includes("signature")) projId = 4;
       else if (normProj.includes("lodha") || normProj.includes("world")) projId = 5;
-      else if (normProj.includes("altus")) projId = 4;
-      else if (normProj.includes("woods")) projId = 5;
-      else if (normProj.includes("sovrano")) projId = 6;
+      else if (normProj.includes("mira") || normProj.includes("bhayander")) projId = 6;
       else projId = 1;
 
       // Type code mapping
@@ -1062,8 +1045,8 @@ export const dbStore = {
 
       return all.filter(l => {
         // Direct assignment OR matches caller's specialized locations
-        return l.callerId === callerId || 
-               (currentCaller.assignedLocations && currentCaller.assignedLocations.includes(l.locationId));
+        return l.callerId === callerId ||
+          (currentCaller.assignedLocations && currentCaller.assignedLocations.includes(l.locationId));
       });
     } catch (e) {
       console.error("Error getting caller leads:", e);
@@ -1084,9 +1067,9 @@ export const dbStore = {
       if (user && user.role === 'caller') {
         const callers = this.getCallers();
         const currentCaller = callers.find(c => c.id === user.id);
-        const ownsLead = lead.c === user.id || 
+        const ownsLead = lead.c === user.id ||
           (currentCaller?.assignedLocations && currentCaller.assignedLocations.includes(lead.l));
-        
+
         if (!ownsLead) {
           console.warn(`[SECURITY ALERT] IDOR attempt blocked: Caller #${user.id} tried to modify unassigned Lead #${leadId}`);
           logSecurityEvent(user, 'IDOR_MODIFICATION_BLOCKED', `Lead #${leadId}`, { leadId, actualCallerId: lead.c });
@@ -1177,8 +1160,8 @@ export const dbStore = {
       const allLeads = this.getAllLeads();
       const uncompressedStr = JSON.stringify(allLeads);
       const uncompressedBytes = new Blob([uncompressedStr]).size;
-      const savings = uncompressedBytes > 0 
-        ? Math.round(((uncompressedBytes - rawBytes) / uncompressedBytes) * 100) 
+      const savings = uncompressedBytes > 0
+        ? Math.round(((uncompressedBytes - rawBytes) / uncompressedBytes) * 100)
         : 72;
 
       return {
@@ -1220,7 +1203,7 @@ export const dbStore = {
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(excelRows);
-      
+
       // Auto-fit column widths
       const colWidths = [
         { wch: 6 },  // Sr No
@@ -1358,7 +1341,7 @@ export const dbStore = {
     try {
       this.init();
       const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
-      
+
       const now = new Date();
       // Strict 30-day protection cutoff: Past month to this month (recent 30 days) is 100% IMMUNE
       const cutoffDate = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate(), 23, 59, 59, 999);
@@ -1375,7 +1358,7 @@ export const dbStore = {
         // Find the oldest historical record
         const oldestTs = Math.min(...historicalLeads.map(l => l.ts));
         const diffMonthsFromOldest = Math.floor((now.getTime() - oldestTs) / (30 * 24 * 3600 * 1000));
-        
+
         // Queue batch starts at the oldest uncleaned historical record
         batchStart = new Date(oldestTs);
         // Batch spans 3 months (90 days) forward from the oldest record
@@ -1439,7 +1422,7 @@ export const dbStore = {
       this.init();
       const queueInfo = this.getQuarterlyQueueInfo();
       const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
-      
+
       const windowStart = queueInfo.batchStartTs;
       const windowEnd = queueInfo.batchEndTs;
 
@@ -1449,7 +1432,7 @@ export const dbStore = {
 
       // Step 1: Backup all data in this 3-month queue window to Excel first
       const windowLeads = this.getAllLeads().filter(l => l.createdAt >= windowStart && l.createdAt <= safeWindowEnd);
-      
+
       if (windowLeads.length > 0) {
         const excelRows = windowLeads.map((l, index) => ({
           "Sr No": index + 1,

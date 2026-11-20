@@ -174,7 +174,7 @@ export function ContactPage({ onNavigateHome, onOpenEnquiry }) {
             </div>
 
             <div className="p-3.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] space-y-1">
-              <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400 font-semibold block">Registered Territory</span>
+              <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400 font-semibold block">Registered Location</span>
               <span className="font-bold text-[#14221F] text-sm block">Mumbai, Maharashtra, India</span>
             </div>
 

@@ -1766,24 +1766,26 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
                       {/* Action: 2 Main Buttons (1. Direct Call, 2. Status & Description) */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="inline-flex items-center justify-end gap-2">
                           {/* 1st Main Button: Direct Call */}
                           <button
+                            type="button"
                             onClick={() => handleDirectCall(lead)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+                            className="h-9 px-3.5 rounded-xl bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap"
                             title={`Direct Phone Call to ${lead.name}`}
                           >
-                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
+                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] shrink-0" />
                             <span>Direct Call</span>
                           </button>
 
                           {/* 2nd Main Button: Status & Description */}
                           <button
+                            type="button"
                             onClick={() => handleOpenStatusModal(lead)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 transition-all text-xs font-semibold cursor-pointer shadow-xs"
+                            className="h-9 px-3.5 rounded-xl bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 transition-all text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap"
                             title="Update Status (Interested, Not Interested, Fake) & Discussion Description"
                           >
-                            <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
+                            <FileText className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
                             <span>Status & Notes</span>
                           </button>
                         </div>
@@ -1900,25 +1902,27 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                   </div>
 
                   {/* Actions: 2 Main Buttons for Mobile View (1: Direct Call, 2: Status & Description) */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-[#EAE6DF]">
+                  <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[#EAE6DF]">
                     {/* 1st Main Button: Direct Call */}
                     <button
+                      type="button"
                       onClick={() => handleDirectCall(lead)}
-                      className="flex-1 py-2 px-3 rounded-lg bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                      className="h-10 px-2 rounded-xl bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all whitespace-nowrap overflow-hidden"
                       title={`Direct Phone Call to ${lead.name}`}
                     >
-                      <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
-                      <span>Direct Call</span>
+                      <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] shrink-0" />
+                      <span className="truncate">Direct Call</span>
                     </button>
 
                     {/* 2nd Main Button: Status & Description */}
                     <button
+                      type="button"
                       onClick={() => handleOpenStatusModal(lead)}
-                      className="flex-1 py-2 px-3 rounded-lg bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all"
+                      className="h-10 px-2 rounded-xl bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all whitespace-nowrap overflow-hidden"
                       title="Update Status (Interested, Fake, etc.) & Description"
                     >
-                      <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
-                      <span>Status & Notes</span>
+                      <FileText className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                      <span className="truncate">Status & Notes</span>
                     </button>
                   </div>
                 </div>
@@ -2096,7 +2100,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                   </div>
 
                   <div className="text-xs bg-white p-2.5 rounded-lg border border-[#EAE6DF]">
-                    <span className="text-[10px] uppercase font-bold text-black block mb-0.5">Territories</span>
+                    <span className="text-[10px] uppercase font-bold text-black block mb-0.5">Locations</span>
                     <span className="font-bold text-[#C59B4E]">{allocatedLocsStr}</span>
                   </div>
 

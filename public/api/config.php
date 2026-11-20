@@ -316,3 +316,32 @@ function dispatch_resend_email($toEmail, $subject, $htmlContent) {
         'error' => isset($responseData['message']) ? $responseData['message'] : 'Resend API error (' . $httpCode . ')'
     ];
 }
+
+// 8. Hybrid Email Dispatch Engine (Resend API with Hostinger Native Mail Fallback)
+function dispatch_email($toEmail, $subject, $htmlContent) {
+    // Attempt 1: Fast delivery via Resend API
+    $resendResult = dispatch_resend_email($toEmail, $subject, $htmlContent);
+    if ($resendResult['success']) {
+        return $resendResult;
+    }
+
+    // Attempt 2: Fallback to Hostinger's native server mail()
+    $host = !empty($_SERVER['HTTP_HOST']) ? preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST']) : 'concaverealty.com';
+    $fromEmail = "no-reply@" . $host;
+
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "From: Concave Realty <{$fromEmail}>\r\n";
+    $headers .= "Reply-To: concaverealtyindia@gmail.com\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+
+    $mailSent = @mail($toEmail, $subject, $htmlContent, $headers);
+    if ($mailSent) {
+        return ['success' => true, 'id' => 'hostinger_mail_' . time()];
+    }
+
+    return [
+        'success' => false,
+        'error' => isset($resendResult['error']) ? $resendResult['error'] : 'Email dispatch failed. Please verify mail settings.'
+    ];
+}

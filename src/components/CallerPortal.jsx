@@ -73,8 +73,13 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
   // Portal view state
   const [leads, setLeads] = useState([]);
-  const [activeTab, setActiveTab] = useState('active'); // 'active', 'retries', 'hot', 'all'
+  const [activeTab, setActiveTab] = useState('active'); // 'active', 'callback', 'leads', 'all'
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState('All');
+  const [selectedResponseFilter, setSelectedResponseFilter] = useState('All');
+  const [enquiryPage, setEnquiryPage] = useState(1);
+  const pageSize = 25;
+  const [feedbackToast, setFeedbackToast] = useState(null);
   const [copiedLeadId, setCopiedLeadId] = useState(null);
   const [currentTime, setCurrentTime] = useState('');
 
@@ -341,9 +346,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     if (lead?.mobile) {
       window.location.href = `tel:${lead.mobile.replace(/\s+/g, '')}`;
     }
-    setCallingLead(lead);
-    setSelectedDisposition(lead.statusCode || 1);
-    setCallerRemark('');
+    handleOpenDisposition(lead);
   };
 
   const handleFinishCall = () => {
@@ -352,8 +355,11 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     dbStore.updateLeadDisposition(callingLead.id, {
       statusCode: selectedDisposition,
       noteText: callerRemark,
-      callerName: currentUser.name
+      callerName: currentUser ? currentUser.name : 'Caller Desk'
     });
+
+    setFeedbackToast(`Lead CON-${callingLead.id} status & description notes updated.`);
+    setTimeout(() => setFeedbackToast(null), 3500);
 
     setCallingLead(null);
     setCallerRemark('');
@@ -363,7 +369,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   const handleOpenDisposition = (lead) => {
     setCallingLead(lead);
     setSelectedDisposition(lead.statusCode || 1);
-    setCallerRemark('');
+    const latestNote = lead.notes && lead.notes.length > 0 ? lead.notes[0].txt : '';
+    setCallerRemark(latestNote || '');
   };
 
   // Manual Lead Creator Handler ("ADD NEW LEAD")
@@ -407,6 +414,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       setNewLeadCallStatus(1);
       setNewLeadNotes('');
       setNewLeadError('');
+      setFeedbackToast(`New Lead CON-${res.lead?.id || ''} added to your queue.`);
+      setTimeout(() => setFeedbackToast(null), 3500);
       refreshData();
     } else {
       setNewLeadError(res.error || 'Failed to create lead.');
@@ -414,19 +423,41 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   };
 
   const displayedLeads = leads.filter(l => {
-    const matchesSearch = 
-      l.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.mobile.includes(searchQuery) ||
-      l.locationName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.projectName.toLowerCase().includes(searchQuery.toLowerCase());
+    // 1. Search Query
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch = !q ||
+      l.name.toLowerCase().includes(q) ||
+      l.mobile.includes(q) ||
+      (l.locationName && l.locationName.toLowerCase().includes(q)) ||
+      (l.projectName && l.projectName.toLowerCase().includes(q));
     
     if (!matchesSearch) return false;
 
-    if (activeTab === 'retries') return l.statusCode === 4 && l.callStatusCode !== 5;
-    if (activeTab === 'hot') return l.statusCode === 1;
-    if (activeTab === 'active') return l.statusCode !== 6 && l.callStatusCode !== 5;
-    return true;
+    // 2. Dropdown Location filter
+    if (selectedLocationFilter !== 'All' && String(l.location) !== String(selectedLocationFilter)) {
+      return false;
+    }
+
+    // 3. Dropdown Response filter
+    if (selectedResponseFilter !== 'All' && String(l.statusCode) !== String(selectedResponseFilter)) {
+      return false;
+    }
+
+    // 4. Tab Filter (active queue, callback, leads, all history)
+    if (activeTab === 'callback') {
+      return (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5;
+    }
+    if (activeTab === 'leads') {
+      return l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7;
+    }
+    if (activeTab === 'active') {
+      return l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5;
+    }
+    return true; // 'all'
   });
+
+  const totalPages = Math.ceil(displayedLeads.length / pageSize) || 1;
+  const paginatedLeads = displayedLeads.slice((enquiryPage - 1) * pageSize, enquiryPage * pageSize);
 
   // =========================================================================
   // VIEW 1: LOGIN SCREEN (Standalone Executive Portal View - Matched with Admin)
@@ -434,18 +465,27 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-[#FAF9F6] flex flex-col justify-between">
-        {/* Standalone Header */}
-        <header className="px-6 py-4 border-b border-[#14221F]/15 bg-[#14221F] text-white flex items-center justify-between shadow-subtle shrink-0">
+        {/* Standalone Header (Identical to Admin Panel with Caller title) */}
+        <header className="w-full bg-[#14221F] text-white border-b border-[#245348] py-3.5 px-4 sm:px-8 flex items-center justify-between shadow-md shrink-0">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="w-5 h-5 text-[#C59B4E]" />
-            <span className="font-serif text-lg font-bold tracking-wider">CONCAVE REALTY • CALLER PANEL</span>
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#C59B4E]/70 p-0.5 bg-[#284F45] shrink-0 shadow-xs">
+              <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
+            </div>
+            <div className="flex flex-col justify-center">
+              <span className="font-serif text-[15px] sm:text-lg font-bold text-white tracking-[0.1em] block leading-tight whitespace-nowrap">
+                CONCAVE REALTY
+              </span>
+              <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.18em] text-[#DFBE79] font-semibold block mt-0.5 leading-none">
+                Caller Panel
+              </span>
+            </div>
           </div>
           {onNavigateHome && (
             <button
               onClick={onNavigateHome}
-              className="px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-all text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-xs"
             >
-              <Home className="w-3.5 h-3.5" />
+              <Home className="w-4 h-4" />
               <span>Return to Website</span>
             </button>
           )}
@@ -467,7 +507,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   Caller Panel
                 </h2>
                 <p className="text-xs text-gray-500 mt-1">
-                  Concave Realty • Sales & Territory Outreach Console
+                  Concave Realty • Sales & Location Outreach Console
                 </p>
               </div>
             </div>
@@ -759,8 +799,39 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
   // =========================================================================
   // VIEW 2: AUTHENTICATED CALLER WORKSPACE (Standalone Clean Environment)
   // =========================================================================
-  const pendingRetriesCount = leads.filter(l => l.statusCode === 4 && l.callStatusCode !== 5).length;
-  const hotLeadsCount = leads.filter(l => l.statusCode === 1).length;
+  const totalLeadsCount = leads.length;
+
+  // 1. Pending Calls: uncalled, retries due, call back scheduled, line busy
+  const pendingCallsCount = leads.filter(l => 
+    l.callStatusCode === 0 || 
+    l.callStatusCode === 2 || 
+    l.callStatusCode === 3 || 
+    l.callStatusCode === 4 || 
+    l.callStatusCode === 6 || 
+    l.callStatusCode === 7 ||
+    l.statusCode === 4
+  ).length;
+
+  // 4 Filter Tabs Counts
+  const activeQueueCount = leads.filter(l => l.statusCode !== 5 && l.statusCode !== 6 && l.callStatusCode !== 5).length;
+  const callbackCount = leads.filter(l => (l.statusCode === 3 || l.statusCode === 4 || l.callStatusCode === 2 || l.callStatusCode === 3 || l.callStatusCode === 6 || l.callStatusCode === 7) && l.callStatusCode !== 5).length;
+  const leadsCount = leads.filter(l => l.statusCode === 1 || l.statusCode === 2 || l.statusCode === 7).length;
+  const allHistoryCount = leads.length;
+
+  // Today's Timestamp Threshold (midnight today)
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTodayTs = startOfToday.getTime();
+
+  // 2. Today's Total Leads
+  const todaysTotalLeadsCount = leads.filter(l => l.createdAt && l.createdAt >= startOfTodayTs).length;
+
+  // 3. Today's Total Calls (any note/disposition logged today or call dialed today)
+  const todaysTotalCallsCount = leads.filter(l => {
+    const hasNoteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs);
+    const isCalledToday = l.callStatusCode === 1 && l.createdAt && l.createdAt >= startOfTodayTs;
+    return hasNoteToday || isCalledToday;
+  }).length;
 
   return (
     <div className="min-h-screen bg-[#FAF9F6] text-[#14221F] selection:bg-[#245348] selection:text-white pb-16">
@@ -769,14 +840,14 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
       <header className="sticky top-0 z-40 bg-[#14221F] text-white border-b border-[#245348] shadow-luxury">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#C59B4E] bg-[#245348] p-0.5 shrink-0 shadow-md">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#C59B4E]/70 p-0.5 bg-[#284F45] shrink-0 shadow-xs">
               <img src="/logo_icon.jpg" alt="Concave Realty" className="w-full h-full object-cover rounded-full" />
             </div>
-            <div>
-              <span className="font-serif text-sm sm:text-base font-bold text-white tracking-widest block leading-none">
+            <div className="flex flex-col justify-center">
+              <span className="font-serif text-[15px] sm:text-lg font-bold text-white tracking-[0.1em] block leading-tight whitespace-nowrap">
                 CONCAVE REALTY
               </span>
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#DFBE79] font-bold">
+              <span className="text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.18em] text-[#DFBE79] font-semibold block mt-0.5 leading-none">
                 Caller Panel
               </span>
             </div>
@@ -840,7 +911,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
             </p>
             <div className="flex flex-wrap items-center gap-1.5 pt-1">
               <span className="text-[11px] text-gray-300 font-mono flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-[#C59B4E]" /> Assigned Territories:
+                <MapPin className="w-3 h-3 text-[#C59B4E]" /> Assigned Locations:
               </span>
               {currentUser.assignedLocations && currentUser.assignedLocations.map(lid => (
                 <span key={lid} className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#284F45] text-white border border-[#C59B4E]/40 shadow-xs">
@@ -851,18 +922,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           </div>
         </div>
 
-        {/* Hero Right: System Heartbeat & Quick Actions */}
-        <div className="relative z-10 flex flex-wrap items-center gap-3">
-          <div className="hidden lg:flex items-center gap-3 bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl">
-            <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <div className="text-left">
-              <div className="text-[10px] font-mono text-gray-300 uppercase tracking-wider">Web Dialer Engine</div>
-              <div className="text-xs font-bold text-[#DFBE79] flex items-center gap-1">
-                ● Telephony Connected
-              </div>
-            </div>
-          </div>
-
+        {/* Hero Right: Quick Refresh Action */}
+        <div className="relative z-10 flex items-center gap-3">
           <button
             onClick={refreshData}
             className="p-3 rounded-xl bg-[#284F45] hover:bg-[#245348] text-white border border-[#C59B4E]/30 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95 group"
@@ -870,115 +931,182 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           >
             <RefreshCw className="w-4 h-4 text-[#DFBE79] group-hover:rotate-180 transition-transform duration-500" />
           </button>
-          <button
-            onClick={onLogout}
-            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition-all cursor-pointer border border-white/10 shadow-sm"
-          >
-            Sign Out
-          </button>
         </div>
       </div>
 
-      {/* High-Impact Attention-Grabbing KPI Stats Strip */}
+      {/* 4 Cards: Pending Calls, Total Lead, Today's Total Calls, Today's Total Lead */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Card 1: Territory Leads */}
-        <div className="bg-white p-5 rounded-2xl border-2 border-[#EAE6DF] border-t-4 border-t-[#245348] shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
-          <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Territory Leads</span>
-            <div className="w-8 h-8 rounded-full bg-[#1D3530]/10 text-[#245348] flex items-center justify-center group-hover:bg-[#245348] group-hover:text-white transition-colors">
-              <Users className="w-4 h-4" />
-            </div>
-          </div>
-          <span className="text-3xl sm:text-4xl font-bold font-serif text-[#14221F] mt-2 block">{leads.length}</span>
-          <p className="text-[11px] text-gray-500 mt-1 font-medium">Assigned in your territory queue</p>
-        </div>
-
-        {/* Card 2: Pending Retries (4h / 10d) */}
+        {/* Card 1: Pending Calls */}
         <div className="bg-gradient-to-b from-amber-50/40 to-white p-5 rounded-2xl border-2 border-amber-200 border-t-4 border-t-amber-500 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Pending Retries (4h / 10d)</span>
+            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Pending Calls</span>
             <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-              <RotateCcw className="w-4 h-4" />
+              <PhoneCall className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-bold font-serif text-amber-600 block">{pendingRetriesCount}</span>
-            {pendingRetriesCount > 0 && (
+            <span className="text-3xl sm:text-4xl font-bold font-serif text-amber-600 block">{pendingCallsCount}</span>
+            {pendingCallsCount > 0 && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 animate-pulse border border-amber-300">
                 ⚡ Action Required
               </span>
             )}
           </div>
-          <p className="text-[11px] text-amber-800/80 mt-1 font-medium">Auto-cadence 4h timer & 10d log</p>
+          <p className="text-[11px] text-amber-800/80 mt-1 font-medium">Calls requiring outreach & follow-up</p>
         </div>
 
-        {/* Card 3: Hot Leads Identified */}
-        <div className="bg-gradient-to-b from-emerald-50/40 to-white p-5 rounded-2xl border-2 border-emerald-200 border-t-4 border-t-emerald-600 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        {/* Card 2: Total Lead */}
+        <div className="bg-white p-5 rounded-2xl border-2 border-[#EAE6DF] border-t-4 border-t-[#245348] shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Hot Leads Identified</span>
-            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-              <Flame className="w-4 h-4 text-emerald-600 group-hover:text-white" />
+            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Total Lead</span>
+            <div className="w-8 h-8 rounded-full bg-[#1D3530]/10 text-[#245348] flex items-center justify-center group-hover:bg-[#245348] group-hover:text-white transition-colors">
+              <Users className="w-4 h-4" />
+            </div>
+          </div>
+          <span className="text-3xl sm:text-4xl font-bold font-serif text-[#14221F] mt-2 block">{totalLeadsCount}</span>
+          <p className="text-[11px] text-gray-500 mt-1 font-medium">Assigned in your location queue</p>
+        </div>
+
+        {/* Card 3: Today's Total Calls */}
+        <div className="bg-gradient-to-b from-blue-50/40 to-white p-5 rounded-2xl border-2 border-blue-200 border-t-4 border-t-blue-600 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Today's Total Calls</span>
+            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+              <CheckCircle2 className="w-4 h-4" />
             </div>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-bold font-serif text-emerald-700 block">{hotLeadsCount}</span>
-            {hotLeadsCount > 0 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                🔥 High Priority
-              </span>
-            )}
+            <span className="text-3xl sm:text-4xl font-bold font-serif text-blue-700 block">{todaysTotalCallsCount}</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+              Today
+            </span>
           </div>
-          <p className="text-[11px] text-emerald-800/80 mt-1 font-medium">High conversion & booking ready</p>
+          <p className="text-[11px] text-blue-800/80 mt-1 font-medium">Consultations completed today</p>
         </div>
 
-        {/* Card 4: Web Calling System */}
-        <div className="bg-white p-5 rounded-2xl border-2 border-[#EAE6DF] border-t-4 border-t-[#C59B4E] shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
+        {/* Card 4: Today's Total Lead */}
+        <div className="bg-gradient-to-b from-emerald-50/40 to-white p-5 rounded-2xl border-2 border-emerald-200 border-t-4 border-t-emerald-600 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Web Calling System</span>
-            <div className="w-8 h-8 rounded-full bg-[#C59B4E]/15 text-[#C59B4E] flex items-center justify-center group-hover:bg-[#C59B4E] group-hover:text-[#14221F] transition-colors">
-              <PhoneCall className="w-4 h-4" />
+            <span className="text-xs uppercase font-mono text-black font-bold tracking-wide block">Today's Total Lead</span>
+            <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+              <Sparkles className="w-4 h-4 text-emerald-600 group-hover:text-white" />
             </div>
           </div>
-          <span className="inline-flex items-center gap-2 text-xs font-bold text-[#245348] mt-3 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            ● Direct Web Dialer Ready
-          </span>
-          <p className="text-[11px] text-gray-500 mt-2 font-medium">1-Click web dialer & disposition log</p>
+          <div className="flex items-baseline gap-2 mt-2">
+            <span className="text-3xl sm:text-4xl font-bold font-serif text-emerald-700 block">{todaysTotalLeadsCount}</span>
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+              New
+            </span>
+          </div>
+          <p className="text-[11px] text-emerald-800/80 mt-1 font-medium">New enquiries received today</p>
         </div>
       </div>
 
-      {/* Enquiry Records Header with "ADD NEW LEAD" button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
-        <div className="flex items-center gap-2.5">
-          <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F]">
-            Enquiry Records
-          </h3>
-          <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF]">
-            {leads.length} Records
-          </span>
+      {/* ── Enquiry Records Container (Table & Records Console) ── */}
+      <div className="bg-white rounded-2xl p-4 sm:p-7 border border-[#EAE6DF] shadow-subtle space-y-5">
+        {/* Header: Enquiry Records + Search + Dropdown Filters */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#245348]/25 pb-4">
+          <div className="flex flex-wrap items-center justify-between sm:justify-start gap-3">
+            <div className="flex items-center gap-2.5">
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#14221F] tracking-wide">
+                Enquiry Records
+              </h2>
+              <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#FAF9F6] text-[#245348] border border-[#EAE6DF]">
+                {leads.length} Records
+              </span>
+            </div>
+
+            {/* ADD NEW LEAD Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setNewLeadLocation(currentUser?.assignedLocations?.[0] || 1);
+                setNewLeadError('');
+                setShowAddLeadModal(true);
+              }}
+              className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-[#DFBE79]/50"
+              title="Manually Add New Customer Lead"
+            >
+              <Plus className="w-4 h-4 text-[#DFBE79]" />
+              <span>Add New Lead</span>
+            </button>
+          </div>
+
+          {/* Search Bar & Dropdown Filters (Locations & Responses) */}
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full lg:w-auto">
+            {/* Search Input */}
+            <div className="relative flex-1 sm:w-64">
+              <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search customer, phone, project..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setEnquiryPage(1);
+                }}
+                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:bg-white rounded-xl pl-8 pr-7 py-2 text-xs text-[#14221F] placeholder:text-gray-400 focus:outline-none transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Location Dropdown Filter */}
+            <div className="relative">
+              <select
+                value={selectedLocationFilter}
+                onChange={(e) => {
+                  setSelectedLocationFilter(e.target.value);
+                  setEnquiryPage(1);
+                }}
+                className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer pr-6"
+              >
+                <option value="All">All Locations</option>
+                {Object.entries(LOCATION_CODES).map(([code, name]) => {
+                  const isAssigned = currentUser?.assignedLocations?.includes(Number(code));
+                  return (
+                    <option key={code} value={code}>
+                      {name} {isAssigned ? '★' : ''}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            {/* Response Type Dropdown Filter */}
+            <div className="relative">
+              <select
+                value={selectedResponseFilter}
+                onChange={(e) => {
+                  setSelectedResponseFilter(e.target.value);
+                  setEnquiryPage(1);
+                }}
+                className="bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] rounded-xl px-3 py-2 text-xs text-[#14221F] font-semibold focus:outline-none cursor-pointer pr-6"
+              >
+                <option value="All">All Responses</option>
+                <option value="1">Hot Lead</option>
+                <option value="2">Lead</option>
+                <option value="4">Not Picking Up</option>
+                <option value="3">Okay / Follow Up</option>
+                <option value="5">Not Interested</option>
+                <option value="6">Fake / Spam</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        {/* ADD NEW LEAD Button */}
-        <button
-          type="button"
-          onClick={() => {
-            setNewLeadLocation(currentUser?.assignedLocations?.[0] || 1);
-            setNewLeadError('');
-            setShowAddLeadModal(true);
-          }}
-          className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0 border border-[#DFBE79]/50 w-fit"
-          title="Manually Add New Customer Lead"
-        >
-          <Plus className="w-4 h-4 text-[#DFBE79]" />
-          <span>Add New Lead</span>
-        </button>
-      </div>
-
-      {/* Filter Tabs & Real-Time Search Bar */}
-      <div className="bg-white p-4 rounded-2xl border border-[#EAE6DF] shadow-subtle flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-2 text-xs">
+        {/* 4 Filter Tabs: Active Queue, Callback, Leads, All History */}
+        <div className="flex flex-wrap gap-2 text-xs pt-1">
           <button
-            onClick={() => setActiveTab('active')}
+            type="button"
+            onClick={() => { setActiveTab('active'); setEnquiryPage(1); }}
             className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'active' 
                 ? 'bg-[#245348] text-white shadow-md' 
@@ -987,325 +1115,457 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
           >
             <span>Active Queue</span>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'active' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-gray-200 text-gray-700'}`}>
-              {leads.length}
+              {activeQueueCount}
             </span>
           </button>
 
           <button
-            onClick={() => setActiveTab('retries')}
+            type="button"
+            onClick={() => { setActiveTab('callback'); setEnquiryPage(1); }}
             className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${
-              activeTab === 'retries' 
+              activeTab === 'callback' 
                 ? 'bg-amber-600 text-white shadow-md' 
                 : 'bg-amber-50/80 text-amber-800 hover:bg-amber-100 border border-amber-200'
             }`}
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Retries Due (4h / 10d)</span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'retries' ? 'bg-white text-amber-900 font-bold' : 'bg-amber-200 text-amber-900 font-bold'}`}>
-              {pendingRetriesCount}
+            <span>Callback</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'callback' ? 'bg-white text-amber-900 font-bold' : 'bg-amber-200 text-amber-900 font-bold'}`}>
+              {callbackCount}
             </span>
           </button>
 
           <button
-            onClick={() => setActiveTab('hot')}
+            type="button"
+            onClick={() => { setActiveTab('leads'); setEnquiryPage(1); }}
             className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${
-              activeTab === 'hot' 
+              activeTab === 'leads' 
                 ? 'bg-emerald-700 text-white shadow-md' 
                 : 'bg-emerald-50/80 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
             }`}
           >
             <Flame className="w-3.5 h-3.5" />
-            <span>Hot Leads</span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'hot' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-emerald-200 text-emerald-900 font-bold'}`}>
-              {hotLeadsCount}
+            <span>Leads</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'leads' ? 'bg-[#DFBE79] text-[#14221F] font-bold' : 'bg-emerald-200 text-emerald-900 font-bold'}`}>
+              {leadsCount}
             </span>
           </button>
 
           <button
-            onClick={() => setActiveTab('all')}
-            className={`px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
+            type="button"
+            onClick={() => { setActiveTab('all'); setEnquiryPage(1); }}
+            className={`px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 cursor-pointer ${
               activeTab === 'all' 
                 ? 'bg-[#14221F] text-white shadow-md' 
                 : 'bg-[#FAF9F6] text-gray-700 hover:bg-gray-100 border border-[#EAE6DF]'
             }`}
           >
-            All History
+            <span>All History</span>
+            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${activeTab === 'all' ? 'bg-white/20 text-white font-bold' : 'bg-gray-200 text-gray-700'}`}>
+              {allHistoryCount}
+            </span>
           </button>
         </div>
 
-        {/* Real-time Search Box */}
-        <div className="relative w-full md:w-80">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search by client, phone, project or area..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#FAF9F6] border-2 border-[#EAE6DF] focus:border-[#245348] focus:bg-white rounded-xl pl-10 pr-9 py-2 text-xs text-[#14221F] font-medium focus:outline-none transition-all placeholder:text-gray-400"
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 cursor-pointer"
+        {/* ── 1. Desktop Table (Matching Admin Portal) ── */}
+        <div className="hidden lg:block overflow-x-auto rounded-xl border border-[#14221F]/20 shadow-xs">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-[#14221F] text-[#DFBE79] uppercase font-mono text-[11px] tracking-wider border-b border-[#245348]">
+              <tr>
+                <th className="py-3.5 px-4 font-bold">ID</th>
+                <th className="py-3.5 px-4 font-bold">Customer Name & Contact</th>
+                <th className="py-3.5 px-4 font-bold">Locations Enquiry</th>
+                <th className="py-3.5 px-4 font-bold">Response Type</th>
+                <th className="py-3.5 px-4 font-bold">Call Status & Cadence</th>
+                <th className="py-3.5 px-4 font-bold">Logged Time</th>
+                <th className="py-3.5 px-4 font-bold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
+              {paginatedLeads.map((lead) => (
+                <tr
+                  key={lead.id}
+                  className="hover:bg-[#FAF8F5] transition-colors duration-150 group"
+                >
+                  {/* ID */}
+                  <td className="py-3.5 px-4 text-gray-600 font-mono font-bold text-xs group-hover:text-black">
+                    CON-{lead.id}
+                  </td>
+
+                  {/* Customer Name & Mobile */}
+                  <td className="py-3.5 px-4">
+                    <div className="min-w-0">
+                      <p className="font-bold text-[#14221F] text-sm group-hover:text-[#245348] transition-colors">
+                        {lead.name}
+                      </p>
+                      <div className="flex items-center gap-1.5 text-xs text-gray-500 font-mono mt-0.5">
+                        <span>{lead.mobile}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPhone(lead.id, lead.mobile)}
+                          className="text-gray-400 hover:text-emerald-700 transition-colors p-0.5 cursor-pointer"
+                          title="Copy Phone Number"
+                        >
+                          {copiedLeadId === lead.id ? (
+                            <Check className="w-3 h-3 text-emerald-600" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Locations Enquiry */}
+                  <td className="py-3.5 px-4">
+                    <div className="space-y-0.5">
+                      <p className="font-semibold text-[#14221F] text-xs">
+                        {lead.locationName}
+                      </p>
+                      <p className="text-[11px] text-gray-500">
+                        {lead.projectName}
+                      </p>
+                    </div>
+                  </td>
+
+                  {/* Response Type */}
+                  <td className="py-3.5 px-4 whitespace-nowrap">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                      lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                      (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                      lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                      lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
+                      {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                      <span className="whitespace-nowrap">
+                        {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                      </span>
+                    </span>
+                  </td>
+
+                  {/* Call Status & Cadence */}
+                  <td className="py-3.5 px-4">
+                    <div className="space-y-0.5">
+                      <p className="font-medium text-[#14221F]">
+                        {lead.callStatusName}
+                      </p>
+                      {lead.statusCode === 4 && (
+                        <span className="text-[11px] text-amber-800 font-medium block whitespace-nowrap">
+                          Attempt {lead.retryCount || 1}/10 • Next: {lead.nextAttemptAt ? new Date(lead.nextAttemptAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Scheduled Today'}
+                        </span>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* Timestamp */}
+                  <td className="py-3.5 px-4 text-gray-500 text-xs whitespace-nowrap">
+                    {new Date(lead.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
+                    {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </td>
+
+                  {/* Action: 2 Buttons (1. Status & Notes, 2. Direct Call) */}
+                  <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                    <div className="inline-flex items-center justify-end gap-2">
+                      {/* 1st Button: Direct Call */}
+                      <button
+                        type="button"
+                        onClick={() => handleStartCall(lead)}
+                        className="h-9 px-3.5 rounded-xl bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 transition-all text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap"
+                        title={`Direct Call to ${lead.name}`}
+                      >
+                        <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] shrink-0" />
+                        <span>Direct Call</span>
+                      </button>
+
+                      {/* 2nd Button: Status & Description */}
+                      <button
+                        type="button"
+                        onClick={() => handleOpenDisposition(lead)}
+                        className="h-9 px-3.5 rounded-xl bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 transition-all text-xs font-semibold inline-flex items-center justify-center gap-1.5 cursor-pointer shadow-xs whitespace-nowrap"
+                        title="Update Status (Interested, Hot Lead, Not Picking, etc.) & Description Notes"
+                      >
+                        <FileText className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                        <span>Status & Notes</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {paginatedLeads.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-gray-400 space-y-2">
+                    <Users className="w-8 h-8 mx-auto text-gray-300" />
+                    <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── 2. Mobile & Tablet Cards Feed (Dedicated View Below 1024px) ── */}
+        <div className="block lg:hidden space-y-3.5">
+          {paginatedLeads.map((lead) => (
+            <div
+              key={lead.id}
+              className="bg-white rounded-xl border border-[#EAE6DF] shadow-xs p-4 space-y-3.5 hover:border-[#245348]/40 transition-all"
             >
-              <X className="w-3.5 h-3.5" />
-            </button>
+              {/* Top Bar: ID + Response Type Badge */}
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono font-bold text-xs px-2.5 py-1 rounded-md bg-[#FAF9F6] text-gray-700 border border-[#EAE6DF] whitespace-nowrap shrink-0">
+                  CON-{lead.id}
+                </span>
+                <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${
+                  lead.statusCode === 1 ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                  (lead.statusCode === 2 || lead.statusCode === 7) ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                  lead.statusCode === 4 ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                  lead.statusCode === 3 ? 'bg-purple-100 text-purple-800 border border-purple-300' :
+                  lead.statusCode === 5 ? 'bg-rose-100 text-rose-800 border border-rose-300' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  {lead.statusCode === 1 && <Flame className="w-3 h-3 text-emerald-700" />}
+                  <span className="whitespace-nowrap">
+                    {lead.statusCode === 1 ? 'Hot Lead' : ((lead.statusCode === 2 || lead.statusCode === 7) ? 'Lead' : lead.statusName)}
+                  </span>
+                </span>
+              </div>
+
+              {/* Customer Name & Phone */}
+              <div>
+                <p className="font-bold text-[#14221F] text-base leading-snug">
+                  {lead.name}
+                </p>
+                <div className="flex items-center gap-2 mt-1">
+                  <a
+                    href={`tel:${lead.mobile.replace(/\s+/g, '')}`}
+                    className="font-mono text-xs font-semibold text-[#245348] hover:underline flex items-center gap-1"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-[#C59B4E]" />
+                    <span>{lead.mobile}</span>
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleCopyPhone(lead.id, lead.mobile)}
+                    className="text-gray-400 hover:text-emerald-700 transition-colors p-1 cursor-pointer"
+                    title="Copy Phone"
+                  >
+                    {copiedLeadId === lead.id ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Location & Project Details */}
+              <div className="bg-[#FAF9F6] p-3 rounded-lg border border-[#EAE6DF] space-y-2 text-xs">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
+                    LOCATION / PROJECT
+                  </span>
+                  <p className="font-bold text-[#14221F] text-xs mt-0.5">
+                    {lead.locationName}
+                  </p>
+                  <p className="text-[11px] text-gray-600">
+                    {lead.projectName}
+                  </p>
+                </div>
+
+                <div className="border-t border-[#EAE6DF]/60 pt-2">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
+                    CALL STATUS
+                  </span>
+                  <p className="font-semibold text-[#14221F] text-xs mt-0.5">
+                    {lead.callStatusName}
+                  </p>
+                  {lead.statusCode === 4 && (
+                    <span className="text-[11px] text-amber-800 font-medium block mt-0.5">
+                      Attempt {lead.retryCount || 1}/10 • Next: {lead.nextAttemptAt ? new Date(lead.nextAttemptAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Scheduled Today'}
+                    </span>
+                  )}
+                </div>
+
+                <div className="border-t border-[#EAE6DF]/60 pt-2">
+                  <span className="text-[10px] uppercase font-bold text-gray-400 block tracking-wider">
+                    LOGGED TIME
+                  </span>
+                  <p className="font-mono text-gray-600 text-xs mt-0.5">
+                    {new Date(lead.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{', '}
+                    {new Date(lead.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              </div>
+
+              {/* Latest Notes History (if any) */}
+              {lead.notes && lead.notes.length > 0 && (
+                <div className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+                  <span className="font-bold text-[#245348]">{lead.notes[0].by}:</span> {lead.notes[0].txt}
+                </div>
+              )}
+
+              {/* Equal-sized Action Buttons (Direct Call + Status & Notes) */}
+              <div className="grid grid-cols-2 gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => handleStartCall(lead)}
+                  className="h-10 px-2 rounded-xl bg-[#245348] text-white hover:bg-[#1B3F37] active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all whitespace-nowrap overflow-hidden"
+                  title="Direct Call Customer"
+                >
+                  <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] shrink-0" />
+                  <span className="truncate">Direct Call</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOpenDisposition(lead)}
+                  className="h-10 px-2 rounded-xl bg-white border border-[#C59B4E] text-[#14221F] hover:bg-[#DFBE79]/20 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs cursor-pointer transition-all whitespace-nowrap overflow-hidden"
+                  title="Update Status & Description"
+                >
+                  <FileText className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                  <span className="truncate">Status & Notes</span>
+                </button>
+              </div>
+            </div>
+          ))}
+
+          {paginatedLeads.length === 0 && (
+            <div className="py-12 text-center text-gray-400 space-y-2 bg-white rounded-xl border border-[#EAE6DF] p-6">
+              <Users className="w-8 h-8 mx-auto text-gray-300" />
+              <p className="text-sm font-medium">No enquiry records found matching your filters.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-gray-600 pt-3 gap-3 border-t border-[#EAE6DF]">
+          <span className="text-center sm:text-left">
+            Showing <strong>{displayedLeads.length > 0 ? (enquiryPage - 1) * pageSize + 1 : 0}</strong> to <strong>{Math.min(enquiryPage * pageSize, displayedLeads.length)}</strong> of <strong>{displayedLeads.length}</strong> records
+          </span>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-1.5 self-center sm:self-auto">
+              <button
+                type="button"
+                onClick={() => setEnquiryPage(p => Math.max(1, p - 1))}
+                disabled={enquiryPage === 1}
+                className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors cursor-pointer"
+              >
+                Previous
+              </button>
+              <div className="flex items-center gap-1 px-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
+                  <button
+                    key={num}
+                    type="button"
+                    onClick={() => setEnquiryPage(num)}
+                    className={`w-7 h-7 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      enquiryPage === num
+                        ? 'bg-[#245348] text-white shadow-xs'
+                        : 'bg-white border border-[#EAE6DF] hover:bg-[#FAF9F6] text-gray-700'
+                    }`}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setEnquiryPage(p => Math.min(totalPages, p + 1))}
+                disabled={enquiryPage === totalPages}
+                className="px-3 py-1.5 rounded-lg border border-[#EAE6DF] bg-white hover:bg-[#FAF9F6] disabled:opacity-40 disabled:pointer-events-none font-semibold text-xs transition-colors cursor-pointer"
+              >
+                Next
+              </button>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Attention-Grabbing Leads List */}
-      <div className="space-y-4">
-        {displayedLeads.length === 0 ? (
-          <div className="p-16 text-center bg-white rounded-2xl border border-[#EAE6DF] text-gray-400 space-y-3 shadow-subtle">
-            <div className="w-14 h-14 mx-auto rounded-full bg-gray-100 flex items-center justify-center text-gray-400">
-              <Search className="w-6 h-6" />
-            </div>
-            <p className="text-sm font-semibold text-gray-600">No leads matching current filters or search query.</p>
-            <p className="text-xs text-gray-400">Try adjusting your filters or clearing the search query.</p>
-          </div>
-        ) : (
-          displayedLeads.map((lead) => {
-            const isNotPicking = lead.statusCode === 4;
-            const isHot = lead.statusCode === 1;
-
-            return (
-              <div
-                key={lead.id}
-                className={`bg-white rounded-2xl p-5 sm:p-6 border-2 transition-all duration-300 shadow-luxury hover:shadow-luxury-lg hover:-translate-y-0.5 relative overflow-hidden ${
-                  isHot 
-                    ? 'border-l-[6px] border-l-emerald-500 border-emerald-200 bg-gradient-to-r from-emerald-50/20 via-white to-white' 
-                    : isNotPicking 
-                    ? 'border-l-[6px] border-l-amber-500 border-amber-200 bg-gradient-to-r from-amber-50/20 via-white to-white' 
-                    : 'border-l-[6px] border-l-[#C59B4E] border-[#EAE6DF]'
-                }`}
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-                  <div className="space-y-3 flex-1">
-                    {/* Header Row: Initials Avatar + Name + Badges */}
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="w-11 h-11 rounded-full bg-[#14221F] text-[#DFBE79] border-2 border-[#C59B4E] font-serif font-bold text-sm flex items-center justify-center shrink-0 shadow-sm">
-                        {lead.name ? lead.name.split(' ').map(n=>n[0]).join('').slice(0, 2).toUpperCase() : 'LE'}
-                      </div>
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-[#14221F] bg-[#FAF9F6] px-2.5 py-0.5 rounded-md border border-[#EAE6DF]">
-                            CON-{lead.id}
-                          </span>
-                          <h4 className="font-serif text-xl sm:text-2xl font-bold text-[#14221F] tracking-wide">
-                            {lead.name}
-                          </h4>
-                          <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#284F45] text-white flex items-center gap-1 shadow-xs">
-                            <MapPin className="w-3 h-3 text-[#DFBE79]" />
-                            {lead.locationName}
-                          </span>
-                          {isHot && (
-                            <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 shadow-xs">
-                              <Flame className="w-3.5 h-3.5 text-emerald-600 fill-emerald-600" />
-                              HOT LEAD • HIGH CONVERSION
-                            </span>
-                          )}
-                          {isNotPicking && (
-                            <span className="px-3 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1 shadow-xs animate-pulse">
-                              <RotateCcw className="w-3.5 h-3.5 text-amber-700" />
-                              NOT PICKING UP • RETRY DUE
-                            </span>
-                          )}
-                          {!isHot && !isNotPicking && (
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-800 border border-gray-200 uppercase tracking-wider">
-                              {lead.statusName}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Metadata Strip: Phone + Copy + Project + Timestamp */}
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-600 pt-1">
-                      {/* Phone Number with Click-to-Copy */}
-                      <button
-                        onClick={() => handleCopyPhone(lead.id, lead.mobile)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF9F6] hover:bg-emerald-50 border border-[#EAE6DF] hover:border-emerald-300 text-[#14221F] font-mono font-bold text-xs transition-all cursor-pointer shadow-xs group"
-                        title="Click to copy phone number"
-                      >
-                        <PhoneCall className="w-3.5 h-3.5 text-[#245348] group-hover:text-emerald-700" />
-                        <span>{lead.mobile}</span>
-                        {copiedLeadId === lead.id ? (
-                          <span className="text-emerald-700 font-sans font-bold flex items-center gap-0.5">
-                            <Check className="w-3 h-3" /> Copied!
-                          </span>
-                        ) : (
-                          <Copy className="w-3 h-3 text-gray-400 group-hover:text-emerald-600" />
-                        )}
-                      </button>
-
-                      {lead.email && (
-                        <span className="font-mono text-gray-600 flex items-center gap-1 bg-[#FAF9F6] px-2.5 py-1 rounded-lg border border-[#EAE6DF]">
-                          <Mail className="w-3 h-3 text-gray-400" />
-                          {lead.email}
-                        </span>
-                      )}
-
-                      <span className="font-semibold text-[#14221F] flex items-center gap-1 bg-[#FAF9F6] px-2.5 py-1 rounded-lg border border-[#EAE6DF]">
-                        <Building2 className="w-3 h-3 text-[#C59B4E]" />
-                        {lead.projectName}
-                      </span>
-
-                      <span className="text-gray-500 flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-gray-400" />
-                        {new Date(lead.createdAt).toLocaleString()}
-                      </span>
-                    </div>
-
-                    {/* Highlighted Requirement Box (Attention-Grabbing) */}
-                    {lead.description && (
-                      <div className="bg-[#FAF8F5] border border-[#E8E2D5] rounded-xl p-3.5 space-y-1 shadow-xs">
-                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#245348] uppercase tracking-wider font-mono">
-                          <Sparkles className="w-3.5 h-3.5 text-[#C59B4E]" /> Client Requirement & Criteria:
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-800 font-medium leading-relaxed pl-3 border-l-2 border-[#C59B4E]">
-                          {lead.description}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Automated 4h / 10d Retry Cadence Highlight */}
-                    {isNotPicking && (
-                      <div className="p-3.5 rounded-xl bg-gradient-to-r from-amber-50 to-amber-100/60 border border-amber-300 text-xs text-amber-900 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center font-bold text-xs shrink-0 animate-pulse shadow-xs">
-                            <Clock className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <strong className="font-bold text-amber-950">Retry Cadence: Attempt {lead.retryCount} of 10</strong>
-                            <p className="text-[11px] text-amber-800 font-medium">
-                              {lead.retryCount === 1 ? "4-Hour Fast Re-dial (First follow-up cadence)" : "24-Hour Daily Recurring Cadence"}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 font-mono text-xs bg-white/90 px-3 py-1.5 rounded-lg border border-amber-300 font-bold text-amber-900 self-start sm:self-auto shadow-xs">
-                          <Clock className="w-3.5 h-3.5 text-amber-600" />
-                          <span>Next Due: {lead.nextAttemptAt ? new Date(lead.nextAttemptAt).toLocaleString() : 'Scheduled Today'}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Caller Notes History */}
-                    {lead.notes && lead.notes.length > 0 && (
-                      <div className="text-xs text-gray-600 flex items-start gap-2 bg-[#FAF9F6] p-2.5 rounded-lg border border-[#EAE6DF]">
-                        <MessageSquare className="w-3.5 h-3.5 text-[#C59B4E] mt-0.5 shrink-0" />
-                        <div>
-                          <strong className="text-[#245348]">{lead.notes[0].by}:</strong>{" "}
-                          <span>{lead.notes[0].txt}</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Direct Call & Status Notes Buttons */}
-                  <div className="flex flex-wrap items-center justify-end gap-2">
-                    <button
-                      onClick={() => handleStartCall(lead)}
-                      className="px-3.5 py-2 rounded-xl bg-[#245348] hover:bg-[#1B3F37] active:scale-95 text-white text-xs uppercase tracking-wider font-semibold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
-                      title="Direct Call Customer"
-                    >
-                      <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79]" />
-                      <span>Direct Call</span>
-                    </button>
-                    <button
-                      onClick={() => handleOpenDisposition(lead)}
-                      className="px-3 py-2 rounded-xl bg-white hover:bg-gray-50 border border-[#EAE6DF] hover:border-[#245348] text-[#14221F] text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
-                      title="Update Status & Description Notes"
-                    >
-                      <FileText className="w-3.5 h-3.5 text-[#C59B4E]" />
-                      <span>Status & Notes</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-
-      {/* Modern Luxury In-Call & Disposition Modal */}
+      {/* ── Status & Description Modal (Identical to Admin Portal) ── */}
       {callingLead && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md anim-fade-up">
-          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-5 border-2 border-[#C59B4E]/40 relative overflow-hidden">
-            {/* Top Dialing Visualizer */}
-            <div className="text-center space-y-2 pb-4 border-b border-[#EAE6DF] relative">
-              <div className="relative w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#245348] to-[#14221F] text-[#DFBE79] border-2 border-[#C59B4E] flex items-center justify-center mb-1 shadow-lg">
-                <PhoneCall className="w-7 h-7 animate-bounce" />
-                <span className="absolute -inset-1 rounded-full border-2 border-emerald-400 animate-ping opacity-60 pointer-events-none" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fadeIn">
+          <div className="w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 sm:p-7 space-y-4 border border-emerald-500/30 anim-fade-scale">
+            <div className="text-center space-y-1 pb-3 border-b border-[#EAE6DF]">
+              <div className="w-12 h-12 mx-auto rounded-full bg-emerald-100 text-[#245348] flex items-center justify-center mb-1.5 shadow-xs">
+                <FileText className="w-6 h-6 text-[#245348]" />
               </div>
-              <div>
-                <span className="text-[10px] uppercase font-mono tracking-widest text-[#245348] font-bold block">
-                  ACTIVE WEB CALL
-                </span>
-                <h3 className="font-serif text-2xl font-bold text-[#14221F]">
-                  Calling {callingLead.name}
-                </h3>
-              </div>
-              <p className="font-mono text-xs font-semibold text-gray-600 flex items-center justify-center gap-2">
-                <span>{callingLead.mobile}</span>
-                <span>•</span>
-                <span>{callingLead.locationName}</span>
-                <span>•</span>
-                <span className="text-[#C59B4E]">{callingLead.projectName}</span>
+              <h3 className="font-serif text-2xl font-bold text-[#14221F]">
+                Update Status & Description
+              </h3>
+              <p className="font-mono text-xs text-gray-700">
+                {callingLead.name} • <a href={`tel:${callingLead.mobile}`} className="text-[#245348] font-bold underline">{callingLead.mobile}</a>
               </p>
+              <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-500 mt-1">
+                <span className="px-2 py-0.5 rounded bg-[#FAF9F6] border border-[#EAE6DF] font-mono font-bold">CON-{callingLead.id}</span>
+                <span>•</span>
+                <span>{callingLead.locationName} ({callingLead.projectName})</span>
+              </div>
             </div>
 
-            {/* Rate Disposition / Call Rating */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-[#14221F] uppercase font-mono tracking-wider block">
-                Select Call Disposition / Rating:
+            {/* Status Selection Options (Interested, Hot Lead, Not Interested, Fake/Spam, etc.) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-800 block">
+                Select Customer Status:
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
                 {[
-                  { code: 1, label: "🔥 Hot Lead (1)", desc: "Ready to book / token", color: "hover:border-emerald-500" },
-                  { code: 2, label: "🌟 Interested (2)", desc: "VIP site visit schedule", color: "hover:border-blue-500" },
-                  { code: 4, label: "⏳ Not Picking (4)", desc: "Auto 4h/10d retry engine", color: "hover:border-amber-500" },
-                  { code: 3, label: "📞 Call Back (3)", desc: "Requested later talk", color: "hover:border-purple-500" },
-                  { code: 5, label: "✕ Not Interested (5)", desc: "No current intent", color: "hover:border-gray-500" },
-                  { code: 6, label: "🚫 Fake / Spam (6)", desc: "Invalid enquiry", color: "hover:border-red-500" },
+                  { code: 1, label: "🔥 Hot Lead", desc: "High interest / urgent" },
+                  { code: 2, label: "⭐ Interested", desc: "Wants site visit / brochure" },
+                  { code: 3, label: "💬 Okay / Follow up", desc: "Deciding / callback" },
+                  { code: 4, label: "📞 Not Picking", desc: "Auto 4h/10d retry cadence" },
+                  { code: 5, label: "⛔ Not Interested", desc: "Client declined" },
+                  { code: 6, label: "⚠️ Fake / Spam", desc: "Invalid enquiry" },
                 ].map(disp => (
                   <button
                     key={disp.code}
                     type="button"
                     onClick={() => setSelectedDisposition(disp.code)}
-                    className={`p-2.5 rounded-xl border-2 text-left transition-all cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
                       selectedDisposition === disp.code
-                        ? 'bg-[#245348] text-white border-[#245348] shadow-md scale-[1.02]'
-                        : `bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 ${disp.color}`
+                        ? 'bg-[#245348] text-white border-[#245348] shadow-xs ring-2 ring-[#DFBE79]'
+                        : 'bg-[#FAF9F6] border-[#EAE6DF] text-gray-700 hover:border-[#245348]'
                     }`}
                   >
                     <div className="font-bold text-xs">{disp.label}</div>
-                    <div className={`text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-emerald-100' : 'text-gray-500'}`}>
-                      {disp.desc}
-                    </div>
+                    <div className={`text-[10px] mt-0.5 ${selectedDisposition === disp.code ? 'text-gray-200' : 'text-gray-500'}`}>{disp.desc}</div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Quick Clickable Remark Chips */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-700 block">
-                Quick Discussion Remarks (Click to add):
+            {/* Discussion Description & Remarks */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-800 font-semibold">Discussion Description & Client Notes:</label>
+              <textarea
+                rows={3}
+                value={callerRemark}
+                onChange={(e) => setCallerRemark(e.target.value)}
+                placeholder="Enter client discussion summary, requirements, budget, feedback, preferred visit date/time, etc."
+                className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl p-3 text-xs text-[#14221F] focus:outline-none"
+              />
+            </div>
+
+            {/* Quick Clickable Suggestion Chips */}
+            <div className="space-y-1">
+              <label className="text-[11px] font-semibold text-gray-500 block">
+                Quick Suggestions (Click to add):
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {[
                   "Site visit scheduled for weekend",
                   "Sent brochure & floor plans on WhatsApp",
-                  "Rung 4 times, no answer. Scheduled 4h retry",
-                  "Looking for 3 BHK high floor unit",
-                  "Callback requested tomorrow afternoon"
+                  "Rung 4 times, no answer",
+                  "Callback requested tomorrow",
+                  "Ready for booking / token"
                 ].map((tag, idx) => (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => setCallerRemark(prev => prev ? `${prev}. ${tag}` : tag)}
-                    className="text-[10px] font-medium bg-[#FAF9F6] hover:bg-[#245348] hover:text-white text-gray-700 border border-[#EAE6DF] px-2.5 py-1 rounded-lg transition-all cursor-pointer"
+                    className="text-[10px] font-medium bg-[#FAF9F6] hover:bg-[#245348] hover:text-white text-gray-700 border border-[#EAE6DF] px-2 py-0.5 rounded-lg transition-all cursor-pointer"
                   >
                     + {tag}
                   </button>
@@ -1313,38 +1573,44 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
               </div>
             </div>
 
-            {/* Caller Remarks Textarea */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-gray-700 block">
-                Caller Discussion Notes:
-              </label>
-              <textarea
-                rows={2}
-                value={callerRemark}
-                onChange={(e) => setCallerRemark(e.target.value)}
-                placeholder="e.g., Spoke with client. Looking for deck unit with sea view, token ready next week."
-                className="w-full bg-[#FAF9F6] border-2 border-[#EAE6DF] focus:border-[#245348] focus:bg-white rounded-xl p-2.5 text-xs text-[#14221F] focus:outline-none transition-all placeholder:text-gray-400"
-              />
-            </div>
+            {/* Previous Notes History */}
+            {callingLead.notes && callingLead.notes.length > 0 && (
+              <div className="p-2.5 bg-gray-50 rounded-xl border border-gray-200 max-h-24 overflow-y-auto space-y-1 text-[11px]">
+                <span className="font-bold text-gray-600 block text-[10px] uppercase tracking-wider">Previous Notes History:</span>
+                {callingLead.notes.map((note, idx) => (
+                  <div key={idx} className="text-gray-700 border-b border-gray-200/60 pb-1 last:border-0 last:pb-0">
+                    <span className="font-semibold text-[#245348]">{note.by}:</span> {note.txt}{' '}
+                    <span className="text-[10px] text-gray-400">({new Date(note.at).toLocaleDateString([], { month: 'short', day: 'numeric' })})</span>
+                  </div>
+                ))}
+              </div>
+            )}
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setCallingLead(null)}
-                className="flex-1 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold transition-all cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold cursor-pointer transition-colors"
               >
-                Cancel Call
+                Cancel
               </button>
               <button
                 type="button"
                 onClick={handleFinishCall}
-                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#245348] to-[#14221F] hover:from-[#1D3530] hover:to-[#0B1513] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer border border-[#C59B4E]/40"
+                className="flex-1 py-2.5 rounded-xl bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-wider font-bold transition-all shadow-md cursor-pointer"
               >
-                Save Disposition
+                Save & Update Record
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Floating Feedback Toast Notification */}
+      {feedbackToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#14221F] text-[#DFBE79] px-4 py-3 rounded-xl shadow-2xl border border-[#C59B4E] flex items-center gap-2.5 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span className="text-xs font-semibold text-white">{feedbackToast}</span>
         </div>
       )}
 
@@ -1462,7 +1728,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                       const isAssigned = currentUser?.assignedLocations?.includes(Number(code));
                       return (
                         <option key={code} value={code}>
-                          {name} {isAssigned ? '★ (Your Territory)' : ''}
+                          {name} {isAssigned ? '★ (Your Location)' : ''}
                         </option>
                       );
                     })}

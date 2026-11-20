@@ -169,8 +169,8 @@ $htmlContent = <<<HTML
 </html>
 HTML;
 
-// 5. Dispatch Live Email via Resend API
-$dispatchResult = dispatch_resend_email($normalizedEmail, $subject, $htmlContent);
+// 5. Dispatch Live Email (Resend API with Hostinger Server Fallback)
+$dispatchResult = dispatch_email($normalizedEmail, $subject, $htmlContent);
 
 // 6. Record Rate Limit Attempt
 record_rate_limit_attempt($normalizedEmail);
