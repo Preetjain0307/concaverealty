@@ -1635,12 +1635,21 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                   </div>
                 </div>
 
-                {/* Latest Notes History (if any) */}
-                {lead.notes && lead.notes.length > 0 && (
-                  <div className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
-                    <span className="font-bold text-[#245348]">{lead.notes[0].by}:</span> {lead.notes[0].txt}
-                  </div>
-                )}
+                {/* Latest Notes History (Excludes automated System Lead Router box) */}
+                {(() => {
+                  const callerNotes = (lead.notes || []).filter(
+                    n => n.by !== "System Lead Router" &&
+                         !n.txt?.includes("System Lead Router") &&
+                         !n.txt?.includes("Auto-assigned") &&
+                         !n.txt?.includes("New enquiry received")
+                  );
+                  if (callerNotes.length === 0) return null;
+                  return (
+                    <div className="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-200">
+                      <span className="font-bold text-[#245348]">{callerNotes[0].by}:</span> {callerNotes[0].txt}
+                    </div>
+                  );
+                })()}
 
                 {/* Equal-sized Action Buttons (Direct Call + Status & Notes) */}
                 <div className="grid grid-cols-2 gap-2.5 pt-1">

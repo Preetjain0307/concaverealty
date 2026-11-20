@@ -296,7 +296,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 1.5,
     d: "Interested in 3 BHK high floor unit near Inorbit Mall.",
     dv: "Windows PC",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Goregaon." }]
+    nt: []
   },
   {
     i: 102,
@@ -314,7 +314,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 2.5,
     d: "Enquiry for 2 BHK waterfront facing apartment with deck.",
     dv: "Apple iPhone",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Malad." }]
+    nt: []
   },
   {
     i: 103,
@@ -332,7 +332,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 3.8,
     d: "Interested in 3 BHK sea-view residence. Requested brochure and floor plans.",
     dv: "Android Smartphone",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 3.8, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Borivali." }]
+    nt: []
   },
   {
     i: 104,
@@ -350,7 +350,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 4.2,
     d: "Inquiry for 2 BHK luxury apartment with club view.",
     dv: "OnePlus",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.2, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Kandivali." }]
+    nt: []
   },
   {
     i: 105,
@@ -368,7 +368,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 5.5,
     d: "Requested Sunday site visit for 4 BHK duplex suite.",
     dv: "Samsung Galaxy",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 5.5, txt: "New enquiry received from website. Auto-assigned to Preet Jain for Goregaon." }]
+    nt: []
   },
   // 2. Confirmed Leads (Called and marked: Hot Lead / Lead)
   {
@@ -463,7 +463,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 1.8,
     d: "Downloaded digital brochure for waterfront facing residences.",
     dv: "Samsung Galaxy",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 1.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Jogeshwari." }]
+    nt: []
   },
   {
     i: 111,
@@ -481,7 +481,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 2.8,
     d: "Interested in 3 BHK sea-view penthouse in Versova.",
     dv: "Apple iPhone",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 2.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Andheri." }]
+    nt: []
   },
   {
     i: 112,
@@ -499,7 +499,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 4.0,
     d: "Inquiry for 4 BHK sea-view residential suite.",
     dv: "Mac / MacBook",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.0, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Bandra." }]
+    nt: []
   },
   {
     i: 113,
@@ -517,7 +517,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 4.7,
     d: "VIP consultation request for high floor duplex suite.",
     dv: "OnePlus",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 4.7, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Lower Parel." }]
+    nt: []
   },
   {
     i: 114,
@@ -535,7 +535,7 @@ const INITIAL_SEED_LEADS = [
     ts: Date.now() - 3600 * 1000 * 5.8,
     d: "Enquiry for 3 BHK luxury layout and payment plans.",
     dv: "Android Smartphone",
-    nt: [{ by: "System Lead Router", at: Date.now() - 3600 * 1000 * 5.8, txt: "New enquiry received from website. Auto-assigned to Callerproxy for Andheri." }]
+    nt: []
   },
   // 2. Confirmed Leads (Called and marked: Hot Lead / Lead)
   {
@@ -988,6 +988,16 @@ export const dbStore = {
           if (!existing.some(l => l.i === seed.i)) {
             existing.push(seed);
             updated = true;
+          }
+        });
+        // Auto-purge automated System Lead Router logs from stored leads
+        existing.forEach(l => {
+          if (l.nt && Array.isArray(l.nt)) {
+            const cleanNt = l.nt.filter(n => n.by !== "System Lead Router" && !n.txt?.includes("System Lead Router") && !n.txt?.includes("Auto-assigned"));
+            if (cleanNt.length !== l.nt.length) {
+              l.nt = cleanNt;
+              updated = true;
+            }
           }
         });
         if (updated) setRawData(DB_KEY, existing);
