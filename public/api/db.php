@@ -6,11 +6,10 @@
  */
 
 // Hostinger Database Configuration
-// Replace with your Hostinger MySQL details from hPanel
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'u123456789_concave_db');
-define('DB_USER', getenv('DB_USER') ?: 'u123456789_concave_admin');
-define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_NAME', getenv('DB_NAME') ?: 'u451989800_concave_db');
+define('DB_USER', getenv('DB_USER') ?: 'u451989800_concave_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'Hemant_Concave_Mishra#2026@MillenForge');
 
 /**
  * Returns a PDO connection or null if MySQL credentials are not yet configured.
