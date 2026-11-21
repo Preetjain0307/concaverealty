@@ -1864,59 +1864,73 @@ export const PROJECTS_DATA = [
   // ==========================================
   {
     id: 40,
-    name: "Lodha",
+    name: "Lodha The Park",
     builder: "Lodha Group",
-    tagline: "Iconic Skyscraper Living in Lower Parel",
+    tagline: "Ultra-Luxury 17-Acre Private Park Sanctuary on Senapati Bapat Marg",
     location: "Lower Parel",
-    locality: "Lower Parel / Parkside",
+    locality: "Senapati Bapat Marg, Lower Parel",
+    exactAddress: "Lodha The Park, Senapati Bapat Marg, Lower Parel, Mumbai - 400013",
     city: "Mumbai",
-    priceRange: "₹8.50 Cr - ₹25.00 Cr*",
-    priceDisplay: "₹8.50 Cr*",
-    status: "Ready & Under Construction Phased",
-    possession: "Dec 2026 / Ready",
-    rera: "P51900008345",
-    landParcel: "17 Acres Urban Park Oasis",
-    towers: "Sculptural Curved Glass Towers",
-    towerDetails: "World-class architectural towers soaring up to 100+ storeys",
-    elevators: "Private Concierge Elevators by Otis",
-    amenitiesCount: "50+ Armani/Casa Club Amenities",
+    priceRange: "₹5.00 Cr - ₹29.00 Cr*",
+    priceDisplay: "₹5.00 Cr*",
+    status: "Ready Possession & Final Inventory",
+    possession: "Ready Possession (OC Received)",
+    rera: "P51900001339, P51900014937, P51900016526",
+    landParcel: "17-Acre Master Urban Park Oasis",
+    towers: "Iconic 75-Storey Skyscraper Towers",
+    towerDetails: "75 Storeys | Centred around a breathtaking 7-acre private urban park and organic orchard",
+    elevators: "Private High-Speed Concierge Elevators by Otis",
+    amenitiesCount: "50+ World-Class Armani/Casa & Park Amenities",
     coverImage: "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/1.jpg",
     images: [
       "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/1.jpg",
       "/project_photos/40%20-%20Lodha%20(Lower%20Parel)/2.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Sky Suite", carpetArea: "1,550 sq.ft CA", price: "₹8.50 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2026" },
-      { bhk: "4 BHK Sea View", carpetArea: "2,450 sq.ft CA", price: "₹14.50 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2026" },
-      { bhk: "5 BHK Duplex Sky Mansion", carpetArea: "4,800 sq.ft CA", price: "₹25.00 Cr*", floorPlanLabel: "Type 5A", possessionDate: "Dec 2026" }
+      { bhk: "2 BHK Parkview Suite", carpetArea: "890 - 940 sq.ft CA", price: "₹5.00 Cr*", floorPlanLabel: "Type 2A Parkview", possessionDate: "Ready / Phased" },
+      { bhk: "3 BHK Parkview Grande", carpetArea: "1,140 - 1,400 sq.ft CA", price: "₹6.80 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "Ready / Phased" },
+      { bhk: "4 BHK Royal Residence", carpetArea: "1,700 - 2,150 sq.ft CA", price: "₹10.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Ready / Phased" },
+      { bhk: "5 BHK Sky Villa / Penthouse", carpetArea: "4,150+ sq.ft CA", price: "₹29.00 Cr*", floorPlanLabel: "Palatial Penthouse", possessionDate: "Ready / Phased" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Lower+Parel+%2F+Parkside+Mumbai",
-    overview: "Soaring into the South Mumbai skyline, Lodha's Lower Parel developments represent the pinnacle of architectural luxury with 7-acre private parks and Italian interior design.",
+    mapUrl: "https://maps.google.com/?q=Lodha+The+Park+Senapati+Bapat+Marg+Lower+Parel+Mumbai",
+    overview: "Lodha The Park is a legendary 17-acre residential parkland landmark soaring 75 storeys on Senapati Bapat Marg, Lower Parel. Centred around a 7-acre private park and organic orchard, it delivers an unprecedented urban sanctuary with 'The Jewel' 50,000 sq.ft clubhouse designed by Patricia Urquiola, 7 swimming pools, and 5-star Saint Amand concierge hospitality.",
     highlights: [
-      "Overlooks the Mahalaxmi Racecourse and Arabian Sea",
-      "Interiors curated by Giorgio Armani / Casa",
-      "Private helipad, temperature-controlled indoor pool & spa"
+      "Legendary 17-acre estate built around a 7-acre private urban park",
+      "50,000 sq.ft 'The Jewel' clubhouse designed by Patricia Urquiola",
+      "7 swimming pools, Evander Holyfield boxing ring & cricket pitch",
+      "Direct frontage to High Street Phoenix, Palladium Mall & Aqua Line 3 Metro"
     ],
-    amenities: ["Armani/Casa Club", "Olympic Lap Pool", "Private Helipad Access", "Spa & Wellness Suite", "Concierge Desk"]
+    amenities: [
+      "7 Swimming Pools including Olympic Lap Pool",
+      "50,000 sq.ft 'The Jewel' Luxury Clubhouse",
+      "7-Acre Private Urban Park & Organic Garden",
+      "Evander Holyfield Boxing Ring & Athletics Track",
+      "Full-Size Cricket Pitch & Football Turf",
+      "Luxury ESPA Spa & Hydrotherapy Suite",
+      "Private Screening Cinema & Theatre",
+      "Ganesha Temple within Estate",
+      "24/7 Saint Amand 5-Star Hospitality & Concierge"
+    ]
   },
   {
     id: 41,
-    name: "Piramal",
+    name: "Piramal Mahalaxmi",
     builder: "Piramal Realty",
-    tagline: "Spectacular Luxury High-Rise Living in Lower Parel",
+    tagline: "Tri-Tower Sky Sanctuary Overlooking Mahalaxmi Racecourse & Arabian Sea",
     location: "Lower Parel",
-    locality: "Lower Parel Commercial & Residential Hub",
+    locality: "Sanapati Bapat Marg / Jacob Circle, Mahalaxmi / Lower Parel",
+    exactAddress: "Sanapati Bapat Marg, Near Jacob Circle, Mahalaxmi, Mumbai - 400011",
     city: "Mumbai",
-    priceRange: "₹7.25 Cr - ₹18.00 Cr*",
-    priceDisplay: "₹7.25 Cr*",
-    status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51900015893",
-    landParcel: "7 Acres",
-    towers: "3 Architectural Towers",
-    towerDetails: "G + 60 Storeys with panoramic sea link vistas",
-    elevators: "High-Speed Lifts",
-    amenitiesCount: "40+ Amenities",
+    priceRange: "₹3.86 Cr - ₹14.50 Cr*",
+    priceDisplay: "₹3.86 Cr*",
+    status: "Ready Possession & Ongoing Handover",
+    possession: "Ready Possession / 2026",
+    rera: "P51900015854, P51900016482, P51900021057",
+    landParcel: "7-Acre Freehold Sanctuary",
+    towers: "3 Architectural High-Rise Towers (South, Central, North)",
+    towerDetails: "G + 63 Storeys | Biophilic design with dual-aspect views of racecourse and sea",
+    elevators: "High-Speed Private Elevators with Acoustic Glass",
+    amenitiesCount: "40+ Resort-Style Amenities",
     coverImage: "/projects/piramal_mahalaxmi_official.webp",
     images: [
       "/projects/piramal_mahalaxmi_official.webp",
@@ -1924,72 +1938,98 @@ export const PROJECTS_DATA = [
       "/projects/project_img_48.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Luxe", carpetArea: "1,420 sq.ft CA", price: "₹7.25 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" },
-      { bhk: "4 BHK Royal", carpetArea: "2,150 sq.ft CA", price: "₹12.80 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2027" }
+      { bhk: "2 BHK Luxe", carpetArea: "750 - 872 sq.ft CA", price: "₹3.86 Cr*", floorPlanLabel: "Type 2A Luxe", possessionDate: "Ready / 2026" },
+      { bhk: "3 BHK Royale", carpetArea: "950 - 1,460 sq.ft CA", price: "₹6.30 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Ready / 2026" },
+      { bhk: "4 BHK Palatial Suite", carpetArea: "1,850 - 1,877 sq.ft CA", price: "₹11.72 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Ready / 2026" }
     ],
-    mapUrl: "https://maps.google.com/?q=Piramal+Realty+Piramal+Lower+Parel+Commercial+%26+Residential+Mumbai",
-    overview: "Piramal Realty presents an enclave of architectural serenity in Lower Parel, offering dual-aspect views of the Eastern Harbour and Arabian Sea.",
+    mapUrl: "https://maps.google.com/?q=Piramal+Mahalaxmi+Sanapati+Bapat+Marg+Mumbai",
+    overview: "Piramal Mahalaxmi is a masterpiece of contemporary architecture spanning ~7 acres overlooking the iconic 225-acre Mahalaxmi Racecourse and Arabian Sea. Rising across three sculptural towers up to 63 storeys, it offers masterfully appointed 2, 3, and 4 BHK residences with floor-to-ceiling glass, biophilic landscapes, and world-class sports clubs.",
     highlights: [
-      "Minutes from Palladium Mall, High Street Phoenix & corporate HQs",
-      "Lush landscaped forest deck and biophilic architecture",
-      "Floor-to-ceiling soundproof acoustic glass windows"
+      "Unobstructed panoramic vistas of Mahalaxmi Racecourse & Arabian Sea",
+      "Soaring 63-storey architectural towers with biophilic healing gardens",
+      "5-lane infinity lap pool, jacuzzi & rooftop observatory deck",
+      "2 Mins to Science Centre Metro (Aqua Line 3) & Mahalaxmi Railway Station"
     ],
-    amenities: ["Infinity Pool", "Clubhouse", "Gymnasium", "Cricket Pitch", "Children's Play Area"]
+    amenities: [
+      "5-Lane Infinity Lap Pool & Jacuzzi Deck",
+      "Rooftop Observatory & Stargazing Lounge",
+      "Grand 3-Level Luxury Clubhouse",
+      "State-of-the-Art Gymnasium & Pilates Studio",
+      "Squash & Indoor Badminton Courts",
+      "Private Resident Screening Lounge",
+      "Biophilic Parkland & Healing Gardens",
+      "Spa, Steam & Sauna Wellness Suite",
+      "24/7 White-Glove Concierge & Valet"
+    ]
   },
   {
     id: 42,
-    name: "Prestige Group",
+    name: "Prestige Jasdan Classic",
     builder: "Prestige Group",
-    tagline: "Marquee South Mumbai Landmark in Lower Parel",
+    tagline: "Ultra-Luxury 45-Storey Twin Towers on NM Joshi Marg, Lower Parel / Mahalaxmi",
     location: "Lower Parel",
-    locality: "Off Senapati Bapat Marg, Lower Parel",
+    locality: "NM Joshi Marg, Lower Parel / Byculla West",
+    exactAddress: "N.M. Joshi Marg, Near Jacob Circle & Saat Rasta, Byculla West / Lower Parel, Mumbai - 400011",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Newly Launched",
-    possession: "2028",
-    rera: "Information Coming Soon",
-    landParcel: "Prime South Mumbai Acreage",
-    towers: "Signature High-Rise Towers",
-    towerDetails: "Iconic towers soaring over 50 storeys",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Prestige Luxury Club",
+    priceRange: "₹4.25 Cr - ₹14.50 Cr*",
+    priceDisplay: "₹4.25 Cr*",
+    status: "Ready Possession (OC Received)",
+    possession: "Ready to Move In",
+    rera: "P51900031285",
+    landParcel: "2.15-Acre Gated Enclave",
+    towers: "45-Storey Signature Twin Towers (East & West)",
+    towerDetails: "G + 45 Storeys | 11-12 Ft High Ceilings with 7 Levels of Dedicated Podium Parking",
+    elevators: "High-Speed Elevators with Home Automation Integration",
+    amenitiesCount: "35+ Curated 5-Star Amenities",
     coverImage: "/projects/prestige_jasdan_official.webp",
     images: [
       "/projects/prestige_jasdan_official.webp",
       "/projects/project_img_66.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2028" },
-      { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2028" }
+      { bhk: "2 BHK Suite", carpetArea: "883 sq.ft CA", price: "₹4.25 Cr*", floorPlanLabel: "Type 2A Suite", possessionDate: "Ready Possession" },
+      { bhk: "3 BHK Opulence Deck", carpetArea: "1,196 - 1,838 sq.ft CA", price: "₹7.00 Cr*", floorPlanLabel: "Type 3A Opulence", possessionDate: "Ready Possession" },
+      { bhk: "4 BHK Splendor Suite", carpetArea: "1,766 - 2,307 sq.ft CA", price: "₹11.00 Cr*", floorPlanLabel: "Type 4A Splendor", possessionDate: "Ready Possession" }
     ],
-    mapUrl: "https://maps.google.com/?q=Prestige+Prestige+Group+Senapati+Bapat+Marg%2C+Lower+Parel+Mumbai",
-    overview: "Prestige Group brings its celebrated luxury hospitality standards to Lower Parel with landmark high-rise towers designed for Mumbai's top business leaders.",
+    mapUrl: "https://maps.google.com/?q=Prestige+Jasdan+Classic+NM+Joshi+Marg+Mumbai",
+    overview: "Prestige Jasdan Classic is an ultra-luxury residential address crafted by the Prestige Group on NM Joshi Marg, at the intersection of Lower Parel, Mahalaxmi, and Byculla West. Rising 45 storeys across twin towers with soaring 11-12 ft ceilings, it delivers expansive deck residences with breathtaking dual panoramas of the Eastern Harbour and Arabian Sea.",
     highlights: [
-      "Center of Mumbai's financial and fine dining epicenter",
-      "Lavish clubhouse with indoor squash, badminton and heated pool",
-      "High-speed transit connectivity via Coastal Road and Sea Link"
+      "Ready-to-move-in luxury twin towers with full Occupancy Certificate (OC)",
+      "Voluminous residences with 11-12 ft floor-to-ceiling heights & deep sundecks",
+      "Elevated infinity-edge pool, multi-tier clubhouse & squash courts",
+      "3 Mins to Lower Parel Commercial Boulevard & Phoenix Palladium Mall"
     ],
-    amenities: ["Heated Lap Pool", "Squash Courts", "Executive Lounge", "Spa", "Concierge"]
+    amenities: [
+      "Elevated Infinity-Edge Swimming Pool & Sun Deck",
+      "Grand Multi-Tier Prestige Clubhouse",
+      "High-Tech Gymnasium & Aerobics Studio",
+      "Indoor Squash & Badminton Courts",
+      "Landscaped Podium Gardens & Children's Play Zone",
+      "Private Banquet & Party Ballrooms",
+      "Senior Citizen Peaceful Alcoves",
+      "7 Levels of Dedicated Podium Parking",
+      "24/7 Prestige White-Glove Security & Concierge"
+    ]
   },
   {
     id: 43,
-    name: "Godrej",
+    name: "Godrej Trilogy",
     builder: "Godrej Properties",
-    tagline: "Exclusive High-Rise Sanctuary in Lower Parel",
+    tagline: "Ultra-Luxury Seafront High-Rise Landmark Overlooking Arabian Sea & Racecourse",
     location: "Lower Parel",
-    locality: "Lower Parel Corridor",
+    locality: "Worli Seaface / AB Nair Road, Lower Parel / Worli",
+    exactAddress: "AB Nair Road, Off Dr. Annie Besant Road, Near Nehru Planetarium, Worli / Lower Parel, Mumbai - 400018",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime South Mumbai Parcel",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Ultra-luxury residential skyscraper",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Godrej Signature Amenities",
+    priceRange: "₹15.83 Cr - ₹38.00 Cr*",
+    priceDisplay: "₹15.83 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2030 / Dec 2033",
+    rera: "PR1171012501267, PR1171012501309",
+    landParcel: "Marquee South Mumbai Seafront Parcel",
+    towers: "Ultra-Luxury High-Rise Towers (Seaturf & Seafront Towers)",
+    towerDetails: "Iconic Skyscraper Towers | Low density with only 3 residences per floor and private lifts",
+    elevators: "High-Speed Private Elevators with Biometric Security",
+    amenitiesCount: "40+ Resort Lifestyle Amenities",
     coverImage: "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/cover.jpg",
     images: [
       "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/cover.jpg",
@@ -1997,17 +2037,29 @@ export const PROJECTS_DATA = [
       "/project_photos/43%20-%20Godrej%20(Lower%20Parel)/3.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "3 BHK Seafront Suite", carpetArea: "1,560 - 1,796 sq.ft CA", price: "₹15.83 Cr*", floorPlanLabel: "Type 3A Seafront", possessionDate: "Dec 2030" },
+      { bhk: "4 BHK Royal Penthouse", carpetArea: "1,973 - 2,773 sq.ft CA", price: "₹21.69 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2030" },
+      { bhk: "Signature Duplex Sky Mansion", carpetArea: "3,500+ sq.ft CA", price: "₹35.00 Cr*", floorPlanLabel: "Palatial Duplex", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Godrej+Godrej+Lower+Parel+Mumbai",
-    overview: "Godrej Properties presents a marquee luxury residential project in Lower Parel, blending green architecture with breathtaking urban skyline vistas.",
+    mapUrl: "https://maps.google.com/?q=Godrej+Trilogy+Worli+Seaface+Mumbai",
+    overview: "Godrej Trilogy is Godrej Properties' pinnacle ultra-luxury residential landmark positioned on Worli Seaface near the Lower Parel luxury corridor. Offering low-density layouts with only 3 residences per floor, private high-speed elevators, and infinite vistas of the Arabian Sea and Mahalaxmi Racecourse, it delivers an unprecedented standard of South Mumbai living.",
     highlights: [
-      "Direct highway and sea link connectivity",
-      "Green building design with energy-efficient ventilation",
-      "Unmatched Godrej delivery legacy"
+      "Rare sea-facing address near Nehru Planetarium & Worli Seaface",
+      "Exclusive low-density layout with only 3 residences per lobby floor",
+      "Infinity pool with sea vistas, sky lounge & wellness hydro-spa",
+      "2 Mins to Mumbai Coastal Road & 3 Mins to Science Centre Metro (Aqua Line 3)"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Sky Lounge", "24/7 Security"]
+    amenities: [
+      "Infinity Lap Pool Overlooking Arabian Sea & Sunken Deck",
+      "Exclusive Multi-Tier Luxury Clubhouse & Spa",
+      "Sky Lounge with City Skyline & Sea Panoramas",
+      "State-of-the-Art Fitness Center & Pilates Studio",
+      "Private Resident Screening Room",
+      "Landscaped Zen Gardens & Yoga Pavilion",
+      "Multi-Level Automated Parking with EV Bays",
+      "High-Speed Private Elevators with Biometric Access",
+      "5-Tier Advanced Security & 24/7 Concierge"
+    ]
   }
 ];
 
@@ -3082,74 +3134,86 @@ export const PROJECT_ENRICHMENTS = {
   },
   "40": {
     "keyFeatures": [
-      "Parkside on Senapati Bapat Marg, Lower Parel",
+      "Legendary 17-acre estate built around a 7-acre private urban park, Lower Parel",
       "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
       "4 Mins to Lower Parel Station (Western Line) & Currey Road Station (Central Line)",
-      "Adjacent to High Street Phoenix, Palladium Mall & The St. Regis Mumbai"
-],
+      "Direct pedestrian & vehicular access to High Street Phoenix & Palladium Mall",
+      "50,000 sq.ft 'The Jewel' clubhouse by Patricia Urquiola with 7 swimming pools",
+      "MahaRERA: P51900001339, P51900014937 | Ready Possession (OC Received)"
+    ],
     "amenities": [
       "7 Swimming Pools including Olympic Lap Pool",
-      "50,000 sq.ft Grand Clubhouse (The Jewel)",
-      "7-Acre Private Park within Estate",
-      "Evander Holyfield Boxing Ring",
+      "50,000 sq.ft 'The Jewel' Luxury Clubhouse",
+      "7-Acre Private Urban Park & Organic Garden",
+      "Evander Holyfield Boxing Ring & Athletics Track",
       "Full-Size Cricket Pitch & Football Turf",
-      "Luxury Spa by ESPA",
-      "Private Screening Theatre",
-      "24/7 Saint Amand Concierge"
+      "Luxury ESPA Spa & Hydrotherapy Suite",
+      "Private Screening Cinema & Theatre",
+      "Ganesha Temple within Estate",
+      "24/7 Saint Amand 5-Star Hospitality & Concierge"
     ]
   },
   "41": {
     "keyFeatures": [
-      "Lower Parel Commercial Boulevard opposite Peninsula Corporate Park",
-      "2 Mins to Acharya Atre Chowk / Lower Parel Metro Station (Aqua Line 3)",
-      "3 Mins to Lower Parel & Currey Road Railway Stations",
-      "Near Peninsula Corporate Park, Kamala Mills Dining Hub & One World Center"
-],
+      "Freehold 7-acre sanctuary with dual vistas of Mahalaxmi Racecourse & Arabian Sea",
+      "2 Mins to Science Centre / Lower Parel Metro Station (Aqua Line 3)",
+      "3 Mins to Mahalaxmi & Lower Parel Suburban Railway Stations",
+      "4 Mins to Lower Parel Commercial Boulevard, Palladium Mall & Kamala Mills",
+      "Biophilic architectural design with rooftop observatory & 5-lane infinity lap pool",
+      "MahaRERA: P51900015854, P51900016482, P51900021057 | Ready / 2026"
+    ],
     "amenities": [
-      "Infinity Lap Pool overlooking Racecourse",
+      "5-Lane Infinity Lap Pool & Jacuzzi Deck",
+      "Rooftop Observatory & Stargazing Lounge",
       "Grand 3-Level Luxury Clubhouse",
-      "Spa with Jacuzzi & Sauna",
-      "Modern Fitness Studio & Pilates",
-      "Squash & Badminton Courts",
-      "Private Screening Theatre",
-      "Kids Creative Learning Center",
-      "24/7 White-Glove Concierge"
+      "State-of-the-Art Gymnasium & Pilates Studio",
+      "Squash & Indoor Badminton Courts",
+      "Private Resident Screening Lounge",
+      "Biophilic Parkland & Healing Gardens",
+      "Spa, Steam & Sauna Wellness Suite",
+      "24/7 White-Glove Concierge & Valet"
     ]
   },
   "42": {
     "keyFeatures": [
-      "Off Senapati Bapat Marg near One International Centre, Lower Parel",
-      "3 Mins to Worli / Science Centre Metro Station (Aqua Line 3)",
-      "4 Mins to Lower Parel Railway Station & Mumbai Coastal Road Worli Ramp",
-      "Near One International Centre, Four Seasons Hotel & ITC Grand Central"
-],
+      "Prestigious NM Joshi Marg address connecting Lower Parel, Mahalaxmi & Byculla",
+      "3 Mins to Lower Parel Commercial Boulevard, One International Centre & Palladium",
+      "3 Mins to Mahalaxmi & Currey Road Railway Stations",
+      "4 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
+      "Ready-to-move-in twin towers with full OC and soaring 11-12 ft ceiling heights",
+      "MahaRERA Registered: P51900031285 | Ready Possession (OC Received)"
+    ],
     "amenities": [
-      "Infinity Swimming Pool & Kids Pool",
-      "Grand Double-Height Clubhouse",
-      "World-Class Gymnasium & Aerobics",
-      "Badminton & Squash Courts",
-      "Spa with Treatment Rooms",
-      "Private Banquet & Party Hall",
-      "Children's Play Park",
-      "24/7 Prestige Concierge"
+      "Elevated Infinity-Edge Swimming Pool & Sun Deck",
+      "Grand Multi-Tier Prestige Clubhouse",
+      "High-Tech Gymnasium & Aerobics Studio",
+      "Indoor Squash & Badminton Courts",
+      "Landscaped Podium Gardens & Children's Play Zone",
+      "Private Banquet & Party Ballrooms",
+      "Senior Citizen Peaceful Alcoves",
+      "7 Levels of Dedicated Podium Parking",
+      "24/7 Prestige White-Glove Security & Concierge"
     ]
   },
   "43": {
     "keyFeatures": [
-      "Lower Parel Midtown Corridor near Marathon Futurex",
-      "2 Mins to Lower Parel Monorail & Currey Road Metro Link",
-      "3 Mins to Lower Parel Suburban Station & Currey Road Station",
-      "Near Marathon Futurex IT Park, Lodha Excelus, Urmi Estate & Coastal Road"
-],
+      "Rare sea-facing address on Worli Seaface near Nehru Planetarium & Lower Parel",
+      "2 Mins to Mumbai Coastal Road interchange & Worli Sea Promenade",
+      "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
+      "5 Mins to Lower Parel Commercial Boulevard, Phoenix Palladium & corporate hubs",
+      "Ultra-luxury low-density layout with only 3 residences per floor & private lifts",
+      "MahaRERA Registered: PR1171012501267, PR1171012501309 | Possession: 2030 / 2033"
+    ],
     "amenities": [
-      "5-Tier Sky Lounge & Infinity Pool",
-      "Grand 5-Storey Clubhouse",
-      "State-of-the-Art Fitness Center",
-      "Squash & Tennis Courts",
-      "Lush Landscaped Sky Podiums",
-      "Private Cineplex",
-      "Kids Play World",
-      "24/7 Biometric Multi-Tier Security"
+      "Infinity Lap Pool Overlooking Arabian Sea & Sunken Deck",
+      "Exclusive Multi-Tier Luxury Clubhouse & Spa",
+      "Sky Lounge with City Skyline & Sea Panoramas",
+      "State-of-the-Art Fitness Center & Pilates Studio",
+      "Private Resident Screening Room",
+      "Landscaped Zen Gardens & Yoga Pavilion",
+      "Multi-Level Automated Parking with EV Bays",
+      "High-Speed Private Elevators with Biometric Access",
+      "5-Tier Advanced Security & 24/7 Concierge"
     ]
   }
 };
