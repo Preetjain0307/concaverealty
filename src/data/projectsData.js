@@ -904,56 +904,71 @@ export const PROJECTS_DATA = [
     id: 17,
     name: "Lodha Sovrano",
     builder: "Lodha Group",
-    tagline: "Regal High-Rise Residences in Jogeshwari West",
+    tagline: "Luxury High-Rise Living with Shma-Designed Landscapes in Jogeshwari West",
     location: "Jogeshwari",
-    locality: "Near S.V. Road, Jogeshwari West",
+    locality: "Patel Estate Road, Off S.V. Road, Jogeshwari West",
+    exactAddress: "Patel Estate Road, Off S.V. Road, Near Oshiwara, Jogeshwari West, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "₹2.15 Cr - ₹3.90 Cr*",
-    priceDisplay: "₹2.15 Cr*",
+    priceRange: "₹3.25 Cr - ₹10.50 Cr*",
+    priceDisplay: "₹3.25 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800045612",
-    landParcel: "3 Acres",
-    towers: "2 Towers | 40 Storeys",
-    towerDetails: "G + 4 Podium + 40 Residential Floors",
-    elevators: "4 Elevators per core",
-    amenitiesCount: "30+ Lifestyle Amenities",
+    possession: "Dec 2030 / April 2031",
+    rera: "PR1180002501771, PR1180002501743, PR1180002501764",
+    landParcel: "3.5 Acres Low-Density Sanctuary",
+    towers: "3 High-Rise Towers (G + 31 Storeys)",
+    towerDetails: "G + 31 Storeys | Curated low-density living with private sun decks & central park greens",
+    elevators: "High-Speed Elevators with Power Backup",
+    amenitiesCount: "35+ Curated Lifestyle Amenities",
     coverImage: "/projects/project_17_user_1.png",
     images: [
       "/projects/project_17_user_1.png",
       "/projects/project_17_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "700 sq.ft CA", price: "₹2.15 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Premium", carpetArea: "1,020 sq.ft CA", price: "₹3.90 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
+      { bhk: "2.5 BHK Luxe (2 Bed + Study)", carpetArea: "988 sq.ft CA", price: "₹3.25 Cr*", floorPlanLabel: "Type 2.5A Luxe", possessionDate: "Dec 2030" },
+      { bhk: "3 BHK Royal Deck", carpetArea: "1,091 - 1,194 sq.ft CA", price: "₹3.95 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2030" },
+      { bhk: "3.5 & 4 BHK Palatial Suite", carpetArea: "1,394 - 2,788 sq.ft CA", price: "₹4.70 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lodha+Sovrano+S.V.+Road%2C+Jogeshwari+West+Mumbai",
-    overview: "Lodha Sovrano brings luxury residential excellence to Jogeshwari West with grand entrance lobbies, private decks, and seamless access to Western Express Highway and JVLR.",
+    mapUrl: "https://maps.google.com/?q=Lodha+Sovrano+Patel+Estate+Road+Jogeshwari+West+Mumbai",
+    overview: "Lodha Sovrano is an elite residential haven spanning ~3.5 acres on Patel Estate Road, off SV Road in Jogeshwari West. Crafted with international landscape design by SHMA, it offers expansive 2.5, 3, and 3.5/4 BHK sky residences with private balconies, panoramic western skyline views, and a magnificent multi-level lifestyle club.",
     highlights: [
-      "Minutes from Jogeshwari railway station & Western Express Highway",
-      "Grand lifestyle club with infinity swimming pool",
-      "World-class safety, security, and concierge services"
+      "Prime 3.5-acre enclave off SV Road with world-class SHMA landscaping",
+      "Spacious residences with deep sundecks and panoramic open horizons",
+      "Grand lifestyle clubhouse with indoor temperature-controlled pool & pet park",
+      "3 Mins to Oshiwara / Behram Baug Metro Station (Line 2A) & JVLR"
     ],
-    amenities: ["Infinity Pool", "Clubhouse", "Gymnasium", "Badminton Court", "Lounge"]
+    amenities: [
+      "Temperature-Controlled Indoor Pool & Kids Pool",
+      "Grand Lifestyle Clubhouse & Lounge",
+      "State-of-the-Art Gymnasium & Personal Training Studio",
+      "Multipurpose & Pickleball Sports Courts",
+      "SHMA-Designed Lush Central Greens & Reflexology Walk",
+      "Private Library, Café & Co-Working Lounge",
+      "Dedicated Pet Park & Crèche Facility",
+      "Banquet & Celebration Hall",
+      "Children's Adventure Play Zone",
+      "24/7 Lodha Concierge & Multi-Tier Electronic Security"
+    ]
   },
   {
     id: 18,
-    name: "Paradigm Downtown 102",
+    name: "Paradigm Downtown 102 (Antalya)",
     builder: "Paradigm Realty",
-    tagline: "Contemporary High-Rise Urban Living in Jogeshwari West",
+    tagline: "Integrated Lifestyle Township on Relief Road, Oshiwara / Jogeshwari West",
     location: "Jogeshwari",
-    locality: "S.V. Road, Jogeshwari West",
+    locality: "Relief Road, Off S.V. Road, Oshiwara, Jogeshwari West",
+    exactAddress: "Relief Road, Off S.V. Road, Oshiwara, Jogeshwari West, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "₹1.65 Cr - ₹2.85 Cr*",
-    priceDisplay: "₹1.65 Cr*",
+    priceRange: "₹1.04 Cr - ₹3.45 Cr*",
+    priceDisplay: "₹1.04 Cr*",
     status: "Under Construction",
-    possession: "Dec 2026",
-    rera: "P51800049012",
-    landParcel: "2 Acres",
-    towers: "Single Tower | 32 Storeys",
-    towerDetails: "G + 32 Storeys Modern Facade",
-    elevators: "3 High-Speed Elevators",
-    amenitiesCount: "25+ Amenities",
+    possession: "Phased Handover / Dec 2030+",
+    rera: "P51800020208",
+    landParcel: "Multi-Acre Integrated Township",
+    towers: "High-Rise Residential Towers with Retail Promenade",
+    towerDetails: "Contemporary Towers | Integrated residential and high-street retail boulevard",
+    elevators: "3 High-Speed Elevators per Core",
+    amenitiesCount: "35+ Lifestyle Amenities",
     coverImage: "/projects/project_18_user_1.png",
     images: [
       "/projects/project_18_user_1.png",
@@ -961,89 +976,128 @@ export const PROJECTS_DATA = [
       "/projects/paradigm_downtown_official.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Urban", carpetArea: "610 sq.ft CA", price: "₹1.65 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2026" },
-      { bhk: "3 BHK Grand", carpetArea: "890 sq.ft CA", price: "₹2.85 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2026" }
+      { bhk: "1 BHK Smart Suite", carpetArea: "366 - 409 sq.ft CA", price: "₹1.04 Cr*", floorPlanLabel: "Type 1A Smart", possessionDate: "Phased Handover" },
+      { bhk: "2 BHK Urban Luxe", carpetArea: "517 - 648 sq.ft CA", price: "₹1.44 Cr*", floorPlanLabel: "Type 2A Luxe", possessionDate: "Phased Handover" },
+      { bhk: "3 BHK Royal Deck", carpetArea: "880 - 900 sq.ft CA", price: "₹2.68 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Phased Handover" },
+      { bhk: "4.5 BHK Palatial Suite", carpetArea: "1,087 - 1,160 sq.ft CA", price: "₹3.23 Cr*", floorPlanLabel: "Type 4.5A Presidential", possessionDate: "Phased Handover" }
     ],
-    mapUrl: "https://maps.google.com/?q=Paradigm+Downtown+102+S.V.+Road%2C+Jogeshwari+West+Mumbai",
-    overview: "Paradigm Downtown 102 offers smartly engineered urban residences on SV Road, combining rapid connectivity with premium clubhouse amenities.",
+    mapUrl: "https://maps.google.com/?q=Paradigm+Antalya+Downtown+102+Relief+Road+Jogeshwari+West+Mumbai",
+    overview: "Paradigm Downtown 102 (Antalya) is a vibrant integrated lifestyle township located on Relief Road, Oshiwara, Jogeshwari West. Offering versatile residences from 1 BHK suites to 4.5 BHK family homes, it combines modern urban infrastructure, high-street convenience, and over 35 wellness and leisure amenities.",
     highlights: [
-      "Prime frontage on SV Road with rapid transit access",
-      "Rooftop lifestyle deck with panoramic city views",
-      "Efficient planning with minimal passage wastage"
+      "Prime address on Relief Road with direct connectivity to SV Road & JVLR",
+      "Integrated township with ground-level high street shopping & cafes",
+      "Resort swimming pool with kids splash zone & rock climbing wall",
+      "2 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)"
     ],
-    amenities: ["Rooftop Pool", "Fitness Center", "Co-working Space", "Banquet Deck", "Play Area"]
+    amenities: [
+      "Resort-Style Swimming Pool & Kids Pool",
+      "Fully Equipped Technogym Fitness Suite",
+      "Multi-Tier Lifestyle Clubhouse",
+      "Landscaped Podium Gardens & Zen Park",
+      "Children's Play Area & Rock-Climbing Wall",
+      "Reflexology Walkway & Yoga Pavilion",
+      "Community Banquet Hall & Party Lawn",
+      "High-Street Shopping & Convenience Arcade",
+      "24/7 Smart CCTV & Video Door Phone Security"
+    ]
   },
   {
     id: 19,
-    name: "Roseworld",
-    builder: "Roseworld Developers",
-    tagline: "Boutique Residential Living in Jogeshwari",
+    name: "Roswalt Zaiden",
+    builder: "Roswalt Realty",
+    tagline: "G+39 Storey Skyscraper with 5,000 sq.ft Gym in Oshiwara / Jogeshwari West",
     location: "Jogeshwari",
-    locality: "Jogeshwari West Corridor",
+    locality: "S.V. Road, Oshiwara, Jogeshwari West",
+    exactAddress: "S.V. Road, Near Oshiwara Bridge, Jogeshwari West, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Boutique Land Parcel",
-    towers: "Residential Tower",
-    towerDetails: "Multi-storey modern residential structure",
-    elevators: "Modern Elevators",
-    amenitiesCount: "Curated Amenities",
+    priceRange: "₹1.15 Cr - ₹3.75 Cr*",
+    priceDisplay: "₹1.15 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2027 / Dec 2028",
+    rera: "P51800047680",
+    landParcel: "Boutique High-Rise Acreage",
+    towers: "G + 39 Storeys Twin Skyscraper Towers",
+    towerDetails: "G + 39 Storeys | Soaring towers featuring a massive 5,000 sq.ft state-of-the-art gym",
+    elevators: "Modern High-Speed Elevators with ARD",
+    amenitiesCount: "35+ Modern Lifestyle Amenities",
     coverImage: "/projects/project_19_user_1.png",
     images: [
       "/projects/project_19_user_1.png",
       "/projects/project_19_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "1 BHK Luxe", carpetArea: "401 - 425 sq.ft CA", price: "₹1.15 Cr*", floorPlanLabel: "Type 1A Luxe", possessionDate: "Dec 2028" },
+      { bhk: "2 BHK Grand", carpetArea: "600 - 680 sq.ft CA", price: "₹1.85 Cr*", floorPlanLabel: "Type 2A Grand", possessionDate: "Dec 2028" },
+      { bhk: "3 & 4 BHK Combined Jodi", carpetArea: "1,050 - 1,210 sq.ft CA", price: "₹3.10 Cr*", floorPlanLabel: "Type 3/4 Custom Jodi", possessionDate: "Dec 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Roseworld+Jogeshwari+West+Mumbai",
-    overview: "Roseworld presents a boutique residential development in Jogeshwari, designed for tranquil living with immediate proximity to JVLR and highway corridors.",
+    mapUrl: "https://maps.google.com/?q=Roswalt+Zaiden+SV+Road+Oshiwara+Jogeshwari+West+Mumbai",
+    overview: "Roswalt Zaiden is an imposing 39-storey residential landmark prominently situated on SV Road near Oshiwara Bridge, Jogeshwari West. Engineered for refined urban living, it showcases smartly planned 1, 2 BHK, and custom Jodi residences complemented by a colossal 5,000 sq.ft fitness centre, infinity pool with water slides, and private screening room.",
     highlights: [
-      "Boutique low-density living with private family feel",
-      "Seamless east-west connectivity via JVLR",
-      "Quality finishes and high architectural specifications"
+      "Frontage on main SV Road moments from Oshiwara bridge & JVLR",
+      "Colossal 5,000 sq.ft fully equipped fitness arena and wellness zone",
+      "Resort swimming pool with kids water slides & private mini-theatre",
+      "2 Mins to Oshiwara Metro Station (Line 2A) & 4 Mins to Ram Mandir Station"
     ],
-    amenities: ["Gymnasium", "Lobby Lounge", "Security", "Garden", "Kids Zone"]
+    amenities: [
+      "Colossal 5,000 sq.ft Designer Gymnasium",
+      "Resort Swimming Pool with Kids Waterslides",
+      "Private Mini-Theatre & Screening Lounge",
+      "Grand Double-Height Entrance Lobby",
+      "Multipurpose Banquet & Celebration Hall",
+      "Children's Play Adventure Park",
+      "Senior Citizen Peaceful Sit-Out Zone",
+      "Crèche / Daycare Centre & Cafeteria",
+      "24/7 Multi-Tier Electronic Security & Intercom"
+    ]
   },
   {
     id: 20,
-    name: "Sunteck",
+    name: "Sunteck City (ODC)",
     builder: "Sunteck Realty",
-    tagline: "Signature Luxury Living in Jogeshwari",
+    tagline: "23-Acre Master Integrated Township at Oshiwara District Centre (ODC)",
     location: "Jogeshwari",
-    locality: "Near JVLR Junction, Jogeshwari West",
+    locality: "Oshiwara District Centre (ODC), Ram Mandir Road, Jogeshwari / Goregaon West",
+    exactAddress: "Sunteck City, Oshiwara District Centre (ODC), Off SV Road & JVLR, Ram Mandir Road, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Launch",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Strategic Acreage",
-    towers: "High-Rise Signature Tower",
-    towerDetails: "Ultra-modern glass facade with lifestyle amenities",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Sunteck Signature Amenities",
+    priceRange: "₹2.58 Cr - ₹5.90 Cr*",
+    priceDisplay: "₹2.58 Cr*",
+    status: "Ready & Under Construction (4th Avenue)",
+    possession: "Ready / April 2029 (4th Avenue)",
+    rera: "P51800023072, PR1181012502068",
+    landParcel: "23-Acre Master Integrated Township",
+    towers: "Iconic High-Rise Residential & Commercial Towers",
+    towerDetails: "4th & 5th Avenue Towers | Walk-to-work integrated luxury lifestyle township",
+    elevators: "High-Speed Elevators with Smart Destination Control",
+    amenitiesCount: "50+ Township Amenities",
     coverImage: "/projects/project_20_user_1.png",
     images: [
       "/projects/project_20_user_1.png",
       "/projects/project_img_20.webp"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
+      { bhk: "2 BHK Luxury Deck", carpetArea: "627 - 650 sq.ft CA", price: "₹2.58 Cr*", floorPlanLabel: "Type 2A Luxury", possessionDate: "April 2029" },
+      { bhk: "3 BHK Grand Royale", carpetArea: "902 - 1,088 sq.ft CA", price: "₹3.45 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "April 2029" },
+      { bhk: "4 BHK Palatial Suite", carpetArea: "1,657 sq.ft CA", price: "₹5.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "April 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Sunteck+Realty+Sunteck+JVLR+Junction%2C+Jogeshwari+West+Mumbai",
-    overview: "Sunteck brings its high-end residential pedigree to Jogeshwari, offering curated sky residences with expansive views and world-class club recreation.",
+    mapUrl: "https://maps.google.com/?q=Sunteck+City+Oshiwara+District+Centre+Ram+Mandir+Road+Mumbai",
+    overview: "Sunteck City is a prestigious 23-acre premium mixed-use township strategically situated at the Oshiwara District Centre (ODC), on the Jogeshwari-Goregaon West border. Seamlessly integrating high-end residential towers (such as 4th & 5th Avenue), upscale retail boulevards, fine-dining bistros, and sprawling multi-level club facilities, it offers an unmatched walk-to-work lifestyle.",
     highlights: [
-      "Direct transit connectivity to BKC and SEEPZ via JVLR",
-      "Lavish clubhouse with temperature controlled pool",
-      "Pre-launch expression of interest open"
+      "Sprawling 23-acre master township at Oshiwara District Centre (ODC)",
+      "5 Mins walk to Ram Mandir Railway Station & quick access to JVLR",
+      "Integrated fine-dining restaurants, retail high-street & grade-A offices",
+      "Lavish multi-storey clubhouse with swimming pools, sports turf & spa"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Fitness Center", "Concierge Desk", "Landscaped Gardens"]
+    amenities: [
+      "Olympic-Style Swimming Pool & Kids Water Slides",
+      "Multi-Storey Integrated Township Clubhouse & Spa",
+      "Advanced Fitness Center & Aerobics Studio",
+      "Squash, Badminton & Tennis Courts",
+      "Lush Central Park Podiums & Jogging Loop",
+      "High-Street Retail Boulevard & Cafés",
+      "Banquet & Celebration Ballrooms",
+      "Children's Themed Aquatic & Play Park",
+      "24/7 Smart Concierge, Valet & Surveillance"
+    ]
   },
 
   // ==========================================
@@ -2535,74 +2589,87 @@ export const PROJECT_ENRICHMENTS = {
   },
   "17": {
     "keyFeatures": [
-      "Near S.V. Road & Behram Baug, Jogeshwari West",
-      "3 Mins to Oshiwara Metro Station (Line 2A)",
-      "4 Mins to Jogeshwari Suburban Railway Station",
-      "Near Millat Superspeciality Hospital, JVLR & Lokhandwala Complex Link"
-],
+      "Prime 3.5-acre enclave on Patel Estate Road off S.V. Road, Jogeshwari West",
+      "3 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)",
+      "4 Mins to Jogeshwari Railway Station & JVLR Junction",
+      "7 Mins to Lokhandwala Complex, Infinity Mall & Kokilaben Hospital",
+      "Low density living with private sundecks & SHMA-designed landscapes",
+      "MahaRERA Registered: PR1180002501771 / PR1180002501743 | Possession: Dec 2030"
+    ],
     "amenities": [
-      "Regal Swimming Pool with Sunken Loungers",
-      "Grand Art Deco Clubhouse",
-      "Fitness Center with Modern Cardio",
-      "Indoor Sports Room",
-      "Designer Tree-lined Gardens",
-      "Banquet Hall & Party Lawns",
-      "Kids Adventure Play Zone",
-      "24/7 Lodha Services"
+      "Temperature-Controlled Indoor Pool & Kids Pool",
+      "Grand Lifestyle Clubhouse & Lounge",
+      "State-of-the-Art Gymnasium & Personal Training Studio",
+      "Multipurpose & Pickleball Sports Courts",
+      "SHMA-Designed Lush Central Greens & Reflexology Walk",
+      "Private Library, Café & Co-Working Lounge",
+      "Dedicated Pet Park & Crèche Facility",
+      "Banquet & Celebration Hall",
+      "Children's Adventure Play Zone",
+      "24/7 Lodha Concierge & Multi-Tier Electronic Security"
     ]
   },
   "18": {
     "keyFeatures": [
-      "Direct Frontage on Main S.V. Road, Jogeshwari West",
-      "2 Mins to Oshiwara / Jogeshwari West Metro Station (Line 2A)",
-      "3 Mins to Jogeshwari Railway Station",
-      "4 Mins to JVLR Flyover, Western Express Highway & Hub Mall"
-],
+      "Direct frontage on Relief Road off S.V. Road, Oshiwara / Jogeshwari West",
+      "2 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)",
+      "3 Mins to Jogeshwari Railway Station & Main S.V. Road",
+      "4 Mins to JVLR Flyover, Western Express Highway & Hub Mall",
+      "Part of 102 Downtown integrated township with high-street retail",
+      "MahaRERA Registered: P51800020208 | Phased Handover"
+    ],
     "amenities": [
-      "Rooftop Infinity Lap Pool",
-      "Sky Lounge & Stargazing Deck",
-      "Technogym Fitness Studio",
-      "Rooftop Walking Track",
-      "Kids Play Zone",
-      "Indoor Games Pavilion",
-      "Modern Business Center",
-      "Multipurpose Community Hall"
+      "Resort-Style Swimming Pool & Kids Pool",
+      "Fully Equipped Technogym Fitness Suite",
+      "Multi-Tier Lifestyle Clubhouse",
+      "Landscaped Podium Gardens & Zen Park",
+      "Children's Play Area & Rock-Climbing Wall",
+      "Reflexology Walkway & Yoga Pavilion",
+      "Community Banquet Hall & Party Lawn",
+      "High-Street Shopping & Convenience Arcade",
+      "24/7 Smart CCTV & Video Door Phone Security"
     ]
   },
   "19": {
     "keyFeatures": [
-      "Jogeshwari West Corridor near Oshiwara Bridge",
-      "3 Mins to Oshiwara Metro Station (Line 2A)",
-      "4 Mins to Ram Mandir Railway Station",
-      "Near Mega Mall Oshiwara, Lokhandwala Market & JVLR Junction"
-],
+      "Prominent frontage on main S.V. Road near Oshiwara Bridge, Jogeshwari West",
+      "2 Mins to Oshiwara Metro Station (Line 2A)",
+      "4 Mins to Ram Mandir & Jogeshwari Railway Stations",
+      "5 Mins to Oshiwara Mega Mall, Lokhandwala Market & JVLR",
+      "Soaring 39 storeys featuring colossal 5,000 sq.ft fitness centre",
+      "MahaRERA Registered: P51800047680 | Target Possession: Dec 2027 / 2028"
+    ],
     "amenities": [
-      "Podium Swimming Pool with Deck",
-      "High-Tech Gymnasium & Aerobics Room",
-      "Rooftop Sky Lounge",
-      "Landscaped Podium Gardens",
-      "Banquet & Celebration Hall",
-      "Children's Fun Zone",
-      "Indoor Sports Lounge",
-      "Multi-Tier Smart Security"
+      "Colossal 5,000 sq.ft Designer Gymnasium",
+      "Resort Swimming Pool with Kids Waterslides",
+      "Private Mini-Theatre & Screening Lounge",
+      "Grand Double-Height Entrance Lobby",
+      "Multipurpose Banquet & Celebration Hall",
+      "Children's Play Adventure Park",
+      "Senior Citizen Peaceful Sit-Out Zone",
+      "Crèche / Daycare Centre & Cafeteria",
+      "24/7 Multi-Tier Electronic Security & Intercom"
     ]
   },
   "20": {
     "keyFeatures": [
-      "At JVLR Junction & Western Express Highway, Jogeshwari East",
-      "2 Mins to JVLR Metro Station (Line 7)",
-      "3 Mins to Jogeshwari Railway Station (East)",
-      "Direct access to SEEPZ IT Zone, Nesco IT Park & Oberoi Commerz"
-],
+      "Sprawling 23-acre master township at Oshiwara District Centre (ODC)",
+      "5 Mins walk to Ram Mandir Railway Station (350 m)",
+      "3 Mins to Jogeshwari-Vikhroli Link Road (JVLR) & S.V. Road",
+      "Direct transit access via Mrinal Gore Flyover to Western Express Highway",
+      "Integrated luxury living with fine-dining restaurants & corporate parks",
+      "MahaRERA: P51800023072, PR1181012502068 | Ready / April 2029"
+    ],
     "amenities": [
-      "Olympic-Style Swimming Pool",
-      "Integrated Township Clubhouse",
-      "Advanced Fitness Center",
-      "Squash & Tennis Courts",
-      "Lush Central Park Gardens",
-      "Boutique Retail & Cafes",
-      "Kids Aquatic Zone",
-      "24/7 Concierge & Valet"
+      "Olympic-Style Swimming Pool & Kids Water Slides",
+      "Multi-Storey Integrated Township Clubhouse & Spa",
+      "Advanced Fitness Center & Aerobics Studio",
+      "Squash, Badminton & Tennis Courts",
+      "Lush Central Park Podiums & Jogging Loop",
+      "High-Street Retail Boulevard & Cafés",
+      "Banquet & Celebration Ballrooms",
+      "Children's Themed Aquatic & Play Park",
+      "24/7 Smart Concierge, Valet & Surveillance"
     ]
   },
   "21": {
