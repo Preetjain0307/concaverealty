@@ -17,6 +17,9 @@
   RewriteRule ^api/verify-otp/?$ api/verify-otp.php [QSA,L]
   RewriteRule ^api/career-apply/?$ api/career-apply.php [QSA,L]
   RewriteRule ^api/leads/?$ api/leads.php [QSA,L]
+  RewriteRule ^api/callers/?$ api/callers.php [QSA,L]
+  RewriteRule ^api/careers/?$ api/careers.php [QSA,L]
+  RewriteRule ^api/admin/?$ api/admin.php [QSA,L]
   RewriteRule ^api/update-password/?$ api/update-password.php [QSA,L]
   RewriteRule ^api/storage-info/?$ api/storage-info.php [QSA,L]
 
@@ -30,10 +33,13 @@
     </IfModule>
   </FilesMatch>
 
-  # 3. Clean Portal Route Rewrites & Search Engine Noindex Directives
-  RewriteRule ^(concave-admin|concave-caller|admin|caller)/?$ /index.html [E=PORTAL_ROUTE:1,L]
+  # 3. Direct SPA routes that clash with static asset folders (e.g. /about, /projects)
+  RewriteRule ^(about|projects)/?$ /index.html [L]
 
-  # 4. React SPA Fallback: Route all non-file/non-directory requests to index.html
+  # 4. Clean Portal Route Rewrites & Search Engine Noindex Directives
+  RewriteRule ^(concave[-_]admin|concave[-_]caller|admin|caller)/?$ /index.html [E=PORTAL_ROUTE:1,L]
+
+  # 5. React SPA Fallback: Route all non-file/non-directory requests to index.html
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule . /index.html [L]
