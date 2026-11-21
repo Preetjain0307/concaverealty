@@ -1158,22 +1158,23 @@ export const PROJECTS_DATA = [
   // ==========================================
   {
     id: 21,
-    name: "Godrej Skyshore (Versova)",
+    name: "Godrej Skyshore",
     builder: "Godrej Properties",
-    tagline: "Exclusive Sky Bungalows with Breathtaking Sea Views in Versova",
+    tagline: "Ultra-Luxury Seafront Sky Bungalows in Versova",
     location: "Andheri",
-    locality: "Versova, Andheri West",
+    locality: "Yari Road, Versova, Andheri West",
+    exactAddress: "Yari Road / JP Road, Versova, Andheri West, Mumbai 400061",
     city: "Mumbai",
-    priceRange: "₹14.05 Cr - ₹24.50 Cr*",
-    priceDisplay: "₹14.05 Cr*",
+    priceRange: "₹8.25 Cr - ₹22.50 Cr*",
+    priceDisplay: "From ₹8.25 Cr*",
     status: "Newly Launched",
-    possession: "Dec 2028",
-    rera: "P51800052341",
-    landParcel: "Exclusive Coastal Enclave",
-    towers: "Signature Coastal High-Rise Tower",
-    towerDetails: "Ultra-luxury Sky Bungalows overlooking the Arabian Sea (G + 38 Storeys)",
-    elevators: "Private High-Speed Biometric Elevators",
-    amenitiesCount: "40+ World-Class Bespoke Club Amenities",
+    possession: "Dec 2029",
+    rera: "PM1180002500076",
+    landParcel: "1.5 Acres Seafront Enclave",
+    towers: "1 Coastal Skyscraper (G + 38 Storeys)",
+    towerDetails: "Bespoke sea-facing sky bungalows with 270° unobstructed Arabian Sea horizons",
+    elevators: "Private Biometric High-Speed Elevators",
+    amenitiesCount: "40+ Resort Amenities",
     coverImage: "/projects/project_21_user_1.png",
     images: [
       "/projects/project_21_user_1.png",
@@ -1181,11 +1182,12 @@ export const PROJECTS_DATA = [
       "/projects/godrej_skyshore_official.webp"
     ],
     configurations: [
-      { bhk: "4 Bed Royal Residence", carpetArea: "2,200 - 2,850 sq.ft CA", price: "₹14.05 Cr*", floorPlanLabel: "Royal Sky Bungalow", possessionDate: "Dec 2028" },
-      { bhk: "5 Bed Duplex Penthouse", carpetArea: "3,800 - 4,600 sq.ft CA", price: "₹24.50 Cr*", floorPlanLabel: "Presidential Seafront Duplex", possessionDate: "Dec 2028" }
+      { bhk: "3 BHK Sea-View Suite", carpetArea: "1,550 - 1,578 sq.ft CA", price: "₹8.25 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2029" },
+      { bhk: "4 BHK Royal Sky Bungalow", carpetArea: "2,145 - 2,646 sq.ft CA", price: "₹13.80 Cr*", floorPlanLabel: "Royal Sky Bungalow", possessionDate: "Dec 2029" },
+      { bhk: "5 BHK Seafront Duplex", carpetArea: "3,545+ sq.ft CA", price: "₹22.50 Cr*", floorPlanLabel: "Presidential Seafront Duplex", possessionDate: "Dec 2029" }
     ],
     virtualTourUrl: "https://view.pixeldo.com/GodrejSkyShore/",
-    mapUrl: "https://maps.google.com/?q=Godrej+Skyshore+(Versova)+Versova%2C+Andheri+West+Mumbai",
+    mapUrl: "https://maps.google.com/?q=Godrej+Skyshore+Versova+Andheri+West+Mumbai",
     overview: "A home where breathtaking sea views meet spectacular sunrises, mesmerising sunsets and the glittering Mumbai skyline. Presenting an opportunity to own an exclusive Sky Bungalow at Godrej Skyshore, Versova.",
     highlights: [
       "Unobstructed 270° Arabian Sea and coastal mangroves views",
@@ -1199,20 +1201,21 @@ export const PROJECTS_DATA = [
     id: 22,
     name: "Kalpataru Vian",
     builder: "Kalpataru Limited",
-    tagline: "Urban Sophistication in Andheri East",
+    tagline: "Ultra-Luxury Haven on Lokhandwala Back Road",
     location: "Andheri",
-    locality: "Near Western Express Highway, Andheri East",
+    locality: "Lokhandwala Back Road, Andheri West",
+    exactAddress: "Lokhandwala Back Road, Next to Lokhandwala Complex, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "₹2.40 Cr - ₹4.10 Cr*",
-    priceDisplay: "₹2.40 Cr*",
+    priceRange: "₹5.61 Cr - ₹13.26 Cr*",
+    priceDisplay: "From ₹5.61 Cr*",
     status: "Under Construction",
-    possession: "June 2028",
-    rera: "P51800047910",
-    landParcel: "2.5 Acres",
-    towers: "2 Towers | 32 Storeys",
-    towerDetails: "G + 4 Podium + 32 Storeys Modern Residences",
-    elevators: "4 Elevators per core",
-    amenitiesCount: "30+ Lifestyle Amenities",
+    possession: "June 2030",
+    rera: "PR1180002600863",
+    landParcel: "2.8 Acres Low-Density Enclave",
+    towers: "Signature High-Rise Towers",
+    towerDetails: "Contemporary towers with panoramic mangrove and skyline views",
+    elevators: "High-Speed Elevators with Access Control",
+    amenitiesCount: "35+ Club Amenities",
     coverImage: "/projects/kalpataru_vian_official.jpg",
     images: [
       "/projects/kalpataru_vian_official.jpg",
@@ -1221,73 +1224,76 @@ export const PROJECTS_DATA = [
       "/projects/project_img_59.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Urban", carpetArea: "710 sq.ft CA", price: "₹2.40 Cr*", floorPlanLabel: "Type 2A", possessionDate: "June 2028" },
-      { bhk: "3 BHK Grand", carpetArea: "1,030 sq.ft CA", price: "₹4.10 Cr*", floorPlanLabel: "Type 3A", possessionDate: "June 2028" }
+      { bhk: "3 BHK Grande", carpetArea: "1,116 - 1,499 sq.ft CA", price: "₹5.61 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "June 2030" },
+      { bhk: "4 BHK Royal Suite", carpetArea: "2,351 sq.ft CA", price: "₹10.83 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "June 2030" },
+      { bhk: "4.5 BHK Sky Villa", carpetArea: "2,688 sq.ft CA", price: "₹13.26 Cr*", floorPlanLabel: "Penthouse Sky Villa", possessionDate: "June 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kalpataru+Vian+Western+Express+Highway%2C+Andheri+East+Mumbai",
-    overview: "Kalpataru Vian combines executive connectivity with resort amenities, located just minutes from international airport transit and metro corridors.",
+    mapUrl: "https://maps.google.com/?q=Kalpataru+Vian+Lokhandwala+Back+Road+Andheri+West+Mumbai",
+    overview: "Kalpataru Vian on Lokhandwala Back Road is a boutique, low-density residential masterpiece offering expansive sundecks, lush mangrove views, and world-class club amenities in the heart of Andheri West.",
     highlights: [
-      "5 minutes from Western Express Highway and Andheri Metro",
-      "Grand double-height lobby with curated art installations",
-      "Rooftop clubhouse with city-skyline pool"
+      "Prime Lokhandwala Back Road address surrounded by green mangroves",
+      "Expansive low-density floor plans with private decks and cross ventilation",
+      "Lavish clubhouse with swimming pool, gym, and landscaped podium"
     ],
-    amenities: ["Rooftop Pool", "Clubhouse", "Gymnasium", "Business Lounge", "Children's Zone"]
+    amenities: ["Swimming Pool", "Boutique Clubhouse", "Technogym Fitness Center", "Landscaped Sky Terraces", "Children's Play Zone"]
   },
   {
     id: 23,
-    name: "Adani Linkbay",
+    name: "Adani Linkbay Residences",
     builder: "Adani Realty",
-    tagline: "Waterfront Luxury Residences in Andheri West",
+    tagline: "Waterfront High-Rise Landmark in Andheri West",
     location: "Andheri",
-    locality: "Near DN Nagar Metro, Andheri West",
+    locality: "Off New Link Road, Near Fun Republic, Andheri West",
+    exactAddress: "Off New Link Road, Near Fun Republic Cinema & DN Nagar Metro, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "₹2.85 Cr - ₹5.60 Cr*",
-    priceDisplay: "₹2.85 Cr*",
+    priceRange: "₹3.28 Cr - ₹8.14 Cr*",
+    priceDisplay: "From ₹3.28 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800046123",
-    landParcel: "4.2 Acres",
+    possession: "Oct 2028",
+    rera: "P51800047539",
+    landParcel: "4.2 Acres Master-Planned Enclave",
     towers: "3 Towers | 36 Storeys",
-    towerDetails: "G + 5 Podium + 36 Storeys",
-    elevators: "4 High-Speed Elevators",
-    amenitiesCount: "40+ Amenities",
+    towerDetails: "G + 5 Podium + 36 Storey towers with expansive wrap-around decks",
+    elevators: "High-Speed Mitsubishi Elevators",
+    amenitiesCount: "40+ Lifestyle Amenities",
     coverImage: "/projects/adani_linkbay_official.webp",
     images: [
       "/projects/adani_linkbay_official.webp",
       "/projects/project_img_69.png"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "760 sq.ft CA", price: "₹2.85 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Royale", carpetArea: "1,120 sq.ft CA", price: "₹4.20 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" },
-      { bhk: "4 BHK Presidential", carpetArea: "1,650 sq.ft CA", price: "₹5.60 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2027" }
+      { bhk: "2 BHK Luxury", carpetArea: "780 - 1,079 sq.ft CA", price: "₹3.28 Cr*", floorPlanLabel: "Type 2A Luxury", possessionDate: "Oct 2028" },
+      { bhk: "3 BHK Royale", carpetArea: "1,025 - 1,552 sq.ft CA", price: "₹4.60 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Oct 2028" },
+      { bhk: "4 BHK Presidential", carpetArea: "1,715 - 1,887 sq.ft CA", price: "₹7.80 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Oct 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Adani+Linkbay+DN+Nagar+Metro%2C+Andheri+West+Mumbai",
-    overview: "Adani Linkbay offers sprawling residential towers overlooking lush mangroves and creek views in Andheri West, featuring expansive private sun decks.",
+    mapUrl: "https://maps.google.com/?q=Adani+Linkbay+Residences+DN+Nagar+Metro+Andheri+West+Mumbai",
+    overview: "Adani Linkbay Residences offers sprawling residential towers overlooking lush mangroves and creek views in Andheri West, featuring expansive private sun decks and 2-minute connectivity to DN Nagar Metro.",
     highlights: [
       "Direct connectivity to DN Nagar Metro interchange (Lines 1 & 2A)",
-      "Bespoke clubhouse with temperature controlled lap pool",
+      "Bespoke clubhouse with temperature controlled lap pool and squash court",
       "Adani Realty construction excellence and high delivery standard"
     ],
     amenities: ["Swimming Pool", "Clubhouse", "Squash Court", "Gymnasium", "Banquet Deck", "Spa"]
   },
   {
     id: 24,
-    name: "Puravankara",
+    name: "Purva Estrella",
     builder: "Puravankara Limited",
-    tagline: "Signature Luxury Residence in Andheri",
+    tagline: "Ultra-Luxury Urban Landmark at Lokhandwala Circle",
     location: "Andheri",
-    locality: "Andheri Corridor",
+    locality: "Lokhandwala Circle, Andheri West",
+    exactAddress: "Off Lokhandwala Circle, Near New Link Road, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Andheri Parcel",
-    towers: "High-Rise Tower",
-    towerDetails: "Modern residential skyscraper",
-    elevators: "Modern Elevators",
-    amenitiesCount: "Curated Amenities",
+    priceRange: "₹3.35 Cr - ₹7.30 Cr*",
+    priceDisplay: "From ₹3.35 Cr*",
+    status: "Under Construction",
+    possession: "Nov 2030",
+    rera: "PM1180002502319",
+    landParcel: "2.2 Acres Urban Estate",
+    towers: "Signature High-Rise Towers (G + 34 Storeys)",
+    towerDetails: "Sleek architectural high-rise with double-height drop-offs and sky decks",
+    elevators: "High-Speed Elevators",
+    amenitiesCount: "35+ Curated Amenities",
     coverImage: "/projects/project_24_user_1.png",
     images: [
       "/projects/project_24_user_1.png",
@@ -1295,51 +1301,54 @@ export const PROJECTS_DATA = [
       "/projects/project_24_user_3.png"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
+      { bhk: "2 BHK Suite", carpetArea: "750 - 784 sq.ft CA", price: "₹3.35 Cr*", floorPlanLabel: "Type 2A Suite", possessionDate: "Nov 2030" },
+      { bhk: "3 BHK Grande", carpetArea: "1,130 - 1,355 sq.ft CA", price: "₹5.10 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "Nov 2030" },
+      { bhk: "4 BHK Royal", carpetArea: "1,600 - 1,642 sq.ft CA", price: "₹7.30 Cr*", floorPlanLabel: "Type 4A Royal", possessionDate: "Nov 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Puravankara+Puravankara+Andheri+Mumbai",
-    overview: "Puravankara brings its nationally celebrated architectural planning and luxury finishes to Andheri, offering refined urban sanctuaries.",
+    mapUrl: "https://maps.google.com/?q=Purva+Estrella+Lokhandwala+Circle+Andheri+West+Mumbai",
+    overview: "Purva Estrella brings Puravankara's nationally celebrated architectural craftsmanship to Lokhandwala Circle, Andheri West, featuring grand Italian marble finishes, resort amenities, and elite lifestyle conveniences.",
     highlights: [
-      "Strategically situated for quick transit to airport and BKC",
-      "Lush landscaped open podium spaces",
-      "Puravankara hallmark quality assurance"
+      "Steps from Lokhandwala Market, cafe strips, and high-street shopping",
+      "Lush landscaped open podium spaces with infinity pool",
+      "Puravankara hallmark 48-year construction legacy and quality assurance"
     ],
     amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Security", "Play Area"]
   },
   {
     id: 25,
-    name: "Gurukrupa Realcon",
-    builder: "Gurukrupa Group",
-    tagline: "Contemporary Urban Residences in Andheri East",
+    name: "Gurukrupa Ekam",
+    builder: "Gurukrupa Realcon",
+    tagline: "Contemporary High-Rise Residences on New Link Road",
     location: "Andheri",
-    locality: "Andheri East Corridor",
+    locality: "New Link Road, Andheri West",
+    exactAddress: "New Link Road, Near Lotus Petrol Pump, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹2.57 Cr - ₹4.49 Cr*",
+    priceDisplay: "From ₹2.57 Cr*",
     status: "Under Construction",
-    possession: "2027",
-    rera: "Information Coming Soon",
-    landParcel: "Urban Land Parcel",
-    towers: "High-Rise Tower",
-    towerDetails: "Contemporary residential tower",
+    possession: "August 2029",
+    rera: "PM1180002501525",
+    landParcel: "1.8 Acres Prime Enclave",
+    towers: "High-Rise Residential Towers (G + 28 Storeys)",
+    towerDetails: "Modern high-rise with infinity pool and multi-level car parking",
     elevators: "High-Speed Elevators",
-    amenitiesCount: "Lifestyle Amenities",
+    amenitiesCount: "30+ Lifestyle Amenities",
     coverImage: "/projects/project_25_user_1.png",
     images: [
       "/projects/project_25_user_1.png",
       "/projects/project_25_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2027" },
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2027" }
+      { bhk: "2 BHK Suite", carpetArea: "678 - 815 sq.ft CA", price: "₹2.57 Cr*", floorPlanLabel: "Type 2A Suite", possessionDate: "Aug 2029" },
+      { bhk: "2.5 BHK Royale", carpetArea: "851 sq.ft CA", price: "₹3.23 Cr*", floorPlanLabel: "Type 2.5A Royale", possessionDate: "Aug 2029" },
+      { bhk: "3 BHK Grande", carpetArea: "1,052 - 1,122 sq.ft CA", price: "₹3.99 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "Aug 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Gurukrupa+Realcon+Andheri+East+Mumbai",
-    overview: "Gurukrupa Realcon presents modern urban residences in Andheri East, offering practical layouts and rapid airport road connectivity.",
+    mapUrl: "https://maps.google.com/?q=Gurukrupa+Ekam+New+Link+Road+Andheri+West+Mumbai",
+    overview: "Gurukrupa Ekam presents modern, well-ventilated residences on New Link Road, Andheri West, placing residents within walking distance of prime retail hubs, metro lines, and fine dining.",
     highlights: [
-      "Proximity to metro and commercial business district",
-      "Vastu-compliant contemporary apartment designs",
-      "Attractive entry investment pricing"
+      "Walking distance to Oshiwara and Lower Oshiwara Metro Stations",
+      "Vastu-compliant contemporary apartment designs with expansive views",
+      "Attractive entry investment pricing in prime Andheri West"
     ],
     amenities: ["Fitness Center", "Lobby", "Security", "Rooftop Garden"]
   },
@@ -1347,163 +1356,172 @@ export const PROJECTS_DATA = [
     id: 26,
     name: "Naman 58",
     builder: "Shree Naman Group",
-    tagline: "Executive Luxury Living in Andheri East",
+    tagline: "Executive Boutique Luxury in Four Bungalows",
     location: "Andheri",
-    locality: "Chakala, Andheri East",
+    locality: "Four Bungalows, Andheri West",
+    exactAddress: "Ratan Nagar, Four Bungalows, Near Versova Metro Station, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "₹2.20 Cr - ₹3.80 Cr*",
-    priceDisplay: "₹2.20 Cr*",
+    priceRange: "₹4.62 Cr - ₹7.50 Cr*",
+    priceDisplay: "From ₹4.62 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800041285",
-    landParcel: "2 Acres",
-    towers: "Single Tower | 28 Storeys",
-    towerDetails: "Executive High-Rise with Glass Balconies",
-    elevators: "3 High-Speed Elevators",
-    amenitiesCount: "25+ Amenities",
+    possession: "Dec 2030",
+    rera: "PM1180002600360",
+    landParcel: "1.2 Acres Boutique Enclave",
+    towers: "Single High-Rise Tower (G + 21 Storeys)",
+    towerDetails: "Exclusive low-density tower with wide sun decks and executive clubhouse",
+    elevators: "High-Speed Destination Controlled Elevators",
+    amenitiesCount: "25+ Luxury Amenities",
     coverImage: "/projects/project_26_user_1.png",
     images: [
       "/projects/project_26_user_1.png"
     ],
     configurations: [
-      { bhk: "2 BHK Executive", carpetArea: "680 sq.ft CA", price: "₹2.20 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Presidential", carpetArea: "990 sq.ft CA", price: "₹3.80 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
+      { bhk: "3 BHK Luxury", carpetArea: "1,027 - 1,338 sq.ft CA", price: "₹4.62 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Dec 2030" },
+      { bhk: "3.5 BHK Grande", carpetArea: "1,354 - 1,443 sq.ft CA", price: "₹6.10 Cr*", floorPlanLabel: "Type 3.5A Grande", possessionDate: "Dec 2030" },
+      { bhk: "4 BHK Royal Penthouse", carpetArea: "1,564 - 1,683 sq.ft CA", price: "₹7.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Naman+58+Chakala%2C+Andheri+East+Mumbai",
-    overview: "Naman 58 delivers executive luxury residences in Chakala, tailored for corporate leaders seeking walking access to metro and commercial hubs.",
+    mapUrl: "https://maps.google.com/?q=Naman+58+Four+Bungalows+Andheri+West+Mumbai",
+    overview: "Naman 58 delivers boutique executive residences in Four Bungalows, Andheri West, tailored for discerning residents seeking quiet privacy, panoramic horizons, and immediate access to Versova Metro.",
     highlights: [
-      "2 minutes from Chakala Metro Station",
-      "Rooftop clubhouse and business conference facilities",
-      "Low maintenance smart-home automation"
+      "2 minutes from Versova and DN Nagar Metro Stations",
+      "Rooftop clubhouse and business conference facilities with horizon sea views",
+      "Low-density single tower design with only select residences per floor"
     ],
     amenities: ["Rooftop Lounge", "Business Center", "Gymnasium", "Banquet Room", "Security"]
   },
   {
     id: 27,
-    name: "Kolte-Patil",
+    name: "Kolte-Patil Serenova",
     builder: "Kolte-Patil Developers",
-    tagline: "High-Rise Urban Homes in Andheri",
+    tagline: "Serene Luxury Living in Versova Corridor",
     location: "Andheri",
-    locality: "Andheri Corridor",
+    locality: "Versova / Four Bungalows, Andheri West",
+    exactAddress: "Near Ratan Nagar, Versova / Four Bungalows, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹3.19 Cr - ₹7.90 Cr*",
+    priceDisplay: "From ₹3.19 Cr*",
     status: "Under Construction",
-    possession: "2028",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Acreage",
-    towers: "High-Rise Tower",
-    towerDetails: "Multi-storey residential tower",
+    possession: "May 2029",
+    rera: "PR1180002500850",
+    landParcel: "1.4 Acres Private Enclave",
+    towers: "Contemporary High-Rise Tower (G + 24 Storeys)",
+    towerDetails: "Thoughtfully planned Vastu-compliant residences with landscaped podiums",
     elevators: "High-Speed Elevators",
-    amenitiesCount: "Curated Amenities",
+    amenitiesCount: "30+ Curated Amenities",
     coverImage: "/projects/project_img_63.jpg",
     images: [
       "/projects/project_img_63.jpg",
       "/projects/project_img_47.webp"
     ],
     configurations: [
-      { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2028" },
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2028" }
+      { bhk: "2 BHK Luxury", carpetArea: "710 - 745 sq.ft CA", price: "₹3.19 Cr*", floorPlanLabel: "Type 2A Luxury", possessionDate: "May 2029" },
+      { bhk: "3 BHK Royale", carpetArea: "1,083 - 1,093 sq.ft CA", price: "₹4.75 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "May 2029" },
+      { bhk: "4 BHK Jodi Villa", carpetArea: "1,793 - 1,838 sq.ft CA", price: "₹7.90 Cr*", floorPlanLabel: "Custom Jodi Villa", possessionDate: "May 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kolte-Patil+Kolte-Patil+Andheri+Mumbai",
-    overview: "Kolte-Patil brings thoughtfully designed homes to Andheri, prioritizing natural ventilation, smart room ergonomics, and family recreational spaces.",
+    mapUrl: "https://maps.google.com/?q=Kolte-Patil+Serenova+Versova+Andheri+West+Mumbai",
+    overview: "Kolte-Patil Serenova brings thoughtfully engineered urban homes to the tranquil Versova corridor in Andheri West, prioritizing natural light, cross-ventilation, and family wellness spaces.",
     highlights: [
-      "Prime central location with fast highway connectivity",
-      "Comprehensive clubhouse facilities",
-      "Established brand trust"
+      "Serene, leafy residential pocket close to Versova Beach and cafes",
+      "Vastu-compliant layouts with dedicated utility spaces and wide decks",
+      "Kolte-Patil's 3-decade legacy of punctual delivery and design excellence"
     ],
     amenities: ["Clubhouse", "Swimming Pool", "Gymnasium", "Kids Play Area"]
   },
   {
     id: 28,
-    name: "Hiranandani",
-    builder: "Hiranandani Communities",
-    tagline: "Neoclassical Masterpiece in Andheri",
+    name: "Vista Residences",
+    builder: "Eleva by Hiranandani",
+    tagline: "Grand Neoclassical High-Rise in Oshiwara",
     location: "Andheri",
-    locality: "Andheri Prime",
+    locality: "Oshiwara, New Link Road, Andheri West",
+    exactAddress: "New Link Road, Opposite Vicino Mall, Oshiwara, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Signature Land Parcel",
-    towers: "Neoclassical High-Rise Tower",
-    towerDetails: "Signature Roman arches and grand architectural facade",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Hiranandani Luxury Club",
+    priceRange: "₹2.69 Cr - ₹6.95 Cr*",
+    priceDisplay: "From ₹2.69 Cr*",
+    status: "Under Construction",
+    possession: "June 2029",
+    rera: "P51800053625, P51800076720",
+    landParcel: "2.5 Acres Master-Planned Enclave",
+    towers: "3 Neoclassical High-Rise Towers (33 Storeys)",
+    towerDetails: "Signature Hiranandani neoclassical aesthetic with copper crests and marble foyers",
+    elevators: "High-Speed Mitsubishi Elevators",
+    amenitiesCount: "35+ World-Class Amenities",
     coverImage: "/projects/project_28_user_1.png",
     images: [
       "/projects/project_28_user_1.png",
       "/projects/project_28_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK Neoclassical", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
-      { bhk: "3 BHK Royale", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
+      { bhk: "2 BHK Suite", carpetArea: "766 - 947 sq.ft CA", price: "₹2.69 Cr*", floorPlanLabel: "Type 2A Suite", possessionDate: "June 2029" },
+      { bhk: "3 BHK Grande", carpetArea: "1,110 - 1,170 sq.ft CA", price: "₹4.29 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "June 2029" },
+      { bhk: "4 BHK Jodi Residence", carpetArea: "1,850 - 2,100 sq.ft CA", price: "₹6.95 Cr*", floorPlanLabel: "Custom Jodi Residence", possessionDate: "June 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Hiranandani+Hiranandani+Andheri+Mumbai",
-    overview: "A neoclassical architectural landmark in Andheri by Hiranandani, showcasing grand stone masonry, high ceilings, and landscaped piazzas.",
+    mapUrl: "https://maps.google.com/?q=Vista+Residences+Eleva+Hiranandani+Oshiwara+Andheri+West+Mumbai",
+    overview: "A neoclassical architectural landmark in Oshiwara by Eleva by Hiranandani, showcasing grand stone masonry, high ceilings, landscaped piazzas, and 2-minute access to Oshiwara Metro.",
     highlights: [
-      "Signature Hiranandani neoclassical aesthetic",
-      "Vibrant self-contained lifestyle ecosystem",
-      "High capital appreciation corridor"
+      "Signature Hiranandani neoclassical architecture and Italian marble entrance foyer",
+      "Opposite Vicino Mall and walking distance to Oshiwara Metro Station",
+      "Sprawling 2.5-acre enclave with multi-tier clubhouse and sports facilities"
     ],
     amenities: ["Grand Clubhouse", "Swimming Pool", "Tennis Court", "Landscaped Piazza", "Concierge"]
   },
   {
     id: 29,
-    name: "Bharat",
+    name: "Bharat Altavista",
     builder: "Bharat Infrastructure",
-    tagline: "Bespoke Residences in Andheri West",
+    tagline: "Ultra-Luxury Living in Lokhandwala Complex",
     location: "Andheri",
-    locality: "Andheri West Corridor",
+    locality: "Lokhandwala Complex, Andheri West",
+    exactAddress: "Lokhandwala Complex, Off New Link Road, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹4.73 Cr - ₹9.80 Cr*",
+    priceDisplay: "From ₹4.73 Cr*",
     status: "Under Construction",
-    possession: "2027",
-    rera: "Information Coming Soon",
-    landParcel: "Urban Land Parcel",
-    towers: "High-Rise Tower",
-    towerDetails: "Modern residential structure with luxury lobby",
+    possession: "Dec 2030",
+    rera: "P51800052790",
+    landParcel: "1.5 Acres Luxury Parcel",
+    towers: "Single Luxury Tower (G + 32 Storeys)",
+    towerDetails: "Panoramic residences with wrap-around balconies overlooking Lokhandwala",
     elevators: "High-Speed Elevators",
-    amenitiesCount: "Curated Amenities",
+    amenitiesCount: "25+ Luxury Amenities",
     coverImage: "/projects/project_29_user_1.png",
     images: [
       "/projects/project_29_user_1.png",
       "/projects/project_29_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "2027" },
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "2027" }
+      { bhk: "3 BHK Luxury Suite", carpetArea: "1,008 - 1,282 sq.ft CA", price: "₹4.73 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Dec 2030" },
+      { bhk: "3 BHK Royale with Deck", carpetArea: "1,308 sq.ft CA", price: "₹5.95 Cr*", floorPlanLabel: "Type 3B Royale", possessionDate: "Dec 2030" },
+      { bhk: "4 BHK Jodi Penthouse", carpetArea: "2,350+ sq.ft CA", price: "₹9.80 Cr*", floorPlanLabel: "Custom Jodi Penthouse", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Bharat+Infrastructure+Bharat+Andheri+West+Mumbai",
-    overview: "Bharat Infrastructure presents thoughtfully engineered homes in Andheri West, placing residents moments away from premier dining, entertainment, and transit.",
+    mapUrl: "https://maps.google.com/?q=Bharat+Altavista+Lokhandwala+Complex+Andheri+West+Mumbai",
+    overview: "Bharat Altavista presents thoughtfully engineered homes in Lokhandwala Complex, placing residents moments away from premier dining, entertainment, and transit.",
     highlights: [
-      "Walking proximity to Andheri West metro corridor",
-      "Vastu-compliant floor layouts",
-      "High rental yield and capital appreciation potential"
+      "Walking proximity to Andheri West metro corridor and Lokhandwala Circle",
+      "Vastu-compliant floor layouts with wide glass sundecks",
+      "High rental yield and premier capital appreciation potential"
     ],
     amenities: ["Gymnasium", "Lobby", "Security", "Rooftop Garden"]
   },
   {
     id: 30,
-    name: "Rustomjee",
+    name: "Rustomjee Andheri West",
     builder: "Rustomjee",
-    tagline: "Thoughtful Luxury Living in Andheri",
+    tagline: "Thoughtfully Crafted Family Residences in Andheri West",
     location: "Andheri",
-    locality: "Andheri Prime Belt",
+    locality: "Versova Link / Lokhandwala, Andheri West",
+    exactAddress: "Off New Link Road & Versova Link, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Parcel",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Multi-storey residential landmark",
+    priceRange: "₹2.85 Cr - ₹7.90 Cr*",
+    priceDisplay: "From ₹2.85 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2029",
+    rera: "P51800055123",
+    landParcel: "2.0 Acres Master-Planned Enclave",
+    towers: "Signature High-Rise Towers (G + 30 Storeys)",
+    towerDetails: "Contemporary towers with children's creative play areas and sky lounges",
     elevators: "High-Speed Elevators",
-    amenitiesCount: "Rustomjee Signature Amenities",
+    amenitiesCount: "35+ Rustomjee Amenities",
     coverImage: "/projects/rustomjee_andheri_cover.jpg",
     images: [
       "/projects/rustomjee_andheri_cover.jpg",
@@ -1511,36 +1529,38 @@ export const PROJECTS_DATA = [
       "/projects/rustomjee_stella_official.webp"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
+      { bhk: "2 BHK Luxury Deck", carpetArea: "741 - 850 sq.ft CA", price: "₹2.85 Cr*", floorPlanLabel: "Type 2A Luxury", possessionDate: "Dec 2029" },
+      { bhk: "3 BHK Royale Suite", carpetArea: "1,050 - 1,280 sq.ft CA", price: "₹4.50 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2029" },
+      { bhk: "4 BHK Sky Villa", carpetArea: "1,650 - 2,100 sq.ft CA", price: "₹7.90 Cr*", floorPlanLabel: "Type 4A Sky Villa", possessionDate: "Dec 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Rustomjee+Andheri+Mumbai",
-    overview: "Rustomjee's celebrated approach to thoughtful community living in Andheri, featuring expansive family decks and children's activity zones.",
+    mapUrl: "https://maps.google.com/?q=Rustomjee+Andheri+West+Mumbai",
+    overview: "Rustomjee's celebrated approach to thoughtful community living in Andheri West, featuring expansive family decks, children's creative activity zones, and rooftop sky lounges.",
     highlights: [
-      "Holistic community living with dedicated learning zones",
-      "Centrally connected to Western Express Highway & Metro",
-      "Reputed construction delivery record"
+      "Holistic community living with dedicated learning zones and creche",
+      "Centrally connected to Western Express Highway, Metro & New Link Road",
+      "Reputed construction delivery record and high-grade finishes"
     ],
     amenities: ["Swimming Pool", "Clubhouse", "Children's Creative Studio", "Fitness Center"]
   },
   {
     id: 31,
-    name: "Lodha",
+    name: "Lodha Acenza",
     builder: "Lodha Group",
-    tagline: "Prestigious High-Rise Living in Andheri",
+    tagline: "Low-Density Boutique Luxury on Western Express Highway",
     location: "Andheri",
-    locality: "Andheri West Corridor",
+    locality: "Western Express Highway, Andheri East",
+    exactAddress: "Western Express Highway, Gundavali, Andheri East, Mumbai 400069",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Launch",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Acreage",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Luxury skyscraper with Saint Amand concierge",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Lodha Club Amenities",
+    priceRange: "₹5.60 Cr - ₹12.50 Cr*",
+    priceDisplay: "From ₹5.60 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2026",
+    rera: "P51800048862, P51800052417",
+    landParcel: "3.5 Acres Low-Density Estate",
+    towers: "3 Towers (25 Storeys)",
+    towerDetails: "Exclusive boutique residences managed by Saint Amand 5-star hospitality",
+    elevators: "High-Speed Elevators with Biometric Security",
+    amenitiesCount: "40+ Lodha Luxury Amenities",
     coverImage: "/projects/project_31_user_1.png",
     images: [
       "/projects/project_31_user_1.png",
@@ -1548,51 +1568,54 @@ export const PROJECTS_DATA = [
       "/projects/project_31_user_3.png"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "3 BHK Luxury Suite", carpetArea: "1,232 - 1,395 sq.ft CA", price: "₹5.60 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Dec 2026" },
+      { bhk: "4 BHK Royal Residence", carpetArea: "1,852 - 2,209 sq.ft CA", price: "₹7.90 Cr*", floorPlanLabel: "Type 4A Royal", possessionDate: "Dec 2026" },
+      { bhk: "5 BHK Penthouse Villa", carpetArea: "2,700+ sq.ft CA", price: "₹12.50 Cr*", floorPlanLabel: "Penthouse Villa", possessionDate: "Dec 2026" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Andheri+West+Mumbai",
-    overview: "Lodha brings its legendary hospitality standards and architectural grandeur to Andheri, offering discerning residents private high-rise sanctuaries.",
+    mapUrl: "https://maps.google.com/?q=Lodha+Acenza+Western+Express+Highway+Andheri+East+Mumbai",
+    overview: "Lodha brings its legendary hospitality standards and architectural grandeur to Andheri East, offering discerning residents private high-rise sanctuaries managed by Saint Amand.",
     highlights: [
-      "Saint Amand 5-star residential hospitality management",
-      "Lavish clubhouse with indoor heated pool and spa",
-      "Prime Western Suburbs location"
+      "Saint Amand 5-star residential hospitality management and white-glove concierge",
+      "Lavish clubhouse with indoor heated pool, tennis court, and wellness spa",
+      "Direct front-row frontage on Western Express Highway moments from international airport"
     ],
     amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Spa", "Concierge Desk"]
   },
   {
     id: 32,
-    name: "DLF",
-    builder: "DLF",
-    tagline: "Iconic North-India Luxury Developer in Andheri",
+    name: "DLF Andheri West",
+    builder: "DLF Limited",
+    tagline: "India's Foremost Luxury Developer Arrives in Andheri West",
     location: "Andheri",
-    locality: "Andheri West Corridor",
+    locality: "New Link Road, Opposite Infiniti Mall, Andheri West",
+    exactAddress: "New Link Road, Opposite Infiniti Mall & Oshiwara Metro, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Mumbai Enclave",
-    towers: "Landmark Residential Tower",
-    towerDetails: "Ultra-luxury international architecture",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "DLF Club Standards",
+    priceRange: "₹5.99 Cr - ₹7.75 Cr*",
+    priceDisplay: "From ₹5.99 Cr*",
+    status: "Under Construction",
+    possession: "June 2030",
+    rera: "PR1181012500079",
+    landParcel: "3.2 Acres Prime Land Parcel",
+    towers: "Landmark Towers (G + 38 Storeys)",
+    towerDetails: "Ultra-luxury international glass facade architecture with sprawling sky decks",
+    elevators: "High-Speed Destination Controlled Elevators",
+    amenitiesCount: "45+ DLF Club Standards",
     coverImage: "/projects/project_32_user_1.png",
     images: [
       "/projects/project_32_user_1.png",
       "/projects/project_32_user_2.png"
     ],
     configurations: [
-      { bhk: "3 BHK Presidential", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
-      { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
+      { bhk: "3 BHK Luxury", carpetArea: "1,125 - 1,280 sq.ft CA", price: "₹5.99 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "June 2030" },
+      { bhk: "3.5 BHK Grande", carpetArea: "1,350 - 1,450 sq.ft CA", price: "₹6.85 Cr*", floorPlanLabel: "Type 3.5A Grande", possessionDate: "June 2030" },
+      { bhk: "4 BHK Royal", carpetArea: "1,550 - 1,780 sq.ft CA", price: "₹7.75 Cr*", floorPlanLabel: "Type 4A Royal", possessionDate: "June 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=DLF+DLF+Andheri+West+Mumbai",
-    overview: "DLF enters Mumbai with an ultra-luxury residential landmark in Andheri West, featuring grand scale club amenities and bespoke international finishes.",
+    mapUrl: "https://maps.google.com/?q=DLF+Andheri+West+Opposite+Infiniti+Mall+Mumbai",
+    overview: "DLF enters Mumbai with an ultra-luxury residential landmark in Andheri West opposite Infiniti Mall, featuring grand scale club amenities and bespoke international finishes.",
     highlights: [
-      "Iconic DLF ultra-luxury development standards",
-      "Expansive floor-to-ceiling glass panoramic facades",
-      "High-end clubhouse and concierge ecosystem"
+      "Iconic DLF ultra-luxury development standards and glass architecture",
+      "Directly opposite Infiniti Mall and steps from Oshiwara Metro Station",
+      "Over 45,000 sq.ft of international clubhouse, sports courts, and wellness amenities"
     ],
     amenities: ["Olympic Pool", "Grand Clubhouse", "Private Theatre", "Spa", "Tennis Court"]
   },
@@ -2806,52 +2829,58 @@ export const PROJECT_ENRICHMENTS = {
   },
   "21": {
     "keyFeatures": [
-      "Direct Seafront Position on Yari Road, Versova, Andheri West",
+      "Direct seafront address on Yari Road, Versova, Andheri West",
+      "2 Mins to Versova Beach Promenade & Nana Nani Park",
       "3 Mins to Versova Metro Station (Line 1)",
-      "5 Mins to Versova Beach Promenade & Nana Nani Park",
-      "Direct access to upcoming Versova-Bandra Coastal Sea Link & Juhu Circle"
-],
+      "Near Juhu Circle, Prithvi Theatre & upcoming Versova-Bandra Coastal Road",
+      "Ultra-luxury G+38 coastal skyscraper with 270° Arabian Sea views",
+      "MahaRERA: PM1180002500076 | Possession: Dec 2029"
+    ],
     "amenities": [
-      "Sea-Facing Infinity Lap Pool",
-      "Private Seafront Cabanas",
-      "Grand Porte-Coch\u00e8re Lobby",
-      "Modern Fitness & Pilates Studio",
-      "Rooftop Party Deck with Sunset Views",
-      "Private Movie Theatre",
-      "Kids Splash Pool",
-      "24/7 Luxury Concierge"
+      "Seafront Infinity Pool",
+      "Private Sunset Deck",
+      "Bespoke Club Lounge",
+      "Private Biometric Lifts",
+      "Spa & Wellness Suite",
+      "Grand Banquet Hall",
+      "Children's Splash Pool",
+      "24/7 White-Glove Concierge"
     ]
   },
   "22": {
     "keyFeatures": [
-      "100m Ramp Access to Western Express Highway, Andheri East",
-      "2 Mins to Gundavali (Line 7) & WEH (Line 1) Metro Interchange",
-      "3 Mins to Andheri Railway Station (East) & Hubtown SEZ",
-      "7 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)"
-],
+      "Prime Lokhandwala Back Road, Andheri West surrounded by green mangroves",
+      "2 Mins to Lokhandwala Market & Celebration Sports Club",
+      "4 Mins to DN Nagar & Oshiwara Metro Stations (Lines 1 & 2A)",
+      "5 Mins to Infiniti Mall Andheri, PVR Dynamix & Juhu Circle",
+      "Low-density architectural development with expansive sundecks",
+      "MahaRERA: PR1180002600863 | Possession: June 2030"
+    ],
     "amenities": [
-      "Temperature-Controlled Pool",
-      "Designer Sky Clubhouse",
-      "Cardio & Weight Training Gym",
-      "Reflexology Walkway & Gardens",
-      "Indoor Badminton & Games",
-      "Kids Play Arena",
-      "Executive Meeting Lounge",
+      "Swimming Pool with Timber Deck",
+      "Boutique Luxury Clubhouse",
+      "Technogym Fitness Center",
+      "Landscaped Sky Terraces",
+      "Indoor Games Pavilion",
+      "Children's Creative Play Park",
+      "Executive Business Lounge",
       "24/7 Smart Security"
     ]
   },
   "23": {
     "keyFeatures": [
-      "Adjacent to D.N. Nagar Metro Interchange (Lines 1 & 2A), Andheri West",
-      "2 Mins to New Link Road & Juhu Circle",
-      "4 Mins to Kokilaben Dhirubhai Ambani Hospital & Research Institute",
-      "5 Mins to Andheri Railway Station, Bhavan's College & The Club Mumbai"
-],
+      "Off New Link Road, Near Fun Republic, Andheri West",
+      "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
+      "3 Mins to Kokilaben Dhirubhai Ambani Hospital & Research Institute",
+      "4 Mins to Juhu Circle, New Link Road Retail & Citi Mall",
+      "4.2-Acre master-planned enclave with wrap-around decks and mangrove vistas",
+      "MahaRERA: P51800047539 | Possession: Oct 2028"
+    ],
     "amenities": [
-      "Skyline Lap Pool",
-      "Grand High-Ceiling Clubhouse",
-      "State-of-the-Art Fitness Center",
-      "Squash & Multi-Play Courts",
+      "Temperature-Controlled Lap Pool",
+      "Bespoke 30,000 sq.ft Clubhouse",
+      "Squash & Multi-Sport Courts",
+      "High-Tech Gymnasium & Aerobics",
       "Landscaped Eco Decks",
       "Private Screening Cinema",
       "Children's Interactive Playground",
@@ -2860,164 +2889,182 @@ export const PROJECT_ENRICHMENTS = {
   },
   "24": {
     "keyFeatures": [
-      "Central Andheri West Corridor on S.V. Road",
-      "3 Mins to Andheri Metro Station (Line 1)",
-      "3 Mins to Andheri Railway Station (Harbour & Western Lines)",
-      "Near Shoppers Stop Andheri, Gilbert Hill Heritage & Nadco Market"
-],
+      "Off Lokhandwala Circle & New Link Road, Andheri West",
+      "2 Mins to Lokhandwala High Street & Shoppers Stop",
+      "3 Mins to Lower Oshiwara Metro Station (Line 2A)",
+      "5 Mins to Kokilaben Hospital & Juhu Beach",
+      "Soaring 34-storey towers with Italian marble finishes and double-height drop-offs",
+      "MahaRERA: PM1180002502319 | Possession: Nov 2030"
+    ],
     "amenities": [
       "Resort-Style Swimming Pool",
-      "Clubhouse with Steam & Jacuzzi",
-      "Modern Gymnasium",
+      "Purva Signature Clubhouse",
+      "Technogym Fitness Studio",
+      "Steam, Sauna & Jacuzzi Suite",
       "Indoor Badminton Court",
       "Yoga & Meditation Green Lawn",
-      "Kids Pool & Play Ground",
-      "Banquet Hall",
-      "24/7 CCTV Multi-Tier Security"
+      "Children's Adventure Play Zone",
+      "24/7 Multi-Tier Security Concierge"
     ]
   },
   "25": {
     "keyFeatures": [
-      "Andheri-Kurla Road Corridor, Chakala, Andheri East",
-      "2 Mins to Chakala (J.B. Nagar) Metro Station (Line 1)",
-      "4 Mins to Western Express Highway & Solitaire Corporate Park",
-      "6 Mins to CSM International Airport (T2) & ITC Maratha"
-],
+      "New Link Road, Near Lotus Petrol Pump, Andheri West",
+      "2 Mins to Oshiwara & Lower Oshiwara Metro Stations",
+      "3 Mins to Mega Mall, Star Bazaar & Citi Mall",
+      "5 Mins to Lokhandwala Market & Western Express Highway via JVLR",
+      "Modern 28-storey towers with Vastu-compliant layouts and wide balconies",
+      "MahaRERA: PM1180002501525 | Possession: August 2029"
+    ],
     "amenities": [
-      "Swimming Pool with Lounge Deck",
-      "Equipped Gymnasium",
+      "Rooftop Swimming Pool with Deck",
+      "Modern Fitness & Cardio Center",
       "Rooftop Landscaped Garden",
-      "Indoor Games Room",
-      "Kids Play Arena",
-      "Grand Entrance Lobby",
-      "Senior Citizen Sit-out Zone",
-      "24/7 Security"
+      "Indoor Games Lounge",
+      "Children's Play Arena",
+      "Grand Double-Height Entrance Lobby",
+      "Senior Citizen Sit-out Alcove",
+      "24/7 Security & CCTV"
     ]
   },
   "26": {
     "keyFeatures": [
-      "Chakala Central Commercial Belt, Andheri East",
-      "3 Mins to Western Express Highway Metro Station (Line 1)",
-      "4 Mins to Andheri Railway Station (East)",
-      "5 Mins to CSM International Airport (T2) & Courtyard by Marriott"
-],
+      "Ratan Nagar, Four Bungalows, Andheri West",
+      "2 Mins to Versova Metro Station (Line 1)",
+      "3 Mins to DN Nagar Metro Interchange & Juhu Circle",
+      "5 Mins to Kokilaben Dhirubhai Ambani Hospital & Versova Beach",
+      "Boutique G+21 storey low-density tower with panoramic sea & city horizon views",
+      "MahaRERA: PM1180002600360 | Possession: Dec 2030"
+    ],
     "amenities": [
-      "Rooftop Infinity Pool",
-      "Sky Lounge with Panoramic Runway Views",
-      "High-Tech Gymnasium",
+      "Rooftop Infinity Lap Pool",
+      "Sky Lounge with Panoramic Sea Horizons",
+      "High-Tech Gymnasium & Pilates Studio",
       "Executive Business Pods & Boardroom",
       "Landscaped Sky Terraces",
       "Indoor Recreation Lounge",
-      "24/7 High-Speed Elevators",
+      "High-Speed Elevators",
       "Biometric Access Security"
     ]
   },
   "27": {
     "keyFeatures": [
-      "Lallubhai Park Residential Enclave, Andheri West",
-      "3 Mins to Azad Nagar Metro Station (Line 1)",
-      "4 Mins to Andheri Railway Station (West)",
-      "Adjacent to Lallubhai Park, Prime Hospital & Bhavan's Campus"
-],
+      "Versova / Four Bungalows peaceful green corridor, Andheri West",
+      "2 Mins to Versova Metro Station & Four Bungalows Market",
+      "4 Mins to Versova Beach Promenade & Nana Nani Park",
+      "5 Mins to Kokilaben Hospital & Juhu Circle",
+      "Boutique G+24 storey tower with wide glass decks and cross-ventilation",
+      "MahaRERA: PR1180002500850 | Possession: May 2029"
+    ],
     "amenities": [
       "Sky Swimming Pool",
       "Rooftop Fitness Pavilion",
       "Open-Air Sky Lounge",
       "Landscaped Podium Gardens",
-      "Kids Play Space",
+      "Children's Creative Play Park",
       "Indoor Games Arcade",
       "Grand Designer Lobby",
-      "24/7 Security"
+      "24/7 Security & Surveillance"
     ]
   },
   "28": {
     "keyFeatures": [
-      "Veera Desai Road Luxury Corridor, Andheri West",
-      "4 Mins to D.N. Nagar Metro Interchange (Lines 1 & 2A)",
-      "5 Mins to Andheri Railway Station & New Link Road",
-      "Near The Country Club, Yash Raj Films Studio & Kokilaben Hospital"
-],
+      "New Link Road, Opposite Vicino Mall, Oshiwara, Andheri West",
+      "2 Mins to Oshiwara Metro Station (Line 2A) & Ram Mandir Station",
+      "3 Mins to Infiniti Mall Andheri, Citi Mall & Fun Republic",
+      "5 Mins to Lokhandwala Complex & Western Express Highway",
+      "2.5-Acre neoclassical gated estate with 33-storey towers and Roman piazzas",
+      "MahaRERA: P51800053625, P51800076720 | Possession: June 2029"
+    ],
     "amenities": [
       "Neoclassical Architecture Swimming Pool",
-      "Luxury Hiranandani Clubhouse",
-      "World-Class Gymnasium",
-      "Squash & Badminton Courts",
-      "Landscaped Roman Gardens",
-      "Banquet & Ballrooms",
-      "Children's Adventure Area",
-      "24/7 Concierge"
+      "Grand Hiranandani Clubhouse",
+      "Technogym Fitness Sanctuary",
+      "Squash & Tennis Courts",
+      "Landscaped Roman Piazza & Gardens",
+      "Banquet Hall & Ballrooms",
+      "Children's Adventure Play Area",
+      "24/7 White-Glove Concierge"
     ]
   },
   "29": {
     "keyFeatures": [
-      "Lokhandwala Complex Back Road, Andheri West",
-      "3 Mins to Adarsh Nagar / Oshiwara Metro Station (Line 2A)",
-      "3 Mins to Lokhandwala High Street Market & Celebration Sports Club",
-      "5 Mins to Infiniti Mall Andheri, PVR Dynamix & Juhu Circle"
-],
+      "Lokhandwala Complex, Off New Link Road, Andheri West",
+      "2 Mins to Lokhandwala Circle & High Street Market",
+      "3 Mins to Lower Oshiwara Metro Station (Line 2A)",
+      "5 Mins to Infiniti Mall, Celebration Sports Club & Juhu Circle",
+      "32-Storey luxury tower with wrap-around decks overlooking Lokhandwala",
+      "MahaRERA: P51800052790 | Possession: Dec 2030"
+    ],
     "amenities": [
       "Sky Infinity Pool overlooking Arabian Sea",
-      "Exclusive Clubhouse with Spa",
+      "Exclusive Clubhouse with Spa Suite",
       "Modern Fitness & Aerobics Center",
       "Squash Court & Indoor Sports",
       "Zen Meditation Garden",
-      "Kids Fun Zone",
+      "Children's Fun Zone",
       "Double-Height Designer Lobby",
-      "24/7 Valet Parking"
+      "24/7 Valet Parking & Security"
     ]
   },
   "30": {
     "keyFeatures": [
-      "Four Bungalows Residential Belt, Andheri West",
-      "3 Mins to D.N. Nagar Metro Station (Lines 1 & 2A)",
-      "5 Mins to Andheri Railway Station & Western Express Highway",
-      "Near Four Bungalows Market, Rustomjee Cambridge School & Kokilaben Hospital"
-],
+      "Off New Link Road & Versova Link, Andheri West",
+      "2 Mins to DN Nagar & Versova Metro Stations",
+      "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Lokhandwala Market & Western Express Highway",
+      "30-Storey towers designed with child-centric play areas and sky lounges",
+      "MahaRERA: P51800055123 | Possession: Dec 2029"
+    ],
     "amenities": [
       "Rooftop Lap Pool",
-      "Thoughtful Clubhouse Spaces",
-      "Advanced Gymnasium",
-      "Sky Deck with City Views",
+      "Rustomjee Signature Clubhouse",
+      "Advanced Gymnasium & Yoga Studio",
+      "Sky Deck with City Panorama",
       "Children's Creative Play Park",
       "Indoor Games Zone",
       "Multipurpose Hall",
-      "24/7 Concierge"
+      "24/7 Security & Concierge"
     ]
   },
   "31": {
     "keyFeatures": [
-      "Upper Link Road near Adarsh Nagar Junction, Andheri West",
-      "2 Mins to Adarsh Nagar Metro Station (Line 2A)",
-      "4 Mins to Infiniti Mall Andheri & Citi Mall",
-      "5 Mins to Jogeshwari Railway Station & JVLR Connector"
-],
+      "Western Express Highway, Gundavali, Andheri East",
+      "1 Min to Gundavali Metro Station (Line 7) & WEH Metro (Line 1)",
+      "3 Mins to Andheri Railway Station & Hubtown SEZ",
+      "5 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)",
+      "Low-density 3.5-acre estate managed by Saint Amand 5-star hospitality",
+      "MahaRERA: P51800048862, P51800052417 | Possession: Dec 2026"
+    ],
     "amenities": [
-      "Signature Lodha Pool",
-      "Art Deco Inspired Clubhouse",
-      "Fitness Studio with Trainers",
-      "Indoor Games Room",
-      "Landscaped Gardens",
-      "Banquet Facilities",
+      "Olympic-Length Swimming Pool",
+      "Saint Amand Managed Clubhouse",
+      "World-Class Fitness Studio with Trainers",
+      "Tennis & Badminton Courts",
+      "Landscaped Organic Gardens",
+      "Grand Banquet Ballrooms",
       "Children's Play Arena",
-      "24/7 Lodha Services"
+      "24/7 Saint Amand Concierge & Valet"
     ]
   },
   "32": {
     "keyFeatures": [
-      "Direct Frontage on Oshiwara Link Road, Andheri West",
-      "2 Mins to Oshiwara Metro Station (Line 2A)",
-      "4 Mins to Ram Mandir Railway Station",
-      "Near Mega Mall Oshiwara, Laxmi Industrial Estate & Star Bazaar"
-],
+      "New Link Road, Opposite Infiniti Mall, Andheri West",
+      "1 Min to Oshiwara Metro Station (Line 2A) & Infiniti Mall",
+      "3 Mins to Mega Mall, Citi Mall & Fun Republic",
+      "5 Mins to Lokhandwala Complex & Western Express Highway via JVLR",
+      "Landmark 38-storey international glass facade towers by DLF",
+      "MahaRERA: PR1181012500079 | Possession: June 2030"
+    ],
     "amenities": [
-      "Luxury Lap Pool with Sunbeds",
-      "High-End DLF Clubhouse",
-      "Crossfit & Cardio Gym",
-      "Private Screening Lounge",
+      "Olympic-Size Swimming Pool with Sunbeds",
+      "Over 45,000 sq.ft International DLF Clubhouse",
+      "Crossfit, Cardio & Pilates Gym",
+      "Private Screening Cinema Lounge",
       "Lush Landscaped Central Court",
-      "Kids Play Arena",
-      "Grand Double-Height Lobby",
-      "24/7 Concierge"
+      "Children's Themed Play Park",
+      "Grand Double-Height Air-Conditioned Lobby",
+      "24/7 Valet & White-Glove Concierge"
     ]
   },
   "33": {
