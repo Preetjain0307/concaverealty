@@ -1351,7 +1351,18 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {onNavigateHome && (
+              <button
+                type="button"
+                onClick={onNavigateHome}
+                className="px-2.5 sm:px-3 py-1.5 rounded-lg border border-[#C59B4E]/40 hover:border-[#DFBE79] text-[#DFBE79] hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
+                title="Return to Website Home Page"
+              >
+                <Home className="w-3.5 h-3.5 shrink-0" />
+                <span className="hidden sm:inline">Website</span>
+              </button>
+            )}
             <button
               onClick={onLogout}
               className="px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"

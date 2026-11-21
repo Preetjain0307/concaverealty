@@ -163,7 +163,12 @@ export function App() {
     }
 
     // Dedicated Portal & Multi-Route Navigation (/concave-admin, /concave-caller, hash & pushState)
-    const handleRoute = () => {
+    const handleRoute = (e) => {
+      // Dismiss any open modals when navigating with browser back/forward buttons
+      setSelectedProject(null);
+      setTourModalOpen(false);
+      setEnquiryModalOpen(false);
+
       const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
       const hash = window.location.hash.toLowerCase();
 
@@ -171,13 +176,13 @@ export function App() {
         setShowSplash(false);
         setCurrentView('admin');
         if (window.location.pathname !== '/concave-admin') {
-          window.history.replaceState(null, '', '/concave-admin');
+          window.history.replaceState({ view: 'admin', hasHomeBase: true }, '', '/concave-admin');
         }
       } else if (path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller') {
         setShowSplash(false);
         setCurrentView('caller');
         if (window.location.pathname !== '/concave-caller') {
-          window.history.replaceState(null, '', '/concave-caller');
+          window.history.replaceState({ view: 'caller', hasHomeBase: true }, '', '/concave-caller');
         }
       } else if (path === '/careers' || hash === '#careers' || hash === '#career') {
         setCurrentView('careers');
@@ -202,10 +207,32 @@ export function App() {
       } else if (hash === '#legal' || path === '/legal') {
         setLegalTab('terms');
         setCurrentView('legal');
-      } else if (path === '' || path === '/' || hash === '' || hash === '#home') {
+      } else {
+        // Directs back to Home page of the website for any empty path, root '/', '#home' or unexpected route
         setCurrentView('home');
       }
+
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     };
+
+    // Ensure there is a base Home entry in browser history on initial load so the browser Back button
+    // always directs directly to the Home page of the website (on both laptop and mobile)
+    const initPath = window.location.pathname.toLowerCase().replace(/\/+$/, '');
+    const initHash = window.location.hash.toLowerCase();
+    const isDirectSubroute = (initPath !== '' && initPath !== '/') || (initHash !== '' && initHash !== '#home');
+
+    if (isDirectSubroute) {
+      if (!window.history.state || !window.history.state.hasHomeBase) {
+        const directUrl = window.location.href;
+        window.history.replaceState({ view: 'home', hasHomeBase: true }, '', '/');
+        window.history.pushState({ view: 'subroute', hasHomeBase: true }, '', directUrl);
+      }
+    } else {
+      if (!window.history.state) {
+        window.history.replaceState({ view: 'home', hasHomeBase: true }, '', '/');
+      }
+    }
+
     handleRoute();
     window.addEventListener('popstate', handleRoute);
     window.addEventListener('hashchange', handleRoute);
@@ -215,12 +242,12 @@ export function App() {
         e.preventDefault();
         setShowSplash(false);
         setCurrentView('admin');
-        window.history.pushState(null, '', '/concave-admin');
+        window.history.pushState({ view: 'admin', hasHomeBase: true }, '', '/concave-admin');
       } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'c') {
         e.preventDefault();
         setShowSplash(false);
         setCurrentView('caller');
-        window.history.pushState(null, '', '/concave-caller');
+        window.history.pushState({ view: 'caller', hasHomeBase: true }, '', '/concave-caller');
       }
     };
     window.addEventListener('keydown', handleKeydown);
@@ -267,32 +294,58 @@ export function App() {
     }
   }, [currentView]);
 
-  // Unified Navigation & Hash Sync Engine
+  // Unified Navigation & Hash Sync Engine (With pushState so Back Button works on both laptop and mobile)
   const handleNavigate = (view) => {
-    if (['terms', 'privacy', 'disclaimer', 'cookies', 'cookie-policy', 'legal'].includes(view)) {
+    // Dismiss any open modal when navigating
+    setSelectedProject(null);
+    setTourModalOpen(false);
+    setEnquiryModalOpen(false);
+
+    if (view === 'home') {
+      setCurrentView('home');
+      try {
+        if (window.location.pathname === '/' && (!window.location.hash || window.location.hash === '#home') && currentView === 'home') {
+          window.history.replaceState({ view: 'home', hasHomeBase: true }, '', '/');
+        } else {
+          window.history.pushState({ view: 'home', hasHomeBase: true }, '', '/');
+        }
+      } catch {
+        window.location.hash = '';
+      }
+    } else if (['terms', 'privacy', 'disclaimer', 'cookies', 'cookie-policy', 'legal'].includes(view)) {
       const doc = view === 'cookie-policy' ? 'cookies' : (view === 'legal' ? 'terms' : view);
       setLegalTab(doc);
       setCurrentView('legal');
       try {
-        window.history.replaceState(null, '', `${window.location.pathname}#${doc}`);
+        window.history.pushState({ view: 'legal', doc, hasHomeBase: true }, '', `/#${doc}`);
       } catch {
         window.location.hash = doc;
       }
+    } else if (view === 'careers') {
+      setCurrentView('careers');
+      try {
+        window.history.pushState({ view: 'careers', hasHomeBase: true }, '', '/careers');
+      } catch {
+        window.location.hash = 'careers';
+      }
+    } else if (view === 'admin') {
+      setShowSplash(false);
+      setCurrentView('admin');
+      try {
+        window.history.pushState({ view: 'admin', hasHomeBase: true }, '', '/concave-admin');
+      } catch {}
+    } else if (view === 'caller') {
+      setShowSplash(false);
+      setCurrentView('caller');
+      try {
+        window.history.pushState({ view: 'caller', hasHomeBase: true }, '', '/concave-caller');
+      } catch {}
     } else {
       setCurrentView(view);
-      if (view === 'home') {
-        // Clean up hash completely so refreshing on home stays on home!
-        try {
-          window.history.replaceState(null, '', window.location.pathname.replace(/#.*$/, '') || '/');
-        } catch {
-          window.location.hash = '';
-        }
-      } else {
-        try {
-          window.history.replaceState(null, '', `${window.location.pathname}#${view}`);
-        } catch {
-          window.location.hash = view;
-        }
+      try {
+        window.history.pushState({ view, hasHomeBase: true }, '', `/#${view}`);
+      } catch {
+        window.location.hash = view;
       }
     }
 
@@ -466,10 +519,7 @@ export function App() {
                 currentUser={activeUser && activeUser.role === 'caller' ? activeUser : null}
                 onLogin={(user) => setActiveUser(user)}
                 onLogout={handleLogout}
-                onNavigateHome={() => {
-                  handleNavigate('home');
-                  window.history.pushState(null, '', '/');
-                }}
+                onNavigateHome={() => handleNavigate('home')}
               />
             </ErrorBoundary>
           )}
@@ -480,10 +530,7 @@ export function App() {
                 currentUser={activeUser && activeUser.role === 'admin' ? activeUser : null}
                 onLogin={(admin) => setActiveUser(admin)}
                 onLogout={handleLogout}
-                onNavigateHome={() => {
-                  handleNavigate('home');
-                  window.history.pushState(null, '', '/');
-                }}
+                onNavigateHome={() => handleNavigate('home')}
               />
             </ErrorBoundary>
           )}

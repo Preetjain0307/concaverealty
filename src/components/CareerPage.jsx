@@ -14,6 +14,7 @@ import {
   FileText,
   X,
   ArrowRight,
+  ArrowLeft,
   Send,
   ChevronDown
 } from 'lucide-react';
@@ -520,7 +521,21 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
       {/* ============================================================== */}
       <section className="relative pt-28 sm:pt-36 pb-16 sm:pb-20 overflow-hidden z-10 border-b border-white/5">
 
-        <div className="max-w-6xl mx-auto px-3.5 xs:px-4 sm:px-6 lg:px-8 text-center space-y-8">
+        <div className="max-w-6xl mx-auto px-3.5 xs:px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8">
+
+          {/* Back to Home Navigation */}
+          {onNavigateHome && (
+            <div className="flex items-center justify-start pb-1">
+              <button
+                type="button"
+                onClick={onNavigateHome}
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#183C32]/85 hover:bg-[#245348] text-[#DFBE79] hover:text-white border border-[#C59B4E]/40 text-xs sm:text-sm font-semibold tracking-wide transition-all shadow-md cursor-pointer group active:scale-95 backdrop-blur-sm"
+              >
+                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                <span>Return to Home</span>
+              </button>
+            </div>
+          )}
 
           {/* Main Title & Slogan */}
           <div className="space-y-5 max-w-5xl mx-auto">
