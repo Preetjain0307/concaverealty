@@ -5,11 +5,38 @@
  * identifier validation, and absolute SQL injection prevention.
  */
 
-// Hostinger Database Configuration
-define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
-define('DB_NAME', getenv('DB_NAME') ?: 'u451989800_concave_db');
-define('DB_USER', getenv('DB_USER') ?: 'u451989800_concave_user');
-define('DB_PASS', getenv('DB_PASS') ?: 'Hemant_Concave_Mishra#2026@MillenForge');
+// Hostinger Database Configuration - loaded securely from environment / .env
+function get_db_env_var($varName, $default = '') {
+    $val = getenv($varName);
+    if ($val !== false && strlen(trim($val)) > 0) return trim($val);
+    if (isset($_ENV[$varName]) && strlen(trim($_ENV[$varName])) > 0) return trim($_ENV[$varName]);
+    if (isset($_SERVER[$varName]) && strlen(trim($_SERVER[$varName])) > 0) return trim($_SERVER[$varName]);
+
+    $possiblePaths = [dirname(dirname(__DIR__)) . '/.env', dirname(__DIR__) . '/.env', __DIR__ . '/.env'];
+    foreach ($possiblePaths as $envPath) {
+        if (file_exists($envPath) && is_readable($envPath)) {
+            foreach (file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+                $trimmed = trim($line);
+                if (strpos($trimmed, '#') === 0) continue;
+                $prefix = $varName . '=';
+                if (strpos($trimmed, $prefix) === 0) {
+                    $extracted = trim(substr($trimmed, strlen($prefix)));
+                    if ((substr($extracted, 0, 1) === '"' && substr($extracted, -1) === '"') ||
+                        (substr($extracted, 0, 1) === "'" && substr($extracted, -1) === "'")) {
+                        $extracted = substr($extracted, 1, -1);
+                    }
+                    return $extracted;
+                }
+            }
+        }
+    }
+    return $default;
+}
+
+define('DB_HOST', get_db_env_var('DB_HOST', 'localhost'));
+define('DB_NAME', get_db_env_var('DB_NAME', 'u451989800_concave_db'));
+define('DB_USER', get_db_env_var('DB_USER', 'u451989800_concave_user'));
+define('DB_PASS', get_db_env_var('DB_PASS', ''));
 
 /**
  * Returns a PDO connection or null if MySQL credentials are not yet configured.

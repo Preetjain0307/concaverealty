@@ -25,11 +25,17 @@ if (!is_dir(DATA_DIR)) {
     @mkdir(DATA_DIR, 0755, true);
 }
 
-// 1. Resolve RESEND_API_KEY from environment or .env file
-function get_resend_api_key() {
-    $key = getenv('RESEND_API_KEY');
-    if ($key && strlen(trim($key)) > 5) {
-        return trim($key);
+// 1. Resolve configuration variables securely from environment or .env file
+function get_env_config($varName, $default = '') {
+    $val = getenv($varName);
+    if ($val !== false && strlen(trim($val)) > 0) {
+        return trim($val);
+    }
+    if (isset($_ENV[$varName]) && strlen(trim($_ENV[$varName])) > 0) {
+        return trim($_ENV[$varName]);
+    }
+    if (isset($_SERVER[$varName]) && strlen(trim($_SERVER[$varName])) > 0) {
+        return trim($_SERVER[$varName]);
     }
 
     // Try reading .env from root or parent directory
@@ -43,15 +49,27 @@ function get_resend_api_key() {
         if (file_exists($envPath) && is_readable($envPath)) {
             $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             foreach ($lines as $line) {
-                if (strpos(trim($line), '#') === 0) continue;
-                if (strpos($line, 'RESEND_API_KEY=') === 0) {
-                    return trim(substr($line, strlen('RESEND_API_KEY=')));
+                $trimmed = trim($line);
+                if (strpos($trimmed, '#') === 0) continue;
+                $prefix = $varName . '=';
+                if (strpos($trimmed, $prefix) === 0) {
+                    $extracted = trim(substr($trimmed, strlen($prefix)));
+                    // Remove optional surrounding quotes
+                    if ((substr($extracted, 0, 1) === '"' && substr($extracted, -1) === '"') ||
+                        (substr($extracted, 0, 1) === "'" && substr($extracted, -1) === "'")) {
+                        $extracted = substr($extracted, 1, -1);
+                    }
+                    return $extracted;
                 }
             }
         }
     }
 
-    return '';
+    return $default;
+}
+
+function get_resend_api_key() {
+    return get_env_config('RESEND_API_KEY', '');
 }
 
 // 2. Global Security & CORS Headers
@@ -406,11 +424,11 @@ function dispatch_resend_email($toEmail, $subject, $htmlContent) {
 
 // 8. Direct Hostinger SMTP Client (Pure PHP - SSL Port 465 / TLS Port 587)
 function dispatch_smtp_email($toEmail, $subject, $htmlContent) {
-    $smtpHost = getenv('SMTP_HOST') ?: 'smtp.hostinger.com';
-    $smtpPort = intval(getenv('SMTP_PORT') ?: 465);
-    $smtpUser = getenv('SMTP_USER') ?: 'noreply@concaverealty.com';
-    $smtpPass = getenv('SMTP_PASS') ?: 'Hemant_Concave_Mishra@email#2026';
-    $fromEmail = getenv('SMTP_FROM') ?: 'noreply@concaverealty.com';
+    $smtpHost = get_env_config('SMTP_HOST', 'smtp.hostinger.com');
+    $smtpPort = intval(get_env_config('SMTP_PORT', '465'));
+    $smtpUser = get_env_config('SMTP_USER', 'noreply@concaverealty.com');
+    $smtpPass = get_env_config('SMTP_PASS', '');
+    $fromEmail = get_env_config('SMTP_FROM', 'noreply@concaverealty.com');
 
     if (empty($smtpUser) || empty($smtpPass)) {
         return ['success' => false, 'error' => 'SMTP credentials not configured'];
