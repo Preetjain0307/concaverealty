@@ -177,24 +177,23 @@ export function isDesktopDevice(device) {
 }
 
 // Check if a record is a confirmed Lead or Hot Lead
-// Uncalled / new online enquiries are NOT confirmed leads until called!
 export function isConfirmedLead(lead) {
   if (!lead) return false;
-  const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
-  if (isUncalled) return false;
-  return lead.statusCode === 1 || lead.statusCode === 2 || lead.statusCode === 8 || lead.isHotLead === true;
+  const s = lead.statusCode ?? lead.s;
+  if (s === 1 || s === 2 || s === 8 || lead.isHotLead === true) {
+    return true;
+  }
+  return false;
 }
 
 // Check if a record is a callback / retry follow-up
 export function isCallbackLead(lead) {
   if (!lead) return false;
-  const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
-  if (isUncalled) return false; // Uncalled enquiries stay in Active Queue until dialed
-  if (lead.statusCode === 5 || lead.statusCode === 6 || lead.s === 5 || lead.s === 6 || lead.callStatusCode === 5) return false;
-  const cs = lead.callStatusCode ?? lead.cs;
   const s = lead.statusCode ?? lead.s;
+  if (s === 5 || s === 6 || lead.s === 5 || lead.s === 6) return false;
+  const cs = lead.callStatusCode ?? lead.cs;
   const isRetryCall = cs === 2 || cs === 3 || cs === 6 || cs === 7;
-  const isFollowUpStatus = s === 3 || s === 4;
+  const isFollowUpStatus = s === 3 || s === 4 || s === 9 || s === 10;
   return isRetryCall || isFollowUpStatus;
 }
 
@@ -202,7 +201,13 @@ export function isCallbackLead(lead) {
 // In Active Queue there should be pending calls only where callers need to make a call (Uncalled)
 export function isPendingEnquiry(lead) {
   if (!lead) return false;
-  return lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+  const s = lead.statusCode ?? lead.s;
+  // Once status is assigned (Hot Lead, Lead, Follow up, Not Picking, Not Interested, Spam), it leaves Active Queue
+  if (s === 1 || s === 2 || s === 3 || s === 4 || s === 5 || s === 6 || s === 8 || s === 9 || s === 10) {
+    return false;
+  }
+  const isUncalled = lead.callStatusCode === 0 || lead.cs === 0 || lead.callStatusName === 'Uncalled';
+  return isUncalled || s === 7 || lead.statusName === 'New';
 }
 
 const DB_KEY = "concave_realty_compact_db_v5";
@@ -1060,9 +1065,15 @@ export const dbStore = {
 
           if (existingIdx !== -1) {
             const existing = local[existingIdx];
+            // If local caller has already assigned a status or called this lead, preserve caller's updated status!
+            const callerAlreadyHandled = (existing.cs > 0 || existing.s === 1 || existing.s === 2 || existing.s === 3 || existing.s === 4 || existing.s === 5 || existing.s === 6) && serverLead.cs === 0;
+            const finalStatus = callerAlreadyHandled ? existing.s : serverLead.s;
+            const finalCallStatus = callerAlreadyHandled ? existing.cs : serverLead.cs;
+            const finalNotes = (existing.nt && existing.nt.length >= (serverLead.nt || []).length) ? existing.nt : serverLead.nt;
+
             // Ensure ID and server state are synced
-            if (String(existing.i) !== sId || existing.s !== serverLead.s || existing.c !== serverLead.c || (serverLead.nt && serverLead.nt.length > (existing.nt || []).length)) {
-              local[existingIdx] = { ...existing, ...serverLead };
+            if (String(existing.i) !== sId || existing.s !== finalStatus || existing.cs !== finalCallStatus || existing.c !== serverLead.c || (finalNotes && finalNotes.length !== (existing.nt || []).length)) {
+              local[existingIdx] = { ...existing, ...serverLead, s: finalStatus, cs: finalCallStatus, nt: finalNotes };
               updated = true;
             }
           } else {
@@ -1582,7 +1593,7 @@ export const dbStore = {
     try {
       this.init();
       const rawLeads = getRawData(DB_KEY, INITIAL_SEED_LEADS);
-      const lead = rawLeads.find(l => l.i === leadId);
+      const lead = rawLeads.find(l => String(l.i) === String(leadId) || l.i == leadId);
       if (!lead) return false;
 
       // STOP IDOR BUGS: If user is caller, enforce that this caller owns the lead
@@ -1646,6 +1657,32 @@ export const dbStore = {
       });
 
       setRawData(DB_KEY, rawLeads);
+
+      // Real-time synchronization to backend server API
+      try {
+        const payload = {
+          action: 'update',
+          id: lead.i,
+          statusCode: codeNum,
+          statusName: STATUS_CODES[codeNum] || 'Updated',
+          callStatusCode: lead.cs,
+          notes: lead.nt
+        };
+        fetch('/api/leads.php?action=update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => {
+          fetch('/api/leads?action=update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Failed to dispatch server update:", err);
+      }
+
       return this.decodeLead(lead);
     } catch (e) {
       console.error("Error updating disposition:", e);

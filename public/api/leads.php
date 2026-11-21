@@ -59,6 +59,38 @@ function get_server_leads() {
                     $locId = isset($reverseLocationMap[$locLower]) ? $reverseLocationMap[$locLower] : 1;
                     $callerId = ($row['assigned_caller_code'] === 'Callerproxy') ? 2 : 1;
 
+                    // Parse status & call status
+                    $rawStatus = trim($row['status'] ?? 'New');
+                    $statusCode = 7;
+                    $callStatusCode = 0;
+
+                    $statusLower = strtolower($rawStatus);
+                    if ($statusLower === 'hot lead' || $rawStatus === '1') {
+                        $statusCode = 1;
+                        $callStatusCode = 1;
+                    } elseif ($statusLower === 'lead' || $statusLower === 'lead (interested)' || $statusLower === 'interested' || $rawStatus === '2' || $rawStatus === '8') {
+                        $statusCode = 2;
+                        $callStatusCode = 1;
+                    } elseif ($statusLower === 'okay / follow up' || $statusLower === 'follow up' || $rawStatus === '3') {
+                        $statusCode = 3;
+                        $callStatusCode = 1;
+                    } elseif ($statusLower === 'not picking' || $rawStatus === '4') {
+                        $statusCode = 4;
+                        $callStatusCode = 2;
+                    } elseif ($statusLower === 'not interested' || $rawStatus === '5') {
+                        $statusCode = 5;
+                        $callStatusCode = 1;
+                    } elseif ($statusLower === 'fake / spam' || $statusLower === 'spam' || $rawStatus === '6') {
+                        $statusCode = 6;
+                        $callStatusCode = 1;
+                    } elseif ($statusLower === 'new' || empty($rawStatus) || $rawStatus === '7') {
+                        $statusCode = 7;
+                        $callStatusCode = 0;
+                    } else {
+                        $statusCode = 2;
+                        $callStatusCode = 1;
+                    }
+
                     $dbLeads[] = [
                         'i' => intval($row['id']),
                         'n' => $row['name'],
@@ -68,9 +100,9 @@ function get_server_leads() {
                         'p' => 1,
                         'pr' => $row['property_type'] ?? 'Luxury Apartment',
                         't' => 1,
-                        's' => ($row['status'] === 'New') ? 7 : 2,
+                        's' => $statusCode,
                         'c' => $callerId,
-                        'cs' => 0,
+                        'cs' => $callStatusCode,
                         'rc' => 0,
                         'na' => null,
                         'ts' => !empty($row['created_at']) ? strtotime($row['created_at']) * 1000 : time() * 1000,
@@ -137,17 +169,50 @@ if ($method === 'POST') {
             exit;
         }
 
-        // Update in MySQL
+        $statusCodeNum = isset($data['statusCode']) ? intval($data['statusCode']) : 1;
+        $statusMap = [
+            1 => 'Hot Lead',
+            2 => 'Lead (Interested)',
+            3 => 'Okay / Follow up',
+            4 => 'Not Picking',
+            5 => 'Not Interested',
+            6 => 'Fake / Spam',
+            7 => 'New'
+        ];
+        $statusStr = isset($data['statusName']) ? strip_tags($data['statusName']) : ($statusMap[$statusCodeNum] ?? 'Hot Lead');
+        $notesJson = isset($data['notes']) ? json_encode($data['notes']) : null;
+
+        // 1. Update in MySQL
         try {
             $pdo = get_db_connection();
             if ($pdo) {
-                $statusStr = isset($data['statusName']) ? strip_tags($data['statusName']) : 'Updated';
-                $notesJson = isset($data['notes']) ? json_encode($data['notes']) : null;
                 $stmt = $pdo->prepare("UPDATE `leads` SET `status` = ?, `notes` = ?, `updated_at` = NOW() WHERE `id` = ?");
                 $stmt->execute([$statusStr, $notesJson, $leadId]);
             }
         } catch (Exception $e) {
             error_log("[Leads API] Update error: " . $e->getMessage());
+        }
+
+        // 2. Also update in data/leads_store.json fallback if present
+        try {
+            $jsonStore = read_json_data('leads_store.json');
+            if (!empty($jsonStore) && is_array($jsonStore)) {
+                $jsonUpdated = false;
+                foreach ($jsonStore as &$jl) {
+                    if (intval($jl['i'] ?? 0) === $leadId) {
+                        $jl['s'] = $statusCodeNum;
+                        $jl['cs'] = isset($data['callStatusCode']) ? intval($data['callStatusCode']) : 1;
+                        if (isset($data['notes'])) $jl['nt'] = $data['notes'];
+                        $jsonUpdated = true;
+                        break;
+                    }
+                }
+                if ($jsonUpdated) {
+                    write_json_data('leads_store.json', $jsonStore);
+                }
+            }
+        } catch (Exception $e) {
+            error_log("[Leads API] JSON store update error: " . $e->getMessage());
         }
 
         echo json_encode(['success' => true, 'message' => 'Lead updated successfully.']);

@@ -413,26 +413,57 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     }
     setDispositionError('');
 
-    dbStore.updateLeadDisposition(callingLead.id, {
-      statusCode: selectedDisposition,
+    const targetId = callingLead.id;
+    const dispCode = parseInt(selectedDisposition, 10);
+    const dispLabel = STATUS_CODES[dispCode] || 'Hot Lead';
+    const computedCallStatus = (dispCode === 4 ? 2 : (dispCode === 10 ? 7 : (dispCode === 9 ? 6 : 1)));
+    const computedCallStatusName = (dispCode === 4 ? 'Not Answered' : (dispCode === 10 ? 'Line Busy' : (dispCode === 9 ? 'Call Back Scheduled' : 'Connected & Discussed')));
+
+    // 1. Immediately update React state for instant 0ms visual responsiveness
+    setLeads(prevLeads => prevLeads.map(l => {
+      if (String(l.id) === String(targetId)) {
+        const newNotes = l.notes ? [...l.notes] : [];
+        if (callerRemark) {
+          newNotes.unshift({
+            by: currentUser ? currentUser.name : 'Caller Desk',
+            at: Date.now(),
+            txt: `${callerRemark} [Status: ${dispLabel}]`
+          });
+        }
+        return {
+          ...l,
+          statusCode: dispCode,
+          statusName: dispLabel,
+          callStatusCode: computedCallStatus,
+          callStatusName: computedCallStatusName,
+          isHotLead: dispCode === 1,
+          isInterested: dispCode === 2,
+          notes: newNotes,
+          updatedAt: Date.now()
+        };
+      }
+      return l;
+    }));
+
+    // 2. Persist to local storage and sync to server database
+    dbStore.updateLeadDisposition(targetId, {
+      statusCode: dispCode,
       noteText: callerRemark,
       callerName: currentUser ? currentUser.name : 'Caller Desk'
     });
 
     let destinationMsg = 'All History';
-    if (selectedDisposition === 1 || selectedDisposition === 2) {
+    if (dispCode === 1 || dispCode === 2) {
       destinationMsg = 'Leads tab & All History';
-    } else if (selectedDisposition === 3 || selectedDisposition === 4) {
+    } else if (dispCode === 3 || dispCode === 4 || dispCode === 9 || dispCode === 10) {
       destinationMsg = 'Callback tab & All History';
     }
-    const statusLabel = STATUS_CODES[selectedDisposition] || 'Updated';
-    setFeedbackToast(`CON-${callingLead.id} updated to "${statusLabel}" → Moved to ${destinationMsg}.`);
+    setFeedbackToast(`CON-${targetId} updated to "${dispLabel}" → Moved to ${destinationMsg}.`);
     setTimeout(() => setFeedbackToast(null), 4000);
 
     setCallingLead(null);
     setSelectedDisposition(null);
     setCallerRemark('');
-    refreshData();
   };
 
   const handleOpenDisposition = (lead) => {
@@ -957,7 +988,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     return sum + todayNotes.length;
   }, 0) || leads.filter(l => {
     const hasNoteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs && n.by !== "System Lead Router");
-    const isCalledToday = l.callStatusCode > 0 && l.createdAt && l.createdAt >= startOfTodayTs;
+    const isCalledToday = l.callStatusCode > 0 && ((l.createdAt && l.createdAt >= startOfTodayTs) || (l.updatedAt && l.updatedAt >= startOfTodayTs));
     return hasNoteToday || isCalledToday;
   }).length;
 
@@ -966,7 +997,8 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     if (!isConfirmedLead(l)) return false;
     const createdToday = l.createdAt && l.createdAt >= startOfTodayTs;
     const noteToday = l.notes && l.notes.some(n => n.at && n.at >= startOfTodayTs);
-    return createdToday || noteToday;
+    const updatedToday = l.updatedAt && l.updatedAt >= startOfTodayTs;
+    return createdToday || noteToday || updatedToday;
   }).length;
 
   return (
