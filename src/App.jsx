@@ -58,7 +58,7 @@ function HomeCtaBanner({ onExplore }) {
           <div className="h-[1px] w-12 bg-[#C59B4E]/50" />
         </div>
 
-        <h2 
+        <h2
           className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#14221F] tracking-tight leading-tight"
           style={{
             fontFamily: '"Cormorant Garamond", Cinzel, serif',
@@ -113,7 +113,7 @@ export function App() {
       if (hash.startsWith('#disclaimer') || path === '/disclaimer') return 'legal';
       if (hash.startsWith('#cookies') || path === '/cookies') return 'legal';
       if (hash === '#legal' || path === '/legal') return 'legal';
-    } catch (e) {}
+    } catch (e) { }
     return 'home';
   });
   const [legalTab, setLegalTab] = useState('terms'); // 'terms', 'privacy', 'disclaimer', 'cookies'
@@ -151,7 +151,7 @@ export function App() {
   const handleDismissCookieBanner = () => {
     try {
       localStorage.setItem('concave_cookie_acknowledged', 'true');
-    } catch (e) {}
+    } catch (e) { }
     setCookieConsentVisible(false);
   };
 
@@ -333,13 +333,13 @@ export function App() {
       setCurrentView('admin');
       try {
         window.history.pushState({ view: 'admin', hasHomeBase: true }, '', '/concave-admin');
-      } catch {}
+      } catch { }
     } else if (view === 'caller') {
       setShowSplash(false);
       setCurrentView('caller');
       try {
         window.history.pushState({ view: 'caller', hasHomeBase: true }, '', '/concave-caller');
-      } catch {}
+      } catch { }
     } else {
       setCurrentView(view);
       try {
@@ -588,7 +588,7 @@ export function App() {
 
         {/* Luxury Cookie & Privacy Preferences Banner (Fixed at Bottom-Left on all devices) */}
         {!isPortalView && cookieConsentVisible && (
-          <aside 
+          <aside
             aria-label="Privacy and Cookie Preferences"
             className="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] sm:w-[380px] p-4 sm:p-4.5 rounded-2xl bg-[#14221F]/95 backdrop-blur-md border border-[#C59B4E]/50 text-white shadow-2xl animate-fade-up space-y-2.5"
             style={{ position: 'fixed', bottom: '16px', left: '16px', zIndex: 9999 }}
