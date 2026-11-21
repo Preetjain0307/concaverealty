@@ -751,22 +751,23 @@ export const PROJECTS_DATA = [
   // ==========================================
   {
     id: 13,
-    name: "Naring",
-    builder: "Naring Group",
-    tagline: "Premium Residential Address in Goregaon West",
+    name: "Narang Valora",
+    builder: "Narang Realty",
+    tagline: "Ultra-Luxury Living with 1.25 Lakh Sq.Ft Club Valora in Bangur Nagar",
     location: "Goregaon",
-    locality: "Link Road Corridor, Goregaon West",
+    locality: "Bangur Nagar, Goregaon West",
+    exactAddress: "Maharaj Agrasen Road, Near Inorbit Mall, Bangur Nagar, Goregaon West, Mumbai - 400104",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Goregaon Land",
-    towers: "Modern High-Rise Tower",
-    towerDetails: "Sculptural architecture with expansive balconies",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Premium Amenities",
+    priceRange: "₹4.21 Cr - ₹26.00 Cr*",
+    priceDisplay: "₹4.21 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2031 / April 2032",
+    rera: "PR1180002600544",
+    landParcel: "3.0-Acre Ultra-Luxury Sanctuary",
+    towers: "High-Rise Towers (Up to 43 Storeys)",
+    towerDetails: "Up to 43 Storeys | Mivan Construction with 1.25 Lakh Sq.Ft Club Valora Ecosystem",
+    elevators: "High-Speed Elevators with Power Backup",
+    amenitiesCount: "40+ World-Class Amenities",
     coverImage: "/projects/naring_goregaon_cover.jpg",
     images: [
       "/projects/naring_goregaon_cover.jpg",
@@ -775,36 +776,50 @@ export const PROJECTS_DATA = [
       "/project_photos/13%20-%20Naring%20(Goregaon)/3.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "3 BHK Grande", carpetArea: "944 - 1,411 sq.ft CA", price: "₹4.21 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "Dec 2031" },
+      { bhk: "4 BHK Royal Presidential", carpetArea: "1,960 - 2,537 sq.ft CA", price: "₹9.75 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2031" },
+      { bhk: "5 & 6 BHK Palatial Mansions", carpetArea: "2,643 - 5,228 sq.ft CA", price: "₹13.15 Cr*", floorPlanLabel: "Type 5/6 Sky Villa", possessionDate: "Dec 2031" }
     ],
-    mapUrl: "https://maps.google.com/?q=Naring+Naring+Link+Road+%2C+Goregaon+West+Mumbai",
-    overview: "A prestigious development by Naring in Goregaon West offering state-of-the-art residences connected to Mumbai's primary lifestyle and transit arteries.",
+    mapUrl: "https://maps.google.com/?q=Narang+Valora+Bangur+Nagar+Goregaon+West+Mumbai",
+    overview: "Narang Valora is a marquee residential landmark spanning ~3 acres in the elite enclave of Bangur Nagar, Goregaon West. Rising up to 43 storeys, it offers palatial 3, 4, 5, and 6 BHK sky mansions enveloped by the 1.25 lakh sq.ft Club Valora, an authentic Miyawaki forest, and international-standard sports courts.",
     highlights: [
-      "Surrounded by elite retail hubs including Inorbit & Oberoi Mall",
-      "Superior construction engineering and luxury finishes",
-      "Priority registration currently underway"
+      "Coveted residential address in Bangur Nagar, Goregaon West",
+      "Exclusive 1.25 lakh sq.ft lifestyle ecosystem with Club Valora",
+      "Olympic-sized lap pool, padel court, squash court & private mini-theatre",
+      "3 Mins to Bangur Nagar Metro Station (Line 2A) & Inorbit Mall"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Kids Play Area", "Security"]
+    amenities: [
+      "Olympic-Sized Lap Pool, Kids Pool & Heated Jacuzzi",
+      "1.25 Lakh sq.ft Club Valora & Lounge",
+      "International Standard Padel Court & Squash Court",
+      "State-of-the-Art Fully Equipped Gymnasium",
+      "Private Resident Mini-Theatre & Screening Room",
+      "Luxury Spa, Salon & Rejuvenation Zone",
+      "Miyawaki Forest Trails & Reflexology Walkway",
+      "Grand Double-Height Air-Conditioned Lobby",
+      "Crèche & Children's Play Adventure Park",
+      "24/7 Multi-Tier Electronic Security & Surveillance"
+    ]
   },
   {
     id: 14,
-    name: "Kalpataru Elara",
+    name: "Kalpataru Elaara",
     builder: "Kalpataru Limited",
-    tagline: "Elegant High-Rise Living in Goregaon West",
+    tagline: "Luxury High-Rise Living with Eco-Deck Podium in Bangur Nagar",
     location: "Goregaon",
-    locality: "Near Inorbit Mall, Goregaon West",
+    locality: "Bangur Nagar, Near Inorbit Mall, Goregaon West",
+    exactAddress: "Bangur Nagar, Off Link Road, Goregaon West, Mumbai - 400104",
     city: "Mumbai",
-    priceRange: "₹2.10 Cr - ₹3.75 Cr*",
-    priceDisplay: "₹2.10 Cr*",
+    priceRange: "₹3.14 Cr - ₹9.50 Cr*",
+    priceDisplay: "₹3.14 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800032910",
-    landParcel: "2.8 Acres",
-    towers: "2 Towers | 38 Storeys",
-    towerDetails: "G + 4 Podium + 38 Residential Storeys",
-    elevators: "4 Elevators per core",
-    amenitiesCount: "30+ Modern Amenities",
+    possession: "May 2030 / Dec 2030",
+    rera: "PM1180002600918",
+    landParcel: "2.37 Acres Gated Enclave",
+    towers: "High-Rise Towers (G + 30 to 36 Storeys)",
+    towerDetails: "G + 30 to 36 Storeys | Mivan Construction with Expansive Eco-Deck Podium",
+    elevators: "High-Speed Elevators with Automatic Rescue Device",
+    amenitiesCount: "35+ Curated Lifestyle Amenities",
     coverImage: "/projects/kalpataru_elara_official.webp",
     images: [
       "/projects/kalpataru_elara_official.webp",
@@ -813,88 +828,126 @@ export const PROJECTS_DATA = [
       "/projects/kalpataru_elara_gym.webp"
     ],
     configurations: [
-      { bhk: "2 BHK Premium", carpetArea: "720 sq.ft CA", price: "₹2.10 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Royale", carpetArea: "1,060 sq.ft CA", price: "₹3.75 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
+      { bhk: "2 BHK Premium", carpetArea: "800 - 900 sq.ft CA", price: "₹3.14 Cr*", floorPlanLabel: "Type 2A Premium", possessionDate: "Dec 2030" },
+      { bhk: "3 BHK Royale", carpetArea: "1,280 - 1,503 sq.ft CA", price: "₹5.47 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2030" },
+      { bhk: "Bespoke Jodi Residences", carpetArea: "2,100 - 2,400+ sq.ft CA", price: "₹9.20 Cr*", floorPlanLabel: "Type Custom Jodi", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kalpataru+Elara+Inorbit+Mall%2C+Goregaon+West+Mumbai",
-    overview: "Kalpataru Elara embodies thoughtful luxury with expansive cross-ventilated homes, landscaped podium greens, and seamless metro access.",
+    mapUrl: "https://maps.google.com/?q=Kalpataru+Elaara+Bangur+Nagar+Goregaon+West+Mumbai",
+    overview: "Kalpataru Elaara is an architectural jewel spread across 2.37 acres in Bangur Nagar, Goregaon West. Showcasing premium 2 and 3 BHK deck residences built with cutting-edge Mivan technology, the development integrates an expansive eco-deck podium, resort swimming pools, sports arenas, and seamless connectivity to Link Road and the metro.",
     highlights: [
-      "5 minutes from Goregaon West Metro Station and Link Road",
-      "Podium level recreational amenities with swimming pool",
-      "Signature Kalpataru craftsmanship and design pedigree"
+      "Prime location in Bangur Nagar right next to Inorbit Mall & D-Mart",
+      "Resort eco-deck podium with 35+ curated leisure and wellness amenities",
+      "Cross-ventilated residences with wide sundecks overlooking mangrove greens",
+      "3 Mins to Bangur Nagar Metro Station (Line 2A) & Goregaon Railway Station"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Banquet Hall", "Jogging Deck"]
+    amenities: [
+      "Resort-Style Swimming Pool & Kids Splash Pool",
+      "Expansive Eco-Deck Podium & Landscaped Greens",
+      "Grand Double-Height Air-Conditioned Entrance Lobby",
+      "High-Tech Gymnasium & Aerobics Studio",
+      "Multipurpose Sports Turf & Badminton Court",
+      "Private Mini-Theatre & Community Clubhouse",
+      "Yoga & Meditation Deck",
+      "Children's Play Arena & Senior Citizen Alcoves",
+      "24/7 Smart Surveillance & Intercom Security"
+    ]
   },
   {
     id: 15,
-    name: "Kolte-Patil",
+    name: "Kolte Patil Vivere",
     builder: "Kolte-Patil Developers",
-    tagline: "Creation of Crafted Spaces in Goregaon",
+    tagline: "Low-Density Luxury Living with 47,000 Sq.Ft of Amenities in Bangur Nagar",
     location: "Goregaon",
-    locality: "Link Road Corridor, Goregaon West",
+    locality: "Bangur Nagar, Near Inorbit Mall, Goregaon West",
+    exactAddress: "Bangur Nagar, Off Link Road, Goregaon West, Mumbai - 400104",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹2.74 Cr - ₹7.50 Cr*",
+    priceDisplay: "₹2.74 Cr*",
     status: "Under Construction",
-    possession: "2028",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Acreage",
-    towers: "Contemporary Tower",
-    towerDetails: "Multi-storey residential tower",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Curated Amenities",
+    possession: "August 2028",
+    rera: "PR1180002502702",
+    landParcel: "Low-Density Boutique Acreage",
+    towers: "2 High-Rise Towers (36 Storeys)",
+    towerDetails: "2 Towers | 36 Storeys with ~65% Open-to-Sky Spaces and 47,000+ Sq.Ft Lifestyle Zone",
+    elevators: "Modern High-Speed Elevators",
+    amenitiesCount: "35+ Curated Amenities",
     coverImage: "/projects/project_15_user_1.png",
     images: [
       "/projects/project_15_user_1.png"
     ],
     configurations: [
-      { bhk: "2 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan 2", possessionDate: "2028" },
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan 3", possessionDate: "2028" }
+      { bhk: "2 BHK Luxe (with Deck)", carpetArea: "625 - 811 sq.ft CA", price: "₹2.74 Cr*", floorPlanLabel: "Type 2A Luxe", possessionDate: "August 2028" },
+      { bhk: "3 BHK Royal Deck", carpetArea: "960 - 1,241 sq.ft CA", price: "₹3.83 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "August 2028" },
+      { bhk: "Palatial Jodi Residences", carpetArea: "1,585 - 2,052 sq.ft CA", price: "₹6.57 Cr*", floorPlanLabel: "Type Custom Jodi", possessionDate: "August 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Kolte-Patil+Kolte-Patil+Link+Road+%2C+Goregaon+West+Mumbai",
-    overview: "Kolte-Patil presents an exquisite residential project in Goregaon West, blending intelligent spatial planning with signature lifestyle amenities.",
+    mapUrl: "https://maps.google.com/?q=Kolte+Patil+Vivere+Bangur+Nagar+Goregaon+West+Mumbai",
+    overview: "Kolte Patil Vivere is a low-density sanctuary of refined urban living in Bangur Nagar, Goregaon West. Featuring two 36-storey towers spanning ~65% open-to-sky space and over 47,000 sq.ft of recreational amenities, it offers spacious 2 and 3 BHK deck residences with floating cabanas, wellness spas, and vibrant convenience plazas.",
     highlights: [
-      "Convenient access to Western Express Highway & SV Road",
-      "Sustainable design with abundant natural light",
-      "Verified Kolte-Patil quality benchmarks"
+      "Low-density living with ~65% open-to-sky space in Bangur Nagar",
+      "Over 47,000 sq.ft of curated leisure amenities including floating cabanas",
+      "Steam, sauna, jacuzzi spa & air-conditioned fitness studio",
+      "3 Mins to Bangur Nagar Metro Station & Goregaon Sports Club"
     ],
-    amenities: ["Clubhouse", "Gymnasium", "Play Area", "Swimming Pool", "Security"]
+    amenities: [
+      "Swimming Pool with Floating Cabana & Kids Pool",
+      "47,000+ sq.ft Multi-Level Lifestyle Podium",
+      "Air-Conditioned Gymnasium & Outdoor Fitness Zone",
+      "Steam, Sauna & Jacuzzi Wellness Spa",
+      "Private Mini-Theatre & Co-Working Hub",
+      "Snooker, Table Tennis & Indoor Games Room",
+      "Party Lawn & Flower Pergola Seating",
+      "Convenience Retail Shopfront Plaza",
+      "24/7 Multi-Tier Electronic Security & Access Control"
+    ]
   },
   {
     id: 16,
-    name: "Rustomjee",
-    builder: "Rustomjee",
-    tagline: "Signature Design & Communal Harmony in Goregaon",
+    name: "Rustomjee Ozone Skye",
+    builder: "Keystone Realtors (Rustomjee Group)",
+    tagline: "Elevated High-Rise Living with Rooftop Skye Amenities in Goregaon West",
     location: "Goregaon",
-    locality: "S.V. Road / Link Road, Goregaon West",
+    locality: "S.V. Road / Link Road Intersect, Goregaon West",
+    exactAddress: "Near Ozone Swimming Pool, Off S.V. Road & Link Road, Goregaon West, Mumbai - 400104",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Goregaon Prime Land",
-    towers: "Iconic Tower",
-    towerDetails: "High-rise architectural residential tower",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "World-Class Amenities",
+    priceRange: "₹2.24 Cr - ₹5.50 Cr*",
+    priceDisplay: "₹2.24 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2031 / April 2032",
+    rera: "PR1180002601227",
+    landParcel: "Prime Goregaon Central Land",
+    towers: "Iconic High-Rise Tower",
+    towerDetails: "High-Rise Tower with Rooftop Skye Clubhouse & Stargazing Amenities",
+    elevators: "High-Speed Elevators with Power Backup",
+    amenitiesCount: "30+ Skye Lifestyle Amenities",
     coverImage: "/projects/project_16_user_1.png",
     images: [
       "/projects/project_16_user_1.png",
       "/projects/project_16_user_2.png"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type A", possessionDate: "TBA" },
-      { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type B", possessionDate: "TBA" }
+      { bhk: "2 BHK Skye Luxe", carpetArea: "693 - 786 sq.ft CA", price: "₹2.24 Cr*", floorPlanLabel: "Type 2A Skye", possessionDate: "Dec 2031" },
+      { bhk: "3 BHK Skye Grande", carpetArea: "944 - 1,030 sq.ft CA", price: "₹3.02 Cr*", floorPlanLabel: "Type 3A Skye", possessionDate: "Dec 2031" },
+      { bhk: "Bespoke Jodi Residences", carpetArea: "1,480 - 1,750 sq.ft CA", price: "₹5.25 Cr*", floorPlanLabel: "Type Custom Jodi", possessionDate: "Dec 2031" }
     ],
-    mapUrl: "https://maps.google.com/?q=Rustomjee+S.V.+Road+%2F+Link+Road%2C+Goregaon+West+Mumbai",
-    overview: "Rustomjee brings its hallmark community-centric design to Goregaon, featuring thoughtfully planned spaces that bring families closer to nature.",
+    mapUrl: "https://maps.google.com/?q=Rustomjee+Ozone+Skye+Goregaon+West+Mumbai",
+    overview: "Rustomjee Ozone Skye is an architectural landmark perched between SV Road and Link Road in Goregaon West. Designed around community-centric luxury and breathtaking panoramic views, it boasts elevated 2 and 3 BHK homes anchored by rooftop sky lounges, an open-air screening theatre, an infinity pool, and children's creative studios.",
     highlights: [
-      "Renowned Rustomjee thoughtful architectural planning",
-      "Dedicated wellness and family entertainment zones",
-      "Central access to corporate corridors and metro lines"
+      "Strategic junction connecting S.V. Road and New Link Road",
+      "Rooftop Skye Clubhouse, stargazing deck & open-air screening theatre",
+      "Horizon swimming pool with sunken loungers & fitness center",
+      "3 Mins drive / 7 Mins walk to Goregaon Railway Station (750 m)"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Children's Creative Studio", "Gymnasium", "Gardens"]
+    amenities: [
+      "Rooftop Skye Clubhouse & Stargazing Lounge",
+      "Horizon Swimming Pool & Kids Splash Zone",
+      "High-Tech Gymnasium & Fitness Studio",
+      "Outdoor Theatre & Open-Air Screening Deck",
+      "Multipurpose Banquet Hall",
+      "Children's Creative Studio & Play Park",
+      "Landscaped Sky Gardens & Yoga Deck",
+      "Indoor Games Lounge",
+      "24/7 Smart Electronic Surveillance & Security"
+    ]
   },
 
   // ==========================================
@@ -2517,74 +2570,87 @@ export const PROJECT_ENRICHMENTS = {
   },
   "13": {
     "keyFeatures": [
-      "Located on New Link Road Corridor near Bangur Nagar, Goregaon West",
-      "3 Mins to Bangur Nagar Metro Station (Line 2A)",
-      "5 Mins to Inorbit Mall Goregaon & City Centre Mall",
-      "6 Mins to Goregaon Railway Station & WEH via Mrinal Gore Flyover"
-],
+      "Coveted residential address in Bangur Nagar, Goregaon West",
+      "3 Mins to Bangur Nagar Metro Station (Line 2A) & New Link Road",
+      "4 Mins to Inorbit Mall, City Centre Mall & Infiniti Mall",
+      "6 Mins to Goregaon Railway Station & WEH via Mrinal Gore Flyover",
+      "Exclusive 1.25 lakh sq.ft lifestyle ecosystem with Club Valora & Miyawaki forest",
+      "MahaRERA Registered: PR1180002600544 | Target Possession: Dec 2031 / April 2032"
+    ],
     "amenities": [
-      "Grand Porte-Coch\u00e8re Drop-off Lobby",
-      "Swimming Pool with Timber Sun Deck",
-      "State-of-the-Art Gymnasium",
-      "Landscaped Podium Gardens",
-      "Kids Fun Park",
-      "Banquet & Gathering Hall",
-      "Indoor Games Zone",
-      "High-Security Access Control"
+      "Olympic-Sized Lap Pool, Kids Pool & Heated Jacuzzi",
+      "1.25 Lakh sq.ft Club Valora & Lounge",
+      "International Standard Padel Court & Squash Court",
+      "State-of-the-Art Fully Equipped Gymnasium",
+      "Private Resident Mini-Theatre & Screening Room",
+      "Luxury Spa, Salon & Rejuvenation Zone",
+      "Miyawaki Forest Trails & Reflexology Walkway",
+      "Grand Double-Height Air-Conditioned Lobby",
+      "Crèche & Children's Play Adventure Park",
+      "24/7 Multi-Tier Electronic Security & Surveillance"
     ]
   },
   "14": {
     "keyFeatures": [
-      "Near Bangur Nagar & Inorbit Mall, Goregaon West",
-      "2 Mins to Bangur Nagar Metro Station (Line 2A)",
+      "Prime location in Bangur Nagar right next to Inorbit Mall, Goregaon West",
+      "3 Mins to Bangur Nagar Metro Station (Line 2A) — 300m walk",
+      "4 Mins to Goregaon Sports Club, Vibgyor High School & D-Mart",
       "5 Mins to Goregaon Railway Station & S.V. Road",
-      "4 Mins to Inorbit Mall, Vibgyor High School & Bangur Nagar Sports Complex"
-],
+      "Expansive eco-deck podium with wide sundecks & mangrove views",
+      "MahaRERA Registered: PM1180002600918 | Possession: May 2030 / Dec 2030"
+    ],
     "amenities": [
-      "Curved Swimming Pool & Poolside Cabanas",
-      "Grand Double-Height Entrance Lobby",
-      "Fully Equipped Fitness Center",
-      "Badminton & Half Basketball Court",
-      "Jogging Path & Reflexology Walkway",
-      "Kids Play Area & Sandbox",
-      "Party Lawn with BBQ Station",
-      "24/7 Manned Security"
+      "Resort-Style Swimming Pool & Kids Splash Pool",
+      "Expansive Eco-Deck Podium & Landscaped Greens",
+      "Grand Double-Height Air-Conditioned Entrance Lobby",
+      "High-Tech Gymnasium & Aerobics Studio",
+      "Multipurpose Sports Turf & Badminton Court",
+      "Private Mini-Theatre & Community Clubhouse",
+      "Yoga & Meditation Deck",
+      "Children's Play Arena & Senior Citizen Alcoves",
+      "24/7 Smart Surveillance & Intercom Security"
     ]
   },
   "15": {
     "keyFeatures": [
-      "New Link Road Corridor, Goregaon West",
-      "3 Mins to Goregaon West (Pahadi Goregaon) Metro Station (Line 2A)",
-      "4 Mins to Ram Mandir Suburban Railway Station",
-      "6 Mins to Nesco IT Park, Exhibition Centre & Inorbit Mall"
-],
+      "Low-density sanctuary with ~65% open-to-sky space in Bangur Nagar, Goregaon West",
+      "3 Mins to Bangur Nagar (Pahadi Goregaon) Metro Station (Line 2A)",
+      "4 Mins to Inorbit Mall & Goregaon Sports Club",
+      "5 Mins to Goregaon Railway Station & S.V. Road",
+      "Over 47,000 sq.ft of curated leisure amenities including floating cabanas",
+      "MahaRERA Registered: PR1180002502702 | Target Possession: August 2028"
+    ],
     "amenities": [
-      "Sky Swimming Pool",
-      "Fitness & Aerobics Center",
-      "Rooftop Sky Lounge",
-      "Landscaped Sit-out Gardens",
-      "Indoor Games & Card Room",
-      "Children's Play Arena",
-      "Grand Welcoming Lobby",
-      "24/7 Security & CCTV"
+      "Swimming Pool with Floating Cabana & Kids Pool",
+      "47,000+ sq.ft Multi-Level Lifestyle Podium",
+      "Air-Conditioned Gymnasium & Outdoor Fitness Zone",
+      "Steam, Sauna & Jacuzzi Wellness Spa",
+      "Private Mini-Theatre & Co-Working Hub",
+      "Snooker, Table Tennis & Indoor Games Room",
+      "Party Lawn & Flower Pergola Seating",
+      "Convenience Retail Shopfront Plaza",
+      "24/7 Multi-Tier Electronic Security & Access Control"
     ]
   },
   "16": {
     "keyFeatures": [
-      "S.V. Road & Link Road Intersect, Goregaon West",
-      "3 Mins to Goregaon Railway Station (Harbour & Western Lines)",
+      "Strategic junction connecting S.V. Road and New Link Road, Goregaon West",
       "4 Mins to Goregaon West Metro Station (Line 2A)",
-      "Near Topiwala Multiplex, Patkar Varde College & Siddharth Hospital"
-],
+      "3 Mins drive / 7 Mins walk to Goregaon Railway Station (750 m)",
+      "5 Mins to Inorbit Mall, Infiniti Mall & City Centre Mall",
+      "Rooftop Skye Clubhouse, stargazing deck & open-air screening theatre",
+      "MahaRERA Registered: PR1180002601227 | Target Possession: Dec 2031 / April 2032"
+    ],
     "amenities": [
-      "Full-Length Swimming Pool",
-      "Exclusive Rustomjee Clubhouse",
-      "Equipped Gymnasium & Yoga Deck",
-      "Tennis & Multipurpose Court",
-      "Amphitheatre & Performance Lawn",
-      "Children's Theme Park",
-      "Senior Citizens Pavilion",
-      "24/7 Concierge"
+      "Rooftop Skye Clubhouse & Stargazing Lounge",
+      "Horizon Swimming Pool & Kids Splash Zone",
+      "High-Tech Gymnasium & Fitness Studio",
+      "Outdoor Theatre & Open-Air Screening Deck",
+      "Multipurpose Banquet Hall",
+      "Children's Creative Studio & Play Park",
+      "Landscaped Sky Gardens & Yoga Deck",
+      "Indoor Games Lounge",
+      "24/7 Smart Electronic Surveillance & Security"
     ]
   },
   "17": {
