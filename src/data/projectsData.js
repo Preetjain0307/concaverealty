@@ -95,20 +95,21 @@ export const PROJECTS_DATA = [
     id: 1,
     name: "Kalpataru Advay",
     builder: "Kalpataru Limited",
-    tagline: "Ultra-Luxury High-Rise Sanctuary in Borivali West",
+    tagline: "Ultra-Luxury 6.12-Acre Residential Sanctuary in Borivali West",
     location: "Borivali",
-    locality: "Jairaj Nagar, New Link Road, Borivali West",
+    locality: "Jairaj Nagar, Off New Link Road, Borivali West",
+    exactAddress: "Baburao Paranjape Marg, Yoganand Society, Jairaj Nagar / Ashok Nagar, Eksar Road, Borivali West, Mumbai - 400091",
     city: "Mumbai",
-    priceRange: "₹5.60 Cr - ₹7.99 Cr*",
-    priceDisplay: "₹5.60 Cr*",
+    priceRange: "₹4.15 Cr - ₹8.51 Cr*",
+    priceDisplay: "₹4.15 Cr*",
     status: "Under Construction",
-    possession: "Nov 2028",
+    possession: "June 2030",
     rera: "P51800077381",
-    landParcel: "6.12 Acres",
+    landParcel: "6.12 Acres (46% Open Spaces)",
     towers: "3 Signature Towers (Tower A, B & C)",
-    towerDetails: "Tower A & C: 37 Floors | Tower B: 47 Floors (1B + G + 5 Podium + Eco Deck)",
-    elevators: "6 High-speed Elevators & 2 Fire Escape Staircases",
-    amenitiesCount: "50+ Curated Lifestyle Amenities",
+    towerDetails: "B + G + 5 Podium + Up to 44 Storeys | 2-Acre Elevated Central Podium Deck",
+    elevators: "6 High-Speed Elevators & 2 Dedicated Service Cores",
+    amenitiesCount: "50+ Curated Lifestyle & Wellness Amenities",
     coverImage: "/projects/project_1_user_1.png",
     images: [
       "/projects/project_1_user_1.png",
@@ -116,40 +117,54 @@ export const PROJECTS_DATA = [
       "/projects/kalpataru_advay_official.webp"
     ],
     configurations: [
-      { bhk: "3 BHK Premium", carpetArea: "1,191 sq.ft CA", price: "₹5.60 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Nov 2028" },
-      { bhk: "3 BHK Grande", carpetArea: "1,319 sq.ft CA", price: "₹6.30 Cr*", floorPlanLabel: "Type 3B Royal", possessionDate: "Nov 2028" },
-      { bhk: "4 BHK Royal Suite", carpetArea: "1,835 sq.ft CA", price: "₹7.99 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Nov 2028" },
-      { bhk: "Palatial Jodi Residence", carpetArea: "2,510 - 3,154 sq.ft CA", price: "Price on Request*", floorPlanLabel: "Custom Jodi Layout", possessionDate: "Nov 2028" }
+      { bhk: "3 BHK Premium", carpetArea: "1,100 sq.ft CA", price: "₹4.15 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "June 2030" },
+      { bhk: "3 BHK Grande", carpetArea: "1,319 sq.ft CA", price: "₹5.99 Cr*", floorPlanLabel: "Type 3B Royal Deck", possessionDate: "June 2030" },
+      { bhk: "4 BHK Presidential Suite", carpetArea: "1,835 sq.ft CA", price: "₹8.51 Cr*", floorPlanLabel: "Type 4A Sky Suite", possessionDate: "June 2030" },
+      { bhk: "Palatial Jodi Residence", carpetArea: "2,200 - 3,154 sq.ft CA", price: "Price on Request*", floorPlanLabel: "Bespoke Grand Jodi", possessionDate: "June 2030" }
     ],
     virtualTourUrl: "https://view.pixeldo.com/KalpataruAdvay/",
     mapUrl: "https://maps.google.com/?q=Kalpataru+Advay+Jairaj+Nagar%2C+New+Link+Road%2C+Borivali+West+Mumbai",
-    overview: "Kalpataru Advay is an iconic multi-tower residential landmark sprawled across 6.12 acres in Borivali West. Featuring an eco-deck level, 50+ hand-picked lifestyle amenities, and unobstructed panoramic green and sea views.",
+    overview: "Kalpataru Advay is an iconic multi-tower residential landmark sprawled across 6.12 acres in Borivali West designed with 46% open space. Featuring a 2-acre central podium deck, over 50 hand-picked lifestyle and wellness amenities, and unobstructed panoramic vistas of the Arabian Sea and mangrove horizon.",
     highlights: [
-      "Prime location on New Link Road, Jairaj Nagar, Borivali West",
-      "Grand 47-storey architectural tower with triple-height entrance lobby",
-      "Eco Deck level with infinity-edge pool, private theatre & sky lounge",
-      "6 high-speed elevators per core ensuring zero wait-time luxury transit"
+      "Low-density master development across 6.12 acres with only ~6 residences per floor",
+      "Over 2 acres of elevated lifestyle podium deck with 50+ luxury amenities",
+      "Grand triple-height entrance lobby with 5-tier biometric & smart access surveillance",
+      "Unobstructed panoramic horizon views towards Gorai Creek and Arabian Sea"
     ],
-    amenities: ["Infinity Pool", "Grand Clubhouse", "Sky Lounge", "Private Theatre", "Gymnasium", "Kids Play Area", "Reflexology Path", "24/7 Concierge"]
+    amenities: [
+      "Infinity Edge Lap Pool",
+      "Grand 25,000 sq.ft Clubhouse",
+      "State-of-the-Art Gymnasium",
+      "Squash & Badminton Courts",
+      "Private Screening Theatre",
+      "Spa & Hydrotherapy Rooms",
+      "Kids Aquatic Zone & Adventure Park",
+      "Zen Reflexology Gardens",
+      "Cricket Practice Pitch",
+      "Party Lawns & Open-Air Amphitheatre",
+      "Yoga & Meditation Alcoves",
+      "24/7 Valet & Concierge Services"
+    ]
   },
   {
     id: 2,
     name: "Lodha Altus",
     builder: "Lodha Group",
-    tagline: "Exclusive High-Rise Sanctuary in Borivali",
+    tagline: "Art Deco Inspired High-Rise Landmark in Borivali West",
     location: "Borivali",
-    locality: "Off Western Express Highway, Borivali West",
+    locality: "Saibaba Nagar, Off S.V. Road, Borivali West",
+    exactAddress: "Saibaba Nagar, Off Swami Vivekanand (S.V.) Road, Borivali West, Mumbai - 400092",
     city: "Mumbai",
-    priceRange: "₹3.90 Cr - ₹5.75 Cr*",
-    priceDisplay: "₹3.90 Cr*",
-    status: "Newly Launched",
-    possession: "Dec 2028",
-    rera: "P51800055102",
-    landParcel: "3.2 Acres",
-    towers: "2 Signature Towers (38 Storeys)",
-    towerDetails: "G + 4 Podium + 38 Residential Floors",
-    elevators: "4 High-Speed Elevators",
-    amenitiesCount: "35+ World-Class Amenities",
+    priceRange: "₹3.84 Cr - ₹6.90 Cr*",
+    priceDisplay: "₹3.84 Cr*",
+    status: "Newly Launched / Under Construction",
+    possession: "Dec 2030",
+    rera: "P51800077358",
+    landParcel: "1.7 Acres Gated Enclave",
+    towers: "2 Signature Art Deco High-Rise Towers (40 Storeys)",
+    towerDetails: "Art Deco Architecture | Low-Density Planning with Only 3-4 Residences per Core",
+    elevators: "4 High-Speed Passenger Elevators per tower",
+    amenitiesCount: "35+ World-Class Curated Amenities",
     coverImage: "/projects/project_2_user_1.png",
     images: [
       "/projects/project_2_user_1.png",
@@ -158,36 +173,52 @@ export const PROJECTS_DATA = [
       "/projects/lodha_altus_official.png"
     ],
     configurations: [
-      { bhk: "3 BHK Luxe", carpetArea: "1,050 sq.ft CA", price: "₹3.90 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2028" },
-      { bhk: "4 BHK Grande", carpetArea: "1,520 sq.ft CA", price: "₹5.75 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2028" }
+      { bhk: "3 BHK Luxe", carpetArea: "1,086 sq.ft CA", price: "₹3.84 Cr*", floorPlanLabel: "Type 3A Luxe", possessionDate: "Dec 2030" },
+      { bhk: "3.5 BHK Grande", carpetArea: "1,313 sq.ft CA", price: "₹4.90 Cr*", floorPlanLabel: "Type 3.5A Royal Deck", possessionDate: "Dec 2030" },
+      { bhk: "4 BHK Presidential Suite", carpetArea: "1,713 sq.ft CA", price: "₹6.06 Cr*", floorPlanLabel: "Type 4A Sky Residence", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lodha+Altus+Western+Express+Highway%2C+Borivali+West+Mumbai",
-    overview: "Lodha Altus brings Saint Amand hospitality and signature architecture to Borivali, offering thoughtfully planned expansive homes with lavish balconies and forest views.",
+    mapUrl: "https://maps.google.com/?q=Lodha+Altus+Saibaba+Nagar%2C+Borivali+West+Mumbai",
+    overview: "Lodha Altus introduces timeless Art Deco architecture and signature Lodha luxury to Borivali West. Nestled in the quiet residential neighbourhood of Saibaba Nagar off S.V. Road, it offers sprawling 3 & 4 BHK residences with expansive sundecks, floor-to-ceiling windows, and private views of Sanjay Gandhi National Park.",
     highlights: [
-      "Low density tower with only 3 residences per floor",
-      "Panoramic views of Sanjay Gandhi National Park",
-      "Luxury clubhouse managed by Saint Amand"
+      "Timeless Art Deco architectural facade with private dual-aspect sundecks",
+      "Grand clubhouse featuring Café Altus, library lounge, and banquet spaces",
+      "On-premise Ganesha Temple / Shrine set amidst landscaped garden lawns",
+      "5 Mins to Kandivali West Metro Station & 10 Mins to Borivali Railway Station"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Fitness Center", "Banquet Hall", "Tennis Court", "Jogging Track"]
+    amenities: [
+      "Temperature-Controlled Swimming Pool",
+      "Grand Art Deco Clubhouse",
+      "Café Altus",
+      "World-Class Gymnasium",
+      "Activity Studio & Indoor Games",
+      "Multi-Purpose Sports Court",
+      "On-Premise Ganesha Temple",
+      "Jogging & Walking Trails",
+      "Library Lounge & Co-Working Pods",
+      "Pet Park",
+      "Senior Citizen Shaded Pavilion",
+      "EV Charging Stations"
+    ]
   },
   {
     id: 3,
     name: "Oberoi Sky City",
     builder: "Oberoi Realty",
-    tagline: "Integrated Urban Oasis on Western Express Highway",
+    tagline: "25-Acre Integrated Luxury Township with Sky City Mall on WEH",
     location: "Borivali",
     locality: "Off Western Express Highway, Borivali East",
+    exactAddress: "Off Western Express Highway (WEH), Dattapada / Khande Rao Dongari, Borivali East, Mumbai - 400066",
     city: "Mumbai",
-    priceRange: "₹3.85 Cr - ₹6.50 Cr*",
-    priceDisplay: "₹3.85 Cr*",
+    priceRange: "₹5.05 Cr - ₹13.50 Cr*",
+    priceDisplay: "₹5.05 Cr*",
     status: "Under Construction & Ready Phases",
-    possession: "Dec 2025 / Ready Phased",
-    rera: "P51800003582",
+    possession: "Phase 1 Ready / Phased Possession (Dec 2026 - Dec 2028)",
+    rera: "P51800003582 (Towers A-D), P51800018404 (Tower E), P51800028419 (Tower F), P51800047575 (Tower G)",
     landParcel: "25 Acres Integrated Township",
-    towers: "8 Towers | Up to 60 Floors",
-    towerDetails: "Ultra-luxury modern skyscraper township with Sky City Mall",
-    elevators: "6 High-speed passenger elevators per core",
-    amenitiesCount: "60+ Integrated Township Amenities",
+    towers: "8 Iconic Skyscraper Towers (Up to 60 Storeys)",
+    towerDetails: "Magnificent 60-Storey Towers | Self-Sustaining Ecosystem with Sky City Mall & Mumbai Marriott Hotel",
+    elevators: "6 High-Speed Passenger Elevators per core",
+    amenitiesCount: "50+ Integrated Township & Resort Amenities",
     coverImage: "/projects/project_3_user_1.png",
     images: [
       "/projects/project_3_user_1.png",
@@ -195,37 +226,54 @@ export const PROJECTS_DATA = [
       "/projects/oberoi_sky_city_official.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Standard", carpetArea: "1,034 sq.ft CA", price: "₹3.85 Cr*", floorPlanLabel: "Tower D", possessionDate: "Dec 2025" },
-      { bhk: "3 BHK Luxury", carpetArea: "1,310 sq.ft CA", price: "₹4.90 Cr*", floorPlanLabel: "Tower E", possessionDate: "Dec 2025" },
-      { bhk: "3 BHK Sky Suite", carpetArea: "1,425 sq.ft CA", price: "₹6.50 Cr*", floorPlanLabel: "Tower F", possessionDate: "Dec 2025" }
+      { bhk: "3 BHK Standard", carpetArea: "1,034 sq.ft CA", price: "₹5.05 Cr*", floorPlanLabel: "Tower D / E", possessionDate: "Ready / Phased" },
+      { bhk: "3 BHK Luxury", carpetArea: "1,310 sq.ft CA", price: "₹6.25 Cr*", floorPlanLabel: "Tower E / F", possessionDate: "Dec 2026" },
+      { bhk: "3 BHK + Studio Suite", carpetArea: "1,465 sq.ft CA", price: "₹6.86 Cr*", floorPlanLabel: "Tower F / G", possessionDate: "Dec 2027" },
+      { bhk: "4 BHK Royal Residence", carpetArea: "1,850 - 2,234 sq.ft CA", price: "₹11.20 Cr*", floorPlanLabel: "Tower G Signature", possessionDate: "Dec 2028" },
+      { bhk: "Palatial Duplex", carpetArea: "2,527 sq.ft CA", price: "₹13.50 Cr*", floorPlanLabel: "Sky Penthouse Duplex", possessionDate: "Dec 2028" }
     ],
     mapUrl: "https://maps.google.com/?q=Oberoi+Sky+City+Western+Express+Highway%2C+Borivali+East+Mumbai",
-    overview: "Spanning 25 acres, Oberoi Sky City redefines luxury living in Borivali East with a seamlessly integrated high-street mall, grand landscape decks, and direct metro connectivity.",
+    overview: "Spanning 25 magnificent acres right on the Western Express Highway in Borivali East, Oberoi Sky City redefines urban luxury. It is a fully integrated, self-sustaining lifestyle destination featuring the world-class Sky City Mall, the upcoming 5-star Mumbai Marriott Hotel Sky City, grand multi-tier recreational decks, and emerald panoramic vistas of the 25,000-acre Sanjay Gandhi National Park.",
     highlights: [
-      "Direct entry from Western Express Highway and Devipada Metro",
-      "Upcoming luxury 5-star hotel & Sky City Mall within complex",
-      "Grand clubhouse with Olympic-sized pool and indoor badminton"
+      "Direct entry from Western Express Highway and direct skywalk to Devipada Metro Station (Line 7)",
+      "Integrated Sky City Mall (luxury shopping, gourmet dining & multiplex) & 5-Star Mumbai Marriott Hotel",
+      "Grand clubhouse with Olympic-sized swimming pool, aqua gym & multi-tier sports courts",
+      "Front-row views of the 25,000-acre Sanjay Gandhi National Park forest canopy"
     ],
-    amenities: ["Olympic Pool", "Sky City Mall Access", "Indoor Sports Arena", "Squash Courts", "Kids Adventure Park", "Spa & Sauna"]
+    amenities: [
+      "Olympic-Length Swimming Pool",
+      "Aqua Gymnasium",
+      "Direct Sky City Mall Access",
+      "Marriott Hotel Concierge Access",
+      "Indoor Badminton & Squash Courts",
+      "Championship Tennis Court",
+      "Cricket Practice Net",
+      "Mini Screening Theatre",
+      "Kids Adventure Park & Skating Rink",
+      "Luxury Spa, Steam & Hydrotherapy Sauna",
+      "Grand Multi-Purpose Banquet Lawn",
+      "Rooftop Jogging & Reflexology Track"
+    ]
   },
   {
     id: 4,
-    name: "Chandak GreenAir",
+    name: "Chandak GreenAiry",
     builder: "Chandak Group",
-    tagline: "Contemporary Green-Facing Living in Borivali East",
+    tagline: "High-Rise Living Overlooking National Park Greens on WEH",
     location: "Borivali",
-    locality: "Near National Park, Borivali East",
+    locality: "Western Express Highway, Near Magathane Metro, Borivali East",
+    exactAddress: "Western Express Highway (WEH), Near Magathane Metro Station, Ganesh Nagar, Borivali East, Mumbai - 400066",
     city: "Mumbai",
-    priceRange: "₹1.95 Cr - ₹3.10 Cr*",
-    priceDisplay: "₹1.95 Cr*",
+    priceRange: "₹1.66 Cr - ₹4.98 Cr*",
+    priceDisplay: "₹1.66 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800035091",
-    landParcel: "2 Acres",
-    towers: "2 Towers | 36 Storeys",
-    towerDetails: "G + 3 Podium + 36 Floors",
-    elevators: "3 High-Speed Elevators",
-    amenitiesCount: "25+ Amenities",
+    possession: "June 2028",
+    rera: "P51800035093",
+    landParcel: "Over 2 Acres Elevated Gated Community",
+    towers: "2 High-Rise Towers (Wing A & Wing B, Up to 48 Storeys)",
+    towerDetails: "Up to 48-Storey High-Rise Towers | Nature-Themed Elevated Lifestyle Podium",
+    elevators: "High-Speed Passenger & Stretcher Elevators",
+    amenitiesCount: "30+ Lifestyle, Nature & Adventure Amenities",
     coverImage: "/projects/chandak_greenair_cover.jpg",
     images: [
       "/projects/chandak_greenair_cover.jpg",
@@ -234,17 +282,32 @@ export const PROJECTS_DATA = [
       "/project_photos/4%20-%20Chandak%20GreenAir/2.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Smart", carpetArea: "640 sq.ft CA", price: "₹1.95 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Comfort", carpetArea: "910 sq.ft CA", price: "₹3.10 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
+      { bhk: "1 BHK Smart", carpetArea: "418 - 476 sq.ft CA", price: "₹1.66 Cr*", floorPlanLabel: "Type 1A Comfort", possessionDate: "June 2028" },
+      { bhk: "2 BHK Balcony Residence", carpetArea: "618 - 683 sq.ft CA", price: "₹2.15 Cr*", floorPlanLabel: "Type 2A Green Deck", possessionDate: "June 2028" },
+      { bhk: "3 BHK Jodi Residence", carpetArea: "1,146 sq.ft CA", price: "₹4.20 Cr*", floorPlanLabel: "Type 3A Custom Jodi", possessionDate: "June 2028" },
+      { bhk: "4 BHK Grand Jodi", carpetArea: "1,346 sq.ft CA", price: "₹4.98 Cr*", floorPlanLabel: "Type 4A Presidential Jodi", possessionDate: "June 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Chandak+GreenAir+National+Park%2C+Borivali+East+Mumbai",
-    overview: "Overlooking pristine national park greenery, Chandak GreenAir blends serenity with rapid urban transit in Borivali East.",
+    mapUrl: "https://maps.google.com/?q=Chandak+Greenairy+Western+Express+Highway%2C+Borivali+East+Mumbai",
+    overview: "Chandak GreenAiry is an ultra-modern high-rise residential sanctuary standing tall along the Western Express Highway in Borivali East. Overlooking the serene green expanses of Sanjay Gandhi National Park, it combines rapid transit (just 100 meters walking from Magathane Metro Station) with nature-inspired architecture, spacious balcony residences, and 30+ curated lifestyle amenities.",
     highlights: [
-      "Walking distance to Sanjay Gandhi National Park gate",
-      "Efficient zero-wastage layouts with sunlit ventilation",
-      "Rooftop leisure amenities with telescope observatory"
+      "Prime Transit: Just 100 meters walking distance from Magathane Metro Station (Line 7)",
+      "Direct frontage on Western Express Highway with effortless arterial commute",
+      "Uninterrupted green horizon vistas facing Sanjay Gandhi National Park canopy",
+      "Adventure amenities including rock-climbing wall, boxing ring, foam pit & rooftop gym"
     ],
-    amenities: ["Rooftop Pool", "Fitness Center", "Co-working Pods", "Yoga Deck", "Children's Zone"]
+    amenities: [
+      "Swimming Pool & Poolside Café",
+      "Rooftop Gymnasium",
+      "Rock-Climbing Wall",
+      "Boxing Ring & Foam Pit",
+      "Naturally Themed Podium Gardens",
+      "Grand Banquet Hall",
+      "Co-Working Pods & Business Lounge",
+      "Indoor Games Arcade",
+      "Kids Play Zone",
+      "Yoga & Meditation Deck",
+      "Multi-Tier 24/7 Security Surveillance"
+    ]
   },
 
   // ==========================================
@@ -1997,74 +2060,97 @@ export const PROJECT_FOLDERS = {
 export const PROJECT_ENRICHMENTS = {
   "1": {
     "keyFeatures": [
-      "Direct access to New Link Road & upcoming Coastal Road",
-      "3 Mins to Borivali West Metro Station (Line 2A)",
-      "7 Mins to Borivali Railway Station & S.V. Road",
-      "Near Apex Superspeciality Hospital & Don Bosco High School"
-],
+      "Direct access to New Link Road & S.V. Road via Jairaj Nagar",
+      "4 Mins to Borivali West & Shimpoli Metro Stations (Line 2A)",
+      "8 Mins to Borivali Railway Station (Suburban & Outstation Trains)",
+      "12 Mins to Western Express Highway & upcoming Borivali-Thane Tunnel",
+      "Near Apex Superspeciality Hospital, Suvidha School & Don Bosco High School",
+      "Unobstructed panoramic horizon views towards Gorai Creek & Arabian Sea"
+    ],
     "amenities": [
-      "Infinity Lap Pool",
+      "Infinity Edge Lap Pool",
       "Grand 25,000 sq.ft Clubhouse",
-      "Rooftop Sky Lounge",
+      "State-of-the-Art Gymnasium",
+      "Squash & Badminton Courts",
       "Private Screening Theatre",
-      "Olympic-Grade Gymnasium",
-      "Kids Aquatic Zone",
+      "Spa & Hydrotherapy Rooms",
+      "Kids Aquatic Zone & Adventure Park",
       "Zen Reflexology Gardens",
-      "24/7 Valet & Concierge"
+      "Cricket Practice Pitch",
+      "Party Lawns & Open-Air Amphitheatre",
+      "Yoga & Meditation Alcoves",
+      "24/7 Valet & Concierge Services"
     ]
   },
   "2": {
     "keyFeatures": [
-      "150m Direct Ramp Access to Western Express Highway",
-      "3 Mins to Magathane Metro Station (Line 7)",
-      "7 Mins to Borivali Railway Station & S.V. Road",
-      "Adjacent to 25,000-Acre Sanjay Gandhi National Park Greens"
-],
+      "Direct access to S.V. Road & Saibaba Nagar residential corridor",
+      "5 Mins to Kandivali West Metro Station (Line 2A)",
+      "10 Mins to Borivali Railway Station (West)",
+      "10 Mins to Western Express Highway & upcoming Borivali-Thane Tunnel",
+      "6 Mins to Poinsur Gymkhana & Kora Kendra Cultural Grounds",
+      "Near Apex Hospital, Don Bosco High School & local gourmet retail"
+    ],
     "amenities": [
-      "Heated Swimming Pool",
-      "Art Deco Grand Clubhouse",
-      "State-of-the-Art Fitness Center",
-      "Banquet & Ballrooms",
-      "Championship Tennis Court",
-      "Private Sunset Sundecks",
-      "Lush Forest Tree Court",
-      "Kids Play Area"
+      "Temperature-Controlled Swimming Pool",
+      "Grand Art Deco Clubhouse",
+      "Café Altus",
+      "World-Class Gymnasium",
+      "Activity Studio & Indoor Games",
+      "Multi-Purpose Sports Court",
+      "On-Premise Ganesha Temple",
+      "Jogging & Walking Trails",
+      "Library Lounge & Co-Working Pods",
+      "Pet Park",
+      "Senior Citizen Shaded Pavilion",
+      "EV Charging Stations"
     ]
   },
   "3": {
     "keyFeatures": [
-      "Zero-Minute Access to Western Express Highway Service Road",
-      "1 Min Direct Skywalk to Devipada Metro Station (Line 7)",
-      "Direct Integrated Walkway to Sky City Mall & Multiplex",
-      "6 Mins to Borivali Railway Station & Oberoi International School"
-],
+      "Zero-Minute Direct Frontage on Western Express Highway (WEH)",
+      "1 Min Direct Skywalk to Devipada & Ovaripada Metro Stations (Line 7)",
+      "Direct Integrated Walkway to Sky City Mall & Mumbai Marriott Hotel",
+      "7 Mins to Borivali Railway Station (East)",
+      "25 Mins to Mumbai International Airport (T2)",
+      "Unobstructed views of 25,000-Acre Sanjay Gandhi National Park"
+    ],
     "amenities": [
-      "Olympic-Length Lap Pool",
-      "Direct Mall Access",
-      "Multi-Sport Indoor Arena",
-      "Squash & Badminton Courts",
-      "Kids Adventure Forest",
-      "Luxury Spa & Hydrotherapy Sauna",
-      "Grand Banquet Lawn",
-      "Rooftop Jogging Track"
+      "Olympic-Length Swimming Pool",
+      "Aqua Gymnasium",
+      "Direct Sky City Mall Access",
+      "Marriott Hotel Concierge Access",
+      "Indoor Badminton & Squash Courts",
+      "Championship Tennis Court",
+      "Cricket Practice Net",
+      "Mini Screening Theatre",
+      "Kids Adventure Park & Skating Rink",
+      "Luxury Spa, Steam & Hydrotherapy Sauna",
+      "Grand Multi-Purpose Banquet Lawn",
+      "Rooftop Jogging & Reflexology Track"
     ]
   },
   "4": {
     "keyFeatures": [
-      "250m to Western Express Highway via Kulupwadi Road",
-      "3 Mins to Rashtriya Udyan (National Park) Metro Station",
-      "5 Mins to Borivali Railway Station (East) & Local Markets",
-      "Bordering Main Sanjay Gandhi National Park Entrance & Nature Trail"
-],
+      "100 Metres (1 Min Walk) to Magathane Metro Station (Line 7)",
+      "Direct Frontage on Western Express Highway (WEH)",
+      "8 Mins to Borivali Railway Station (East)",
+      "3 Mins to Sanjay Gandhi National Park Main Gate",
+      "25 Mins to Mumbai International Airport (T2)",
+      "5 to 10 Mins to Growel's 101 Mall, Thakur College & Oberoi Mall"
+    ],
     "amenities": [
-      "Sky Infinity Pool",
-      "Designer Clubhouse",
-      "Crossfit & Aerobics Gym",
-      "Lush Landscaped Podium",
-      "Yoga & Meditation Pavilion",
-      "Children's Sensory Park",
-      "Senior Citizens Seating Plaza",
-      "Indoor Games Arcade"
+      "Swimming Pool & Poolside Café",
+      "Rooftop Gymnasium",
+      "Rock-Climbing Wall",
+      "Boxing Ring & Foam Pit",
+      "Naturally Themed Podium Gardens",
+      "Grand Banquet Hall",
+      "Co-Working Pods & Business Lounge",
+      "Indoor Games Arcade",
+      "Kids Play Zone",
+      "Yoga & Meditation Deck",
+      "Multi-Tier 24/7 Security Surveillance"
     ]
   },
   "5": {
