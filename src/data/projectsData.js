@@ -1602,58 +1602,61 @@ export const PROJECTS_DATA = [
   // ==========================================
   {
     id: 33,
-    name: "Godrej",
+    name: "Godrej Bandra Bay",
     builder: "Godrej Properties",
-    tagline: "Ultra-Luxury Seafront Sanctuary in Bandra",
+    tagline: "Ultra-Luxury Seafront Sanctuary on Bandra's Iconic Waterfront",
     location: "Bandra",
-    locality: "Pali Hill / Bandra West",
+    locality: "Bandra Reclamation / Pali Hill, Bandra West",
+    exactAddress: "Bandra Reclamation, Near Pali Hill & Bandra-Worli Sea Link Ramp, Bandra West, Mumbai 400050",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹20.86 Cr - ₹58.00 Cr*",
+    priceDisplay: "From ₹20.86 Cr*",
     status: "Newly Launched",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Pali Hill Acreage",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Bespoke seafront sky mansions with wrap-around balconies",
-    elevators: "Private Biometric Elevators",
-    amenitiesCount: "Bespoke Club Amenities",
+    possession: "Nov 2033",
+    rera: "PR1181012601775",
+    landParcel: "4.25 Acres Ultra-Luxury Seafront Estate",
+    towers: "Signature High-Rise Tower (28 Storeys)",
+    towerDetails: "Low-density bespoke seafront sky mansions with 180° unobstructed Arabian Sea views",
+    elevators: "Private Biometric High-Speed Elevators with Dedicated Service Lift",
+    amenitiesCount: "45+ Bespoke Club Amenities",
     coverImage: "/projects/godrej_bandra_cover.jpg",
     images: [
       "/projects/godrej_bandra_cover.jpg",
       "/projects/godrej_bandra_2.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Seafront", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
-      { bhk: "4 BHK Penthouse", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
+      { bhk: "3 BHK Seafront Suite", carpetArea: "2,450 sq.ft CA", price: "₹20.86 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Nov 2033" },
+      { bhk: "4 BHK Royal Presidential", carpetArea: "3,500 - 4,100 sq.ft CA", price: "₹34.00 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Nov 2033" },
+      { bhk: "5 BHK Palatial Sky Mansion", carpetArea: "5,500 - 7,000 sq.ft CA", price: "₹58.00 Cr*", floorPlanLabel: "Penthouse Mansion", possessionDate: "Nov 2033" }
     ],
-    mapUrl: "https://maps.google.com/?q=Godrej+Godrej+Pali+Hill+%2F+Bandra+West+Mumbai",
-    overview: "Godrej Properties presents a marquee ultra-luxury development in prestigious Bandra West, delivering unobstructed views of the Arabian Sea and bespoke Italian interiors.",
+    mapUrl: "https://maps.google.com/?q=Godrej+Bandra+Reclamation+Pali+Hill+Bandra+West+Mumbai",
+    overview: "Godrej Bandra Bay is an ultra-exclusive marquee waterfront development in prestigious Bandra West, delivering unobstructed 180° horizons of the Arabian Sea, private elevator foyers, double-height sundecks, and bespoke hospitality services.",
     highlights: [
-      "Prime Bandra West address in Mumbai's most coveted neighborhood",
-      "Unobstructed panoramic Arabian Sea views",
-      "Private elevator access and high-security enclave"
+      "Prime Bandra Reclamation & Pali Hill address steps from the Bandra-Worli Sea Link",
+      "Unobstructed panoramic Arabian Sea & Mahim Bay horizon vistas",
+      "Low-density master plan with only select sky mansions and biometric private elevator foyers"
     ],
-    amenities: ["Seafront Infinity Pool", "Private Helipad Access", "Spa & Wellness Suite", "Clubhouse", "24/7 Concierge"]
+    amenities: ["Seafront Infinity Pool", "Private Helipad Access", "Luxury Wellness Spa & Sauna", "Club Horizon", "Private Screening Cinema", "24/7 White-Glove Concierge"]
   },
   {
     id: 34,
-    name: "Hiranandani",
-    builder: "Hiranandani Group",
-    tagline: "Architectural Grandeur in Bandra",
+    name: "Hiranandani Bay Heights",
+    builder: "Hiranandani Communities",
+    tagline: "Neoclassical Sea-View Residences at Bandra Reclamation",
     location: "Bandra",
-    locality: "Bandra West Corridor",
+    locality: "KC Marg, Bandra Reclamation, Bandra West",
+    exactAddress: "KC Marg, Opposite Rangsharda, Bandra Reclamation, Bandra West, Mumbai 400050",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Exclusive Enclave",
-    towers: "High-Rise Tower",
-    towerDetails: "Neoclassical high-rise architecture",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Curated Amenities",
+    priceRange: "₹8.75 Cr - ₹28.00 Cr*",
+    priceDisplay: "From ₹8.75 Cr*",
+    status: "Under Construction",
+    possession: "Nov 2030",
+    rera: "PR1180002501983",
+    landParcel: "1.5 Acres Waterfront Enclave",
+    towers: "Single Iconic Tower (G + 38 Storeys)",
+    towerDetails: "Signature Hiranandani neoclassical architectural tower with copper domes, fluted Corinthian columns, and marble lobbies",
+    elevators: "High-Speed Mitsubishi Elevators with Access Control",
+    amenitiesCount: "30+ Curated Rooftop & Podium Amenities",
     coverImage: "/projects/hiranandani_bandra_cover.jpg",
     images: [
       "/projects/hiranandani_bandra_cover.jpg",
@@ -1661,72 +1664,76 @@ export const PROJECTS_DATA = [
       "/projects/project_34_user_2.png"
     ],
     configurations: [
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "3 BHK Neoclassical Deck", carpetArea: "1,303 - 1,750 sq.ft CA", price: "₹8.75 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Nov 2030" },
+      { bhk: "4 BHK Palatial Suite", carpetArea: "1,800 - 2,900 sq.ft CA", price: "₹14.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Nov 2030" },
+      { bhk: "5 BHK Sky Villa", carpetArea: "4,100 - 4,200 sq.ft CA", price: "₹28.00 Cr*", floorPlanLabel: "Penthouse Villa", possessionDate: "Nov 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Hiranandani+Hiranandani+Bandra+West+Mumbai",
-    overview: "Hiranandani's neoclassical architectural signature arrives in Bandra, offering palatial ceiling heights, marble foyers, and elite club facilities.",
+    mapUrl: "https://maps.google.com/?q=Hiranandani+Bay+Heights+KC+Marg+Bandra+Reclamation+Bandra+West+Mumbai",
+    overview: "Hiranandani Bay Heights introduces the developer's iconic neoclassical architectural grandeur to Bandra Reclamation, offering palatial ceiling heights, marble foyers, breathtaking sea vistas, and world-class club facilities overlooking the Arabian Sea.",
     highlights: [
-      "Distinctive neoclassical design and craftsmanship",
-      "Located in the cultural capital of Mumbai",
-      "High net-worth community neighborhood"
+      "Distinctive neoclassical design with handcrafted Corinthian pillars and sweeping Italian marble lobbies",
+      "2 minutes to the Bandra-Worli Sea Link entrance and Lilavati Hospital",
+      "Exclusive rooftop infinity pool, stargazing deck, and high-security private access"
     ],
-    amenities: ["Grand Club", "Swimming Pool", "Gymnasium", "Banquet Deck"]
+    amenities: ["Neoclassical Rooftop Pool", "Hiranandani Club", "Technogym Fitness Center", "Landscaped Sky Terraces", "Private Meeting Suites", "24/7 White-Glove Concierge"]
   },
   {
     id: 35,
-    name: "Raymond",
+    name: "The Address by GS",
     builder: "Raymond Realty",
-    tagline: "The Address by GS – Luxury Living in Bandra",
+    tagline: "Portuguese-Inspired Architectural Grandeur Adjacent to BKC",
     location: "Bandra",
-    locality: "Bandra East / BKC Gateway",
+    locality: "Station Road, Nirmal Nagar, Bandra East",
+    exactAddress: "Station Road, Nirmal Nagar, Next to BKC Flyover & Western Express Highway, Bandra East, Mumbai 400051",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
+    priceRange: "₹2.85 Cr - ₹6.50 Cr*",
+    priceDisplay: "From ₹2.85 Cr*",
     status: "Under Construction",
-    possession: "2027",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Gateway Parcel",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "G + 40 Storeys Luxury Tower with curated club",
-    elevators: "4 High-Speed Elevators",
-    amenitiesCount: "35+ Curated Amenities",
+    possession: "May 2030",
+    rera: "P51800054847, P51800054846",
+    landParcel: "2.74 Acres Master-Planned Enclave",
+    towers: "Multiple Towers (Up to 30 Storeys)",
+    towerDetails: "Portuguese-inspired classical architecture with double-height drop-offs and landscaped podiums",
+    elevators: "High-Speed Destination Controlled Elevators",
+    amenitiesCount: "45+ World-Class Amenities",
     coverImage: "/projects/raymond_bandra_cover.jpg",
     images: [
       "/projects/raymond_bandra_cover.jpg",
       "/projects/raymond_bandra_balcony.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2027" },
-      { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2027" }
+      { bhk: "2 BHK Suite", carpetArea: "630 - 755 sq.ft CA", price: "₹2.85 Cr*", floorPlanLabel: "Type 2A Suite", possessionDate: "May 2030" },
+      { bhk: "3 BHK Grande", carpetArea: "905 - 1,202 sq.ft CA", price: "₹4.40 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "May 2030" },
+      { bhk: "4 BHK Royal Penthouse", carpetArea: "1,390 - 1,477 sq.ft CA", price: "₹6.50 Cr*", floorPlanLabel: "Type 4A Royal", possessionDate: "May 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Raymond+Realty+Raymond+Bandra+East+%2F+BKC+Gateway+Mumbai",
-    overview: "The Address by GS by Raymond Realty in Bandra combines bespoke sartorial luxury with swift connectivity to Bandra-Kurla Complex (BKC).",
+    mapUrl: "https://maps.google.com/?q=The+Address+by+GS+Raymond+Realty+Station+Road+Bandra+East+Mumbai",
+    overview: "The Address by GS by Raymond Realty brings bespoke Portuguese-colonial design, curated by Gautam Singhania, to prime Bandra East right across from BKC. Featuring expansive clubhouse amenities, smart home automation, and 2-minute connectivity to Mumbai's primary financial district.",
     highlights: [
-      "3 minutes from Bandra-Kurla Complex (BKC)",
-      "Curated lifestyle club inspired by classical heritage",
-      "Grand double-height air-conditioned entrance lobby"
+      "2 minutes from Bandra-Kurla Complex (BKC) and Western Express Highway Kalanagar Junction",
+      "Classical Portuguese-colonial architecture with hand-carved stone archways and signature GS styling",
+      "Over 45,000 sq.ft of curated amenities including rooftop infinity pool, cigar lounge, and private cinema"
     ],
-    amenities: ["Infinity Pool", "Clubhouse", "Gymnasium", "Cigar Lounge", "Tennis Court"]
+    amenities: ["Rooftop Infinity Pool", "Clubhouse Curated by GS", "High-Tech Gymnasium", "Squash & Tennis Courts", "Cigar & Cognac Lounge", "Private Screening Cinema", "24/7 Valet & Concierge"]
   },
   {
     id: 36,
-    name: "Sunteck",
+    name: "Sunteck Signature Island",
     builder: "Sunteck Realty",
-    tagline: "Signature Ultra-Luxury Residence in Bandra West",
+    tagline: "Iconic Landmark of Ultra-HNIs & Celebrities in BKC",
     location: "Bandra",
-    locality: "Bandra West / Mount Mary",
+    locality: "G-Block, Bandra Kurla Complex (BKC)",
+    exactAddress: "G-Block, BKC Road, Behind MCA Club, Bandra Kurla Complex, Mumbai 400051",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Under Construction",
-    possession: "2028",
-    rera: "Information Coming Soon",
-    landParcel: "Boutique Seafront Parcel",
-    towers: "Ultra-Luxury Tower",
-    towerDetails: "Private residences overlooking Arabian Sea",
-    elevators: "Private Elevators",
-    amenitiesCount: "World-Class Amenities",
+    priceRange: "₹35.00 Cr - ₹75.00 Cr*",
+    priceDisplay: "From ₹35.00 Cr*",
+    status: "Ready to Move (OC Received)",
+    possession: "Ready to Move (Full OC)",
+    rera: "P51800007921",
+    landParcel: "1.5 Acres Private G-Block Enclave",
+    towers: "Iconic Duplex High-Rise (18 Storeys)",
+    towerDetails: "Celebrity-status double-height duplex residences with 24-foot ceilings and private temperature-controlled plunge pools",
+    elevators: "Private High-Speed Biometric Elevators",
+    amenitiesCount: "40+ Bespoke Tycoon Amenities",
     coverImage: "/projects/sunteck_bandra_cover.jpg",
     images: [
       "/projects/sunteck_bandra_cover.jpg",
@@ -1734,36 +1741,38 @@ export const PROJECTS_DATA = [
       "/projects/project_img_36.jpg"
     ],
     configurations: [
-      { bhk: "4 BHK Palatial", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2028" },
-      { bhk: "5 BHK Sky Villa", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 5", possessionDate: "2028" }
+      { bhk: "4 BHK Luxury Duplex", carpetArea: "4,875 - 4,952 sq.ft CA", price: "₹35.00 Cr*", floorPlanLabel: "Signature Duplex 4A", possessionDate: "Ready (Full OC)" },
+      { bhk: "5 BHK Palatial Duplex", carpetArea: "6,912 - 7,875 sq.ft CA", price: "₹55.00 Cr*", floorPlanLabel: "Imperial Duplex 5A", possessionDate: "Ready (Full OC)" },
+      { bhk: "Bespoke Sky Mansion", carpetArea: "9,000+ sq.ft CA", price: "₹75.00 Cr*", floorPlanLabel: "Penthouse Mansion", possessionDate: "Ready (Full OC)" }
     ],
-    mapUrl: "https://maps.google.com/?q=Sunteck+Realty+Sunteck+Bandra+West+%2F+Mount+Mary+Mumbai",
-    overview: "Sunteck's ultra-luxury residences in Bandra West offer unmatched exclusivity, soaring ceilings, and mesmerizing Arabian Sea vistas.",
+    mapUrl: "https://maps.google.com/?q=Sunteck+Signature+Island+G+Block+BKC+Mumbai",
+    overview: "Sunteck Signature Island in BKC G-Block is Mumbai's most exclusive address for industrialists, corporate titans, and celebrities. Delivering ultra-rare 7,000+ sq.ft duplexes with 24-foot grand ceiling voids, private biometric lifts, and unmatched privacy inside the financial epicenter of India.",
     highlights: [
-      "Elite address with high celebrity and business profile neighbors",
-      "Private full-floor and duplex sky villa residences",
-      "Dedicated concierge and 5-tier security protocols"
+      "Directly inside BKC G-Block, adjacent to MCA Club, Jio World Centre, and US Consulate",
+      "Ready-to-move-in with 100% Full Occupancy Certificate (OC) received and top business leaders in residence",
+      "Ultra-luxury double-height duplexes with private temperature-controlled pools and biometric security"
     ],
-    amenities: ["Sea-Facing Pool", "Spa & Wellness Deck", "Private Lounge", "Biometric Elevators"]
+    amenities: ["Temperature-Controlled Indoor Pool", "Signature Island Club", "Technogym Health Sanctuary", "Private Boardrooms & Business Suites", "Banquet Hall", "24/7 White-Glove Butler & Concierge"]
   },
   {
     id: 37,
-    name: "Oberoi Realty",
+    name: "Oberoi Oceanic",
     builder: "Oberoi Realty",
-    tagline: "Prestige Masterpiece in Bandra West",
+    tagline: "Ultra-Exclusive Bespoke Seafront Haven on Carter Road",
     location: "Bandra",
-    locality: "Carter Road / Bandra West",
+    locality: "Carter Road Promenade, Bandra West",
+    exactAddress: "Carter Road Promenade, Union Park, Bandra West, Mumbai 400050",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Marquee Seafront Parcel",
-    towers: "Iconic Skyscraper",
-    towerDetails: "Contemporary international architecture",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Oberoi Club Standards",
+    priceRange: "₹14.00 Cr - ₹48.00 Cr*",
+    priceDisplay: "From ₹14.00 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2030",
+    rera: "PR1180002600318",
+    landParcel: "0.95 Acres Boutique Waterfront Parcel",
+    towers: "Single Ultra-Luxury Tower (G + 28 Storeys)",
+    towerDetails: "Low-density architectural masterpiece with only 2 residences per floor (47 total units) directly facing Carter Road sea promenade",
+    elevators: "Private Destination Controlled Elevators",
+    amenitiesCount: "25+ Curated Seafront Amenities",
     coverImage: "/projects/project_37_user_1.png",
     images: [
       "/projects/project_37_user_1.png",
@@ -1771,36 +1780,38 @@ export const PROJECTS_DATA = [
       "/projects/oberoi_sky_city_official.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "4 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "3 BHK Compact Luxury", carpetArea: "1,216 - 1,850 sq.ft CA", price: "₹14.00 Cr*", floorPlanLabel: "Type 3A Sea View", possessionDate: "Dec 2030" },
+      { bhk: "4 BHK Seafront Suite", carpetArea: "2,500 - 3,200 sq.ft CA", price: "₹28.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2030" },
+      { bhk: "5 BHK Penthouse Villa", carpetArea: "3,400 - 3,627 sq.ft CA", price: "₹48.00 Cr*", floorPlanLabel: "Penthouse Sky Villa", possessionDate: "Dec 2030" }
     ],
-    mapUrl: "https://maps.google.com/?q=Oberoi+Realty+Oberoi+Realty+Carter+Road+%2F+Bandra+West+Mumbai",
-    overview: "Oberoi Realty brings its celebrated architectural precision and engineering perfection to Bandra West, creating timeless high-rise homes.",
+    mapUrl: "https://maps.google.com/?q=Oberoi+Oceanic+Carter+Road+Bandra+West+Mumbai",
+    overview: "Oberoi Oceanic is Oberoi Realty's flagship seafront boutique address on Bandra's iconic Carter Road promenade. With just 47 bespoke residences, each apartment enjoys full-span panoramic vistas of the Arabian Sea, signature Oberoi finishes, and unprecedented privacy.",
     highlights: [
-      "Unrivaled location near Bandra promenade and Carter Road",
-      "Uncompromising Oberoi quality and high execution standards",
-      "World-class private club amenities"
+      "Front-row uninterrupted Arabian Sea views on Carter Road Promenade steps from Otters Club",
+      "Ultra-low density boutique development with only 47 bespoke residences across the entire project",
+      "Oberoi Realty's award-winning engineering, acoustic double-glazed glass, and private elevators"
     ],
-    amenities: ["Olympic Pool", "Private Clubhouse", "Gymnasium", "Banquet Hall", "Concierge"]
+    amenities: ["Seafront Lap Pool", "Oberoi Signature Club", "Fitness & Wellness Suite", "Private Dining Room", "Landscaped Sunset Deck", "24/7 Multi-Tier Security Concierge"]
   },
   {
     id: 38,
-    name: "Adani Realty",
+    name: "Adani Ten BKC",
     builder: "Adani Realty",
-    tagline: "Contemporary Waterfront Living in Bandra",
+    tagline: "Sprawling 5-Acre Ultra-Luxury Haven at BKC Gateway",
     location: "Bandra",
-    locality: "Bandra West Corridor",
+    locality: "BKC Gateway, Bandra East",
+    exactAddress: "Near Kalanagar Junction & BKC Connector, Bandra East, Mumbai 400051",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Launch",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Bandra Acreage",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Glass facade architecture with wide decks",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Adani Club Standards",
+    priceRange: "₹7.25 Cr - ₹16.50 Cr*",
+    priceDisplay: "From ₹7.25 Cr*",
+    status: "Ready to Move (OC Received)",
+    possession: "Ready to Move (Full OC)",
+    rera: "P51800004889",
+    landParcel: "4.98 Acres (15 High-Rise Wings)",
+    towers: "15 Premium Wings (Up to 29 Storeys)",
+    towerDetails: "Low-density high-rise wings with expansive 2.5-acre landscaped amenity podium",
+    elevators: "High-Speed Mitsubishi Elevators with Access Control",
+    amenitiesCount: "50+ Resort Amenities",
     coverImage: "/projects/adani_ten_bkc_official.webp",
     images: [
       "/projects/adani_ten_bkc_official.webp",
@@ -1809,36 +1820,38 @@ export const PROJECTS_DATA = [
       "/projects/project_img_10.jpg"
     ],
     configurations: [
-      { bhk: "3 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" },
-      { bhk: "4 BHK", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "TBA" }
+      { bhk: "3 BHK Luxury Suite", carpetArea: "976 - 1,320 sq.ft CA", price: "₹7.25 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Ready (Full OC)" },
+      { bhk: "3 BHK Grande", carpetArea: "1,450 - 1,680 sq.ft CA", price: "₹9.80 Cr*", floorPlanLabel: "Type 3B Grande", possessionDate: "Ready (Full OC)" },
+      { bhk: "4 BHK Presidential", carpetArea: "2,100 - 2,237 sq.ft CA", price: "₹15.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Ready (Full OC)" }
     ],
-    mapUrl: "https://maps.google.com/?q=Adani+Realty+Adani+Realty+Bandra+West+Mumbai",
-    overview: "Adani Realty's prime residential offering in Bandra West, presenting panoramic urban views, spacious floor plates, and modern luxury.",
+    mapUrl: "https://maps.google.com/?q=Adani+Ten+BKC+Bandra+East+Mumbai",
+    overview: "Adani Ten BKC is a sprawling 5-acre gated luxury community right at the gateway to Bandra Kurla Complex (BKC). Offering ready-to-move-in residences with Full OC, 2.5 acres of vehicle-free podium landscapes, Olympic-grade sporting arenas, and immediate 2-minute connectivity to BKC and South Mumbai.",
     highlights: [
-      "Direct connectivity to Bandra-Worli Sea Link and Western Express Highway",
-      "Expansive floor-to-ceiling glass glazing",
-      "High standard of construction reliability"
+      "Sprawling 4.98-acre low-density development with 2.5 acres of dedicated open podium greens",
+      "Strategic location right at BKC gateway connecting Western Express Highway & BKC Connector in under 2 mins",
+      "Ready-to-move-in with Full Occupancy Certificate (OC) received and thriving elite resident community"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Gymnasium", "Sky Lounge", "24/7 Security"]
+    amenities: ["Olympic-Size Swimming Pool", "Grand 25,000 sq.ft Clubhouse", "Squash & Tennis Courts", "Landscaped Jogging Loop", "Private Mini Theatre", "Children's Creative Play Park", "24/7 Valet Concierge"]
   },
   {
     id: 39,
-    name: "DLH",
+    name: "DLH Signature",
     builder: "DLH Group",
-    tagline: "Boutique Heritage Luxury in Bandra West",
+    tagline: "Soaring 34-Storey Seafront Landmark at Bandra Reclamation",
     location: "Bandra",
-    locality: "Bandra West Prime",
+    locality: "KC Marg, Bandra Reclamation, Bandra West",
+    exactAddress: "KC Marg, Bandra Reclamation, Near Lilavati Hospital & Rangsharda, Bandra West, Mumbai 400050",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Under Construction",
-    possession: "2027",
-    rera: "Information Coming Soon",
-    landParcel: "Exclusive Boutique Plot",
-    towers: "Boutique Residential Tower",
-    towerDetails: "Low-density luxury apartments",
-    elevators: "Private Elevators",
-    amenitiesCount: "Boutique Amenities",
+    priceRange: "₹8.20 Cr - ₹24.50 Cr*",
+    priceDisplay: "From ₹8.20 Cr*",
+    status: "Ready to Move (OC Received)",
+    possession: "Ready to Move (Full OC)",
+    rera: "P51800046093",
+    landParcel: "1.2 Acres Boutique Seafront Parcel",
+    towers: "1 Iconic High-Rise Tower (G + 34 Storeys)",
+    towerDetails: "Single ultra-exclusive 34-storey tower with unobstructed views of Arabian Sea & Bandra-Worli Sea Link",
+    elevators: "Private High-Speed Destination Controlled Elevators",
+    amenitiesCount: "35+ Sky & Wellness Amenities",
     coverImage: "/projects/dlh_bandra_cover.jpg",
     images: [
       "/projects/dlh_bandra_cover.jpg",
@@ -1846,17 +1859,18 @@ export const PROJECTS_DATA = [
       "/projects/project_39_user_2.png"
     ],
     configurations: [
-      { bhk: "3 BHK Boutique", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "2027" },
-      { bhk: "4 BHK Presidential", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 4", possessionDate: "2027" }
+      { bhk: "3 BHK Sea-View Suite", carpetArea: "1,150 - 1,560 sq.ft CA", price: "₹8.20 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Ready (Full OC)" },
+      { bhk: "4 BHK Palatial Residence", carpetArea: "2,140 - 2,380 sq.ft CA", price: "₹16.80 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Ready (Full OC)" },
+      { bhk: "5 BHK Sky Villa / Jodi", carpetArea: "3,200 - 3,900 sq.ft CA", price: "₹24.50 Cr*", floorPlanLabel: "Custom Jodi Villa", possessionDate: "Ready (Full OC)" }
     ],
-    mapUrl: "https://maps.google.com/?q=DLH+DLH+Bandra+West+Mumbai",
-    overview: "DLH Group delivers boutique, low-density residences in Bandra West, tailored for residents who value refined privacy and timeless style.",
+    mapUrl: "https://maps.google.com/?q=DLH+Signature+KC+Marg+Bandra+Reclamation+Bandra+West+Mumbai",
+    overview: "DLH Signature is a soaring 34-storey luxury tower situated at prime Bandra Reclamation. Delivering ready-to-move-in residences with Full OC, unobstructed vistas of the Arabian Sea and the Bandra-Worli Sea Link, and ultra-luxurious Italian marble finishes.",
     highlights: [
-      "Only 1 to 2 residences per floor for maximum privacy",
-      "Walking access to Bandra's iconic cafes and seaside promenade",
-      "Customizable interior spatial arrangements"
+      "Unobstructed panoramic vistas of the Arabian Sea, Mahim Bay, and Bandra-Worli Sea Link",
+      "Prestige location at Bandra Reclamation steps from Lilavati Hospital, Rangsharda & Sea Link entry",
+      "Ready to move in with Full Occupancy Certificate (OC) received and luxury Italian marble finishes"
     ],
-    amenities: ["Private Elevator Access", "Rooftop Lounge", "Fitness Studio", "Valet Parking"]
+    amenities: ["Rooftop Infinity Swimming Pool", "Boutique Sky Lounge", "Technogym Fitness Studio", "Grand Double-Height Foyer", "Children's Play Lounge", "Valet Parking & 24/7 Security"]
   },
 
   // ==========================================
@@ -3008,128 +3022,142 @@ export const PROJECT_ENRICHMENTS = {
   },
   "33": {
     "keyFeatures": [
-      "Elite Sanctuary on Nargis Dutt Road, Pali Hill, Bandra West",
-      "3 Mins to Bandra Colony Metro Station (Aqua Line 3 Underground)",
-      "4 Mins to Bandra-Worli Sea Link & Coastal Road Ramp",
-      "Near Pali Hill Club, Candies, Olive Bar & Kitchen & Carter Road Seafront"
-],
+      "Bandra Reclamation waterfront estate near Pali Hill, Bandra West",
+      "2 Mins to Bandra-Worli Sea Link & Coastal Road Interchange",
+      "4 Mins to Bandra Underground Metro Station (Aqua Line 3)",
+      "Near Lilavati Hospital, Mount Mary, Pali Naka & Taj Lands End",
+      "Low-density 28-storey tower with private biometric elevators & 180° sea views",
+      "MahaRERA: PR1181012601775 | Possession: Nov 2033"
+    ],
     "amenities": [
-      "Private Infinity Pool",
-      "Ultra-Luxury Bespoke Clubhouse",
-      "Technogym Fitness Suite",
-      "Private Screening Theatre",
-      "Zen Sky Lounge overlooking Arabian Sea",
+      "Seafront Infinity Pool",
+      "Private Helipad Access",
+      "Wellness Spa with Steam & Sauna",
+      "Club Horizon with Sky Lounge",
+      "Private Screening Cinema",
       "Fine Dining Banquet Room",
-      "Dedicated Valet & Concierge",
-      "Biometric Private Lift Lobby"
+      "Technogym Fitness Sanctuary",
+      "24/7 White-Glove Concierge"
     ]
   },
   "34": {
     "keyFeatures": [
-      "Corner of Turner Road & Perry Cross Road, Bandra West",
-      "3 Mins to Bandra Colony Metro Station (Aqua Line 3)",
-      "4 Mins to Bandra Railway Station (West)",
-      "Near Turner Road Boutiques, Carter Road Seafront Promenade & Otters Club"
-],
+      "Prime KC Marg, Bandra Reclamation, Bandra West",
+      "2 Mins to Bandra-Worli Sea Link Toll Plaza & Lilavati Hospital",
+      "3 Mins to Bandra Railway Station & Aqua Line 3 Metro",
+      "Neoclassical G+38 storey high-rise with copper domes & Corinthian columns",
+      "Rooftop infinity lap pool & landscaped sky decks overlooking Arabian Sea",
+      "MahaRERA: PR1180002501983 | Possession: Nov 2030"
+    ],
     "amenities": [
-      "Neoclassical Rooftop Pool",
+      "Neoclassical Rooftop Lap Pool",
       "Hiranandani Luxury Club",
-      "State-of-the-Art Gymnasium",
+      "Technogym Fitness Center",
       "Landscaped Sky Terraces",
-      "Private Meeting Suites",
-      "Kids Play Area",
-      "Grand Entrance Foyer",
+      "Executive Meeting Suites",
+      "Children's Creative Play Park",
+      "Grand Italian Marble Foyer",
       "24/7 White-Glove Concierge"
     ]
   },
   "35": {
     "keyFeatures": [
-      "Direct Gateway to Bandra Kurla Complex (BKC), Bandra East",
-      "2 Mins to BKC Underground Metro Station (Aqua Line 3 & Line 2B)",
-      "3 Mins to Bandra Terminus & Western Express Highway Kalanagar Flyover",
-      "Near Jio World Centre, US Consulate, MCA Club & Trident BKC"
-],
+      "Station Road, Nirmal Nagar, Bandra East directly opposite BKC",
+      "2 Mins to BKC Underground Metro Station (Aqua Line 3) & BKC Connector",
+      "3 Mins to Bandra Terminus & Western Express Highway Kalanagar Junction",
+      "Portuguese-colonial architectural towers with signature GS design",
+      "Over 45,000 sq.ft of curated amenities including rooftop infinity pool & cigar lounge",
+      "MahaRERA: P51800054847, P51800054846 | Possession: May 2030"
+    ],
     "amenities": [
-      "Rooftop Infinity Pool overlooking BKC Skyline",
-      "Clubhouse Curated by GS",
+      "Rooftop Infinity Pool with BKC Skyline Views",
+      "Signature Clubhouse Curated by GS",
       "High-Tech Gymnasium & Aerobics",
-      "Squash & Badminton Courts",
-      "Exclusive Cigar & Reading Lounge",
+      "Squash & Tennis Courts",
+      "Exclusive Cigar & Cognac Lounge",
       "Private Screening Cinema",
-      "Kids Play Arena",
+      "Children's Play Arena",
       "24/7 Valet & Concierge"
     ]
   },
   "36": {
     "keyFeatures": [
-      "Mount Mary Hill & Bandstand Promenade, Bandra West",
-      "2 Mins to Bandra-Worli Sea Link Toll Plaza",
-      "Near Mount Mary Basilica, Taj Lands End & Bandstand Sea Promenade",
-      "Panoramic Unobstructed Views of Arabian Sea Horizons & Sunsets"
-],
+      "G-Block, Bandra Kurla Complex (BKC) behind MCA Club",
+      "Adjacent to Jio World Centre, US Consulate & Trident BKC",
+      "Celebrity & tycoon double-height duplex residences with 24-foot ceilings",
+      "Private temperature-controlled plunge pools & biometric private lifts",
+      "Ready-to-move-in with 100% Full Occupancy Certificate (OC) received",
+      "MahaRERA: P51800007921 | Ready Possession (Full OC)"
+    ],
     "amenities": [
-      "Sea-Facing Infinity Pool",
-      "Ultra-Luxury Private Clubhouse",
-      "World-Class Fitness Studio",
-      "Spa with Steam & Sauna",
-      "Rooftop Stargazing Lounge",
-      "Private Dining Room",
+      "Temperature-Controlled Indoor Pool",
+      "Signature Island Club",
+      "Technogym Health Sanctuary",
+      "Private Boardrooms & Executive Suites",
+      "Grand Banquet Hall",
       "Children's Creche & Play Zone",
-      "24/7 Dedicated Concierge"
+      "Double-Height Porte-Cochère",
+      "24/7 White-Glove Butler & Concierge"
     ]
   },
   "37": {
     "keyFeatures": [
-      "Direct Front-Row Facing on Carter Road Seafront Promenade, Bandra West",
-      "3 Mins to Khar Underground Metro Station & Khar Road Station",
+      "Direct front-row facing on Carter Road Promenade, Bandra West",
+      "Only 2 residences per floor (47 total units) for supreme exclusivity",
+      "Steps from Otters Club, Union Park & Joggers Park",
+      "3 Mins to Khar Road Station & Aqua Line 3 Underground Metro",
       "5 Mins to Bandra-Worli Sea Link & Western Express Highway",
-      "Adjacent to Otters Club, Union Park & Joggers Park"
-],
+      "MahaRERA: PR1180002600318 | Possession: Dec 2030"
+    ],
     "amenities": [
       "Seafront Olympic-Length Lap Pool",
       "Oberoi Signature Clubhouse",
-      "Gymnasium with Personal Trainers",
-      "Squash & Tennis Courts",
-      "Lush Landscaped Green Lawns",
+      "Personal Trainer Fitness Suite",
+      "Private Sunset Viewing Deck",
       "Private Wine & Dine Lounge",
-      "Kids Activity Pod",
-      "24/7 High-Security Protocols"
+      "Acoustic Double-Glazed Glass Balconies",
+      "Children's Activity Pod",
+      "24/7 Multi-Tier Security Concierge"
     ]
   },
   "38": {
     "keyFeatures": [
-      "Hill Road & St. Martin's Cross, Bandra West",
-      "3 Mins to Bandra Underground Metro (Aqua Line 3)",
-      "3 Mins to Bandra Railway Station (West)",
-      "Near Holy Family Hospital, Elco Market Hill Road & Bandra Fort"
-],
+      "Sprawling 4.98-acre luxury estate at BKC Gateway, Bandra East",
+      "2 Mins to BKC Connector, Western Express Highway & Kalanagar Junction",
+      "3 Mins to BKC Underground Metro Station (Aqua Line 3)",
+      "2.5 Acres of vehicle-free landscaped podium open spaces & sporting courts",
+      "Ready-to-move-in with Full Occupancy Certificate (OC) received",
+      "MahaRERA: P51800004889 | Ready Possession (Full OC)"
+    ],
     "amenities": [
-      "Luxury Lap Pool with Sunken Decks",
-      "Grand Designer Clubhouse",
-      "Modern Fitness & Yoga Studio",
-      "Sky Deck with City Panorama",
+      "Olympic-Size Swimming Pool",
+      "Grand 25,000 sq.ft Clubhouse",
+      "Squash & Tennis Courts",
+      "Landscaped Jogging Loop",
+      "Private Mini Theatre",
       "Children's Creative Play Park",
-      "Multipurpose Hall",
-      "Double-Height Porte-Coch\u00e8re",
+      "Grand Double-Height Foyer",
       "24/7 Valet Concierge"
     ]
   },
   "39": {
     "keyFeatures": [
-      "Waterfield Road & Linking Road Corridor, Bandra West Prime",
-      "3 Mins to Bandra Underground Metro Station (Aqua Line 3)",
-      "3 Mins to Bandra Railway Station & Western Express Highway",
-      "Near Linking Road Shopping Boulevard, Taj Mahal Tea House & Pali Naka"
-],
+      "KC Marg, Bandra Reclamation, Bandra West",
+      "Steps from Lilavati Hospital, Rangsharda & Sea Link entry",
+      "Soaring 34-storey tower with unobstructed views of Arabian Sea & Sea Link",
+      "Ready-to-move-in with Full Occupancy Certificate (OC) received",
+      "Ultra-luxurious Italian marble flooring & bespoke fixtures",
+      "MahaRERA: P51800046093 | Ready Possession (Full OC)"
+    ],
     "amenities": [
       "Rooftop Infinity Swimming Pool",
-      "Boutique Luxury Clubhouse",
-      "High-Tech Gymnasium",
-      "Sky Lounge with Sea Views",
-      "Children's Play Arena",
-      "Indoor Games Lounge",
-      "Designer Entrance Lobby",
-      "24/7 Smart Security"
+      "Boutique Sky Lounge",
+      "Technogym Fitness Studio",
+      "Grand Double-Height Foyer",
+      "Children's Play Lounge",
+      "Private Destination Controlled Lifts",
+      "Indoor Games Room",
+      "Valet Parking & 24/7 Security"
     ]
   },
   "40": {

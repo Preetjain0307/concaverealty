@@ -570,20 +570,18 @@ export function SignatureProjects({
                         </div>
                       </div>
 
-                      {/* Bottom Right: 360° Virtual Tour button - strictly conditional */}
-                      {hasVirtualTour && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenTour(project.id);
-                          }}
-                          className="absolute bottom-3 right-3 z-20 bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
-                        >
-                          <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
-                          <span>360° Tour</span>
-                        </button>
-                      )}
+                      {/* Bottom Right: 360° Virtual Tour button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenTour(project.id);
+                        }}
+                        className="absolute bottom-3 right-3 z-20 bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95 cursor-pointer"
+                      >
+                        <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
+                        <span>360° Tour</span>
+                      </button>
 
                       {/* Bottom Left: Multiple photos count pill */}
                       {project.images && project.images.length > 0 && (

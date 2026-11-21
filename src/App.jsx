@@ -564,6 +564,7 @@ export function App() {
             isOpen={tourModalOpen}
             onClose={() => setTourModalOpen(false)}
             project={tourProject}
+            onOpenEnquiry={handleOpenEnquiry}
           />
         </ErrorBoundary>
 

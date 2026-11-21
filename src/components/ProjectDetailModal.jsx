@@ -125,11 +125,60 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
   const [mapZoom, setMapZoom] = useState(16);
   const [copiedCoords, setCopiedCoords] = useState(false);
 
+  // Available Configurations Table Scroll & View Mode State
+  const tableScrollRef = useRef(null);
+  const [tableScrollProgress, setTableScrollProgress] = useState(0);
+  const [canTableScrollLeft, setCanTableScrollLeft] = useState(false);
+  const [canTableScrollRight, setCanTableScrollRight] = useState(true);
+  const [configViewMode, setConfigViewMode] = useState('table'); // 'table' | 'cards'
+
+  const handleTableScroll = () => {
+    const el = tableScrollRef.current;
+    if (!el) return;
+    const maxScroll = el.scrollWidth - el.clientWidth;
+    if (maxScroll <= 0) {
+      setTableScrollProgress(0);
+      setCanTableScrollLeft(false);
+      setCanTableScrollRight(false);
+      return;
+    }
+    const current = el.scrollLeft;
+    setTableScrollProgress(Math.min(1, Math.max(0, current / maxScroll)));
+    setCanTableScrollLeft(current > 4);
+    setCanTableScrollRight(current < maxScroll - 4);
+  };
+
+  const scrollTable = (direction) => {
+    const el = tableScrollRef.current;
+    if (!el) return;
+    if (direction === 'start') {
+      el.scrollTo({ left: 0, behavior: 'smooth' });
+    } else if (direction === 'end') {
+      el.scrollTo({ left: el.scrollWidth, behavior: 'smooth' });
+    } else if (direction === 'next') {
+      el.scrollBy({ left: 220, behavior: 'smooth' });
+    } else if (direction === 'prev') {
+      el.scrollBy({ left: -220, behavior: 'smooth' });
+    }
+  };
+
+  const handleTrackClick = (e) => {
+    const track = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - track.left;
+    const ratio = Math.max(0, Math.min(1, clickX / track.width));
+    const el = tableScrollRef.current;
+    if (el) {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      el.scrollTo({ left: ratio * maxScroll, behavior: 'smooth' });
+    }
+  };
+
   // Reset map zoom and mode when switching projects
   useEffect(() => {
     setMapZoom(16);
     setMapType('roadmap');
     setCopiedCoords(false);
+    setTimeout(handleTableScroll, 100);
   }, [project?.id]);
 
   const handleCopyCoords = (lat, lng) => {
@@ -280,20 +329,18 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <span className="truncate uppercase font-mono tracking-wider">{project.locality || project.location}</span>
                 </a>
 
-                {/* 360° Virtual Tour button - strictly conditional */}
-                {project.virtualTourUrl && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onOpenTour(project.id);
-                    }}
-                    aria-label={`Open 360° virtual tour for ${project.name}`}
-                    className="h-8 sm:h-9 inline-flex items-center gap-1.5 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold bg-[#245348] hover:bg-[#1B3F37] text-white border border-[#DFBE79]/50 shadow-md transition-all hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer"
-                  >
-                    <Compass className="w-3.5 h-3.5 text-[#DFBE79] shrink-0 animate-spin" style={{ animationDuration: '10s' }} />
-                    <span>360° Virtual Tour</span>
-                  </button>
-                )}
+                {/* 360° Virtual Tour button - available for all projects */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    onOpenTour(project.id);
+                  }}
+                  aria-label={`Open 360° virtual tour for ${project.name}`}
+                  className="h-8 sm:h-9 inline-flex items-center gap-1.5 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold bg-[#245348] hover:bg-[#1B3F37] text-white border border-[#DFBE79]/50 shadow-md transition-all hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer"
+                >
+                  <Compass className="w-3.5 h-3.5 text-[#DFBE79] shrink-0 animate-spin" style={{ animationDuration: '10s' }} />
+                  <span>360° Virtual Tour</span>
+                </button>
               </div>
             </div>
 
@@ -533,105 +580,258 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   Available Configurations & Quotations
                 </h4>
               </div>
-              {project.possession && (
-                <div className="self-start sm:self-auto shrink-0">
+
+              <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
+                {/* View Mode Toggle on Mobile */}
+                <div className="inline-flex items-center bg-[#FAF9F6] p-0.5 rounded-lg border border-[#C59B4E]/30 text-xs shadow-2xs sm:hidden">
+                  <button
+                    type="button"
+                    onClick={() => setConfigViewMode('table')}
+                    className={`px-2.5 py-1 rounded-md text-[10.5px] font-mono font-bold transition-all ${
+                      configViewMode === 'table' ? 'bg-[#245348] text-white shadow-2xs' : 'text-gray-600 hover:text-[#14221F]'
+                    }`}
+                  >
+                    Table
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfigViewMode('cards')}
+                    className={`px-2.5 py-1 rounded-md text-[10.5px] font-mono font-bold transition-all ${
+                      configViewMode === 'cards' ? 'bg-[#245348] text-white shadow-2xs' : 'text-gray-600 hover:text-[#14221F]'
+                    }`}
+                  >
+                    Cards
+                  </button>
+                </div>
+
+                {project.possession && (
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#C59B4E]/30 text-[11px] font-mono text-gray-700 whitespace-nowrap shadow-2xs">
                     <Calendar className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
                     <span>Possession: <strong className="text-[#14221F] font-semibold">{project.possession}</strong></span>
                   </span>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Mobile Scroll Indicator Banner: Always highlights that pricing table scrolls horizontally */}
-            <div className="flex items-center justify-between text-[11px] bg-gradient-to-r from-[#245348]/10 via-[#FAF9F6] to-[#C59B4E]/15 px-3 py-2 rounded-xl border border-[#C59B4E]/40 text-[#14221F] sm:hidden shadow-2xs">
-              <span className="flex items-center gap-1.5 font-semibold text-[#183C32]">
-                <span className="w-2 h-2 rounded-full bg-[#C59B4E] animate-ping shrink-0" />
-                <span>Swipe table to view Price & Possession</span>
-              </span>
-              <span className="font-mono font-bold text-[#8B6846] shrink-0 flex items-center gap-1 animate-pulse">
-                Scroll Table ➔
-              </span>
-            </div>
-
-            {/* Table Container with Right Edge Gradient Indicator & Always-Visible High-Contrast Scrollbar */}
-            <div className="relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white">
-              {/* Right edge shadow indicator to visually signal off-screen content on mobile */}
-              <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#183C32]/20 to-transparent z-10 rounded-r-xl sm:hidden flex items-center justify-end pr-1 text-[#C59B4E] font-bold">
-                ›
+            {configViewMode === 'table' && (
+              <div className="flex items-center justify-between text-[11px] bg-gradient-to-r from-[#245348]/10 via-[#FAF9F6] to-[#C59B4E]/20 px-3 py-2 rounded-xl border border-[#C59B4E]/60 text-[#14221F] sm:hidden shadow-2xs">
+                <span className="flex items-center gap-1.5 font-semibold text-[#183C32]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#C59B4E] animate-ping shrink-0" />
+                  <span>Swipe table left/right to view Pricing</span>
+                </span>
+                <span className="font-mono font-bold text-[#8B6846] shrink-0 flex items-center gap-1">
+                  Scroll Table ➔
+                </span>
               </div>
+            )}
 
-              <div className="overflow-x-auto overflow-y-hidden rounded-xl scrollbar-luxury-green pb-1.5">
-                <table className="min-w-[620px] w-full text-left text-xs">
-                  <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
-                    <tr>
-                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
-                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Carpet Area</th>
-                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold text-[#245348]">Quoted Value*</th>
-                      <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Possession</th>
-                      <th className="py-3 px-3.5 text-right whitespace-nowrap font-semibold">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
-                    {project.configurations && project.configurations.length > 0 ? (
-                      project.configurations.map((cfg, idx) => (
-                        <tr key={idx} className="hover:bg-[#FAF9F6] transition-colors">
-                          <td className="py-3 px-3.5 font-semibold text-[#14221F] whitespace-nowrap">
-                            <div>{cfg.bhk}</div>
-                            {cfg.floorPlanLabel && (
-                              <span className="text-[10px] text-gray-500 block font-normal">
-                                {cfg.floorPlanLabel}
-                              </span>
-                            )}
-                          </td>
-                          <td className="py-3 px-3.5 font-mono text-[11.5px] text-gray-700 whitespace-nowrap font-medium">
-                            {cfg.carpetArea}
-                          </td>
-                          <td className="py-3 px-3.5 font-semibold text-[#245348] whitespace-nowrap text-sm">
-                            {cfg.price}
-                          </td>
-                          <td className="py-3 px-3.5 text-gray-600 whitespace-nowrap text-[11px] font-mono">
-                            {cfg.possessionDate || project.possession}
-                          </td>
-                          <td className="py-3 px-3.5 text-right whitespace-nowrap">
-                            <button
-                              type="button"
-                              onClick={() => {
-                                onClose();
-                                onOpenEnquiry({
-                                  projectName: project.name,
-                                  location: project.location,
-                                  configuration: cfg.bhk,
-                                  project
-                                });
-                              }}
-                              className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs whitespace-nowrap active:scale-95 cursor-pointer"
-                            >
-                              Enquire Unit
-                            </button>
-                          </td>
+            {configViewMode === 'table' ? (
+              <>
+                {/* Table Container with Right Edge Gradient Indicator & Always-Visible High-Contrast Scrollbar */}
+                <div className="relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white">
+                  {/* Right edge shadow indicator to visually signal off-screen content on mobile */}
+                  {canTableScrollRight && (
+                    <div
+                      onClick={() => scrollTable('next')}
+                      className="absolute right-0 top-0 bottom-1 w-10 bg-gradient-to-l from-white via-white/80 to-transparent z-10 rounded-r-xl sm:hidden flex items-center justify-end pr-1.5 text-[#C59B4E] font-bold text-base cursor-pointer animate-pulse"
+                      title="Scroll to view Quoted Value"
+                    >
+                      ›
+                    </div>
+                  )}
+
+                  <div
+                    ref={tableScrollRef}
+                    onScroll={handleTableScroll}
+                    className="overflow-x-auto overflow-y-hidden rounded-xl scrollbar-luxury-green pb-1"
+                  >
+                    <table className="min-w-[580px] w-full text-left text-xs">
+                      <thead className="bg-[#FAF9F6] text-gray-700 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
+                        <tr>
+                          <th className="py-3 px-3.5 whitespace-nowrap font-semibold min-w-[140px]">Configuration</th>
+                          <th className="py-3 px-3.5 whitespace-nowrap font-semibold min-w-[105px]">Carpet Area</th>
+                          <th className="py-3 px-3.5 whitespace-nowrap font-bold text-[#245348] min-w-[125px] bg-[#245348]/5">Quoted Value*</th>
+                          <th className="py-3 px-3.5 whitespace-nowrap font-semibold min-w-[100px]">Possession</th>
+                          <th className="py-3 px-3.5 text-right whitespace-nowrap font-semibold min-w-[110px]">Action</th>
                         </tr>
-                      ))
-                    ) : (
-                      <tr>
-                        <td colSpan="5" className="py-6 text-center text-gray-500 font-mono text-xs">
-                          Configurations and quotation available on request
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
+                      </thead>
+                      <tbody className="divide-y divide-[#EAE6DF] text-gray-800">
+                        {project.configurations && project.configurations.length > 0 ? (
+                          project.configurations.map((cfg, idx) => (
+                            <tr key={idx} className="hover:bg-[#FAF9F6] transition-colors">
+                              <td className="py-3 px-3.5 font-semibold text-[#14221F] whitespace-nowrap min-w-[140px]">
+                                <div>{cfg.bhk}</div>
+                                {cfg.floorPlanLabel && (
+                                  <span className="text-[10px] text-gray-500 block font-normal">
+                                    {cfg.floorPlanLabel}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-3 px-3.5 font-mono text-[11.5px] text-gray-700 whitespace-nowrap font-medium min-w-[105px]">
+                                {cfg.carpetArea}
+                              </td>
+                              <td className="py-3 px-3.5 font-bold text-[#245348] whitespace-nowrap text-sm bg-[#245348]/5 min-w-[125px]">
+                                {cfg.price}
+                              </td>
+                              <td className="py-3 px-3.5 text-gray-600 whitespace-nowrap text-[11px] font-mono min-w-[100px]">
+                                {cfg.possessionDate || project.possession}
+                              </td>
+                              <td className="py-3 px-3.5 text-right whitespace-nowrap min-w-[110px]">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    onClose();
+                                    onOpenEnquiry({
+                                      projectName: project.name,
+                                      location: project.location,
+                                      configuration: cfg.bhk,
+                                      project
+                                    });
+                                  }}
+                                  className="inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-[11px] font-semibold transition-all shadow-xs whitespace-nowrap active:scale-95 cursor-pointer"
+                                >
+                                  Enquire Unit
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="5" className="py-6 text-center text-gray-500 font-mono text-xs">
+                              Configurations and quotation available on request
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Permanent High-Visibility Highlighted Scrollbar Track & Thumb Bar */}
+                <div className="mt-2.5 p-2.5 rounded-xl bg-gradient-to-r from-[#FAF9F6] via-[#F3EFE6] to-[#FAF9F6] border-2 border-[#C59B4E]/60 shadow-xs space-y-2">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#14221F]">
+                    <span className="flex items-center gap-1.5 text-[10.5px] font-mono uppercase text-[#8B6846]">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#C59B4E] animate-pulse" />
+                      <span>Always-Visible Scroll Indicator</span>
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => scrollTable('start')}
+                        disabled={!canTableScrollLeft}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-mono font-bold transition-all ${
+                          canTableScrollLeft
+                            ? 'bg-[#245348] text-white hover:bg-[#1B3F37] cursor-pointer shadow-2xs'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-50'
+                        }`}
+                      >
+                        ◀ Typology
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => scrollTable('end')}
+                        disabled={!canTableScrollRight}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-mono font-bold transition-all ${
+                          canTableScrollRight
+                            ? 'bg-[#C59B4E] text-[#14221F] hover:bg-[#B38A3F] cursor-pointer shadow-2xs'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed opacity-50'
+                        }`}
+                      >
+                        Quoted Price & Action ▶
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Interactive Permanent Gold / Emerald Track */}
+                  <div
+                    onClick={handleTrackClick}
+                    className="relative w-full h-6 rounded-full bg-[#EAE6DF] border-2 border-[#C59B4E] p-0.5 cursor-pointer overflow-hidden shadow-inner flex items-center select-none"
+                    title="Click or drag on this bar to scroll table"
+                  >
+                    {/* Track text hint */}
+                    <div className="absolute inset-0 flex items-center justify-center text-[9.5px] font-mono font-bold uppercase tracking-wider text-[#14221F]/65 pointer-events-none select-none">
+                      <span>◀ SWIPE TABLE OR TAP BAR TO REVEAL PRICES ▶</span>
+                    </div>
+
+                    {/* Animated Luxury Emerald / Gold Thumb */}
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#183C32] via-[#245348] to-[#183C32] border border-[#DFBE79] shadow-md transition-all duration-150 flex items-center justify-center min-w-[32%]"
+                      style={{
+                        width: '38%',
+                        transform: `translateX(${tableScrollProgress * ((100 - 38) / 38 * 100)}%)`
+                      }}
+                    >
+                      <span className="text-[9px] font-mono text-[#DFBE79] font-bold tracking-widest px-2 truncate pointer-events-none">
+                        ● SCROLL ●
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* Mobile Luxury Card View: All details stacked with zero horizontal scrolling */
+              <div className="space-y-2.5">
+                {project.configurations && project.configurations.length > 0 ? (
+                  project.configurations.map((cfg, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-xl border-2 border-[#C59B4E]/40 bg-gradient-to-br from-white via-[#FAF9F6] to-[#F5F1E8] shadow-xs space-y-2.5"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <h5 className="font-serif text-base font-bold text-[#14221F]">
+                            {cfg.bhk}
+                          </h5>
+                          {cfg.floorPlanLabel && (
+                            <span className="text-[10px] font-mono text-[#C59B4E] font-semibold block">
+                              {cfg.floorPlanLabel}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase font-mono text-gray-500 block">Quoted Value*</span>
+                          <span className="text-base font-bold text-[#245348] font-mono block">
+                            {cfg.price}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-[#EAE6DF] text-gray-700">
+                        <div className="flex items-center gap-1 font-mono text-[11px]">
+                          <span className="text-gray-500">Area:</span>
+                          <strong className="text-[#14221F]">{cfg.carpetArea}</strong>
+                        </div>
+                        <div className="flex items-center gap-1 font-mono text-[11px]">
+                          <span className="text-gray-500">Possession:</span>
+                          <strong className="text-[#14221F]">{cfg.possessionDate || project.possession}</strong>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          onClose();
+                          onOpenEnquiry({
+                            projectName: project.name,
+                            location: project.location,
+                            configuration: cfg.bhk,
+                            project
+                          });
+                        }}
+                        className="w-full py-2 rounded-lg bg-[#245348] hover:bg-[#1B3F37] text-white text-xs font-semibold uppercase tracking-wider transition-all shadow-xs active:scale-95 cursor-pointer"
+                      >
+                        Enquire for this Unit
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-6 text-center text-gray-500 font-mono text-xs">
+                    Configurations and quotation available on request
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Persistent Mobile Scroll Notice & Visual Guide */}
-            <div className="flex items-center justify-between text-[10px] text-gray-500 font-mono pt-0.5 sm:hidden px-1">
-              <span className="flex items-center gap-1 text-[#8B6846]">
-                <span>◀ Swipe horizontally to explore all 5 columns ▶</span>
-              </span>
-              <span className="text-[#245348] font-bold">Quoted Value &amp; Action</span>
-            </div>
-
+            )}
           </div>
 
           {/* Section: Architectural Floor View */}
@@ -702,17 +902,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
             <div
               onClick={() => {
-                if (project.virtualTourUrl) {
-                  onOpenTour(project.id);
-                } else {
-                  onClose();
-                  onOpenEnquiry({
-                    projectName: project.name,
-                    location: project.location,
-                    configuration: '360° Guided Virtual Walkthrough',
-                    project
-                  });
-                }
+                onOpenTour(project.id);
               }}
               className="group relative rounded-2xl overflow-hidden border-2 border-[#C59B4E]/60 bg-gradient-to-br from-[#0B1E19] via-[#142C25] to-[#0A1A15] p-4 sm:p-5 text-white cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 hover:border-[#DFBE79]"
             >
@@ -723,12 +913,12 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   </div>
                   <div>
                     <h5 className="font-serif text-base sm:text-lg font-bold text-white group-hover:text-[#DFBE79] transition-colors">
-                      {project.virtualTourUrl ? `Explore ${project.name} in 360°` : `Request 360° Private Walkthrough`}
+                      {project.virtualTourUrl ? `Explore ${project.name} in 360°` : `Experience ${project.name} 360° Horizon`}
                     </h5>
                     <p className="text-xs text-gray-300 leading-snug">
                       {project.virtualTourUrl
                         ? 'Rotate 360°, zoom into living suites, rooftop decks, and club horizons in real-time.'
-                        : 'Connect with our luxury advisory desk for a private live guided 360° virtual walkthrough.'}
+                        : 'Explore panoramic 360° skyline perspectives, horizon observatory, and architectural vistas.'}
                     </p>
                   </div>
                 </div>
@@ -738,7 +928,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#DFBE79] to-[#C59B4E] text-[#14221F] font-bold text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2 shadow-md group-hover:brightness-110 transition-all cursor-pointer"
                 >
                   <Compass className="w-4 h-4 text-[#14221F]" />
-                  <span>{project.virtualTourUrl ? 'Launch 360° Tour' : 'Request Tour'}</span>
+                  <span>Launch 360° Tour</span>
                 </button>
               </div>
             </div>
