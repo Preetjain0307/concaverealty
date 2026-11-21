@@ -280,18 +280,20 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <span className="truncate uppercase font-mono tracking-wider">{project.locality || project.location}</span>
                 </a>
 
-                {/* 360° Virtual Tour button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    onOpenTour(project.id);
-                  }}
-                  aria-label={`Open 360° virtual tour for ${project.name}`}
-                  className="h-8 sm:h-9 inline-flex items-center gap-1.5 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold bg-[#245348] hover:bg-[#1B3F37] text-white border border-[#DFBE79]/50 shadow-md transition-all hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer"
-                >
-                  <Compass className="w-3.5 h-3.5 text-[#DFBE79] shrink-0 animate-spin" style={{ animationDuration: '10s' }} />
-                  <span>360° Virtual Tour</span>
-                </button>
+                {/* 360° Virtual Tour button - strictly conditional */}
+                {project.virtualTourUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onOpenTour(project.id);
+                    }}
+                    aria-label={`Open 360° virtual tour for ${project.name}`}
+                    className="h-8 sm:h-9 inline-flex items-center gap-1.5 px-3 sm:px-3.5 rounded-full text-[10.5px] sm:text-xs font-semibold bg-[#245348] hover:bg-[#1B3F37] text-white border border-[#DFBE79]/50 shadow-md transition-all hover:scale-105 active:scale-95 shrink-0 whitespace-nowrap cursor-pointer"
+                  >
+                    <Compass className="w-3.5 h-3.5 text-[#DFBE79] shrink-0 animate-spin" style={{ animationDuration: '10s' }} />
+                    <span>360° Virtual Tour</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -700,7 +702,17 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
 
             <div
               onClick={() => {
-                onOpenTour(project.id);
+                if (project.virtualTourUrl) {
+                  onOpenTour(project.id);
+                } else {
+                  onClose();
+                  onOpenEnquiry({
+                    projectName: project.name,
+                    location: project.location,
+                    configuration: '360° Guided Virtual Walkthrough',
+                    project
+                  });
+                }
               }}
               className="group relative rounded-2xl overflow-hidden border-2 border-[#C59B4E]/60 bg-gradient-to-br from-[#0B1E19] via-[#142C25] to-[#0A1A15] p-4 sm:p-5 text-white cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300 hover:border-[#DFBE79]"
             >
@@ -711,12 +723,12 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   </div>
                   <div>
                     <h5 className="font-serif text-base sm:text-lg font-bold text-white group-hover:text-[#DFBE79] transition-colors">
-                      {project.virtualTourUrl ? `Explore ${project.name} in 360°` : `Explore 360° Virtual Walkthrough`}
+                      {project.virtualTourUrl ? `Explore ${project.name} in 360°` : `Request 360° Private Walkthrough`}
                     </h5>
                     <p className="text-xs text-gray-300 leading-snug">
                       {project.virtualTourUrl
                         ? 'Rotate 360°, zoom into living suites, rooftop decks, and club horizons in real-time.'
-                        : 'Interactive 360° walkthrough, high-definition panoramic perspectives, and architectural view.'}
+                        : 'Connect with our luxury advisory desk for a private live guided 360° virtual walkthrough.'}
                     </p>
                   </div>
                 </div>
@@ -726,7 +738,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#DFBE79] to-[#C59B4E] text-[#14221F] font-bold text-xs uppercase tracking-wider shrink-0 flex items-center justify-center gap-2 shadow-md group-hover:brightness-110 transition-all cursor-pointer"
                 >
                   <Compass className="w-4 h-4 text-[#14221F]" />
-                  <span>Launch 360° Tour</span>
+                  <span>{project.virtualTourUrl ? 'Launch 360° Tour' : 'Request Tour'}</span>
                 </button>
               </div>
             </div>

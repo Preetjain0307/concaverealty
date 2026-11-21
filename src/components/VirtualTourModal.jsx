@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, ExternalLink, Compass, ShieldCheck, RefreshCw } from 'lucide-react';
 
 export function VirtualTourModal({ isOpen, onClose, project }) {
@@ -7,15 +7,6 @@ export function VirtualTourModal({ isOpen, onClose, project }) {
   const tourUrl = project.virtualTourUrl || "https://view.pixeldo.com/KalpataruAdvay/";
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    setHasError(false);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, [tourUrl]);
 
   return (
     <div

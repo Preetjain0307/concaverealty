@@ -2382,7 +2382,7 @@ export const PROJECT_ENRICHMENTS = {
       "8 Mins to Borivali Railway Station (Suburban & Outstation Trains)",
       "12 Mins to Western Express Highway & upcoming Borivali-Thane Tunnel",
       "Near Apex Superspeciality Hospital, Suvidha School & Don Bosco High School",
-      "Unobstructed panoramic horizon views towards Gorai Creek & Arabian Sea"
+      "25 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)"
     ],
     "amenities": [
       "Infinity Edge Lap Pool",
@@ -2402,8 +2402,8 @@ export const PROJECT_ENRICHMENTS = {
   "2": {
     "keyFeatures": [
       "Direct access to S.V. Road & Saibaba Nagar residential corridor",
-      "5 Mins to Kandivali West Metro Station (Line 2A)",
-      "10 Mins to Borivali Railway Station (West)",
+      "5 Mins to Kandivali West & Borivali West Metro Stations (Line 2A)",
+      "8 Mins to Borivali Railway Station (West)",
       "10 Mins to Western Express Highway & upcoming Borivali-Thane Tunnel",
       "6 Mins to Poinsur Gymkhana & Kora Kendra Cultural Grounds",
       "Near Apex Hospital, Don Bosco High School & local gourmet retail"
@@ -2477,7 +2477,7 @@ export const PROJECT_ENRICHMENTS = {
       "2 Mins to Western Express Highway (WEH)",
       "5 Mins to Kandivali Railway Station",
       "Adjacent to Cambridge School, Thakur Complex & Oxford Public School",
-      "Sweeping panoramic horizon views of Sanjay Gandhi National Park canopy"
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Multi-Level Grand Clubhouse",
@@ -2570,8 +2570,8 @@ export const PROJECT_ENRICHMENTS = {
       "3 Mins to Lower Malad Metro Station (Line 2A) & New Link Road",
       "5 Mins to Mindspace IT Park, Inorbit Mall & Infiniti Mall",
       "7 Mins to Malad Railway Station & S.V. Road",
-      "Bordered by private Miyawaki forest retreat & lush open greens",
-      "MahaRERA Registered: P51800055504 | Target Possession: Dec 2029"
+      "12 Mins to Western Express Highway via GMLR",
+      "25 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Exclusive Miyawaki Forest Retreat",
@@ -2590,12 +2590,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "10": {
     "keyFeatures": [
-      "Tower 4 of the landmark 8-acre Auris Serenity development, Malad West",
-      "Soaring 68-storey iconic skyscraper with panoramic Arabian Sea views",
-      "Low density living with only 6 residences per lobby floor",
+      "Tower 4 of landmark Auris Serenity, Link Road, Kanchpada, Malad West",
       "2 Mins to Mithchowki & Malad West Metro Stations (Line 2A)",
       "4 Mins to Inorbit Mall, Mindspace IT Park & New Link Road",
-      "MahaRERA Registered: P51800055792 | Possession: Dec 2030 / 2032"
+      "7 Mins to Malad Railway Station & S.V. Road",
+      "12 Mins to Western Express Highway (WEH)",
+      "25 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Olympic-Sized Temperature-Controlled Lap Pool",
@@ -2618,8 +2618,8 @@ export const PROJECT_ENRICHMENTS = {
       "3 Mins to Lower Malad Metro Station (Line 2A)",
       "5 Mins to Malad Railway Station, S.V. Road & Western Express Highway",
       "5 Mins to Inorbit Mall, Infiniti Mall & Ryan International School",
-      "Over 70% open landscaped spaces with Saint Amand hospitality",
-      "MahaRERA Registered: P51800012243 | Ready Possession / Phased Handover"
+      "10 Mins to Mindspace IT Park & Nesco IT Park",
+      "25 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Infinity-Edge Swimming Pool & Sun Deck",
@@ -2638,10 +2638,10 @@ export const PROJECT_ENRICHMENTS = {
     "keyFeatures": [
       "Prime Bhagwan Gautam Buddha Road location near Orlem Circle, Malad West",
       "3 Mins to Orlem Church & Lourdes Colony",
-      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station",
+      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station (Line 2A)",
       "7 Mins to Malad Railway Station & Link Road retail hubs",
-      "Over 50 lifestyle, podium and rooftop sky amenities",
-      "MahaRERA Registered: P51800055516 | Target Possession: Dec 2028 / April 2029"
+      "12 Mins to Western Express Highway (WEH)",
+      "25 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Half-Olympic Infinity-Edge Lap Pool",
@@ -2661,10 +2661,10 @@ export const PROJECT_ENRICHMENTS = {
     "keyFeatures": [
       "Coveted residential address in Bangur Nagar, Goregaon West",
       "3 Mins to Bangur Nagar Metro Station (Line 2A) & New Link Road",
-      "4 Mins to Inorbit Mall, City Centre Mall & Infiniti Mall",
-      "6 Mins to Goregaon Railway Station & WEH via Mrinal Gore Flyover",
-      "Exclusive 1.25 lakh sq.ft lifestyle ecosystem with Club Valora & Miyawaki forest",
-      "MahaRERA Registered: PR1180002600544 | Target Possession: Dec 2031 / April 2032"
+      "4 Mins to Inorbit Mall, Hypercity & Vibgyor High School",
+      "6 Mins to Goregaon Railway Station & S.V. Road",
+      "8 Mins to Western Express Highway & Goregaon-Mulund Link Road (GMLR)",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Olympic-Sized Lap Pool, Kids Pool & Heated Jacuzzi",
@@ -2682,11 +2682,11 @@ export const PROJECT_ENRICHMENTS = {
   "14": {
     "keyFeatures": [
       "Prime location in Bangur Nagar right next to Inorbit Mall, Goregaon West",
-      "3 Mins to Bangur Nagar Metro Station (Line 2A) — 300m walk",
-      "4 Mins to Goregaon Sports Club, Vibgyor High School & D-Mart",
-      "5 Mins to Goregaon Railway Station & S.V. Road",
-      "Expansive eco-deck podium with wide sundecks & mangrove views",
-      "MahaRERA Registered: PM1180002600918 | Possession: May 2030 / Dec 2030"
+      "3 Mins walk to Bangur Nagar Metro Station (Line 2A) — 300m",
+      "3 Mins to Inorbit Mall & Mindspace Malad / Goregaon",
+      "6 Mins to Goregaon Railway Station & S.V. Road",
+      "8 Mins to Western Express Highway & upcoming GMLR",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Resort-Style Swimming Pool & Kids Splash Pool",
@@ -2702,12 +2702,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "15": {
     "keyFeatures": [
-      "Low-density sanctuary with ~65% open-to-sky space in Bangur Nagar, Goregaon West",
+      "Prime address in Bangur Nagar, Goregaon West near Inorbit Mall",
       "3 Mins to Bangur Nagar (Pahadi Goregaon) Metro Station (Line 2A)",
-      "4 Mins to Inorbit Mall & Goregaon Sports Club",
-      "5 Mins to Goregaon Railway Station & S.V. Road",
-      "Over 47,000 sq.ft of curated leisure amenities including floating cabanas",
-      "MahaRERA Registered: PR1180002502702 | Target Possession: August 2028"
+      "4 Mins to Inorbit Mall, Mindspace IT Corridor & Link Road",
+      "6 Mins to Goregaon Railway Station & S.V. Road",
+      "8 Mins to Western Express Highway & Nesco Exhibition Centre",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Swimming Pool with Floating Cabana & Kids Pool",
@@ -2725,10 +2725,10 @@ export const PROJECT_ENRICHMENTS = {
     "keyFeatures": [
       "Strategic junction connecting S.V. Road and New Link Road, Goregaon West",
       "4 Mins to Goregaon West Metro Station (Line 2A)",
-      "3 Mins drive / 7 Mins walk to Goregaon Railway Station (750 m)",
-      "5 Mins to Inorbit Mall, Infiniti Mall & City Centre Mall",
-      "Rooftop Skye Clubhouse, stargazing deck & open-air screening theatre",
-      "MahaRERA Registered: PR1180002601227 | Target Possession: Dec 2031 / April 2032"
+      "5 Mins to Goregaon Railway Station (Western & Harbour Lines)",
+      "7 Mins to Inorbit Mall, Oberoi Mall & City Centre Mall",
+      "8 Mins to Western Express Highway & Hub Mall",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Skye Clubhouse & Stargazing Lounge",
@@ -2744,12 +2744,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "17": {
     "keyFeatures": [
-      "Prime 3.5-acre enclave on Patel Estate Road off S.V. Road, Jogeshwari West",
-      "3 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)",
-      "4 Mins to Jogeshwari Railway Station & JVLR Junction",
-      "7 Mins to Lokhandwala Complex, Infinity Mall & Kokilaben Hospital",
-      "Low density living with private sundecks & SHMA-designed landscapes",
-      "MahaRERA Registered: PR1180002501771 / PR1180002501743 | Possession: Dec 2030"
+      "Prime frontage on Western Express Highway / Patel Estate Road, Jogeshwari East/West",
+      "3 Mins to Jogeshwari Metro Station (Line 7) & Jogeshwari Railway Station",
+      "4 Mins to JVLR (Jogeshwari-Vikhroli Link Road) connecting to Powai & EEH",
+      "8 Mins to Nesco IT Park, Bombay Exhibition Centre & Oberoi Mall",
+      "12 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)",
+      "15 Mins to BKC via Western Express Highway & Sea Link"
     ],
     "amenities": [
       "Temperature-Controlled Indoor Pool & Kids Pool",
@@ -2768,10 +2768,10 @@ export const PROJECT_ENRICHMENTS = {
     "keyFeatures": [
       "Direct frontage on Relief Road off S.V. Road, Oshiwara / Jogeshwari West",
       "2 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)",
-      "3 Mins to Jogeshwari Railway Station & Main S.V. Road",
-      "4 Mins to JVLR Flyover, Western Express Highway & Hub Mall",
-      "Part of 102 Downtown integrated township with high-street retail",
-      "MahaRERA Registered: P51800020208 | Phased Handover"
+      "4 Mins to Ram Mandir & Jogeshwari Railway Stations",
+      "5 Mins to New Link Road & Lokhandwala Complex",
+      "10 Mins to Western Express Highway & JVLR",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Resort-Style Swimming Pool & Kids Pool",
@@ -2790,9 +2790,9 @@ export const PROJECT_ENRICHMENTS = {
       "Prominent frontage on main S.V. Road near Oshiwara Bridge, Jogeshwari West",
       "2 Mins to Oshiwara Metro Station (Line 2A)",
       "4 Mins to Ram Mandir & Jogeshwari Railway Stations",
-      "5 Mins to Oshiwara Mega Mall, Lokhandwala Market & JVLR",
-      "Soaring 39 storeys featuring colossal 5,000 sq.ft fitness centre",
-      "MahaRERA Registered: P51800047680 | Target Possession: Dec 2027 / 2028"
+      "5 Mins to Lokhandwala Complex, Infinity Mall & City Mall",
+      "10 Mins to Western Express Highway & JVLR",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Colossal 5,000 sq.ft Designer Gymnasium",
@@ -2808,12 +2808,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "20": {
     "keyFeatures": [
-      "Sprawling 23-acre master township at Oshiwara District Centre (ODC)",
-      "5 Mins walk to Ram Mandir Railway Station (350 m)",
-      "3 Mins to Jogeshwari-Vikhroli Link Road (JVLR) & S.V. Road",
-      "Direct transit access via Mrinal Gore Flyover to Western Express Highway",
-      "Integrated luxury living with fine-dining restaurants & corporate parks",
-      "MahaRERA: P51800023072, PR1181012502068 | Ready / April 2029"
+      "Sprawling master township at Oshiwara District Centre (ODC)",
+      "3 Mins walk to Ram Mandir Railway Station (350m)",
+      "3 Mins to Western Express Highway (Flyover access directly into ODC)",
+      "5 Mins to Lower Oshiwara Metro Station & New Link Road",
+      "7 Mins to Nesco IT Park & Bombay Exhibition Centre",
+      "15 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Olympic-Style Swimming Pool & Kids Water Slides",
@@ -2829,12 +2829,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "21": {
     "keyFeatures": [
-      "Direct seafront address on Yari Road, Versova, Andheri West",
+      "Direct seafront address on Yari Road / Versova Link, Andheri West",
       "2 Mins to Versova Beach Promenade & Nana Nani Park",
-      "3 Mins to Versova Metro Station (Line 1)",
-      "Near Juhu Circle, Prithvi Theatre & upcoming Versova-Bandra Coastal Road",
-      "Ultra-luxury G+38 coastal skyscraper with 270° Arabian Sea views",
-      "MahaRERA: PM1180002500076 | Possession: Dec 2029"
+      "4 Mins to Versova Metro Station (Line 1 connecting to Ghatkopar)",
+      "5 Mins to Lokhandwala Complex, Kokilaben Dhirubhai Ambani Hospital",
+      "8 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Seafront Infinity Pool",
@@ -2849,12 +2849,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "22": {
     "keyFeatures": [
-      "Prime Lokhandwala Back Road, Andheri West surrounded by green mangroves",
-      "2 Mins to Lokhandwala Market & Celebration Sports Club",
-      "4 Mins to DN Nagar & Oshiwara Metro Stations (Lines 1 & 2A)",
-      "5 Mins to Infiniti Mall Andheri, PVR Dynamix & Juhu Circle",
-      "Low-density architectural development with expansive sundecks",
-      "MahaRERA: PR1180002600863 | Possession: June 2030"
+      "Prime Lokhandwala Back Road address surrounded by green mangroves, Andheri West",
+      "2 Mins to Lokhandwala High Street Market & Celebration Sports Club",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Oshiwara & DN Nagar Metro Stations (Lines 1 & 2A)",
+      "10 Mins to Western Express Highway & Andheri Railway Station",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Swimming Pool with Timber Deck",
@@ -2869,12 +2869,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "23": {
     "keyFeatures": [
-      "Off New Link Road, Near Fun Republic, Andheri West",
+      "Prime frontage on New Link Road near Fun Republic, Andheri West",
       "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
-      "3 Mins to Kokilaben Dhirubhai Ambani Hospital & Research Institute",
-      "4 Mins to Juhu Circle, New Link Road Retail & Citi Mall",
-      "4.2-Acre master-planned enclave with wrap-around decks and mangrove vistas",
-      "MahaRERA: P51800047539 | Possession: Oct 2028"
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Lokhandwala Complex, PVR Cinemas & Citi Mall",
+      "10 Mins to Western Express Highway & Andheri Railway Station",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Temperature-Controlled Lap Pool",
@@ -2889,12 +2889,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "24": {
     "keyFeatures": [
-      "Off Lokhandwala Circle & New Link Road, Andheri West",
-      "2 Mins to Lokhandwala High Street & Shoppers Stop",
-      "3 Mins to Lower Oshiwara Metro Station (Line 2A)",
-      "5 Mins to Kokilaben Hospital & Juhu Beach",
-      "Soaring 34-storey towers with Italian marble finishes and double-height drop-offs",
-      "MahaRERA: PM1180002502319 | Possession: Nov 2030"
+      "Prestigious address off New Link Road, near DN Nagar Metro, Andheri West",
+      "2 Mins walk to DN Nagar Metro Interchange (Line 1 & Line 2A)",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Lokhandwala Circle & High Street Retail",
+      "8 Mins to Andheri Railway Station (Western & Harbour Lines)",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Resort-Style Swimming Pool",
@@ -2909,12 +2909,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "25": {
     "keyFeatures": [
-      "New Link Road, Near Lotus Petrol Pump, Andheri West",
-      "2 Mins to Oshiwara & Lower Oshiwara Metro Stations",
-      "3 Mins to Mega Mall, Star Bazaar & Citi Mall",
-      "5 Mins to Lokhandwala Market & Western Express Highway via JVLR",
-      "Modern 28-storey towers with Vastu-compliant layouts and wide balconies",
-      "MahaRERA: PM1180002501525 | Possession: August 2029"
+      "Prime Seven Bungalows / Versova address, Andheri West",
+      "2 Mins to Versova Metro Station (Line 1)",
+      "3 Mins to Versova Beach Promenade & Nana Nani Park",
+      "5 Mins to Kokilaben Dhirubhai Ambani Hospital & Four Bungalows Market",
+      "8 Mins to DN Nagar Metro Station & New Link Road",
+      "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Swimming Pool with Deck",
@@ -2929,12 +2929,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "26": {
     "keyFeatures": [
-      "Ratan Nagar, Four Bungalows, Andheri West",
-      "2 Mins to Versova Metro Station (Line 1)",
-      "3 Mins to DN Nagar Metro Interchange & Juhu Circle",
-      "5 Mins to Kokilaben Dhirubhai Ambani Hospital & Versova Beach",
-      "Boutique G+21 storey low-density tower with panoramic sea & city horizon views",
-      "MahaRERA: PM1180002600360 | Possession: Dec 2030"
+      "Prime Ratan Nagar address in Four Bungalows, Andheri West",
+      "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
+      "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Four Bungalows Market, Versova Beach & Lokhandwala",
+      "8 Mins to Andheri Railway Station & Western Express Highway",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Infinity Lap Pool",
@@ -2949,12 +2949,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "27": {
     "keyFeatures": [
-      "Versova / Four Bungalows peaceful green corridor, Andheri West",
-      "2 Mins to Versova Metro Station & Four Bungalows Market",
-      "4 Mins to Versova Beach Promenade & Nana Nani Park",
-      "5 Mins to Kokilaben Hospital & Juhu Circle",
-      "Boutique G+24 storey tower with wide glass decks and cross-ventilation",
-      "MahaRERA: PR1180002500850 | Possession: May 2029"
+      "Peaceful green corridor near Versova & Four Bungalows, Andheri West",
+      "2 Mins to Versova Metro Station (Line 1)",
+      "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Four Bungalows Market, Lokhandwala Complex & New Link Road",
+      "8 Mins to Andheri Railway Station & S.V. Road",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Sky Swimming Pool",
@@ -2969,12 +2969,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "28": {
     "keyFeatures": [
-      "New Link Road, Opposite Vicino Mall, Oshiwara, Andheri West",
-      "2 Mins to Oshiwara Metro Station (Line 2A) & Ram Mandir Station",
-      "3 Mins to Infiniti Mall Andheri, Citi Mall & Fun Republic",
-      "5 Mins to Lokhandwala Complex & Western Express Highway",
-      "2.5-Acre neoclassical gated estate with 33-storey towers and Roman piazzas",
-      "MahaRERA: P51800053625, P51800076720 | Possession: June 2029"
+      "Prominent location on New Link Road, Opposite Vicino Mall, Oshiwara, Andheri West",
+      "2 Mins to Oshiwara Metro Station (Line 2A)",
+      "3 Mins to Ram Mandir Railway Station & Western Express Highway flyover",
+      "4 Mins to Infiniti Mall, Lokhandwala Complex & PVR",
+      "6 Mins to Kokilaben Hospital & Mega Mall",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Neoclassical Architecture Swimming Pool",
@@ -2989,12 +2989,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "29": {
     "keyFeatures": [
-      "Lokhandwala Complex, Off New Link Road, Andheri West",
-      "2 Mins to Lokhandwala Circle & High Street Market",
-      "3 Mins to Lower Oshiwara Metro Station (Line 2A)",
-      "5 Mins to Infiniti Mall, Celebration Sports Club & Juhu Circle",
-      "32-Storey luxury tower with wrap-around decks overlooking Lokhandwala",
-      "MahaRERA: P51800052790 | Possession: Dec 2030"
+      "Coveted D.N. Nagar address off New Link Road, Andheri West",
+      "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Lokhandwala High Street & Infiniti Mall",
+      "8 Mins to Andheri Railway Station & Western Express Highway",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Sky Infinity Pool overlooking Arabian Sea",
@@ -3009,12 +3009,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "30": {
     "keyFeatures": [
-      "Off New Link Road & Versova Link, Andheri West",
-      "2 Mins to DN Nagar & Versova Metro Stations",
+      "Prime address off New Link Road & Versova Link, Lokhandwala, Andheri West",
+      "2 Mins to DN Nagar & Oshiwara Metro Stations (Lines 1 & 2A)",
       "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "5 Mins to Lokhandwala Market & Western Express Highway",
-      "30-Storey towers designed with child-centric play areas and sky lounges",
-      "MahaRERA: P51800055123 | Possession: Dec 2029"
+      "4 Mins to Lokhandwala High Street, Infiniti Mall & Citi Mall",
+      "8 Mins to Andheri Railway Station & S.V. Road",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Lap Pool",
@@ -3029,12 +3029,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "31": {
     "keyFeatures": [
-      "Western Express Highway, Gundavali, Andheri East",
-      "1 Min to Gundavali Metro Station (Line 7) & WEH Metro (Line 1)",
-      "3 Mins to Andheri Railway Station & Hubtown SEZ",
+      "Prime frontage on Western Express Highway, Chakala / Gundavali, Andheri East",
+      "1 Min to Gundavali Metro Station (Line 7) & WEH Metro Station (Line 1)",
+      "4 Mins to Andheri Railway Station (East)",
       "5 Mins to Chhatrapati Shivaji Maharaj International Airport (T2)",
-      "Low-density 3.5-acre estate managed by Saint Amand 5-star hospitality",
-      "MahaRERA: P51800048862, P51800052417 | Possession: Dec 2026"
+      "8 Mins to MIDC, SEEPZ & Nesco IT Park",
+      "15 Mins to Bandra Kurla Complex (BKC) via Western Express Highway"
     ],
     "amenities": [
       "Olympic-Length Swimming Pool",
@@ -3049,12 +3049,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "32": {
     "keyFeatures": [
-      "New Link Road, Opposite Infiniti Mall, Andheri West",
-      "1 Min to Oshiwara Metro Station (Line 2A) & Infiniti Mall",
-      "3 Mins to Mega Mall, Citi Mall & Fun Republic",
-      "5 Mins to Lokhandwala Complex & Western Express Highway via JVLR",
-      "Landmark 38-storey international glass facade towers by DLF",
-      "MahaRERA: PR1181012500079 | Possession: June 2030"
+      "Landmark location directly on New Link Road, Opposite Infiniti Mall, Andheri West",
+      "1 Min walk to Lower Oshiwara Metro Station (Line 2A) & Infiniti Mall",
+      "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
+      "5 Mins to Lokhandwala Complex, PVR Cinemas & Citi Mall",
+      "8 Mins to Ram Mandir & Andheri Railway Stations",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Olympic-Size Swimming Pool with Sunbeds",
@@ -3069,12 +3069,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "33": {
     "keyFeatures": [
-      "Bandra Reclamation waterfront estate near Pali Hill, Bandra West",
-      "2 Mins to Bandra-Worli Sea Link & Coastal Road Interchange",
+      "Bandra Reclamation waterfront estate near Pali Hill & Mount Mary, Bandra West",
+      "2 Mins to Bandra-Worli Sea Link & Mumbai Coastal Road Interchange",
       "4 Mins to Bandra Underground Metro Station (Aqua Line 3)",
-      "Near Lilavati Hospital, Mount Mary, Pali Naka & Taj Lands End",
-      "Low-density 28-storey tower with private biometric elevators & 180° sea views",
-      "MahaRERA: PR1181012601775 | Possession: Nov 2033"
+      "Near Lilavati Hospital, Mount Mary Basilica, Pali Naka & Taj Lands End",
+      "8 Mins to Bandra Kurla Complex (BKC) via BKC Connector",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Seafront Infinity Pool",
@@ -3092,9 +3092,9 @@ export const PROJECT_ENRICHMENTS = {
       "Prime KC Marg, Bandra Reclamation, Bandra West",
       "2 Mins to Bandra-Worli Sea Link Toll Plaza & Lilavati Hospital",
       "3 Mins to Bandra Railway Station & Aqua Line 3 Metro",
-      "Neoclassical G+38 storey high-rise with copper domes & Corinthian columns",
-      "Rooftop infinity lap pool & landscaped sky decks overlooking Arabian Sea",
-      "MahaRERA: PR1180002501983 | Possession: Nov 2030"
+      "5 Mins to Carter Road Promenade, Bandstand & Pali Hill",
+      "8 Mins to Bandra Kurla Complex (BKC) via BKC Connector",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Neoclassical Rooftop Lap Pool",
@@ -3112,9 +3112,9 @@ export const PROJECT_ENRICHMENTS = {
       "Station Road, Nirmal Nagar, Bandra East directly opposite BKC",
       "2 Mins to BKC Underground Metro Station (Aqua Line 3) & BKC Connector",
       "3 Mins to Bandra Terminus & Western Express Highway Kalanagar Junction",
-      "Portuguese-colonial architectural towers with signature GS design",
-      "Over 45,000 sq.ft of curated amenities including rooftop infinity pool & cigar lounge",
-      "MahaRERA: P51800054847, P51800054846 | Possession: May 2030"
+      "4 Mins to Jio World Centre, US Consulate & Diamond Bourse",
+      "10 Mins to Bandra-Worli Sea Link & Western Suburbs",
+      "15 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Infinity Pool with BKC Skyline Views",
@@ -3130,11 +3130,11 @@ export const PROJECT_ENRICHMENTS = {
   "36": {
     "keyFeatures": [
       "G-Block, Bandra Kurla Complex (BKC) behind MCA Club",
-      "Adjacent to Jio World Centre, US Consulate & Trident BKC",
-      "Celebrity & tycoon double-height duplex residences with 24-foot ceilings",
-      "Private temperature-controlled plunge pools & biometric private lifts",
-      "Ready-to-move-in with 100% Full Occupancy Certificate (OC) received",
-      "MahaRERA: P51800007921 | Ready Possession (Full OC)"
+      "Directly adjacent to Jio World Centre, US Consulate & Trident BKC",
+      "2 Mins to BKC Underground Metro Station (Aqua Line 3)",
+      "3 Mins to BKC Connector (access to Eastern Express Highway & Sea Link)",
+      "5 Mins to Dhirubhai Ambani International School & American School of Bombay",
+      "15 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Temperature-Controlled Indoor Pool",
@@ -3150,11 +3150,11 @@ export const PROJECT_ENRICHMENTS = {
   "37": {
     "keyFeatures": [
       "Direct front-row facing on Carter Road Promenade, Bandra West",
-      "Only 2 residences per floor (47 total units) for supreme exclusivity",
       "Steps from Otters Club, Union Park & Joggers Park",
       "3 Mins to Khar Road Station & Aqua Line 3 Underground Metro",
       "5 Mins to Bandra-Worli Sea Link & Western Express Highway",
-      "MahaRERA: PR1180002600318 | Possession: Dec 2030"
+      "8 Mins to Pali Hill, Linking Road & Bandra Kurla Complex (BKC)",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Seafront Olympic-Length Lap Pool",
@@ -3172,9 +3172,9 @@ export const PROJECT_ENRICHMENTS = {
       "Sprawling 4.98-acre luxury estate at BKC Gateway, Bandra East",
       "2 Mins to BKC Connector, Western Express Highway & Kalanagar Junction",
       "3 Mins to BKC Underground Metro Station (Aqua Line 3)",
-      "2.5 Acres of vehicle-free landscaped podium open spaces & sporting courts",
-      "Ready-to-move-in with Full Occupancy Certificate (OC) received",
-      "MahaRERA: P51800004889 | Ready Possession (Full OC)"
+      "5 Mins to Jio World Centre, Asian Heart Institute & MCA Club",
+      "8 Mins to Bandra-Worli Sea Link & Bandra Railway Station",
+      "15 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Olympic-Size Swimming Pool",
@@ -3191,10 +3191,10 @@ export const PROJECT_ENRICHMENTS = {
     "keyFeatures": [
       "KC Marg, Bandra Reclamation, Bandra West",
       "Steps from Lilavati Hospital, Rangsharda & Sea Link entry",
-      "Soaring 34-storey tower with unobstructed views of Arabian Sea & Sea Link",
-      "Ready-to-move-in with Full Occupancy Certificate (OC) received",
-      "Ultra-luxurious Italian marble flooring & bespoke fixtures",
-      "MahaRERA: P51800046093 | Ready Possession (Full OC)"
+      "2 Mins to Bandra-Worli Sea Link & Coastal Road Interchange",
+      "4 Mins to Bandra Railway Station & Western Express Highway",
+      "8 Mins to Bandra Kurla Complex (BKC) via BKC Connector",
+      "18 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Rooftop Infinity Swimming Pool",
@@ -3209,12 +3209,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "40": {
     "keyFeatures": [
-      "Legendary 17-acre estate built around a 7-acre private urban park, Lower Parel",
+      "Iconic 17-acre development on Pandurang Budhkar Marg / Senapati Bapat Marg, Lower Parel",
       "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
       "4 Mins to Lower Parel Station (Western Line) & Currey Road Station (Central Line)",
       "Direct pedestrian & vehicular access to High Street Phoenix & Palladium Mall",
-      "50,000 sq.ft 'The Jewel' clubhouse by Patricia Urquiola with 7 swimming pools",
-      "MahaRERA: P51900001339, P51900014937 | Ready Possession (OC Received)"
+      "5 Mins to Mumbai Coastal Road Worli Interchange & Sea Link",
+      "10 Mins to Nariman Point & Fort via Coastal Road"
     ],
     "amenities": [
       "7 Swimming Pools including Olympic Lap Pool",
@@ -3230,12 +3230,12 @@ export const PROJECT_ENRICHMENTS = {
   },
   "41": {
     "keyFeatures": [
-      "Freehold 7-acre sanctuary with dual vistas of Mahalaxmi Racecourse & Arabian Sea",
+      "Sanapati Bapat Marg / Jacob Circle, Mahalaxmi / Lower Parel",
+      "Dual panoramic vistas of Mahalaxmi Racecourse & Arabian Sea",
       "2 Mins to Science Centre / Lower Parel Metro Station (Aqua Line 3)",
       "3 Mins to Mahalaxmi & Lower Parel Suburban Railway Stations",
-      "4 Mins to Lower Parel Commercial Boulevard, Palladium Mall & Kamala Mills",
-      "Biophilic architectural design with rooftop observatory & 5-lane infinity lap pool",
-      "MahaRERA: P51900015854, P51900016482, P51900021057 | Ready / 2026"
+      "4 Mins to Palladium Mall, High Street Phoenix & Kamala Mills",
+      "5 Mins to Mumbai Coastal Road Interchange at Haji Ali / Worli"
     ],
     "amenities": [
       "5-Lane Infinity Lap Pool & Jacuzzi Deck",
@@ -3255,8 +3255,8 @@ export const PROJECT_ENRICHMENTS = {
       "3 Mins to Lower Parel Commercial Boulevard, One International Centre & Palladium",
       "3 Mins to Mahalaxmi & Currey Road Railway Stations",
       "4 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
-      "Ready-to-move-in twin towers with full OC and soaring 11-12 ft ceiling heights",
-      "MahaRERA Registered: P51900031285 | Ready Possession (OC Received)"
+      "6 Mins to Mumbai Coastal Road Worli Interchange",
+      "10 Mins to Eastern Freeway & South Mumbai Business District"
     ],
     "amenities": [
       "Elevated Infinity-Edge Swimming Pool & Sun Deck",
@@ -3276,8 +3276,8 @@ export const PROJECT_ENRICHMENTS = {
       "2 Mins to Mumbai Coastal Road interchange & Worli Sea Promenade",
       "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
       "5 Mins to Lower Parel Commercial Boulevard, Phoenix Palladium & corporate hubs",
-      "Ultra-luxury low-density layout with only 3 residences per floor & private lifts",
-      "MahaRERA Registered: PR1171012501267, PR1171012501309 | Possession: 2030 / 2033"
+      "6 Mins to Bandra-Worli Sea Link",
+      "10 Mins to Nariman Point via Mumbai Coastal Road"
     ],
     "amenities": [
       "Infinity Lap Pool Overlooking Arabian Sea & Sunken Deck",
