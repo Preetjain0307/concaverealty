@@ -535,22 +535,23 @@ export const PROJECTS_DATA = [
   // ==========================================
   {
     id: 9,
-    name: "Naring",
-    builder: "Naring Group",
-    tagline: "Exclusive Residential Enclave in Malad West",
+    name: "Narang Vivenda",
+    builder: "Narang Realty",
+    tagline: "Luxury High-Rise Living with Miyawaki Forest in Evershine Nagar",
     location: "Malad",
-    locality: "Link Road Corridor, Malad West",
+    locality: "Evershine Nagar, Malad West",
+    exactAddress: "Evershine Nagar, Off New Link Road, Malad West, Mumbai - 400064",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Development",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Malad Parcel",
-    towers: "High-Rise Residential Tower",
-    towerDetails: "Contemporary architectural facade with luxury units",
-    elevators: "Modern High-Speed Elevators",
-    amenitiesCount: "Curated Luxury Amenities",
+    priceRange: "₹2.76 Cr - ₹9.45 Cr*",
+    priceDisplay: "₹2.76 Cr*",
+    status: "Under Construction",
+    possession: "Dec 2029",
+    rera: "P51800055504",
+    landParcel: "Exclusive Boutique Land Parcel",
+    towers: "38-Storey High-Rise Tower",
+    towerDetails: "38 Storeys of Iconic Architecture with Dedicated Miyawaki Green Haven",
+    elevators: "High-Speed Elevators with Power Backup",
+    amenitiesCount: "40+ Curated Lifestyle Amenities",
     coverImage: "/projects/naring_malad_cover.jpg",
     images: [
       "/projects/naring_malad_cover.jpg",
@@ -559,36 +560,52 @@ export const PROJECTS_DATA = [
       "/project_photos/9%20-%20Naring%20(Malad)/3.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan A", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Plan B", possessionDate: "TBA" }
+      { bhk: "2 BHK Luxury", carpetArea: "837 sq.ft CA", price: "₹2.76 Cr*", floorPlanLabel: "Type 2A Luxe", possessionDate: "Dec 2029" },
+      { bhk: "3 BHK Royal", carpetArea: "1,401 sq.ft CA", price: "₹4.69 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2029" },
+      { bhk: "4 BHK Palatial Suite", carpetArea: "1,658 - 2,238 sq.ft CA", price: "₹7.00 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2029" }
     ],
-    mapUrl: "https://maps.google.com/?q=Naring+Naring+Link+Road+%2C+Malad+West+Mumbai",
-    overview: "An upcoming luxury development by Naring in the vibrant heart of Malad West, designed to deliver high-quality contemporary residences.",
+    mapUrl: "https://maps.google.com/?q=Narang+Vivenda+Evershine+Nagar+Malad+West+Mumbai",
+    overview: "Narang Vivenda is an ultra-premium residential landmark in the tranquil and coveted enclave of Evershine Nagar, Malad West. Rising 38 storeys, it offers masterfully crafted 2, 3, and 4 BHK residences surrounded by a private Miyawaki forest retreat, world-class wellness amenities, and rapid transit connectivity.",
     highlights: [
-      "Strategic location near commercial and entertainment hubs",
-      "Curated lifestyle amenities for elite family living",
-      "Early priority enquiry slots now open"
+      "Coveted residential address in Evershine Nagar, Malad West",
+      "Private Miyawaki forest sanctuary with lush green walking trails",
+      "25-meter semi-Olympic lap pool, toddler splash pool & sun lounge deck",
+      "3 Mins to New Link Road & Lower Malad Metro Station (Line 2A)"
     ],
-    amenities: ["Clubhouse", "Swimming Pool", "Gymnasium", "24/7 Security", "Landscaped Garden"]
+    amenities: [
+      "Exclusive Miyawaki Forest Retreat",
+      "25-Meter Semi-Olympic Lap Pool",
+      "Kids Splash Pool & Sun Deck",
+      "Fully Equipped Designer Gymnasium",
+      "Pickleball & Multipurpose Sports Court",
+      "Sunken Outdoor Amphitheatre",
+      "Landscaped Sky Terrace & Party Deck",
+      "Dedicated Work-From-Home (WFH) Pods",
+      "Grand Double-Height Entrance Lobby",
+      "Children's Play Adventure Park",
+      "Senior Citizen Zen Corner",
+      "24/7 Multi-Tier Biometric Security"
+    ]
   },
   {
     id: 10,
-    name: "Runwal",
-    builder: "Runwal Group",
-    tagline: "Premier High-Rise Urban Living in Malad West",
+    name: "Runwal Auris",
+    builder: "Runwal Realty",
+    tagline: "G+68 Storey Ultra-Luxury Sea & Skyline Living in Malad West",
     location: "Malad",
-    locality: "Near Inorbit Mall, Malad West",
+    locality: "Link Road, Kanchpada, Malad West",
+    exactAddress: "Auris Serenity Tower 4, Off New Link Road, Kanchpada, Near Mithchowki, Malad West, Mumbai - 400064",
     city: "Mumbai",
-    priceRange: "₹1.85 Cr - ₹3.60 Cr*",
-    priceDisplay: "₹1.85 Cr*",
+    priceRange: "₹4.99 Cr - ₹14.00 Cr*",
+    priceDisplay: "₹4.99 Cr*",
     status: "Under Construction",
-    possession: "Dec 2028",
-    rera: "P51800048911",
-    landParcel: "3.5 Acres",
-    towers: "3 Residential Towers",
-    towerDetails: "G + 38 Storeys with lifestyle podium",
-    elevators: "4 High-Speed Elevators",
-    amenitiesCount: "35+ Amenities",
+    possession: "Dec 2030 / Dec 2032",
+    rera: "P51800055792",
+    landParcel: "Part of Landmark ~8-Acre Auris Serenity Mega Complex",
+    towers: "Iconic G+68 Storey Skyscraper (Tower 4)",
+    towerDetails: "G+68 Storeys | Low Density with only 6 residences per floor starting ~100 ft above ground",
+    elevators: "High-Speed Passenger & Service Elevators",
+    amenitiesCount: "64+ Curated Lifestyle Amenities",
     coverImage: "/projects/project_10_user_1.png",
     images: [
       "/projects/project_10_user_1.png",
@@ -596,36 +613,52 @@ export const PROJECTS_DATA = [
       "/projects/runwal_auris_official.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Elegant", carpetArea: "670 sq.ft CA", price: "₹1.85 Cr*", floorPlanLabel: "Type 2E", possessionDate: "Dec 2028" },
-      { bhk: "3 BHK Grand", carpetArea: "990 sq.ft CA", price: "₹3.60 Cr*", floorPlanLabel: "Type 3G", possessionDate: "Dec 2028" }
+      { bhk: "3 BHK Grande", carpetArea: "1,428 - 1,684 sq.ft CA", price: "₹4.99 Cr*", floorPlanLabel: "Type 3A Grande Suite", possessionDate: "Dec 2032" },
+      { bhk: "4 BHK Royal Presidential", carpetArea: "2,016 - 2,061 sq.ft CA", price: "₹7.65 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Dec 2032" },
+      { bhk: "Bespoke Jodi Residences", carpetArea: "3,400 - 4,100+ sq.ft CA", price: "₹13.50 Cr*", floorPlanLabel: "Custom Palatial Jodi", possessionDate: "Dec 2032" }
     ],
-    mapUrl: "https://maps.google.com/?q=Runwal+Runwal+Inorbit+Mall%2C+Malad+West+Mumbai",
-    overview: "Crafted by Runwal Group, this Malad development blends modern lifestyle conveniences with rapid access to Mindspace IT Park and Link Road retail avenues.",
+    mapUrl: "https://maps.google.com/?q=Runwal+Auris+Serenity+New+Link+Road+Malad+West+Mumbai",
+    overview: "Runwal Auris is an architectural marvel soaring 68 storeys high in Malad West. As Tower 4 of the iconic Auris Serenity development, it redefines ultra-luxury with residences starting 100 feet above ground level, expansive sea and city panoramas, a massive landscaped Eco-Deck, and an elite low-density layout of just 6 residences per floor.",
     highlights: [
-      "Moments away from Inorbit Mall and Malad railway station",
-      "Podium level recreation deck with sky pool",
-      "Renowned Runwal delivery track record"
+      "Soaring 68-storey skyscraper with breathtaking sea & skyline vistas",
+      "Low-density privilege with only 6 residences per lobby floor",
+      "Massive multi-level Eco-Deck with 64+ world-class resort amenities",
+      "2 Mins to Mithchowki & Malad West Metro Stations (Line 2A)"
     ],
-    amenities: ["Swimming Pool", "Clubhouse", "Children's Play Area", "Gymnasium", "Banquet Hall"]
+    amenities: [
+      "Olympic-Sized Temperature-Controlled Lap Pool",
+      "Heated Wellness Pool & Kids Splash Zone",
+      "Palatial Multi-Tier Lifestyle Clubhouse",
+      "Sky Lounge & Stargazing Observatory",
+      "Advanced Fitness & Cardio Suite",
+      "Private Mini-Theater & Screening Room",
+      "Badminton, Squash & Table Tennis Arenas",
+      "Lush Landscaped Eco-Deck & Water Cascades",
+      "Yoga & Meditation Deck",
+      "Grand Double-Height Designer Lobby",
+      "Executive Banquet & Celebration Hall",
+      "24/7 Concierge & Valet Parking Services"
+    ]
   },
   {
     id: 11,
-    name: "Lodha",
+    name: "Lodha Malad",
     builder: "Lodha Group",
-    tagline: "Signature Lodha Tower in Malad West",
+    tagline: "Signature Lodha Luxury Living in Evershine Nagar, Malad West",
     location: "Malad",
-    locality: "Link Road, Malad West",
+    locality: "Evershine Nagar, Malad West",
+    exactAddress: "Off Link Road, Evershine Nagar, Malad West, Mumbai - 400064",
     city: "Mumbai",
-    priceRange: "Price on Request*",
-    priceDisplay: "Price on Request*",
-    status: "Upcoming Launch",
-    possession: "Information Coming Soon",
-    rera: "Information Coming Soon",
-    landParcel: "Prime Acreage",
-    towers: "Signature High-Rise Tower",
-    towerDetails: "Iconic contemporary facade with private sun decks",
-    elevators: "High-Speed Elevators",
-    amenitiesCount: "Lodha Signature Amenities",
+    priceRange: "₹2.45 Cr - ₹6.80 Cr*",
+    priceDisplay: "₹2.45 Cr*",
+    status: "Ready Possession / Final Inventory",
+    possession: "Ready / Phased Handover",
+    rera: "P51800012243",
+    landParcel: "Multi-Acre Gated Development",
+    towers: "37-Storey Signature High-Rise Towers",
+    towerDetails: "G + 37 Storeys | Over 70% Open Spaces with Saint Amand Hospitality",
+    elevators: "High-Speed Elevators with Automatic Rescue Device",
+    amenitiesCount: "35+ Curated Lifestyle Amenities",
     coverImage: "/projects/lodha_malad_cover.jpg",
     images: [
       "/projects/lodha_malad_cover.jpg",
@@ -633,36 +666,50 @@ export const PROJECTS_DATA = [
       "/project_photos/11%20-%20Lodha%20(Malad)/2.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Luxury", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 2", possessionDate: "TBA" },
-      { bhk: "3 BHK Royal", carpetArea: "Information Coming Soon", price: "Price on Request*", floorPlanLabel: "Type 3", possessionDate: "TBA" }
+      { bhk: "2 BHK Signature", carpetArea: "740 - 797 sq.ft CA", price: "₹2.45 Cr*", floorPlanLabel: "Type 2A Signature", possessionDate: "Ready / Phased" },
+      { bhk: "3 BHK Grande", carpetArea: "1,082 - 1,095 sq.ft CA", price: "₹3.85 Cr*", floorPlanLabel: "Type 3A Grande", possessionDate: "Ready / Phased" },
+      { bhk: "4 BHK Royal Suite", carpetArea: "1,563 sq.ft CA", price: "₹5.95 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "Ready / Phased" }
     ],
-    mapUrl: "https://maps.google.com/?q=Lodha+Lodha+Link+Road%2C+Malad+West+Mumbai",
-    overview: "Lodha's landmark residential vision for Malad West, featuring grand club facilities, Saint Amand hospitality services, and bespoke finishing.",
+    mapUrl: "https://maps.google.com/?q=Lodha+Raj+Infinia+Evershine+Nagar+Malad+West+Mumbai",
+    overview: "Lodha Malad brings the Lodha Group's signature luxury to Evershine Nagar, Malad West. Rising 37 storeys, the project features intelligently planned 2, 3, and 4 BHK residences with floor-to-ceiling French windows, Saint Amand hospitality services, expansive clubhouse facilities, and lush landscaped gardens.",
     highlights: [
-      "Reputed brand pedigree with world-class landscaping",
-      "Strategically positioned on high-growth Link Road belt",
-      "Pre-launch registration privileges available"
+      "Prestigious address in Evershine Nagar with serene neighborhood charm",
+      "Over 70% dedicated open green spaces with world-class landscaping",
+      "Signature clubhouse with infinity-edge swimming pool & sports arena",
+      "3 Mins to New Link Road & Lower Malad Metro Station (Line 2A)"
     ],
-    amenities: ["Clubhouse", "Swimming Pool", "Fitness Center", "Concierge Service", "Landscaped Decks"]
+    amenities: [
+      "Infinity-Edge Swimming Pool & Sun Deck",
+      "Signature Lodha Multi-Level Clubhouse",
+      "Fully Equipped Gymnasium & Health Club",
+      "Tennis & Multi-Purpose Sports Courts",
+      "Indoor Games, Billiards & Card Room",
+      "Children's Play Arena & Sand Pit",
+      "Landscaped Themed Gardens & Reflexology Track",
+      "Banquet & Celebration Hall",
+      "Saint Amand 5-Star Concierge Services",
+      "24/7 Multi-Tier Electronic Security"
+    ]
   },
   {
     id: 12,
-    name: "Enchante Point",
-    builder: "Enchante / Transcon",
-    tagline: "Bespoke Boutique Luxury in Malad West",
+    name: "Anchor Point Aviara",
+    builder: "Anchor Point Developers",
+    tagline: "Elevated High-Rise Luxury with 50+ Amenities near Orlem",
     location: "Malad",
-    locality: "Off S.V. Road, Malad West",
+    locality: "Orlem Circle, Malad West",
+    exactAddress: "Bhagwan Gautam Buddha Road, Near Orlem Circle, Malad West, Mumbai - 400064",
     city: "Mumbai",
-    priceRange: "₹1.70 Cr - ₹2.95 Cr*",
-    priceDisplay: "₹1.70 Cr*",
+    priceRange: "₹1.24 Cr - ₹2.89 Cr*",
+    priceDisplay: "₹1.24 Cr*",
     status: "Under Construction",
-    possession: "March 2027",
-    rera: "P51800038102",
-    landParcel: "1.8 Acres",
-    towers: "Single Tower | 34 Storeys",
-    towerDetails: "G + 34 Storeys with boutique finishing",
-    elevators: "3 High-Speed Elevators",
-    amenitiesCount: "20+ Curated Amenities",
+    possession: "Dec 2028 / April 2029",
+    rera: "P51800055516",
+    landParcel: "1.8 Acres Gated Enclave",
+    towers: "High-Rise Residential Towers (Up to 34 Storeys)",
+    towerDetails: "G + 34 Storeys | Over 50 Podium and Rooftop Lifestyle Amenities",
+    elevators: "3 High-Speed Elevators per Tower",
+    amenitiesCount: "50+ Curated Lifestyle Amenities",
     coverImage: "/project_photos/12%20-%20Enchante%20Point/cover.jpg",
     images: [
       "/project_photos/12%20-%20Enchante%20Point/cover.jpg",
@@ -672,17 +719,31 @@ export const PROJECTS_DATA = [
       "/project_photos/12%20-%20Enchante%20Point/5.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Boutique", carpetArea: "630 sq.ft CA", price: "₹1.70 Cr*", floorPlanLabel: "Type 2B", possessionDate: "March 2027" },
-      { bhk: "3 BHK Elegance", carpetArea: "920 sq.ft CA", price: "₹2.95 Cr*", floorPlanLabel: "Type 3E", possessionDate: "March 2027" }
+      { bhk: "1 BHK Urban Suite", carpetArea: "421 - 467 sq.ft CA", price: "₹1.24 Cr*", floorPlanLabel: "Type 1A Suite", possessionDate: "Dec 2028" },
+      { bhk: "2 BHK Elite Deck", carpetArea: "650 - 741 sq.ft CA", price: "₹1.89 Cr*", floorPlanLabel: "Type 2A Elite", possessionDate: "Dec 2028" },
+      { bhk: "3 BHK Presidential Deck", carpetArea: "797 - 1,009 sq.ft CA", price: "₹2.39 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2028" }
     ],
-    mapUrl: "https://maps.google.com/?q=Enchante+Point+S.V.+Road%2C+Malad+West+Mumbai",
-    overview: "Enchante Point delivers boutique luxury living with private decks, serene open layouts, and effortless access to business districts.",
+    mapUrl: "https://maps.google.com/?q=Anchor+Point+Aviara+Bhagwan+Gautam+Buddha+Road+Malad+West+Mumbai",
+    overview: "Anchor Point Aviara is an exquisite high-rise residential sanctuary located off Bhagwan Gautam Buddha Road near Orlem Circle in Malad West. Blending architectural elegance with smart layouts, the development features 1, 2, and 3 BHK deck residences complemented by over 50 podium and rooftop amenities.",
     highlights: [
-      "Low density boutique building with private community feel",
-      "Rooftop infinity splash pool with sunset lounge",
-      "Near Malad metro station and commercial centers"
+      "Prime location near Orlem Circle & Lourdes Colony in Malad West",
+      "Over 50 curated lifestyle, podium, and rooftop sky amenities",
+      "Half-Olympic infinity lap pool with heated jacuzzi & spa",
+      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station"
     ],
-    amenities: ["Rooftop Pool", "Fitness Studio", "Yoga Corner", "Terrace Garden", "Lobby Lounge"]
+    amenities: [
+      "Half-Olympic Infinity-Edge Lap Pool",
+      "Heated Jacuzzi, Spa & Sauna",
+      "Modern Gymnasium & Yoga Meditation Deck",
+      "Rooftop Sky Dining & Barbeque Zone",
+      "Grand Double-Height Entrance Lobby",
+      "Multipurpose Banquet Hall",
+      "Business Centre & Co-Working Hub",
+      "Crèche & Daycare Facility",
+      "Landscaped Gardens & Amphitheatre",
+      "Jogging Track & Children's Play Arena",
+      "24/7 Advanced Surveillance & Valet"
+    ]
   },
 
   // ==========================================
@@ -2309,74 +2370,95 @@ export const PROJECT_ENRICHMENTS = {
   },
   "9": {
     "keyFeatures": [
-      "Located on New Link Road Corridor near Mith Chowki, Malad West",
-      "3 Mins to Malad West Metro Station (Line 2A)",
-      "6 Mins to Malad Railway Station & S.V. Road",
-      "4 Mins to Inorbit Mall, Mindspace IT Park & Zenith Hospital"
-],
+      "Coveted residential address in Evershine Nagar, Malad West",
+      "3 Mins to Lower Malad Metro Station (Line 2A) & New Link Road",
+      "5 Mins to Mindspace IT Park, Inorbit Mall & Infiniti Mall",
+      "7 Mins to Malad Railway Station & S.V. Road",
+      "Bordered by private Miyawaki forest retreat & lush open greens",
+      "MahaRERA Registered: P51800055504 | Target Possession: Dec 2029"
+    ],
     "amenities": [
-      "Rooftop Infinity Swimming Pool",
-      "Designer Sky Clubhouse",
-      "Hi-Tech Fitness Gym",
-      "Rooftop Party Deck",
-      "Children's Play Arena",
-      "Indoor Games Lounge",
-      "Multipurpose Banquet",
-      "24/7 CCTV & RFID Access"
+      "Exclusive Miyawaki Forest Retreat",
+      "25-Meter Semi-Olympic Lap Pool",
+      "Kids Splash Pool & Sun Deck",
+      "Fully Equipped Designer Gymnasium",
+      "Pickleball & Multipurpose Sports Court",
+      "Sunken Outdoor Amphitheatre",
+      "Landscaped Sky Terrace & Party Deck",
+      "Dedicated Work-From-Home (WFH) Pods",
+      "Grand Double-Height Entrance Lobby",
+      "Children's Play Adventure Park",
+      "Senior Citizen Zen Corner",
+      "24/7 Multi-Tier Biometric Security"
     ]
   },
   "10": {
     "keyFeatures": [
-      "Adjacent to Inorbit Mall & Mindspace, Malad West",
-      "2 Mins to Lower Malad Metro Station (Line 2A)",
-      "6 Mins to Malad Railway Station via S.V. Road",
-      "4 Mins to Mindspace IT & Commercial SEZ & Infiniti Mall Malad"
-],
+      "Tower 4 of the landmark 8-acre Auris Serenity development, Malad West",
+      "Soaring 68-storey iconic skyscraper with panoramic Arabian Sea views",
+      "Low density living with only 6 residences per lobby floor",
+      "2 Mins to Mithchowki & Malad West Metro Stations (Line 2A)",
+      "4 Mins to Inorbit Mall, Mindspace IT Park & New Link Road",
+      "MahaRERA Registered: P51800055792 | Possession: Dec 2030 / 2032"
+    ],
     "amenities": [
-      "Large Lap Pool & Kids Pool",
-      "Palatial Lifestyle Clubhouse",
+      "Olympic-Sized Temperature-Controlled Lap Pool",
+      "Heated Wellness Pool & Kids Splash Zone",
+      "Palatial Multi-Tier Lifestyle Clubhouse",
+      "Sky Lounge & Stargazing Observatory",
       "Advanced Fitness & Cardio Suite",
-      "Squash & Table Tennis Courts",
-      "Landscaped Podium Gardens",
-      "Banquet Hall with Kitchen",
-      "Jogging Loop",
-      "Co-Working Executive Lounge"
+      "Private Mini-Theater & Screening Room",
+      "Badminton, Squash & Table Tennis Arenas",
+      "Lush Landscaped Eco-Deck & Water Cascades",
+      "Yoga & Meditation Deck",
+      "Grand Double-Height Designer Lobby",
+      "Executive Banquet & Celebration Hall",
+      "24/7 Concierge & Valet Parking Services"
     ]
   },
   "11": {
     "keyFeatures": [
-      "Prime frontage on New Link Road near Chincholi Bunder, Malad West",
-      "3 Mins to Valnai - Meeth Chowki Metro Station (Line 2A)",
-      "5 Mins to Malad Railway Station & S.V. Road",
-      "4 Mins to Infiniti Mall Malad, Uncle Kitchens & Inorbit Mall"
-],
+      "Prestigious Evershine Nagar address off New Link Road, Malad West",
+      "3 Mins to Lower Malad Metro Station (Line 2A)",
+      "5 Mins to Malad Railway Station, S.V. Road & Western Express Highway",
+      "5 Mins to Inorbit Mall, Infiniti Mall & Ryan International School",
+      "Over 70% open landscaped spaces with Saint Amand hospitality",
+      "MahaRERA Registered: P51800012243 | Ready Possession / Phased Handover"
+    ],
     "amenities": [
-      "Signature Lodha Swimming Pool",
-      "Grand Entrance Lobby",
-      "World-Class Fitness Center",
-      "Indoor Games & Billiards Room",
-      "Private Meeting Rooms",
-      "Sky Deck with City Views",
-      "Children's Play Zone",
-      "24/7 Lodha Concierge"
+      "Infinity-Edge Swimming Pool & Sun Deck",
+      "Signature Lodha Multi-Level Clubhouse",
+      "Fully Equipped Gymnasium & Health Club",
+      "Tennis & Multi-Purpose Sports Courts",
+      "Indoor Games, Billiards & Card Room",
+      "Children's Play Arena & Sand Pit",
+      "Landscaped Themed Gardens & Reflexology Track",
+      "Banquet & Celebration Hall",
+      "Saint Amand 5-Star Concierge Services",
+      "24/7 Multi-Tier Electronic Security"
     ]
   },
   "12": {
     "keyFeatures": [
-      "Off S.V. Road & Link Road near Sundar Nagar, Malad West",
-      "3 Mins to Malad Railway Station (West)",
-      "5 Mins to Malad West Metro Station (Line 2A)",
-      "Near Sundar Nagar Garden, Ryan International School & Surana Hospital"
-],
+      "Prime Bhagwan Gautam Buddha Road location near Orlem Circle, Malad West",
+      "3 Mins to Orlem Church & Lourdes Colony",
+      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station",
+      "7 Mins to Malad Railway Station & Link Road retail hubs",
+      "Over 50 lifestyle, podium and rooftop sky amenities",
+      "MahaRERA Registered: P51800055516 | Target Possession: Dec 2028 / April 2029"
+    ],
     "amenities": [
-      "Rooftop Horizon Swimming Pool",
-      "Boutique Sky Clubhouse",
-      "Fitness & Yoga Studio",
-      "Designer Landscaped Terraces",
-      "Indoor Games Arcade",
-      "Private Party Lounge",
-      "Multipurpose Community Hall",
-      "Hi-Speed Passenger Elevators"
+      "Half-Olympic Infinity-Edge Lap Pool",
+      "Heated Jacuzzi, Spa & Sauna",
+      "Modern Gymnasium & Yoga Meditation Deck",
+      "Rooftop Sky Dining & Barbeque Zone",
+      "Grand Double-Height Entrance Lobby",
+      "Multipurpose Banquet Hall",
+      "Business Centre & Co-Working Hub",
+      "Crèche & Daycare Facility",
+      "Landscaped Gardens & Amphitheatre",
+      "Jogging Track & Children's Play Arena",
+      "24/7 Advanced Surveillance & Valet"
     ]
   },
   "13": {
