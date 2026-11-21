@@ -317,20 +317,21 @@ export const PROJECTS_DATA = [
     id: 5,
     name: "Godrej Reserve",
     builder: "Godrej Properties",
-    tagline: "Lush Forest Resort Living amidst Western Suburbs",
+    tagline: "18.6-Acre Forest Living Sanctuary with 51 to 66 Storey Skyscraper Towers",
     location: "Kandivali",
     locality: "Akurli Road, Kandivali East",
+    exactAddress: "Akurli Road, Opposite Growel's 101 Mall, Kandivali East, Mumbai - 400101",
     city: "Mumbai",
-    priceRange: "₹2.45 Cr - ₹4.95 Cr*",
-    priceDisplay: "₹2.45 Cr*",
+    priceRange: "₹5.35 Cr - ₹8.69 Cr*",
+    priceDisplay: "₹5.35 Cr*",
     status: "Under Construction",
-    possession: "June 2027",
-    rera: "P51800031200",
-    landParcel: "18.5 Acres Natural Green Canvas",
-    towers: "6 Residential Towers",
-    towerDetails: "G + 42 Storey Modern Towers overlooking green canopy",
-    elevators: "4 Elevators per wing",
-    amenitiesCount: "60+ Resort Amenities including 6-acre forest reserve",
+    possession: "June 2030",
+    rera: "P51800054703, P51800054690, P51800054691, P51800055694, P51800079457",
+    landParcel: "18.6 Acres (Largest Forest Township in Kandivali)",
+    towers: "6 Iconic High-Rise Skyscraper Towers (51 to 66 Storeys)",
+    towerDetails: "51 to 66 Storeys | Massive Forest Retreat, Tropical Oasis & Elevated Sky Terraces",
+    elevators: "High-Speed Passenger & Service Elevators",
+    amenitiesCount: "60+ Curated Forest Resort & Wellness Amenities",
     coverImage: "/projects/godrej_reserve_cover.jpg",
     images: [
       "/projects/godrej_reserve_cover.jpg",
@@ -342,38 +343,52 @@ export const PROJECTS_DATA = [
       "/project_photos/5%20-%20Godrej%20Reserve/5.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Forest View", carpetArea: "750 - 820 sq.ft CA", price: "₹2.45 Cr*", floorPlanLabel: "Type 2F Serenity", possessionDate: "June 2027" },
-      { bhk: "3 BHK Luxe Canopy", carpetArea: "1,050 - 1,220 sq.ft CA", price: "₹3.55 Cr*", floorPlanLabel: "Type 3C Grand", possessionDate: "June 2027" },
-      { bhk: "4 BHK Royal Deck", carpetArea: "1,600 sq.ft CA", price: "₹4.95 Cr*", floorPlanLabel: "Type 4R Forest", possessionDate: "June 2027" }
+      { bhk: "3 BHK Luxe", carpetArea: "1,126 sq.ft CA", price: "₹5.35 Cr*", floorPlanLabel: "Type 3A Forest View", possessionDate: "June 2030" },
+      { bhk: "3 BHK Grande", carpetArea: "1,457 sq.ft CA", price: "₹6.06 Cr*", floorPlanLabel: "Type 3B Royal Deck", possessionDate: "June 2030" },
+      { bhk: "4 BHK Presidential Deck", carpetArea: "2,009 - 2,033 sq.ft CA", price: "₹8.69 Cr*", floorPlanLabel: "Type 4A Sky Suite", possessionDate: "June 2030" }
     ],
     mapUrl: "https://maps.google.com/?q=Godrej+Reserve+Akurli+Road%2C+Kandivali+East+Mumbai",
-    overview: "Nestled in Kandivali East, Godrej Reserve brings nature right to your balcony with an expansive 18.5-acre green habitat and modern amenities designed for multi-generational luxury.",
+    overview: "Godrej Reserve is an expansive 18.6-acre ultra-luxury residential township sprawled across the natural green canvas of Kandivali East. Rising up to 66 storeys, it offers bespoke 3 & 4 BHK residences with expansive running sundecks, private forest trails, and world-class resort amenities opposite Growel's 101 Mall.",
     highlights: [
-      "Connected directly to Western Express Highway and upcoming metro line",
-      "Over 6 acres of conserved botanical landscape and fruit orchards",
-      "Olympic-length pool, elevated jogging trail and organic cafe",
-      "Low-density living with maximum natural ventilation"
+      "Grand 18.6-acre residential habitat with conserved forest canopy & tropical oasis",
+      "Architectural marvel with towers reaching up to 66 storeys with panoramic views",
+      "Multi-level international clubhouse with temperature-controlled pool & crèche",
+      "Opposite Growel's 101 Mall & just 2 Mins to Western Express Highway & Akurli Metro"
     ],
-    amenities: ["Olympic Pool", "6-Acre Forest Park", "Elevated Jogging Track", "Clubhouse", "Cricket Pitch", "Pet Park"]
+    amenities: [
+      "Multi-Level Grand Clubhouse",
+      "Olympic-Length Lap Pool & Toddler Splash Pool",
+      "Tropical Forest Retreat & Nature Trails",
+      "State-of-the-Art Gymnasium",
+      "Indoor Badminton & Squash Courts",
+      "Creche / Daycare Facility",
+      "Open-Air Amphitheatre",
+      "Cricket Pitch & Sports Arena",
+      "Yoga & Meditation Pavilions",
+      "Kids Adventure Play Zone",
+      "Private Dining Terrace",
+      "24/7 Multi-Tier Smart Security"
+    ]
   },
   {
     id: 6,
     name: "Mahindra Vista",
     builder: "Mahindra Lifespaces",
-    tagline: "Eco-Conscious Biophilic Living in Kandivali East",
+    tagline: "Biophilic Luxury Living with 28,000 sq.ft Clubhouse on Akurli Road",
     location: "Kandivali",
     locality: "Akurli Road, Kandivali East",
+    exactAddress: "Mahindra Yellow Gate, Akurli Road, Kandivali East, Mumbai - 400101",
     city: "Mumbai",
-    priceRange: "₹2.25 Cr - ₹4.50 Cr*",
-    priceDisplay: "₹2.25 Cr*",
-    status: "Newly Launched",
-    possession: "Dec 2028",
-    rera: "P51800054328",
-    landParcel: "9.5 Acres",
-    towers: "4 High-Rise Towers (35 Storeys)",
-    towerDetails: "G + 4 Podium + 35 Storeys with green terraces",
-    elevators: "4 High-Speed Elevators",
-    amenitiesCount: "40+ Biophilic Amenities",
+    priceRange: "₹1.29 Cr - ₹5.64 Cr*",
+    priceDisplay: "₹1.75 Cr*",
+    status: "Newly Launched / Under Construction",
+    possession: "Dec 2029 (Phase 1) / Dec 2030 (Phase 2)",
+    rera: "P51800054671 (Phase 1), P51800079147 (Phase 2)",
+    landParcel: "7.74 - 9.5 Acres (3.5+ Acres Dedicated Greenery)",
+    towers: "4 High-Rise Towers (Up to 35-37 Storeys)",
+    towerDetails: "Up to 37 Storeys | Biophilic Living with ~28,000 sq.ft Grand Central Clubhouse",
+    elevators: "4 High-Speed Passenger Elevators per wing",
+    amenitiesCount: "40+ Biophilic & Sustainable Lifestyle Amenities",
     coverImage: "/projects/mahindra_vista_official.webp",
     images: [
       "/projects/mahindra_vista_official.webp",
@@ -382,37 +397,53 @@ export const PROJECTS_DATA = [
       "/projects/project_img_15.webp"
     ],
     configurations: [
-      { bhk: "2 BHK Premium", carpetArea: "765 sq.ft CA", price: "₹2.25 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2028" },
-      { bhk: "3 BHK Luxury", carpetArea: "1,080 sq.ft CA", price: "₹3.35 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2028" },
-      { bhk: "4 BHK Grande", carpetArea: "1,550 sq.ft CA", price: "₹4.50 Cr*", floorPlanLabel: "Type 4A", possessionDate: "Dec 2028" }
+      { bhk: "1 BHK Select", carpetArea: "432 sq.ft CA", price: "₹1.29 Cr*", floorPlanLabel: "Type 1A Comfort", possessionDate: "Dec 2029" },
+      { bhk: "2 BHK Premium", carpetArea: "628 - 653 sq.ft CA", price: "₹1.75 Cr*", floorPlanLabel: "Type 2A Biophilic", possessionDate: "Dec 2029" },
+      { bhk: "3 BHK Luxury", carpetArea: "934 - 1,061 sq.ft CA", price: "₹2.68 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Dec 2029" },
+      { bhk: "4 BHK Presidential", carpetArea: "1,476 - 1,624 sq.ft CA", price: "₹4.87 Cr*", floorPlanLabel: "Type 4A Sky Suite", possessionDate: "Dec 2030" }
     ],
     mapUrl: "https://maps.google.com/?q=Mahindra+Vista+Akurli+Road%2C+Kandivali+East+Mumbai",
-    overview: "Mahindra Vista presents biophilic luxury homes crafted with green building principles, panoramic hillside vistas, and zero-compromise community infrastructure.",
+    overview: "Mahindra Vista is an IGBC Platinum pre-certified biophilic luxury sanctuary crafted by Mahindra Lifespaces on Akurli Road. Spanning over 7.74 acres with 3.5+ acres of central green podiums, it features a grand 28,000 sq.ft clubhouse, infinity-edge swimming pool, and panoramic vistas of Sanjay Gandhi National Park.",
     highlights: [
-      "IGBC Platinum pre-certified sustainable design",
-      "Sprawling central lifestyle podium with amphitheater",
-      "Rapid connection to Western Express Highway"
+      "IGBC Platinum Pre-Certified sustainable green homes with 3.5+ acres open greenery",
+      "Grand 28,000 sq.ft biophilic clubhouse with pilates studios & indoor games",
+      "Infinity-edge swimming pool & kids splash pool overlooking nature reserve",
+      "Prime transit: 2 Mins to Western Express Highway & Akurli Metro Station"
     ],
-    amenities: ["Lap Pool", "Biophilic Clubhouse", "Amphitheater", "Indoor Games", "Reflexology Trail"]
+    amenities: [
+      "Infinity-Edge Lap Pool",
+      "28,000 sq.ft Biophilic Clubhouse",
+      "Indoor & Outdoor Gymnasium",
+      "Pilates & Aerobics Studio",
+      "Multipurpose Sports Court",
+      "Squash Court",
+      "Mini Screening Theatre",
+      "Organic Community Farming Deck",
+      "Kids Adventure Park",
+      "Pet Park",
+      "Barbecue Pavilion",
+      "Senior Citizens Reflexology Trail"
+    ]
   },
   {
     id: 7,
     name: "Godrej Bliss",
     builder: "Godrej Properties",
-    tagline: "Resort-Inspired Urban Living in Kandivali East",
+    tagline: "Resort-Inspired Living with 39-Storey Towers & 40+ Amenities in Kandivali East",
     location: "Kandivali",
-    locality: "Lokhandwala Township, Kandivali East",
+    locality: "Akurli Cross Road, Near Lokhandwala Township, Kandivali East",
+    exactAddress: "Akurli Cross Road, Adjacent to Lokhandwala Township, Kandivali East, Mumbai - 400101",
     city: "Mumbai",
-    priceRange: "₹1.99 Cr - ₹3.40 Cr*",
-    priceDisplay: "₹1.99 Cr*",
+    priceRange: "₹1.03 Cr - ₹3.06 Cr*",
+    priceDisplay: "₹1.03 Cr*",
     status: "Under Construction",
-    possession: "Dec 2027",
-    rera: "P51800051214",
-    landParcel: "4 Acres",
-    towers: "3 High-Rise Towers (41 Storeys)",
-    towerDetails: "G + 4 Podium + 41 Residential Floors",
-    elevators: "4 Elevators per core",
-    amenitiesCount: "40+ Lifestyle Amenities",
+    possession: "March 2030",
+    rera: "P51800051172",
+    landParcel: "4 Acres Gated Community",
+    towers: "3 High-Rise Towers (39 to 41 Storeys)",
+    towerDetails: "39 to 41 Storeys | Curated Podium & Rooftop Sky Deck Lifestyle Amenities",
+    elevators: "4 High-Speed Elevators per core",
+    amenitiesCount: "40+ Resort-Style Lifestyle Amenities",
     coverImage: "/projects/project_7_user_1.png",
     images: [
       "/projects/project_7_user_1.png",
@@ -420,36 +451,52 @@ export const PROJECTS_DATA = [
       "/projects/godrej_bliss_official.webp"
     ],
     configurations: [
-      { bhk: "2 BHK Urban", carpetArea: "680 sq.ft CA", price: "₹1.99 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Dec 2027" },
-      { bhk: "3 BHK Grand", carpetArea: "980 sq.ft CA", price: "₹3.40 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Dec 2027" }
+      { bhk: "1 BHK Comfort", carpetArea: "413 - 430 sq.ft CA", price: "₹1.03 Cr*", floorPlanLabel: "Type 1A Urban", possessionDate: "March 2030" },
+      { bhk: "2 BHK Premium", carpetArea: "605 - 740 sq.ft CA", price: "₹1.65 Cr*", floorPlanLabel: "Type 2A Luxe Deck", possessionDate: "March 2030" },
+      { bhk: "3 BHK Royal", carpetArea: "944 - 985 sq.ft CA", price: "₹2.39 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "March 2030" }
     ],
     mapUrl: "https://maps.google.com/?q=Godrej+Bliss+Lokhandwala+Township%2C+Kandivali+East+Mumbai",
-    overview: "Located in the established Lokhandwala Township, Godrej Bliss offers resort-style amenities, private sundecks, and effortless connectivity.",
+    overview: "Godrej Bliss offers an elevated lifestyle in the vibrant neighbourhood of Kandivali East. Rising 39 to 41 storeys tall, it features 40+ lifestyle and fitness amenities across landscaped podiums and rooftop sky lounges, with scenic panoramic vistas towards Sanjay Gandhi National Park.",
     highlights: [
-      "Surrounded by established social infrastructure & top schools",
-      "40+ podium amenities with infinity pool & sky deck",
-      "Minutes from upcoming metro and highway corridor"
+      "Prime address near Lokhandwala Township with established social infrastructure",
+      "Over 40 curated amenities across ground, podium, and sky-deck levels",
+      "Panoramic views towards national park greens and city horizons",
+      "5 Mins to Western Express Highway & Akurli Metro Station"
     ],
-    amenities: ["Infinity Pool", "Sky Deck", "Fitness Center", "Badminton Court", "Lounge"]
+    amenities: [
+      "Resort-Style Swimming Pool & Kids Pool",
+      "Sky Lounge & Stargazing Deck",
+      "Fully Equipped Fitness Center",
+      "Multipurpose Badminton & Box Cricket Court",
+      "Grand Clubhouse & Banquet Hall",
+      "Indoor Games Room",
+      "Landscaped Terrace Gardens",
+      "Jogging & Cycling Track",
+      "Private Co-Working Pods",
+      "Senior Citizens Sit-Out Pavilion",
+      "Kids Splash Park",
+      "24/7 Advanced Surveillance"
+    ]
   },
   {
     id: 8,
     name: "Lodha Woods",
     builder: "Lodha Group",
-    tagline: "Private Sanctuary amidst National Park Greenery",
+    tagline: "Forest Sanctuary amidst 80% Open Greens on Akurli Road",
     location: "Kandivali",
-    locality: "Off Western Express Highway, Kandivali East",
+    locality: "Akurli Road, Kandivali East",
+    exactAddress: "Off Western Express Highway, Akurli Road, Kandivali East, Mumbai - 400101",
     city: "Mumbai",
-    priceRange: "₹2.10 Cr - ₹3.85 Cr*",
-    priceDisplay: "₹2.10 Cr*",
-    status: "Ready for Fit-out",
-    possession: "Mid 2025",
-    rera: "P51800031545",
-    landParcel: "5 Acres",
-    towers: "4 Residential Towers",
-    towerDetails: "G + 35 Storeys with deep balconies",
-    elevators: "3 High-Speed Elevators",
-    amenitiesCount: "30+ Amenities",
+    priceRange: "₹1.85 Cr - ₹6.50 Cr*",
+    priceDisplay: "₹1.85 Cr*",
+    status: "Ready for Fit-out / Phased Handover",
+    possession: "Ready Fit-Out / Phased (2025 - 2027)",
+    rera: "P51800046118, P51800031532, P51800046327",
+    landParcel: "5 Acres Forest Habitat (80% Open Spaces)",
+    towers: "4 High-Rise Towers (Up to 35 Storeys)",
+    towerDetails: "Up to 35 Storeys | Featuring 'The Garden of Eden' with 80% Open Green Space",
+    elevators: "High-Speed Elevators by Thyssenkrupp",
+    amenitiesCount: "30+ Nature & Luxury Amenities",
     coverImage: "/project_photos/8%20-%20Lodha%20Woods/1.jpg",
     images: [
       "/project_photos/8%20-%20Lodha%20Woods/1.jpg",
@@ -457,17 +504,30 @@ export const PROJECTS_DATA = [
       "/project_photos/8%20-%20Lodha%20Woods/4.jpg"
     ],
     configurations: [
-      { bhk: "2 BHK Forest Deck", carpetArea: "710 sq.ft CA", price: "₹2.10 Cr*", floorPlanLabel: "Type 2A", possessionDate: "Mid 2025" },
-      { bhk: "3 BHK Sky Deck", carpetArea: "1,040 sq.ft CA", price: "₹3.85 Cr*", floorPlanLabel: "Type 3A", possessionDate: "Mid 2025" }
+      { bhk: "2 BHK Forest Deck", carpetArea: "626 - 778 sq.ft CA", price: "₹1.85 Cr*", floorPlanLabel: "Type 2A Forest Deck", possessionDate: "Ready / Phased" },
+      { bhk: "3 BHK Sky Deck", carpetArea: "931 - 1,121 sq.ft CA", price: "₹2.25 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "Ready / Phased" },
+      { bhk: "4 BHK Grand Residence", carpetArea: "1,449 - 2,280 sq.ft CA", price: "₹4.54 Cr*", floorPlanLabel: "Type 4A Presidential Suite", possessionDate: "Ready / Phased" }
     ],
     mapUrl: "https://maps.google.com/?q=Lodha+Woods+Western+Express+Highway%2C+Kandivali+East+Mumbai",
-    overview: "Lodha Woods sits directly adjacent to the tranquil foliage of Sanjay Gandhi National Park, blending urban comfort with clean air and scenic vistas.",
+    overview: "Lodha Woods is envisioned as an exclusive forest sanctuary spanning 5 acres with ~80% open spaces in Kandivali East. Directly bordering the tranquil greenery of Sanjay Gandhi National Park, it features expansive residences with deep balconies, French windows, a 14,000+ sq.ft clubhouse, and an internal Jain Temple.",
     highlights: [
-      "Direct frontage to national park green buffer",
-      "Grand clubhouse with temperature-controlled indoor pool",
-      "Ready fit-out timelines with OC in process"
+      "Exclusive 5-acre forest enclave with ~80% dedicated open green space",
+      "Direct frontage to Sanjay Gandhi National Park with pure clean air",
+      "14,000+ sq.ft multi-tier clubhouse with temperature-controlled indoor pool & café",
+      "On-premise Jain Temple and serene senior citizen woodland gardens"
     ],
-    amenities: ["Indoor Pool", "Forest Trail", "Clubhouse", "Gymnasium", "Banquet Hall"]
+    amenities: [
+      "Temperature-Controlled Indoor Pool",
+      "14,000 sq.ft Luxury Clubhouse",
+      "Forest Woodland Nature Trails",
+      "World-Class Gymnasium & Health Club",
+      "On-Premise Jain Temple",
+      "Outdoor Tennis & Badminton Courts",
+      "Treehouse & Children's Play Arena",
+      "Banquet Hall & Ballrooms",
+      "Café with Al Fresco Seating",
+      "24/7 Valet & Concierge Services"
+    ]
   },
 
   // ==========================================
@@ -2155,74 +2215,96 @@ export const PROJECT_ENRICHMENTS = {
   },
   "5": {
     "keyFeatures": [
-      "Direct access on Akurli Road, Kandivali East",
-      "3 Mins to Akurli Metro Station & Western Express Highway",
-      "5 Mins to Kandivali Railway Station & Growel's 101 Mall",
-      "Flanked by 100+ Acres of Protected Reserve Forest & Cambridge School"
-],
+      "Direct frontage on Akurli Road, directly opposite Growel's 101 Mall & PVR",
+      "2 Mins to Akurli & Poisar Metro Stations (Line 7)",
+      "2 Mins to Western Express Highway (WEH)",
+      "5 Mins to Kandivali Railway Station",
+      "Adjacent to Cambridge School, Thakur Complex & Oxford Public School",
+      "Sweeping panoramic horizon views of Sanjay Gandhi National Park canopy"
+    ],
     "amenities": [
-      "Resort-Style Swimming Pool",
-      "Grand Double-Height Entrance Lobby",
-      "Clubhouse with Steam & Sauna",
-      "Modern Gymnasium",
-      "Indoor Badminton Court",
-      "Reflexology & Jogging Trail",
-      "Terrace Sky Garden",
-      "24/7 Biometric Multi-Tier Security"
+      "Multi-Level Grand Clubhouse",
+      "Olympic-Length Lap Pool & Toddler Splash Pool",
+      "Tropical Forest Retreat & Nature Trails",
+      "State-of-the-Art Gymnasium",
+      "Indoor Badminton & Squash Courts",
+      "Creche / Daycare Facility",
+      "Open-Air Amphitheatre",
+      "Cricket Pitch & Sports Arena",
+      "Yoga & Meditation Pavilions",
+      "Kids Adventure Play Zone",
+      "Private Dining Terrace",
+      "24/7 Multi-Tier Smart Security"
     ]
   },
   "6": {
     "keyFeatures": [
-      "Directly at Mahindra Yellow Gate on Akurli Road, Kandivali East",
-      "2 Mins to Western Express Highway & Akurli Metro Station (Line 7)",
-      "4 Mins to Growel's 101 Mall & PVR Multiplex",
-      "5 Mins to Kandivali Railway Station & S.V. Road"
-],
+      "Directly at Mahindra Yellow Gate, Akurli Road, Kandivali East",
+      "2 Mins to Western Express Highway (WEH) & Akurli Metro Station (Line 7)",
+      "3 Mins to Poisar Metro Station (Line 7)",
+      "4 Mins to Growel's 101 Mall, PVR Cinemas & Big Bazaar",
+      "5 Mins to Kandivali Railway Station (East)",
+      "Near Lokhandwala Foundation School, Thakur College & Cambridge School"
+    ],
     "amenities": [
-      "Temperature-Controlled Pool",
-      "Club Vista Community Center",
-      "High-Tech Fitness Studio",
+      "Infinity-Edge Lap Pool",
+      "28,000 sq.ft Biophilic Clubhouse",
+      "Indoor & Outdoor Gymnasium",
+      "Pilates & Aerobics Studio",
       "Multipurpose Sports Court",
-      "Organic Community Farm",
-      "Sky Gazing Deck",
-      "Kids Learning Pod",
-      "Electric Vehicle Charging Stations"
+      "Squash Court",
+      "Mini Screening Theatre",
+      "Organic Community Farming Deck",
+      "Kids Adventure Park",
+      "Pet Park",
+      "Barbecue Pavilion",
+      "Senior Citizens Reflexology Trail"
     ]
   },
   "7": {
     "keyFeatures": [
-      "Prime address in Lokhandwala Township, Kandivali East",
-      "3 Mins to Poisar Metro Station (Line 7) & WEH Junction",
-      "4 Mins to Lokhandwala Foundation School & Central Park",
-      "8 Mins to Kandivali Railway Station & Thakur Village Hub"
-],
+      "Prime address on Akurli Cross Road near Lokhandwala Township, Kandivali East",
+      "3 Mins to Akurli Metro Station (Line 7)",
+      "5 Mins to Western Express Highway (WEH)",
+      "8 Mins to Kandivali Railway Station",
+      "Near Ryan International School, Lokhandwala Foundation School & Thakur Complex",
+      "10 Mins to Growel's 101 Mall, Centrium Mall & Sanchaiti Hospital"
+    ],
     "amenities": [
-      "Infinity-Edge Swimming Pool",
-      "Grand 40-Storey Sky Lounge",
-      "Fully Equipped Gymnasium",
-      "Jogging & Cycling Track",
+      "Resort-Style Swimming Pool & Kids Pool",
+      "Sky Lounge & Stargazing Deck",
+      "Fully Equipped Fitness Center",
+      "Multipurpose Badminton & Box Cricket Court",
+      "Grand Clubhouse & Banquet Hall",
       "Indoor Games Room",
+      "Landscaped Terrace Gardens",
+      "Jogging & Cycling Track",
+      "Private Co-Working Pods",
+      "Senior Citizens Sit-Out Pavilion",
       "Kids Splash Park",
-      "Banquet & Party Lawn",
-      "Private Work Pods / Business Center"
+      "24/7 Advanced Surveillance"
     ]
   },
   "8": {
     "keyFeatures": [
-      "150m off Western Express Highway, Kandivali East",
-      "3 Mins to Poisar Metro Station (Line 7)",
-      "Surrounded by 25,000 Acres of National Park Forest Canopy",
-      "5 Mins to Thakur Village High Street, D-Mart & Growel's 101 Mall"
-],
+      "Direct access on Akurli Road, Kandivali East",
+      "3 Mins to Poisar & Akurli Metro Stations (Line 7)",
+      "3 Mins to Western Express Highway (WEH)",
+      "Bordering 25,000 Acres of National Park Forest Reserve",
+      "500m to Apex Multispeciality Hospital",
+      "5 Mins to Growel's 101 Mall, Thakur Village High Street & D-Mart"
+    ],
     "amenities": [
-      "Heated Swimming Pool",
-      "20,000 sq.ft International Clubhouse",
-      "Woodland Nature Trails",
-      "Outdoor Tennis & Basketball Courts",
-      "Gymnasium by World-Class Trainers",
-      "Private Dining Terrace",
-      "Kids Adventure Forest",
-      "24/7 Concierge"
+      "Temperature-Controlled Indoor Pool",
+      "14,000 sq.ft Luxury Clubhouse",
+      "Forest Woodland Nature Trails",
+      "World-Class Gymnasium & Health Club",
+      "On-Premise Jain Temple",
+      "Outdoor Tennis & Badminton Courts",
+      "Treehouse & Children's Play Arena",
+      "Banquet Hall & Ballrooms",
+      "Café with Al Fresco Seating",
+      "24/7 Valet & Concierge Services"
     ]
   },
   "9": {
