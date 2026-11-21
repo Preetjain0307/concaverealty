@@ -1042,56 +1042,97 @@ export const dbStore = {
 
   // Real-time bidirectional synchronization with Hostinger MySQL server
   async syncWithServer() {
+    let anyUpdated = false;
+
+    // 1. Synchronize Leads with live MySQL database
     try {
       let res = await fetch(`/api/leads.php?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
       if (!res || !res.ok) {
         res = await fetch(`/api/leads?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
       }
-      if (!res || !res.ok) return false;
-      const data = await res.json();
-      if (data && data.success && Array.isArray(data.leads) && data.leads.length > 0) {
-        this.init();
-        const local = getRawData(DB_KEY, INITIAL_SEED_LEADS);
-        let updated = false;
+      if (res && res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.leads)) {
+          this.init();
+          const local = getRawData(DB_KEY, INITIAL_SEED_LEADS);
+          const serverIds = new Set(data.leads.map(sl => String(sl.i)));
 
-        data.leads.forEach(serverLead => {
-          const sId = String(serverLead.i);
-          const sMobile = String(serverLead.m || '').replace(/\D/g, '');
-          // Check if lead already exists in local (by server ID or matching phone number)
-          const existingIdx = local.findIndex(l => 
-            String(l.i) === sId || 
-            (sMobile && String(l.m || '').replace(/\D/g, '') === sMobile && Math.abs((l.ts || 0) - (serverLead.ts || 0)) < 3600000)
-          );
-
-          if (existingIdx !== -1) {
-            const existing = local[existingIdx];
-            // If local caller has already assigned a status or called this lead, preserve caller's updated status!
-            const callerAlreadyHandled = (existing.cs > 0 || existing.s === 1 || existing.s === 2 || existing.s === 3 || existing.s === 4 || existing.s === 5 || existing.s === 6) && serverLead.cs === 0;
-            const finalStatus = callerAlreadyHandled ? existing.s : serverLead.s;
-            const finalCallStatus = callerAlreadyHandled ? existing.cs : serverLead.cs;
-            const finalNotes = (existing.nt && existing.nt.length >= (serverLead.nt || []).length) ? existing.nt : serverLead.nt;
-
-            // Ensure ID and server state are synced
-            if (String(existing.i) !== sId || existing.s !== finalStatus || existing.cs !== finalCallStatus || existing.c !== serverLead.c || (finalNotes && finalNotes.length !== (existing.nt || []).length)) {
-              local[existingIdx] = { ...existing, ...serverLead, s: finalStatus, cs: finalCallStatus, nt: finalNotes };
-              updated = true;
-            }
-          } else {
-            // New incoming server lead - place right at the very top of the list
-            local.unshift(serverLead);
-            updated = true;
+          // Remove any locally cached leads that were deleted in live database
+          let updatedList = local.filter(l => serverIds.has(String(l.i)));
+          if (updatedList.length !== local.length) {
+            anyUpdated = true;
           }
-        });
 
-        if (updated) {
-          setRawData(DB_KEY, local);
-          return true;
+          data.leads.forEach(serverLead => {
+            const sId = String(serverLead.i);
+            const sMobile = String(serverLead.m || '').replace(/\D/g, '');
+            const existingIdx = updatedList.findIndex(l => 
+              String(l.i) === sId || 
+              (sMobile && String(l.m || '').replace(/\D/g, '') === sMobile && Math.abs((l.ts || 0) - (serverLead.ts || 0)) < 3600000)
+            );
+
+            if (existingIdx !== -1) {
+              const existing = updatedList[existingIdx];
+              // If local caller has already assigned a status or called this lead, preserve caller's updated status!
+              const callerAlreadyHandled = (existing.cs > 0 || existing.s === 1 || existing.s === 2 || existing.s === 3 || existing.s === 4 || existing.s === 5 || existing.s === 6) && serverLead.cs === 0;
+              const finalStatus = callerAlreadyHandled ? existing.s : serverLead.s;
+              const finalCallStatus = callerAlreadyHandled ? existing.cs : serverLead.cs;
+              const finalNotes = (existing.nt && existing.nt.length >= (serverLead.nt || []).length) ? existing.nt : serverLead.nt;
+
+              if (String(existing.i) !== sId || existing.s !== finalStatus || existing.cs !== finalCallStatus || existing.c !== serverLead.c || (finalNotes && finalNotes.length !== (existing.nt || []).length)) {
+                updatedList[existingIdx] = { ...existing, ...serverLead, s: finalStatus, cs: finalCallStatus, nt: finalNotes };
+                anyUpdated = true;
+              }
+            } else {
+              updatedList.unshift(serverLead);
+              anyUpdated = true;
+            }
+          });
+
+          if (anyUpdated) {
+            setRawData(DB_KEY, updatedList);
+          }
         }
       }
     } catch (e) {
-      console.warn("[dbStore] Sync error:", e);
+      console.warn("[dbStore] Leads sync error:", e);
     }
-    return false;
+
+    // 2. Synchronize Callers with live MySQL database
+    try {
+      let cRes = await fetch(`/api/callers.php?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      if (!cRes || !cRes.ok) {
+        cRes = await fetch(`/api/callers?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      }
+      if (cRes && cRes.ok) {
+        const cData = await cRes.json();
+        if (cData && cData.success && Array.isArray(cData.callers) && cData.callers.length > 0) {
+          setRawData(CALLERS_KEY, cData.callers);
+          anyUpdated = true;
+        }
+      }
+    } catch (err) {
+      console.warn("[dbStore] Callers sync warning:", err);
+    }
+
+    // 3. Synchronize Careers / Job Applications with live MySQL database
+    try {
+      let appRes = await fetch(`/api/careers.php?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      if (!appRes || !appRes.ok) {
+        appRes = await fetch(`/api/careers?_t=${Date.now()}`, { cache: 'no-store' }).catch(() => null);
+      }
+      if (appRes && appRes.ok) {
+        const appData = await appRes.json();
+        if (appData && appData.success && Array.isArray(appData.applications)) {
+          localStorage.setItem('concave_career_applications_v1', JSON.stringify(appData.applications));
+          anyUpdated = true;
+        }
+      }
+    } catch (err) {
+      console.warn("[dbStore] Careers sync warning:", err);
+    }
+
+    return anyUpdated;
   },
 
   // Get Callers
@@ -1104,32 +1145,54 @@ export const dbStore = {
     }
   },
 
-  // Add or update caller
+  // Add or update caller in live MySQL database
   saveCaller(callerData) {
     try {
       const callers = this.getCallers();
+      let updatedCaller;
       if (callerData.id) {
         const idx = callers.findIndex(c => c.id === callerData.id);
         if (idx !== -1) {
           callers[idx] = { ...callers[idx], ...callerData };
+          updatedCaller = callers[idx];
         }
       } else {
         const newId = callers.length > 0 ? Math.max(...callers.map(c => c.id)) + 1 : 1;
         const newCaller = {
           id: newId,
-          callerCode: `CALLER-${100 + newId}`,
+          callerCode: callerData.callerCode || `CALLER-${100 + newId}`,
           name: callerData.name || "New Caller",
           phone: callerData.phone || "",
           email: callerData.email || "",
           password: callerData.password || "caller123",
           assignedLocations: callerData.assignedLocations || [1],
+          territory: callerData.territory || (callerData.assignedLocations ? callerData.assignedLocations.map(lid => LOCATION_CODES[lid] || '').join(', ') : 'Borivali'),
           role: callerData.role || "Location Sales Specialist",
-          active: true,
-          createdAt: callerData.createdAt || Date.now() // Timestamp of ID generation
+          active: callerData.active !== false,
+          createdAt: callerData.createdAt || Date.now()
         };
         callers.push(newCaller);
+        updatedCaller = newCaller;
       }
       setRawData(CALLERS_KEY, callers);
+
+      // LIVE DATABASE ACTION: Save to MySQL callers table
+      try {
+        fetch('/api/callers.php?action=save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save', ...updatedCaller })
+        }).catch(() => {
+          fetch('/api/callers?action=save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'save', ...updatedCaller })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Save caller DB action warning:", err);
+      }
+
       return callers;
     } catch (e) {
       console.error("Error saving caller:", e);
@@ -1137,11 +1200,29 @@ export const dbStore = {
     }
   },
 
-  // Remove caller
+  // Remove caller from live MySQL database
   removeCaller(callerId) {
     try {
       const callers = this.getCallers().filter(c => c.id !== callerId);
       setRawData(CALLERS_KEY, callers);
+
+      // LIVE DATABASE ACTION: Delete from MySQL callers table
+      try {
+        fetch('/api/callers.php?action=delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id: callerId })
+        }).catch(() => {
+          fetch('/api/callers?action=delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: callerId })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Delete caller DB action warning:", err);
+      }
+
       return callers;
     } catch {
       return this.getCallers();
@@ -1177,20 +1258,46 @@ export const dbStore = {
     return DEFAULT_ADMIN;
   },
 
-  // Update admin password with cryptographic hashing
+  // Update admin password in live MySQL database
   async updateAdminPassword(newPassword) {
     try {
       const current = this.getAdminCredentials();
       const hashedPassword = await hashPassword(newPassword);
       const updated = { ...current, password: hashedPassword, updatedAt: Date.now() };
       localStorage.setItem('concave_admin_auth', JSON.stringify(updated));
+
+      // LIVE DATABASE ACTION: Update admin password in MySQL admins table
+      try {
+        fetch('/api/admin.php?action=update_password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'update_password',
+            username: updated.username,
+            passwordHash: hashedPassword
+          })
+        }).catch(() => {
+          fetch('/api/admin?action=update_password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update_password',
+              username: updated.username,
+              passwordHash: hashedPassword
+            })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Admin password DB sync warning:", err);
+      }
+
       return { success: true };
     } catch (e) {
       return { success: false, error: e.message };
     }
   },
 
-  // Update caller password by id or callerCode with cryptographic hashing
+  // Update caller password in live MySQL database
   async updateCallerPassword(callerIdOrCode, newPassword) {
     try {
       this.init();
@@ -1200,8 +1307,37 @@ export const dbStore = {
         c.callerCode === String(callerIdOrCode).trim()
       );
       if (idx !== -1) {
-        callers[idx].password = await hashPassword(newPassword);
+        const hashedPassword = await hashPassword(newPassword);
+        callers[idx].password = hashedPassword;
         setRawData(CALLERS_KEY, callers);
+
+        // LIVE DATABASE ACTION: Update caller password in MySQL callers table
+        try {
+          fetch('/api/callers.php?action=update_password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'update_password',
+              id: callers[idx].id,
+              email: callers[idx].email,
+              passwordHash: hashedPassword
+            })
+          }).catch(() => {
+            fetch('/api/callers?action=update_password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'update_password',
+                id: callers[idx].id,
+                email: callers[idx].email,
+                passwordHash: hashedPassword
+              })
+            }).catch(() => {});
+          });
+        } catch (err) {
+          console.warn("[dbStore] Caller password DB sync warning:", err);
+        }
+
         return { success: true, caller: callers[idx] };
       }
       return { success: false, error: "Caller not found" };
@@ -1269,6 +1405,32 @@ export const dbStore = {
       });
 
       setRawData(DB_KEY, rawLeads);
+
+      // LIVE DATABASE ACTION: Reassign in MySQL leads table
+      try {
+        fetch('/api/leads.php?action=reassign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'reassign',
+            fromCallerCode: fromCaller ? fromCaller.callerCode : '',
+            toCallerCode: toCaller ? toCaller.callerCode : ''
+          })
+        }).catch(() => {
+          fetch('/api/leads?action=reassign', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'reassign',
+              fromCallerCode: fromCaller ? fromCaller.callerCode : '',
+              toCallerCode: toCaller ? toCaller.callerCode : ''
+            })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Reassign DB action warning:", err);
+      }
+
       return { success: true, count: transferredCount, toCallerName: toCaller ? toCaller.name : `Caller #${toCallerId}` };
     } catch (e) {
       console.error("Divert work error:", e);
@@ -1374,6 +1536,37 @@ export const dbStore = {
       rawLeads.unshift(compactRecord);
       setRawData(DB_KEY, rawLeads);
 
+      // LIVE DATABASE ACTION: Persist to MySQL database immediately
+      try {
+        fetch('/api/leads.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: cleanName,
+            mobile: cleanMobile,
+            email: cleanEmail,
+            locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
+            projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
+            type: 'Manual Lead',
+            statusCode: parseInt(statusCode, 10) || 1,
+            callStatusCode: parseInt(callStatusCode, 10) || 1,
+            description: compactRecord.d,
+            notes: initialNotes
+          })
+        }).then(res => res.json()).then(resData => {
+          if (resData && resData.id) {
+            compactRecord.i = resData.id;
+            const updated = getRawData(DB_KEY, []);
+            if (updated.length > 0 && updated[0].m === cleanMobile) {
+              updated[0].i = resData.id;
+              setRawData(DB_KEY, updated);
+            }
+          }
+        }).catch(() => {});
+      } catch (err) {
+        console.warn("[dbStore] Manual lead DB action warning:", err);
+      }
+
       // Record rate limit attempt upon successful creation
       recordRateLimitAttempt(cleanMobile, 'enquiry');
       recordRateLimitAttempt(getDeviceFingerprint(), 'enquiry');
@@ -1476,6 +1669,37 @@ export const dbStore = {
 
       rawLeads.unshift(compactRecord);
       setRawData(DB_KEY, rawLeads);
+
+      // LIVE DATABASE ACTION: Persist to MySQL database immediately
+      try {
+        fetch('/api/leads.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: cleanName,
+            mobile: cleanMobile,
+            email: cleanEmail,
+            locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
+            projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
+            type: 'Manual Lead',
+            statusCode: parseInt(statusCode, 10) || 1,
+            callStatusCode: parseInt(callStatusCode, 10) || 1,
+            description: compactRecord.d,
+            notes: initialNotes
+          })
+        }).then(res => res.json()).then(resData => {
+          if (resData && resData.id) {
+            compactRecord.i = resData.id;
+            const updated = getRawData(DB_KEY, []);
+            if (updated.length > 0 && updated[0].m === cleanMobile) {
+              updated[0].i = resData.id;
+              setRawData(DB_KEY, updated);
+            }
+          }
+        }).catch(() => {});
+      } catch (err) {
+        console.warn("[dbStore] Manual lead DB action warning:", err);
+      }
 
       return {
         success: true,
@@ -1827,8 +2051,25 @@ export const dbStore = {
 
       this.init();
       const rawLeads = getRawData(DB_KEY, []);
-      const remaining = rawLeads.filter(l => l.i !== leadId);
+      const remaining = rawLeads.filter(l => String(l.i) !== String(leadId) && l.i != leadId);
       setRawData(DB_KEY, remaining);
+
+      // LIVE DATABASE ACTION: Delete from MySQL database
+      try {
+        fetch('/api/leads.php?action=delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id: leadId })
+        }).catch(() => {
+          fetch('/api/leads?action=delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: leadId })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Delete lead DB action warning:", err);
+      }
 
       logSecurityEvent(user || { role: 'admin', username: 'Super Admin' }, 'DELETE_LEAD', `Lead #CON-${leadId}`, { leadId });
       return { success: true };
@@ -1992,6 +2233,23 @@ export const dbStore = {
 
       setRawData(DB_KEY, remainingLeads);
 
+      // LIVE DATABASE ACTION: Purge non-leads older than cutoff from MySQL database
+      try {
+        fetch('/api/leads.php?action=bulk_cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'bulk_cleanup', days: 30 })
+        }).catch(() => {
+          fetch('/api/leads?action=bulk_cleanup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'bulk_cleanup', days: 30 })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Bulk cleanup DB action warning:", err);
+      }
+
       return {
         success: true,
         startDate: queueInfo.batchStartStr,
@@ -2057,6 +2315,23 @@ export const dbStore = {
       });
 
       setRawData(DB_KEY, remainingLeads);
+
+      // LIVE DATABASE ACTION: Purge non-leads older than cutoff from MySQL database
+      try {
+        fetch('/api/leads.php?action=bulk_cleanup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'bulk_cleanup', days: 30 })
+        }).catch(() => {
+          fetch('/api/leads?action=bulk_cleanup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'bulk_cleanup', days: 30 })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Bulk cleanup DB action warning:", err);
+      }
 
       return {
         success: true,
@@ -2169,6 +2444,24 @@ export const dbStore = {
       if (idx !== -1) {
         apps[idx].status = newStatus;
         localStorage.setItem('concave_career_applications_v1', JSON.stringify(apps));
+
+        // LIVE DATABASE ACTION: Update in MySQL job_applications table
+        try {
+          fetch('/api/careers.php?action=update_status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'update_status', id: appId, status: newStatus })
+          }).catch(() => {
+            fetch('/api/careers?action=update_status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'update_status', id: appId, status: newStatus })
+            }).catch(() => {});
+          });
+        } catch (err) {
+          console.warn("[dbStore] Career update status DB error:", err);
+        }
+
         return { success: true };
       }
       return { success: false, error: 'Application not found' };
@@ -2181,6 +2474,24 @@ export const dbStore = {
     try {
       const apps = this.getJobApplications().filter(a => a.id !== appId);
       localStorage.setItem('concave_career_applications_v1', JSON.stringify(apps));
+
+      // LIVE DATABASE ACTION: Delete from MySQL job_applications table
+      try {
+        fetch('/api/careers.php?action=delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'delete', id: appId })
+        }).catch(() => {
+          fetch('/api/careers?action=delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'delete', id: appId })
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Career delete DB error:", err);
+      }
+
       return { success: true };
     } catch (e) {
       return { success: false, error: e.message };

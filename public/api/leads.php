@@ -219,6 +219,102 @@ if ($method === 'POST') {
         exit;
     }
 
+    // Action: Delete lead
+    if ($action === 'delete') {
+        $leadId = intval($data['id'] ?? 0);
+        if ($leadId <= 0) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'Missing lead ID.']);
+            exit;
+        }
+
+        try {
+            $pdo = get_db_connection();
+            if ($pdo) {
+                $stmt = $pdo->prepare("DELETE FROM `leads` WHERE `id` = ?");
+                $stmt->execute([$leadId]);
+            }
+        } catch (Exception $e) {
+            error_log("[Leads API] Delete error: " . $e->getMessage());
+        }
+
+        // Also remove from json fallback
+        try {
+            $jsonStore = read_json_data('leads_store.json');
+            if (!empty($jsonStore) && is_array($jsonStore)) {
+                $filtered = array_values(array_filter($jsonStore, function($item) use ($leadId) {
+                    return intval($item['i'] ?? 0) !== $leadId;
+                }));
+                write_json_data('leads_store.json', $filtered);
+            }
+        } catch (Exception $e) {
+            error_log("[Leads API] JSON delete error: " . $e->getMessage());
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Lead deleted from database.']);
+        exit;
+    }
+
+    // Action: Bulk Cleanup (Quarterly / Expired leads older than N days)
+    if ($action === 'bulk_cleanup') {
+        $days = intval($data['days'] ?? 90);
+        $deletedCount = 0;
+
+        try {
+            $pdo = get_db_connection();
+            if ($pdo) {
+                $stmt = $pdo->prepare("DELETE FROM `leads` WHERE `created_at` < DATE_SUB(NOW(), INTERVAL ? DAY)");
+                $stmt->execute([$days]);
+                $deletedCount = $stmt->rowCount();
+            }
+        } catch (Exception $e) {
+            error_log("[Leads API] Bulk cleanup error: " . $e->getMessage());
+        }
+
+        // Also clean from JSON store
+        try {
+            $jsonStore = read_json_data('leads_store.json');
+            if (!empty($jsonStore) && is_array($jsonStore)) {
+                $cutoffTs = (time() - ($days * 86400)) * 1000;
+                $filtered = array_values(array_filter($jsonStore, function($item) use ($cutoffTs) {
+                    return ($item['ts'] ?? 0) >= $cutoffTs;
+                }));
+                write_json_data('leads_store.json', $filtered);
+            }
+        } catch (Exception $e) {
+            error_log("[Leads API] JSON cleanup error: " . $e->getMessage());
+        }
+
+        echo json_encode(['success' => true, 'deleted' => $deletedCount, 'message' => "Cleaned leads older than {$days} days."]);
+        exit;
+    }
+
+    // Action: Reassign caller leads
+    if ($action === 'reassign') {
+        $fromCode = strip_tags(trim($data['fromCallerCode'] ?? ''));
+        $toCode = strip_tags(trim($data['toCallerCode'] ?? ''));
+
+        if (!empty($toCode)) {
+            try {
+                $pdo = get_db_connection();
+                if ($pdo) {
+                    if (!empty($fromCode)) {
+                        $stmt = $pdo->prepare("UPDATE `leads` SET `assigned_caller_code` = ? WHERE `assigned_caller_code` = ?");
+                        $stmt->execute([$toCode, $fromCode]);
+                    } elseif (!empty($data['leadId'])) {
+                        $stmt = $pdo->prepare("UPDATE `leads` SET `assigned_caller_code` = ? WHERE `id` = ?");
+                        $stmt->execute([$toCode, intval($data['leadId'])]);
+                    }
+                }
+            } catch (Exception $e) {
+                error_log("[Leads API] Reassign error: " . $e->getMessage());
+            }
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Leads reassigned in database.']);
+        exit;
+    }
+
     // Honeypot Bot Trap Check
     if (!empty($data['honeypot'])) {
         http_response_code(400);

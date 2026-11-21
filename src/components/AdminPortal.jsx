@@ -883,17 +883,50 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
     }
     setDispositionError('');
 
-    dbStore.updateLeadDisposition(callingLead.id, {
-      statusCode: selectedDisposition,
+    const targetId = callingLead.id;
+    const dispCode = parseInt(selectedDisposition, 10);
+    const dispLabel = STATUS_CODES[dispCode] || 'Hot Lead';
+    const computedCallStatus = (dispCode === 4 ? 2 : (dispCode === 10 ? 7 : (dispCode === 9 ? 6 : 1)));
+    const computedCallStatusName = (dispCode === 4 ? 'Not Answered' : (dispCode === 10 ? 'Line Busy' : (dispCode === 9 ? 'Call Back Scheduled' : 'Connected & Discussed')));
+
+    // 1. Immediate in-memory React state update for 0ms UI response
+    setLeads(prevLeads => prevLeads.map(l => {
+      if (String(l.id) === String(targetId)) {
+        const newNotes = l.notes ? [...l.notes] : [];
+        if (callerRemark) {
+          newNotes.unshift({
+            by: callers.length === 0 ? 'Admin (Direct)' : 'Admin (Master Console)',
+            at: Date.now(),
+            txt: `${callerRemark} [Status: ${dispLabel}]`
+          });
+        }
+        return {
+          ...l,
+          statusCode: dispCode,
+          statusName: dispLabel,
+          callStatusCode: computedCallStatus,
+          callStatusName: computedCallStatusName,
+          isHotLead: dispCode === 1,
+          isInterested: dispCode === 2,
+          notes: newNotes,
+          updatedAt: Date.now()
+        };
+      }
+      return l;
+    }));
+
+    // 2. Persist to live MySQL database
+    dbStore.updateLeadDisposition(targetId, {
+      statusCode: dispCode,
       noteText: callerRemark,
       callerName: callers.length === 0 ? 'Admin (Direct)' : 'Admin (Master Console)'
     });
+
     setCallingLead(null);
     setSelectedDisposition(null);
     setCallerRemark('');
-    setFeedbackToast(`Lead CON-${callingLead.id} status & discussion notes successfully updated.`);
+    setFeedbackToast(`Lead CON-${targetId} status & discussion notes successfully updated in live database.`);
     setTimeout(() => setFeedbackToast(null), 4000);
-    refreshAdminData();
   };
 
   // 3. Manual Lead Creator Handler ("ADD NEW LEAD")

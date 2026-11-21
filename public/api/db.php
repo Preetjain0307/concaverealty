@@ -76,10 +76,113 @@ function get_db_connection() {
             PDO::ATTR_TIMEOUT => 3
         ];
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        ensure_database_tables_exist($pdo);
         return $pdo;
     } catch (PDOException $e) {
         error_log("[Concave DB] Connection failed: " . $e->getMessage());
         return null;
+    }
+}
+
+/**
+ * Automatically creates all production database tables if not existing,
+ * and seeds default Callers and Admin records safely.
+ */
+function ensure_database_tables_exist($pdo) {
+    if (!$pdo) return;
+    static $checked = false;
+    if ($checked) return;
+    $checked = true;
+
+    try {
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS `admins` (
+              `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+              `username` VARCHAR(50) NOT NULL UNIQUE,
+              `email` VARCHAR(191) NOT NULL UNIQUE,
+              `password_hash` VARCHAR(255) NOT NULL,
+              `role` VARCHAR(50) NOT NULL DEFAULT 'SUPER_ADMIN',
+              `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              INDEX `idx_admin_email` (`email`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `callers` (
+              `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+              `caller_code` VARCHAR(50) NOT NULL UNIQUE,
+              `name` VARCHAR(100) NOT NULL,
+              `email` VARCHAR(191) NOT NULL UNIQUE,
+              `phone` VARCHAR(30) NULL,
+              `territory` VARCHAR(150) NULL,
+              `role` VARCHAR(100) NOT NULL DEFAULT 'Location Sales Specialist',
+              `password_hash` VARCHAR(255) NOT NULL,
+              `status` VARCHAR(30) NOT NULL DEFAULT 'active',
+              `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              INDEX `idx_caller_code` (`caller_code`),
+              INDEX `idx_caller_email` (`email`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `leads` (
+              `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+              `name` VARCHAR(150) NOT NULL,
+              `phone` VARCHAR(30) NOT NULL,
+              `email` VARCHAR(191) NULL,
+              `preferred_location` VARCHAR(150) NULL,
+              `property_type` VARCHAR(100) NULL,
+              `budget` VARCHAR(100) NULL,
+              `source` VARCHAR(50) NOT NULL DEFAULT 'Website',
+              `status` VARCHAR(50) NOT NULL DEFAULT 'New',
+              `assigned_caller_code` VARCHAR(50) NULL,
+              `notes` TEXT NULL,
+              `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+              INDEX `idx_leads_phone` (`phone`),
+              INDEX `idx_leads_status` (`status`),
+              INDEX `idx_leads_caller` (`assigned_caller_code`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+            CREATE TABLE IF NOT EXISTS `job_applications` (
+              `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+              `job_id` VARCHAR(50) NOT NULL,
+              `job_title` VARCHAR(150) NOT NULL,
+              `applicant_name` VARCHAR(150) NOT NULL,
+              `email` VARCHAR(191) NOT NULL,
+              `phone` VARCHAR(30) NOT NULL,
+              `experience` VARCHAR(100) NULL,
+              `portfolio_link` VARCHAR(255) NULL,
+              `status` VARCHAR(50) NOT NULL DEFAULT 'Pending Review',
+              `verified_at` TIMESTAMP NULL,
+              `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+              INDEX `idx_careers_email` (`email`),
+              INDEX `idx_careers_job` (`job_id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        ");
+
+        // Seed default callers if empty
+        $stmt = $pdo->query("SELECT COUNT(*) FROM `callers`");
+        if ($stmt && $stmt->fetchColumn() == 0) {
+            $pdo->exec("
+                INSERT INTO `callers` (`id`, `caller_code`, `name`, `email`, `phone`, `territory`, `role`, `password_hash`, `status`)
+                VALUES
+                  (1, 'Callerpreet', 'Preet Jain', 'preetjainwhatsapp@gmail.com', '98201 12345', 'Borivali, Kandivali, Goregaon, Malad', 'Senior Location Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active'),
+                  (2, 'Callerproxy', 'Callerproxy', 'preetrajeshjain@gmail.com', '98202 23456', 'Jogeshwari, Andheri, Bandra, Lower Parel', 'Central & Coastal Specialist', '58bbf36bf503de1736fc3ca1e357bec450581297dcc1cd54afb211da95c41f69', 'active')
+                ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
+            ");
+        }
+
+        // Seed default admin if empty
+        $stmtAdmin = $pdo->query("SELECT COUNT(*) FROM `admins`");
+        if ($stmtAdmin && $stmtAdmin->fetchColumn() == 0) {
+            $pdo->exec("
+                INSERT INTO `admins` (`id`, `username`, `email`, `password_hash`, `role`)
+                VALUES
+                  (1, 'Hemant_Concave_Mishra', 'hemantrishi2786@gmail.com', '8da334e29c94e4ee583710f0584f9ad2a94e0c2eac0a2910201566f98a73852b', 'SUPER_ADMIN')
+                ON DUPLICATE KEY UPDATE `email` = VALUES(`email`);
+            ");
+        }
+    } catch (Exception $e) {
+        error_log("[DB Table Init] Notice: " . $e->getMessage());
     }
 }
 
