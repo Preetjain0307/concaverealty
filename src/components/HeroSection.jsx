@@ -53,14 +53,14 @@ export function HeroSection({ onSearch, onOpenTour, onOpenEnquiry }) {
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
       
       {/* Fullscreen Video Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none bg-[#051912]">
         <video
           ref={videoRef}
           autoPlay
           loop
           muted={isMuted}
           playsInline
-          poster="/projects/project_img_1.jpg"
+          preload="auto"
           className="w-full h-full object-cover scale-[1.08] filter brightness-[0.7] contrast-[1.05]"
         >
           <source 

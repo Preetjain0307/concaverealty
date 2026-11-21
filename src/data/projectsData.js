@@ -2376,6 +2376,7 @@ export const PROJECT_FOLDERS = {
 // Map each project's cover photo to file "1" inside its dedicated folder in public/project_photos/
 export const PROJECT_ENRICHMENTS = {
   "1": {
+    "coords": { "lat": 19.2392, "lng": 72.8425 },
     "keyFeatures": [
       "Direct access to New Link Road & S.V. Road via Jairaj Nagar",
       "4 Mins to Borivali West & Shimpoli Metro Stations (Line 2A)",
@@ -2400,6 +2401,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "2": {
+    "coords": { "lat": 19.2274, "lng": 72.8486 },
     "keyFeatures": [
       "Direct access to S.V. Road & Saibaba Nagar residential corridor",
       "5 Mins to Kandivali West & Borivali West Metro Stations (Line 2A)",
@@ -2424,6 +2426,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "3": {
+    "coords": { "lat": 19.2238, "lng": 72.8622 },
     "keyFeatures": [
       "Zero-Minute Direct Frontage on Western Express Highway (WEH)",
       "1 Min Direct Skywalk to Devipada & Ovaripada Metro Stations (Line 7)",
@@ -2448,6 +2451,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "4": {
+    "coords": { "lat": 19.2195, "lng": 72.8631 },
     "keyFeatures": [
       "100 Metres (1 Min Walk) to Magathane Metro Station (Line 7)",
       "Direct Frontage on Western Express Highway (WEH)",
@@ -2471,6 +2475,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "5": {
+    "coords": { "lat": 19.2045, "lng": 72.8601 },
     "keyFeatures": [
       "Direct frontage on Akurli Road, directly opposite Growel's 101 Mall & PVR",
       "2 Mins to Akurli & Poisar Metro Stations (Line 7)",
@@ -2495,6 +2500,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "6": {
+    "coords": { "lat": 19.2038, "lng": 72.8612 },
     "keyFeatures": [
       "Directly at Mahindra Yellow Gate, Akurli Road, Kandivali East",
       "2 Mins to Western Express Highway (WEH) & Akurli Metro Station (Line 7)",
@@ -2519,6 +2525,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "7": {
+    "coords": { "lat": 19.2062, "lng": 72.8654 },
     "keyFeatures": [
       "Prime address on Akurli Cross Road near Lokhandwala Township, Kandivali East",
       "3 Mins to Akurli Metro Station (Line 7)",
@@ -2543,6 +2550,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "8": {
+    "coords": { "lat": 19.2081, "lng": 72.8682 },
     "keyFeatures": [
       "Direct access on Akurli Road, Kandivali East",
       "3 Mins to Poisar & Akurli Metro Stations (Line 7)",
@@ -2565,6 +2573,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "9": {
+    "coords": { "lat": 19.1862, "lng": 72.8361 },
     "keyFeatures": [
       "Coveted residential address in Evershine Nagar, Malad West",
       "3 Mins to Lower Malad Metro Station (Line 2A) & New Link Road",
@@ -2589,6 +2598,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "10": {
+    "coords": { "lat": 19.1895, "lng": 72.8342 },
     "keyFeatures": [
       "Tower 4 of landmark Auris Serenity, Link Road, Kanchpada, Malad West",
       "2 Mins to Mithchowki & Malad West Metro Stations (Line 2A)",
@@ -2613,6 +2623,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "11": {
+    "coords": { "lat": 19.1848, "lng": 72.8375 },
     "keyFeatures": [
       "Prestigious Evershine Nagar address off New Link Road, Malad West",
       "3 Mins to Lower Malad Metro Station (Line 2A)",
@@ -2635,6 +2646,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "12": {
+    "coords": { "lat": 19.1912, "lng": 72.8415 },
     "keyFeatures": [
       "Prime Bhagwan Gautam Buddha Road location near Orlem Circle, Malad West",
       "3 Mins to Orlem Church & Lourdes Colony",
@@ -2658,6 +2670,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "13": {
+    "coords": { "lat": 19.1672, "lng": 72.8354 },
     "keyFeatures": [
       "Coveted residential address in Bangur Nagar, Goregaon West",
       "3 Mins to Bangur Nagar Metro Station (Line 2A) & New Link Road",
@@ -2680,6 +2693,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "14": {
+    "coords": { "lat": 19.1685, "lng": 72.8348 },
     "keyFeatures": [
       "Prime location in Bangur Nagar right next to Inorbit Mall, Goregaon West",
       "3 Mins walk to Bangur Nagar Metro Station (Line 2A) — 300m",
@@ -2701,6 +2715,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "15": {
+    "coords": { "lat": 19.1661, "lng": 72.8365 },
     "keyFeatures": [
       "Prime address in Bangur Nagar, Goregaon West near Inorbit Mall",
       "3 Mins to Bangur Nagar (Pahadi Goregaon) Metro Station (Line 2A)",
@@ -2722,6 +2737,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "16": {
+    "coords": { "lat": 19.1625, "lng": 72.8412 },
     "keyFeatures": [
       "Strategic junction connecting S.V. Road and New Link Road, Goregaon West",
       "4 Mins to Goregaon West Metro Station (Line 2A)",
@@ -2743,6 +2759,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "17": {
+    "coords": { "lat": 19.1384, "lng": 72.8521 },
     "keyFeatures": [
       "Prime frontage on Western Express Highway / Patel Estate Road, Jogeshwari East/West",
       "3 Mins to Jogeshwari Metro Station (Line 7) & Jogeshwari Railway Station",
@@ -2765,6 +2782,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "18": {
+    "coords": { "lat": 19.1412, "lng": 72.8415 },
     "keyFeatures": [
       "Direct frontage on Relief Road off S.V. Road, Oshiwara / Jogeshwari West",
       "2 Mins to Oshiwara / Behram Baug Metro Station (Line 2A)",
@@ -2786,6 +2804,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "19": {
+    "coords": { "lat": 19.1438, "lng": 72.8432 },
     "keyFeatures": [
       "Prominent frontage on main S.V. Road near Oshiwara Bridge, Jogeshwari West",
       "2 Mins to Oshiwara Metro Station (Line 2A)",
@@ -2807,6 +2826,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "20": {
+    "coords": { "lat": 19.1492, "lng": 72.8465 },
     "keyFeatures": [
       "Sprawling master township at Oshiwara District Centre (ODC)",
       "3 Mins walk to Ram Mandir Railway Station (350m)",
@@ -2828,6 +2848,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "21": {
+    "coords": { "lat": 19.1342, "lng": 72.8124 },
     "keyFeatures": [
       "Direct seafront address on Yari Road / Versova Link, Andheri West",
       "2 Mins to Versova Beach Promenade & Nana Nani Park",
@@ -2848,6 +2869,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "22": {
+    "coords": { "lat": 19.1458, "lng": 72.8251 },
     "keyFeatures": [
       "Prime Lokhandwala Back Road address surrounded by green mangroves, Andheri West",
       "2 Mins to Lokhandwala High Street Market & Celebration Sports Club",
@@ -2868,6 +2890,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "23": {
+    "coords": { "lat": 19.1284, "lng": 72.8325 },
     "keyFeatures": [
       "Prime frontage on New Link Road near Fun Republic, Andheri West",
       "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
@@ -2888,6 +2911,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "24": {
+    "coords": { "lat": 19.1315, "lng": 72.8312 },
     "keyFeatures": [
       "Prestigious address off New Link Road, near DN Nagar Metro, Andheri West",
       "2 Mins walk to DN Nagar Metro Interchange (Line 1 & Line 2A)",
@@ -2908,6 +2932,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "25": {
+    "coords": { "lat": 19.1308, "lng": 72.8195 },
     "keyFeatures": [
       "Prime Seven Bungalows / Versova address, Andheri West",
       "2 Mins to Versova Metro Station (Line 1)",
@@ -2928,6 +2953,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "26": {
+    "coords": { "lat": 19.1275, "lng": 72.8284 },
     "keyFeatures": [
       "Prime Ratan Nagar address in Four Bungalows, Andheri West",
       "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
@@ -2948,6 +2974,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "27": {
+    "coords": { "lat": 19.1292, "lng": 72.8241 },
     "keyFeatures": [
       "Peaceful green corridor near Versova & Four Bungalows, Andheri West",
       "2 Mins to Versova Metro Station (Line 1)",
@@ -2968,6 +2995,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "28": {
+    "coords": { "lat": 19.1485, "lng": 72.8345 },
     "keyFeatures": [
       "Prominent location on New Link Road, Opposite Vicino Mall, Oshiwara, Andheri West",
       "2 Mins to Oshiwara Metro Station (Line 2A)",
@@ -2988,6 +3016,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "29": {
+    "coords": { "lat": 19.1298, "lng": 72.8331 },
     "keyFeatures": [
       "Coveted D.N. Nagar address off New Link Road, Andheri West",
       "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
@@ -3008,6 +3037,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "30": {
+    "coords": { "lat": 19.1362, "lng": 72.8315 },
     "keyFeatures": [
       "Prime address off New Link Road & Versova Link, Lokhandwala, Andheri West",
       "2 Mins to DN Nagar & Oshiwara Metro Stations (Lines 1 & 2A)",
@@ -3028,6 +3058,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "31": {
+    "coords": { "lat": 19.1172, "lng": 72.8615 },
     "keyFeatures": [
       "Prime frontage on Western Express Highway, Chakala / Gundavali, Andheri East",
       "1 Min to Gundavali Metro Station (Line 7) & WEH Metro Station (Line 1)",
@@ -3048,6 +3079,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "32": {
+    "coords": { "lat": 19.1415, "lng": 72.8328 },
     "keyFeatures": [
       "Landmark location directly on New Link Road, Opposite Infiniti Mall, Andheri West",
       "1 Min walk to Lower Oshiwara Metro Station (Line 2A) & Infiniti Mall",
@@ -3068,6 +3100,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "33": {
+    "coords": { "lat": 19.0495, "lng": 72.8285 },
     "keyFeatures": [
       "Bandra Reclamation waterfront estate near Pali Hill & Mount Mary, Bandra West",
       "2 Mins to Bandra-Worli Sea Link & Mumbai Coastal Road Interchange",
@@ -3088,6 +3121,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "34": {
+    "coords": { "lat": 19.0482, "lng": 72.8298 },
     "keyFeatures": [
       "Prime KC Marg, Bandra Reclamation, Bandra West",
       "2 Mins to Bandra-Worli Sea Link Toll Plaza & Lilavati Hospital",
@@ -3108,6 +3142,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "35": {
+    "coords": { "lat": 19.0612, "lng": 72.8485 },
     "keyFeatures": [
       "Station Road, Nirmal Nagar, Bandra East directly opposite BKC",
       "2 Mins to BKC Underground Metro Station (Aqua Line 3) & BKC Connector",
@@ -3128,6 +3163,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "36": {
+    "coords": { "lat": 19.0645, "lng": 72.8682 },
     "keyFeatures": [
       "G-Block, Bandra Kurla Complex (BKC) behind MCA Club",
       "Directly adjacent to Jio World Centre, US Consulate & Trident BKC",
@@ -3148,6 +3184,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "37": {
+    "coords": { "lat": 19.0692, "lng": 72.8215 },
     "keyFeatures": [
       "Direct front-row facing on Carter Road Promenade, Bandra West",
       "Steps from Otters Club, Union Park & Joggers Park",
@@ -3168,6 +3205,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "38": {
+    "coords": { "lat": 19.0585, "lng": 72.8462 },
     "keyFeatures": [
       "Sprawling 4.98-acre luxury estate at BKC Gateway, Bandra East",
       "2 Mins to BKC Connector, Western Express Highway & Kalanagar Junction",
@@ -3188,6 +3226,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "39": {
+    "coords": { "lat": 19.0475, "lng": 72.8305 },
     "keyFeatures": [
       "KC Marg, Bandra Reclamation, Bandra West",
       "Steps from Lilavati Hospital, Rangsharda & Sea Link entry",
@@ -3208,6 +3247,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "40": {
+    "coords": { "lat": 19.0065, "lng": 72.8285 },
     "keyFeatures": [
       "Iconic 17-acre development on Pandurang Budhkar Marg / Senapati Bapat Marg, Lower Parel",
       "3 Mins to Science Centre / Worli Metro Station (Aqua Line 3)",
@@ -3229,6 +3269,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "41": {
+    "coords": { "lat": 18.9885, "lng": 72.8245 },
     "keyFeatures": [
       "Sanapati Bapat Marg / Jacob Circle, Mahalaxmi / Lower Parel",
       "Dual panoramic vistas of Mahalaxmi Racecourse & Arabian Sea",
@@ -3250,6 +3291,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "42": {
+    "coords": { "lat": 18.9875, "lng": 72.8335 },
     "keyFeatures": [
       "Prestigious NM Joshi Marg address connecting Lower Parel, Mahalaxmi & Byculla",
       "3 Mins to Lower Parel Commercial Boulevard, One International Centre & Palladium",
@@ -3271,6 +3313,7 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "43": {
+    "coords": { "lat": 19.0125, "lng": 72.8185 },
     "keyFeatures": [
       "Rare sea-facing address on Worli Seaface near Nehru Planetarium & Lower Parel",
       "2 Mins to Mumbai Coastal Road interchange & Worli Sea Promenade",
@@ -3358,6 +3401,7 @@ PROJECTS_DATA.forEach(p => {
   if (enrich) {
     p.keyFeatures = enrich.keyFeatures || [];
     if (enrich.amenities) p.amenities = enrich.amenities;
+    if (enrich.coords) p.coords = enrich.coords;
   }
 
   const folder = PROJECT_FOLDERS[p.id] || `${p.id} - ${p.name}`;
