@@ -402,17 +402,17 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
   useEffect(() => {
     refreshAdminData();
-    // Real-time 15s auto-polling: continuously fetch any new live enquiries submitted by customers
+    // Real-time 8s auto-polling: continuously fetch live enquiries, callers, and job applications from MySQL
     const pollTimer = setInterval(() => {
       if (currentUser && currentUser.role === 'admin') {
-        dbStore.syncWithServer().then(synced => {
-          if (synced) {
-            setLeads(dbStore.getLeads(currentUser));
-            setStorageStats(dbStore.getStorageStats());
-          }
+        dbStore.syncWithServer().then(() => {
+          setLeads(dbStore.getLeads(currentUser));
+          setCallers(dbStore.getCallers());
+          setJobApplications(dbStore.getJobApplications());
+          setStorageStats(dbStore.getStorageStats());
         }).catch(() => {});
       }
-    }, 15000);
+    }, 8000);
     return () => clearInterval(pollTimer);
   }, [currentUser]);
 

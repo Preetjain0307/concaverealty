@@ -379,20 +379,27 @@ export function EnquiryModal({ isOpen, onClose, initialData = {} }) {
 
         // Live Server MySQL Sync
         try {
-          fetch('/api/leads', {
+          const leadPayload = {
+            name: cleanName,
+            mobile: cleanMobile,
+            email: cleanEmail,
+            locationName: formData.locationName,
+            projectName: formData.projectName,
+            type: formData.type || 'Consultation',
+            description: sanitizeInput(formData.description, 300),
+            deviceName: navigator.userAgent
+          };
+          fetch('/api/leads.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              name: cleanName,
-              mobile: cleanMobile,
-              email: cleanEmail,
-              locationName: formData.locationName,
-              projectName: formData.projectName,
-              type: formData.type || 'Consultation',
-              description: sanitizeInput(formData.description, 300),
-              deviceName: navigator.userAgent
-            })
-          }).catch(err => console.warn('[Leads Sync] Server dispatch error:', err));
+            body: JSON.stringify(leadPayload)
+          }).catch(() => {
+            fetch('/api/leads', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(leadPayload)
+            }).catch(err => console.warn('[Leads Sync] Server dispatch error:', err));
+          });
         } catch (_) {}
 
         if (result && result.error) {

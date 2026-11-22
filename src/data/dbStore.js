@@ -1536,35 +1536,46 @@ export const dbStore = {
       rawLeads.unshift(compactRecord);
       setRawData(DB_KEY, rawLeads);
 
-      // LIVE DATABASE ACTION: Persist to MySQL database immediately
+      // LIVE DATABASE ACTION: Persist enquiry to MySQL database immediately
       try {
+        const enquiryPayload = {
+          name: cleanName,
+          mobile: cleanMobile,
+          email: cleanEmail,
+          locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
+          projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
+          type: TYPE_CODES[typeId] || type || 'General Enquiry',
+          statusCode: 7, // New Lead
+          callStatusCode: 0, // Uncalled
+          description: compactRecord.d,
+          notes: compactRecord.nt,
+          deviceName: clientDevice
+        };
+
         fetch('/api/leads.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: cleanName,
-            mobile: cleanMobile,
-            email: cleanEmail,
-            locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
-            projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
-            type: 'Manual Lead',
-            statusCode: parseInt(statusCode, 10) || 1,
-            callStatusCode: parseInt(callStatusCode, 10) || 1,
-            description: compactRecord.d,
-            notes: initialNotes
-          })
+          body: JSON.stringify(enquiryPayload)
         }).then(res => res.json()).then(resData => {
-          if (resData && resData.id) {
-            compactRecord.i = resData.id;
+          if (resData && (resData.id || (resData.lead && resData.lead.i))) {
+            const returnedId = resData.id || resData.lead.i;
+            compactRecord.i = returnedId;
             const updated = getRawData(DB_KEY, []);
-            if (updated.length > 0 && updated[0].m === cleanMobile) {
-              updated[0].i = resData.id;
+            const matchIdx = updated.findIndex(l => l.m === cleanMobile);
+            if (matchIdx !== -1) {
+              updated[matchIdx].i = returnedId;
               setRawData(DB_KEY, updated);
             }
           }
-        }).catch(() => {});
+        }).catch(() => {
+          fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(enquiryPayload)
+          }).catch(() => {});
+        });
       } catch (err) {
-        console.warn("[dbStore] Manual lead DB action warning:", err);
+        console.warn("[dbStore] Enquiry DB action warning:", err);
       }
 
       // Record rate limit attempt upon successful creation
@@ -1670,35 +1681,46 @@ export const dbStore = {
       rawLeads.unshift(compactRecord);
       setRawData(DB_KEY, rawLeads);
 
-      // LIVE DATABASE ACTION: Persist to MySQL database immediately
+      // LIVE DATABASE ACTION: Persist enquiry to MySQL database immediately
       try {
+        const enquiryPayload = {
+          name: cleanName,
+          mobile: cleanMobile,
+          email: cleanEmail,
+          locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
+          projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
+          type: TYPE_CODES[typeId] || type || 'General Enquiry',
+          statusCode: 7, // New Lead
+          callStatusCode: 0, // Uncalled
+          description: compactRecord.d,
+          notes: compactRecord.nt,
+          deviceName: clientDevice
+        };
+
         fetch('/api/leads.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: cleanName,
-            mobile: cleanMobile,
-            email: cleanEmail,
-            locationName: LOCATION_CODES[locId] || locationName || 'Borivali',
-            projectName: PROJECT_CODES[projId] || projectName || 'Luxury Property',
-            type: 'Manual Lead',
-            statusCode: parseInt(statusCode, 10) || 1,
-            callStatusCode: parseInt(callStatusCode, 10) || 1,
-            description: compactRecord.d,
-            notes: initialNotes
-          })
+          body: JSON.stringify(enquiryPayload)
         }).then(res => res.json()).then(resData => {
-          if (resData && resData.id) {
-            compactRecord.i = resData.id;
+          if (resData && (resData.id || (resData.lead && resData.lead.i))) {
+            const returnedId = resData.id || resData.lead.i;
+            compactRecord.i = returnedId;
             const updated = getRawData(DB_KEY, []);
-            if (updated.length > 0 && updated[0].m === cleanMobile) {
-              updated[0].i = resData.id;
+            const matchIdx = updated.findIndex(l => l.m === cleanMobile);
+            if (matchIdx !== -1) {
+              updated[matchIdx].i = returnedId;
               setRawData(DB_KEY, updated);
             }
           }
-        }).catch(() => {});
+        }).catch(() => {
+          fetch('/api/leads', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(enquiryPayload)
+          }).catch(() => {});
+        });
       } catch (err) {
-        console.warn("[dbStore] Manual lead DB action warning:", err);
+        console.warn("[dbStore] Enquiry DB action warning:", err);
       }
 
       return {
@@ -1929,6 +1951,31 @@ export const dbStore = {
       });
 
       setRawData(DB_KEY, rawLeads);
+
+      // LIVE DATABASE ACTION: Sync note update to MySQL database
+      try {
+        const payload = {
+          action: 'update',
+          id: lead.i,
+          statusCode: lead.s,
+          callStatusCode: lead.cs,
+          notes: lead.nt
+        };
+        fetch('/api/leads.php?action=update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => {
+          fetch('/api/leads?action=update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Note sync warning:", err);
+      }
+
       return true;
     } catch {
       return false;
@@ -2376,6 +2423,35 @@ export const dbStore = {
       };
       existing.unshift(newApp);
       localStorage.setItem('concave_career_applications_v1', JSON.stringify(existing));
+
+      // LIVE DATABASE ACTION: Insert into MySQL job_applications table immediately
+      try {
+        const payload = {
+          name: newApp.name,
+          email: newApp.email,
+          phone: newApp.mobile,
+          jobId: newApp.position || 'GENERAL',
+          jobTitle: newApp.position || 'General Application',
+          experience: newApp.experience,
+          portfolioLink: newApp.linkedin,
+          verificationToken: appData.verificationToken || ''
+        };
+
+        fetch('/api/career-apply.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => {
+          fetch('/api/careers.php?action=create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(() => {});
+        });
+      } catch (err) {
+        console.warn("[dbStore] Career application DB dispatch warning:", err);
+      }
+
       return { success: true, application: newApp };
     } catch (e) {
       console.error("Failed to add job application:", e);

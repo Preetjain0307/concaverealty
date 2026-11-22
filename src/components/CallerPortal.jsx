@@ -168,16 +168,17 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
 
   useEffect(() => {
     refreshData();
-    // Real-time 15s auto-polling: fetch newly incoming enquiries for caller without manual page refresh
+    // Real-time 8s auto-polling: fetch newly incoming enquiries and caller updates live from database
     const pollTimer = setInterval(() => {
       if (currentUser && currentUser.id) {
-        dbStore.syncWithServer().then(synced => {
-          if (synced && currentUser && currentUser.id) {
+        dbStore.syncWithServer().then(() => {
+          if (currentUser && currentUser.id) {
             setLeads(dbStore.getLeadsForCaller(currentUser.id));
+            setCallers(dbStore.getCallers());
           }
         }).catch(() => {});
       }
-    }, 15000);
+    }, 8000);
     return () => clearInterval(pollTimer);
   }, [currentUser]);
 

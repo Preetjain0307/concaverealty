@@ -410,21 +410,41 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
     setIsSubmitting(true);
 
-    // Backend Verification Validation: Prevent manual variable manipulation or bypass
+    // Backend Verification Validation & Live MySQL Submission
     try {
-      const verifyRes = await fetch('/api/career-apply', {
+      const applicationPayload = {
+        name: cleanName,
+        email: cleanEmail,
+        phone: cleanMobile,
+        city: cleanCity || 'Mumbai',
+        jobId: formData.position || 'GENERAL',
+        jobTitle: formData.position || 'General Luxury Advisory Application',
+        experience: formData.experience || 'Fresher',
+        portfolioLink: sanitizeInput((formData.linkedin || '').trim(), 200),
+        verificationToken
+      };
+
+      let verifyRes = await fetch('/api/career-apply.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: cleanEmail,
-          verificationToken
-        })
-      });
-      const verifyData = await verifyRes.json();
-      if (!verifyRes.ok || !verifyData.success) {
-        setFormError(verifyData.message || 'Please verify your email address before submitting your application.');
-        setIsSubmitting(false);
-        return;
+        body: JSON.stringify(applicationPayload)
+      }).catch(() => null);
+
+      if (!verifyRes || !verifyRes.ok) {
+        verifyRes = await fetch('/api/career-apply', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(applicationPayload)
+        }).catch(() => null);
+      }
+
+      if (verifyRes) {
+        const verifyData = await verifyRes.json().catch(() => null);
+        if (verifyData && !verifyData.success) {
+          setFormError(verifyData.message || 'Please verify your email address before submitting your application.');
+          setIsSubmitting(false);
+          return;
+        }
       }
     } catch (verErr) {
       console.warn('[Career Apply Backend Validation Notice]:', verErr.message);

@@ -352,6 +352,22 @@ if ($method === 'POST') {
     $assignedCallerCode = in_array($locId, [5, 6, 7, 8]) ? 'Callerproxy' : 'Callerpreet';
     $callerId = in_array($locId, [5, 6, 7, 8]) ? 2 : 1;
 
+    // Determine status & notes for insertion
+    $statusCodeNum = isset($data['statusCode']) ? intval($data['statusCode']) : 7;
+    $statusMap = [
+        1 => 'Hot Lead',
+        2 => 'Lead (Interested)',
+        3 => 'Okay / Follow up',
+        4 => 'Not Picking',
+        5 => 'Not Interested',
+        6 => 'Fake / Spam',
+        7 => 'New'
+    ];
+    $statusStr = isset($data['statusName']) ? strip_tags($data['statusName']) : ($statusMap[$statusCodeNum] ?? 'New');
+    $callStatusCode = isset($data['callStatusCode']) ? intval($data['callStatusCode']) : ($statusCodeNum === 7 ? 0 : 1);
+    $notesArray = isset($data['notes']) && is_array($data['notes']) ? $data['notes'] : [];
+    $notesJson = json_encode($notesArray);
+
     $insertedId = 0;
 
     // 1. Insert into Hostinger MySQL
@@ -360,10 +376,8 @@ if ($method === 'POST') {
         if ($pdo) {
             $stmt = $pdo->prepare("
                 INSERT INTO `leads` (`name`, `phone`, `email`, `preferred_location`, `property_type`, `budget`, `source`, `status`, `assigned_caller_code`, `notes`, `created_at`)
-                VALUES (?, ?, ?, ?, ?, ?, 'Website', 'New', ?, ?, NOW())
+                VALUES (?, ?, ?, ?, ?, ?, 'Website', ?, ?, ?, NOW())
             ");
-            $descText = !empty($description) ? $description : "Interested in {$projectName} ({$locationName}).";
-            $emptyNotesJson = json_encode([]);
             $stmt->execute([
                 $name,
                 $phone,
@@ -371,12 +385,13 @@ if ($method === 'POST') {
                 $locationName,
                 $projectName,
                 $type,
+                $statusStr,
                 $assignedCallerCode,
-                $emptyNotesJson
+                $notesJson
             ]);
             $insertedId = intval($pdo->lastInsertId());
         }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
         error_log("[Leads API] MySQL insert error: " . $e->getMessage());
     }
 
@@ -395,15 +410,15 @@ if ($method === 'POST') {
         'p' => 1,
         'pr' => $projectName,
         't' => 1,
-        's' => 7, // New
+        's' => $statusCodeNum,
         'c' => $callerId,
-        'cs' => 0, // Uncalled
+        'cs' => $callStatusCode,
         'rc' => 0,
         'na' => null,
         'ts' => time() * 1000,
         'd' => !empty($description) ? $description : "Website enquiry for {$projectName} ({$locationName})",
         'dv' => $deviceName,
-        'nt' => []
+        'nt' => $notesArray
     ];
 
     // 2. Secondary backup in data/leads_store.json

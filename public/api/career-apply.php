@@ -60,8 +60,33 @@ try {
         'verified_at' => date('Y-m-d H:i:s'),
         'created_at' => date('Y-m-d H:i:s')
     ]);
-} catch (Exception $e) {
+} catch (\Throwable $e) {
     error_log("[Career Apply] SafeDB insert notice: " . $e->getMessage());
+}
+
+// 3b. Resilient backup in data/careers_store.json
+try {
+    $apps = read_json_data('careers_store.json');
+    if (!is_array($apps)) $apps = [];
+    array_unshift($apps, [
+        'id' => time(),
+        'jobId' => $jobId,
+        'jobTitle' => $jobTitle,
+        'applicantName' => $name,
+        'name' => $name,
+        'email' => strtolower($email),
+        'phone' => $phone,
+        'experience' => $experience,
+        'portfolioLink' => $portfolioLink,
+        'status' => 'Under Review',
+        'createdAt' => time() * 1000
+    ]);
+    if (count($apps) > 500) {
+        $apps = array_slice($apps, 0, 500);
+    }
+    write_json_data('careers_store.json', $apps);
+} catch (\Throwable $e) {
+    error_log("[Career Apply] JSON store backup notice: " . $e->getMessage());
 }
 
 // 4. Return Confirmed Application Acceptance

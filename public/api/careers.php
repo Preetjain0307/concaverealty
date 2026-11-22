@@ -69,6 +69,34 @@ if ($method === 'POST') {
 
     $action = isset($_GET['action']) ? $_GET['action'] : ($data['action'] ?? 'update_status');
 
+    if ($action === 'create') {
+        $jobId = strip_tags(trim($data['jobId'] ?? 'GENERAL'));
+        $jobTitle = strip_tags(trim($data['jobTitle'] ?? 'General Application'));
+        $name = strip_tags(trim($data['name'] ?? $data['applicantName'] ?? ''));
+        $email = filter_var(trim($data['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+        $phone = preg_replace('/\D/', '', $data['phone'] ?? $data['mobile'] ?? '');
+        $experience = strip_tags(trim($data['experience'] ?? ''));
+        $portfolioLink = filter_var(trim($data['portfolioLink'] ?? ''), FILTER_SANITIZE_URL);
+
+        if (!empty($name) && !empty($email)) {
+            try {
+                $pdo = get_db_connection();
+                if ($pdo) {
+                    $stmt = $pdo->prepare("
+                        INSERT INTO `job_applications` (`job_id`, `job_title`, `applicant_name`, `email`, `phone`, `experience`, `portfolio_link`, `status`, `verified_at`, `created_at`)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, 'Under Review', NOW(), NOW())
+                    ");
+                    $stmt->execute([$jobId, $jobTitle, $name, $email, $phone, $experience, $portfolioLink]);
+                }
+            } catch (\Throwable $e) {
+                error_log("[Careers API] Create error: " . $e->getMessage());
+            }
+        }
+
+        echo json_encode(['success' => true, 'message' => 'Job application recorded in database.']);
+        exit;
+    }
+
     if ($action === 'update_status') {
         $appId = intval($data['id'] ?? 0);
         $newStatus = strip_tags(trim($data['status'] ?? 'Reviewed'));
