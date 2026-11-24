@@ -33,8 +33,10 @@ import {
   ZoomOut,
   LocateFixed,
   Route,
-  Globe
+  Globe,
+  Share2
 } from 'lucide-react';
+import { shareProject } from '../utils/shareUtils';
 
 // Seamlessly try multiple extensions (1.jpg -> 1.png -> 1.webp -> 1.jpeg) when user adds photos
 const handleModalImgError = (e, fallback) => {
@@ -142,6 +144,23 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
     setTimeout(() => setCopiedCoords(false), 2200);
   };
 
+  const [shareToast, setShareToast] = useState(null);
+
+  useEffect(() => {
+    if (!shareToast) return;
+    const timer = setTimeout(() => setShareToast(null), 3500);
+    return () => clearTimeout(timer);
+  }, [shareToast]);
+
+  const handleShareModal = async (targetProj) => {
+    const projToShare = targetProj || project;
+    if (!projToShare) return;
+    const res = await shareProject(projToShare);
+    if (res.copied || res.shared) {
+      setShareToast(`✓ Link for ${projToShare.name} copied to clipboard!`);
+    }
+  };
+
   const rawImages = (project.images && project.images.length > 0)
     ? project.images
     : (project.coverImage ? [project.coverImage] : []);
@@ -182,13 +201,25 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </p>
           </div>
 
-          <button
-            onClick={onClose}
-            aria-label="Close project details"
-            className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => handleShareModal(project)}
+              aria-label="Share this project link"
+              title="Share this project link"
+              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] border border-[#DFBE79]/40 transition-all text-xs font-semibold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span className="hidden xs:inline">Share</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              aria-label="Close project details"
+              className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Modal Scrollable Body */}
@@ -954,12 +985,21 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
 
           {/* Bottom Action Footer */}
-          <div className="pt-4 border-t border-[#EAE6DF] flex items-center justify-end gap-2.5">
+          <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <button
+              type="button"
+              onClick={() => handleShareModal(project)}
+              className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
+            >
+              <Share2 className="w-3.5 h-3.5 text-[#C59B4E] group-hover:text-inherit" />
+              <span>Share Project Link</span>
+            </button>
+
             <div className="flex items-center gap-2.5 w-full sm:w-auto">
               <button
                 onClick={onClose}
                 aria-label="Close project details"
-                className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center"
+                className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer"
               >
                 Close
               </button>
@@ -973,7 +1013,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   });
                 }}
                 aria-label={`Enquire about ${project.name}`}
-                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center"
+                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center cursor-pointer"
               >
                 Enquire Now
               </button>
@@ -1003,6 +1043,25 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             className="max-w-[96vw] max-h-[92vh] object-contain rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
+        </div>
+      )}
+
+      {/* Floating Share Feedback Toast */}
+      {shareToast && (
+        <div className="fixed bottom-6 right-6 z-[120] bg-[#14221F] text-[#FFF7E2] border border-[#DFBE79]/70 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 anim-fade-scale">
+          <div className="w-7 h-7 rounded-full bg-[#DFBE79]/20 border border-[#DFBE79] flex items-center justify-center text-[#DFBE79] shrink-0">
+            <Check className="w-4 h-4" />
+          </div>
+          <div className="text-xs">
+            <strong className="block font-serif text-[#DFBE79] text-sm leading-snug">Project Link Ready!</strong>
+            <span className="text-gray-300">{shareToast}</span>
+          </div>
+          <button
+            onClick={() => setShareToast(null)}
+            className="text-gray-400 hover:text-white p-1 ml-1 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
       )}
     </div>

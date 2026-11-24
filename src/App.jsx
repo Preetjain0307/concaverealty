@@ -19,6 +19,7 @@ import { Footer } from './components/Footer';
 import { LegalPage } from './components/LegalPage';
 import { PROJECTS_DATA } from './data/projectsData';
 import { dbStore } from './data/dbStore';
+import { getProjectFromUrl } from './utils/shareUtils';
 
 function HomeCtaBanner({ onExplore }) {
   const ctaRef = React.useRef(null);
@@ -100,7 +101,8 @@ export function App() {
     }
   };
 
-  const [showSplash, setShowSplash] = useState(() => !isInitialAdminOrCaller());
+  const initialLinkedProject = getProjectFromUrl();
+  const [showSplash, setShowSplash] = useState(() => !isInitialAdminOrCaller() && !initialLinkedProject);
   const [currentView, setCurrentView] = useState(() => {
     try {
       const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
@@ -118,7 +120,7 @@ export function App() {
   });
   const [legalTab, setLegalTab] = useState('terms'); // 'terms', 'privacy', 'disclaimer', 'cookies'
 
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(() => initialLinkedProject);
   const [tourModalOpen, setTourModalOpen] = useState(false);
   const [tourProjectId, setTourProjectId] = useState(1);
   const [enquiryModalOpen, setEnquiryModalOpen] = useState(() => {
@@ -133,8 +135,51 @@ export function App() {
   const [searchFilter, setSearchFilter] = useState({ location: 'All', type: 'All', budget: 'All' });
   const [activeUser, setActiveUser] = useState(null);
 
+  // Synchronize deep-linked project URLs (?project=17 or #project-17)
+  const handleSelectProject = (project) => {
+    setSelectedProject(project);
+    if (project) {
+      try {
+        const newUrl = `${window.location.pathname}?project=${project.id}#project-${project.id}`;
+        window.history.replaceState({ projectId: project.id }, '', newUrl);
+      } catch (e) { }
+    }
+  };
+
+  const handleCloseProjectModal = () => {
+    setSelectedProject(null);
+    try {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('project');
+      url.searchParams.delete('p');
+      url.searchParams.delete('projectId');
+      if (url.hash.startsWith('#project')) {
+        url.hash = '';
+      }
+      const cleanUrl = url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
+      window.history.replaceState({}, '', cleanUrl);
+    } catch (e) { }
+  };
+
   // Cookie transparency & DPDP storage notice banner
   const [cookieConsentVisible, setCookieConsentVisible] = useState(false);
+
+  useEffect(() => {
+    const handleCheckProjectUrl = () => {
+      const proj = getProjectFromUrl();
+      if (proj) {
+        setShowSplash(false);
+        setSelectedProject(proj);
+      }
+    };
+
+    window.addEventListener('popstate', handleCheckProjectUrl);
+    window.addEventListener('hashchange', handleCheckProjectUrl);
+    return () => {
+      window.removeEventListener('popstate', handleCheckProjectUrl);
+      window.removeEventListener('hashchange', handleCheckProjectUrl);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -473,7 +518,7 @@ export function App() {
             <div className="pt-16 sm:pt-20">
               <ErrorBoundary>
                 <SignatureProjects
-                  onSelectProject={setSelectedProject}
+                  onSelectProject={handleSelectProject}
                   onOpenTour={handleOpenTour}
                   onOpenEnquiry={handleOpenEnquiry}
                   filterLocation={searchFilter.location}
@@ -559,7 +604,7 @@ export function App() {
         <ErrorBoundary>
           <ProjectDetailModal
             project={selectedProject}
-            onClose={() => setSelectedProject(null)}
+            onClose={handleCloseProjectModal}
             onOpenTour={handleOpenTour}
             onOpenEnquiry={handleOpenEnquiry}
           />

@@ -18,10 +18,13 @@ import {
   ChevronDown,
   Home,
   Navigation,
-  Train
+  Train,
+  Share2,
+  Check
 } from 'lucide-react';
 import { PROJECTS_DATA, LOCATIONS_LIST, MARQUEE_IMAGES } from '../data/projectsData';
 import { LocationDropdown } from './LocationDropdown';
+import { shareProject } from '../utils/shareUtils';
 
 // Fallback image in case any photo ever encounters an error
 const FALLBACK_IMG = '/projects/project_img_27.jpg';
@@ -91,6 +94,22 @@ export function SignatureProjects({
   const [selectedLocation, setSelectedLocation] = useState('All Locations');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBhk, setSelectedBhk] = useState('All');
+  const [copiedToast, setCopiedToast] = useState(null);
+
+  // Auto-clear share feedback toast
+  useEffect(() => {
+    if (!copiedToast) return;
+    const timer = setTimeout(() => setCopiedToast(null), 3500);
+    return () => clearTimeout(timer);
+  }, [copiedToast]);
+
+  const handleShareProject = async (e, project) => {
+    e.stopPropagation();
+    const result = await shareProject(project);
+    if (result.copied || result.shared) {
+      setCopiedToast(`✓ Link for ${project.name} copied to clipboard!`);
+    }
+  };
 
   // Synchronize when external filterLocation prop is passed
   useEffect(() => {
@@ -563,10 +582,21 @@ export function SignatureProjects({
                           <span className="truncate">{project.locality || project.location}</span>
                         </a>
 
-                        {/* Status Badge */}
-                        <div className="bg-white/95 backdrop-blur-md text-[#183C32] border border-[#DFBE79]/50 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wide font-semibold shadow-md max-w-[40%] truncate shrink-0 flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-                          <span className="truncate">{project.status || 'Verified'}</span>
+                        {/* Status Badge & Quick Share Button */}
+                        <div className="flex items-center gap-1.5 shrink-0 pointer-events-auto">
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareProject(e, project)}
+                            title={`Share ${project.name} direct link`}
+                            aria-label={`Share ${project.name}`}
+                            className="bg-[#12221E]/85 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] backdrop-blur-md border border-[#DFBE79]/50 hover:border-[#DFBE79] w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-110 active:scale-95"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                          </button>
+                          <div className="bg-white/95 backdrop-blur-md text-[#183C32] border border-[#DFBE79]/50 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wide font-semibold shadow-md max-w-[120px] truncate flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                            <span className="truncate">{project.status || 'Verified'}</span>
+                          </div>
                         </div>
                       </div>
 
@@ -690,13 +720,24 @@ export function SignatureProjects({
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-1.5 sm:gap-2">
                           <button
                             type="button"
                             onClick={() => onSelectProject(project)}
-                            className="w-full py-2 px-3 rounded-xl border border-[#1D3530]/35 bg-[#FAF8F3] hover:bg-[#1D3530] text-[#1D3530] hover:text-[#DFBE79] hover:border-[#1D3530] text-[10.5px] uppercase tracking-[0.14em] font-bold transition-all duration-200 text-center cursor-pointer shadow-xs active:scale-[0.98]"
+                            className="flex-1 py-2 px-2 sm:px-3 rounded-xl border border-[#1D3530]/35 bg-[#FAF8F3] hover:bg-[#1D3530] text-[#1D3530] hover:text-[#DFBE79] hover:border-[#1D3530] text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-200 text-center cursor-pointer shadow-xs active:scale-[0.98]"
                           >
                             Details
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => handleShareProject(e, project)}
+                            title={`Share link for ${project.name}`}
+                            aria-label={`Share link for ${project.name}`}
+                            className="py-2 px-2.5 sm:px-3 rounded-xl border border-[#DFBE79]/60 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-[10.5px] uppercase tracking-wider font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.98] group/share shrink-0"
+                          >
+                            <Share2 className="w-3.5 h-3.5 text-[#C59B4E] group-hover/share:text-[#14221F] transition-colors" />
+                            <span className="hidden xs:inline">Share</span>
                           </button>
 
                           <button
@@ -706,9 +747,9 @@ export function SignatureProjects({
                               location: project.location,
                               project: project
                             })}
-                            className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#DFBE79] hover:via-[#C59B4E] hover:to-[#B3883B] text-[#FFF7E2] hover:text-[#14221F] border border-[#C59B4E]/60 text-[10.5px] uppercase tracking-[0.14em] font-bold transition-all duration-300 shadow-[0_6px_18px_rgba(20,34,31,0.2)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.35)] flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.98]"
+                            className="flex-1 py-2 px-2 sm:px-3 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#DFBE79] hover:via-[#C59B4E] hover:to-[#B3883B] text-[#FFF7E2] hover:text-[#14221F] border border-[#C59B4E]/60 text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-300 shadow-[0_6px_18px_rgba(20,34,31,0.2)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.35)] flex items-center justify-center gap-1 cursor-pointer active:scale-[0.98]"
                           >
-                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] group-hover:text-current" />
+                            <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] group-hover:text-current shrink-0" />
                             <span>Enquire</span>
                           </button>
                         </div>
@@ -725,6 +766,25 @@ export function SignatureProjects({
 
         </div>
       </section>
+
+      {/* Floating Share Feedback Toast */}
+      {copiedToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#14221F] text-[#FFF7E2] border border-[#DFBE79]/70 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 anim-fade-scale">
+          <div className="w-7 h-7 rounded-full bg-[#DFBE79]/20 border border-[#DFBE79] flex items-center justify-center text-[#DFBE79] shrink-0">
+            <Check className="w-4 h-4" />
+          </div>
+          <div className="text-xs">
+            <strong className="block font-serif text-[#DFBE79] text-sm leading-snug">Project Link Ready!</strong>
+            <span className="text-gray-300">{copiedToast}</span>
+          </div>
+          <button
+            onClick={() => setCopiedToast(null)}
+            className="text-gray-400 hover:text-white p-1 ml-1 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
     </div>
   );

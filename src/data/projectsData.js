@@ -962,7 +962,7 @@ export const PROJECTS_DATA = [
     locality: "Patel Estate Road, Off S.V. Road, Jogeshwari West",
     exactAddress: "Patel Estate Road, Off S.V. Road, Near Oshiwara, Jogeshwari West, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "₹3.25 Cr - ₹10.50 Cr*",
+    priceRange: "₹3.25 Cr - ₹12.50 Cr*",
     priceDisplay: "₹3.25 Cr*",
     status: "Under Construction",
     possession: "Dec 2030 / April 2031",
