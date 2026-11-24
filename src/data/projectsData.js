@@ -1112,7 +1112,7 @@ export const PROJECTS_DATA = [
     locality: "Oshiwara District Centre (ODC), Goregaon West",
     exactAddress: "Sunteck City, Oshiwara District Centre (ODC), Off SV Road & JVLR, Goregaon West, Mumbai - 400102",
     city: "Mumbai",
-    priceRange: "₹2.58 Cr - ₹5.90 Cr*",
+    priceRange: "₹2.58 Cr - ₹9.00 Cr*",
     priceDisplay: "₹2.58 Cr*",
     status: "Ready & Under Construction (4th Avenue)",
     possession: "Ready / April 2029 (4th Avenue)",
@@ -1130,7 +1130,7 @@ export const PROJECTS_DATA = [
     configurations: [
       { bhk: "2 BHK Luxury Deck", carpetArea: "627 - 650 sq.ft CA", price: "₹2.58 Cr*", floorPlanLabel: "Type 2A Luxury", possessionDate: "April 2029" },
       { bhk: "3 BHK Grand Royale", carpetArea: "902 - 1,088 sq.ft CA", price: "₹3.45 Cr*", floorPlanLabel: "Type 3A Royale", possessionDate: "April 2029" },
-      { bhk: "4 BHK Palatial Suite", carpetArea: "1,657 sq.ft CA", price: "₹5.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "April 2029" }
+      { bhk: "4 BHK Palatial Suite", carpetArea: "1,657 - 2,400 sq.ft CA", price: "₹5.50 Cr - ₹9.00 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "April 2029" }
     ],
     mapUrl: "https://maps.google.com/?q=Sunteck+City+Oshiwara+District+Centre+Ram+Mandir+Road+Mumbai",
     overview: "Sunteck City is a prestigious 23-acre premium mixed-use township strategically situated at the Oshiwara District Centre (ODC), on the Jogeshwari-Goregaon West border. Seamlessly integrating high-end residential towers (such as 4th & 5th Avenue), upscale retail boulevards, fine-dining bistros, and sprawling multi-level club facilities, it offers an unmatched walk-to-work lifestyle.",
