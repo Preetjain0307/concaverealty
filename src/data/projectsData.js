@@ -1590,15 +1590,15 @@ export const PROJECTS_DATA = [
     locality: "New Link Road, Opposite Infiniti Mall, Andheri West",
     exactAddress: "New Link Road, Opposite Infiniti Mall & Oshiwara Metro, Andheri West, Mumbai 400053",
     city: "Mumbai",
-    priceRange: "₹5.99 Cr - ₹7.75 Cr*",
-    priceDisplay: "From ₹5.99 Cr*",
+    priceRange: "₹6.82 Cr - ₹13.50 Cr*",
+    priceDisplay: "From ₹6.82 Cr*",
     status: "Under Construction",
     possession: "June 2030",
     rera: "PR1181012500079",
     landParcel: "3.2 Acres Prime Land Parcel",
-    towers: "Landmark Towers (G + 38 Storeys)",
-    towerDetails: "Ultra-luxury international glass facade architecture with sprawling sky decks",
-    elevators: "High-Speed Destination Controlled Elevators",
+    towers: "Landmark Towers (G + 40 Storeys)",
+    towerDetails: "Ultra-luxury international glass facade architecture with separate elevator access and signature Sky Lounge on 39th & 40th floors",
+    elevators: "High-Speed Destination Controlled Elevators with Separate Private Access",
     amenitiesCount: "45+ DLF Club Standards",
     coverImage: "/projects/project_32_user_1.png",
     images: [
@@ -1606,18 +1606,22 @@ export const PROJECTS_DATA = [
       "/projects/project_32_user_2.png"
     ],
     configurations: [
-      { bhk: "3 BHK Luxury", carpetArea: "1,125 - 1,280 sq.ft CA", price: "₹5.99 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "June 2030" },
-      { bhk: "3.5 BHK Grande", carpetArea: "1,350 - 1,450 sq.ft CA", price: "₹6.85 Cr*", floorPlanLabel: "Type 3.5A Grande", possessionDate: "June 2030" },
-      { bhk: "4 BHK Royal", carpetArea: "1,550 - 1,780 sq.ft CA", price: "₹7.75 Cr*", floorPlanLabel: "Type 4A Royal", possessionDate: "June 2030" }
+      { bhk: "3 BHK Luxury", carpetArea: "1,365 sq.ft CA", price: "₹6.82 Cr*", floorPlanLabel: "Tower 7 / Standard", possessionDate: "June 2030" },
+      { bhk: "3 BHK Grande", carpetArea: "1,511 sq.ft CA", price: "₹7.55 Cr*", floorPlanLabel: "Type 3B Grande", possessionDate: "June 2030" },
+      { bhk: "Refuge Unit", carpetArea: "2,044 sq.ft CA", price: "₹10.20 Cr*", floorPlanLabel: "Tower 7 Refuge Suite", possessionDate: "June 2030" },
+      { bhk: "4 BHK (36th Floor)", carpetArea: "2,332 sq.ft CA", price: "₹11.66 Cr*", floorPlanLabel: "Tower 7 Sky Suite", possessionDate: "June 2030" },
+      { bhk: "4 BHK Royal Presidential", carpetArea: "2,685 sq.ft CA", price: "₹13.50 Cr*", floorPlanLabel: "Type 4A Presidential", possessionDate: "June 2030" },
+      { bhk: "5 BHK Palatial Penthouse", carpetArea: "2,957 sq.ft CA", price: "TBD (On Request)", floorPlanLabel: "36th Floor Sky Mansion", possessionDate: "June 2030" }
     ],
     mapUrl: "https://maps.google.com/?q=DLF+Andheri+West+Opposite+Infiniti+Mall+Mumbai",
-    overview: "DLF enters Mumbai with an ultra-luxury residential landmark in Andheri West opposite Infiniti Mall, featuring grand scale club amenities and bespoke international finishes.",
+    overview: "DLF enters Mumbai with an ultra-luxury residential landmark in Andheri West opposite Infiniti Mall, featuring grand scale club amenities, separate elevator access, and exclusive 39th & 40th floor Sky Lounge.",
     highlights: [
-      "Iconic DLF ultra-luxury development standards and glass architecture",
-      "Directly opposite Infiniti Mall and steps from Oshiwara Metro Station",
-      "Over 45,000 sq.ft of international clubhouse, sports courts, and wellness amenities"
+      "Exclusive Sky Lounge across 39th & 40th floors with panoramic Mumbai skyline vistas",
+      "Separate private elevator access for enhanced resident privacy and security",
+      "Tower 7 exclusive configurations including 36th-floor sky suites and palatial 5 BHK penthouses",
+      "Directly opposite Infiniti Mall and steps from Oshiwara Metro Station"
     ],
-    amenities: ["Olympic Pool", "Grand Clubhouse", "Private Theatre", "Spa", "Tennis Court"]
+    amenities: ["Olympic Pool", "Grand Clubhouse", "Private Theatre", "Spa", "Sky Lounge (39th & 40th Floors)", "Tennis Court"]
   },
 
   // ==========================================
@@ -1642,10 +1646,10 @@ export const PROJECTS_DATA = [
     towerDetails: "Low-density bespoke seafront sky mansions with 180° unobstructed Arabian Sea views",
     elevators: "Private Biometric High-Speed Elevators with Dedicated Service Lift",
     amenitiesCount: "45+ Bespoke Club Amenities",
-    coverImage: "/projects/godrej_bandra_cover.jpg",
+    coverImage: "/projects/godrej_bandra_bay_1.jpg",
     images: [
-      "/projects/godrej_bandra_cover.jpg",
-      "/projects/godrej_bandra_2.jpg"
+      "/projects/godrej_bandra_bay_1.jpg",
+      "/projects/godrej_bandra_bay_2.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Seafront Suite", carpetArea: "2,450 sq.ft CA", price: "₹20.86 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Nov 2033" },
