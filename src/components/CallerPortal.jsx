@@ -287,7 +287,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
     setForgotError('');
     const code = forgotCallerCode.trim();
     if (!code) {
-      setForgotError('Please enter your Caller ID (e.g. Callerpreet).');
+      setForgotError('Please enter your Caller ID (e.g. Caller01).');
       return;
     }
     const found = callers.find(c => c.callerCode === code);
@@ -697,7 +697,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                     required
                     value={callerCode}
                     onChange={(e) => setCallerCode(e.target.value)}
-                    placeholder="e.g. Callerpreet"
+                    placeholder="e.g. Caller01"
                     className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                   />
                 </div>
@@ -781,7 +781,7 @@ export function CallerPortal({ currentUser, onLogin, onLogout, onNavigateHome })
                         required
                         value={forgotCallerCode}
                         onChange={(e) => setForgotCallerCode(e.target.value)}
-                        placeholder="e.g. Callerpreet"
+                        placeholder="e.g. Caller01"
                         className="w-full bg-[#FAF9F6] border border-[#EAE6DF] focus:border-[#245348] focus:ring-1 focus:ring-[#245348] rounded-xl px-3.5 py-2.5 text-[#14221F] font-mono text-xs focus:outline-none transition-all"
                       />
                     </div>
