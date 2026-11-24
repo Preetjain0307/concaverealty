@@ -590,7 +590,7 @@ export function SignatureProjects({
                       </div>
 
                       {/* Bottom Right: 360° Virtual Tour & Share Button */}
-                      <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 pointer-events-auto">
+                      <div className="absolute bottom-3 right-3 z-20 flex items-center gap-2 pointer-events-auto">
                         {hasVirtualTour && (
                           <button
                             type="button"
@@ -598,7 +598,7 @@ export function SignatureProjects({
                               e.stopPropagation();
                               onOpenTour(project.id);
                             }}
-                            className="bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
+                            className="bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95 shrink-0"
                           >
                             <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
                             <span>360° Tour</span>
@@ -610,9 +610,9 @@ export function SignatureProjects({
                           onClick={(e) => handleShareProject(e, project)}
                           title={`Share ${project.name} direct link`}
                           aria-label={`Share ${project.name}`}
-                          className="bg-[#12221E]/85 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] backdrop-blur-md border border-[#DFBE79]/50 hover:border-[#DFBE79] w-7.5 h-7.5 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-110 active:scale-95"
+                          className="w-9 h-9 rounded-full flex items-center justify-center bg-[#12221E]/90 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] backdrop-blur-md border border-[#DFBE79]/60 hover:border-[#DFBE79] transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer hover:scale-105 active:scale-95 shrink-0"
                         >
-                          <Share2 className="w-3.5 h-3.5" />
+                          <Share2 className="w-4 h-4 shrink-0" />
                         </button>
                       </div>
 
