@@ -576,44 +576,45 @@ export function SignatureProjects({
                           rel="noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           title={`View exact location of ${project.name} on Google Maps (${project.locality || project.location})`}
-                          className="bg-[#12221E]/80 hover:bg-[#12221E] backdrop-blur-md px-3 py-1 rounded-full text-[10.5px] uppercase tracking-wider font-semibold text-[#FFF7E2] shadow-md flex items-center gap-1.5 max-w-[58%] truncate transition-all pointer-events-auto border border-[#DFBE79]/35 hover:border-[#DFBE79] group/loc"
+                          className="bg-[#12221E]/80 hover:bg-[#12221E] backdrop-blur-md px-3 py-1 rounded-full text-[10.5px] uppercase tracking-wider font-semibold text-[#FFF7E2] shadow-md flex items-center gap-1.5 max-w-[68%] truncate transition-all pointer-events-auto border border-[#DFBE79]/35 hover:border-[#DFBE79] group/loc"
                         >
                           <MapPin className="w-3 h-3 text-[#DFBE79] shrink-0 group-hover/loc:scale-110 transition-transform" />
                           <span className="truncate">{project.locality || project.location}</span>
                         </a>
 
-                        {/* Status Badge & Quick Share Button */}
-                        <div className="flex items-center gap-1.5 shrink-0 pointer-events-auto">
-                          <button
-                            type="button"
-                            onClick={(e) => handleShareProject(e, project)}
-                            title={`Share ${project.name} direct link`}
-                            aria-label={`Share ${project.name}`}
-                            className="bg-[#12221E]/85 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] backdrop-blur-md border border-[#DFBE79]/50 hover:border-[#DFBE79] w-7 h-7 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-110 active:scale-95"
-                          >
-                            <Share2 className="w-3.5 h-3.5" />
-                          </button>
-                          <div className="bg-white/95 backdrop-blur-md text-[#183C32] border border-[#DFBE79]/50 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wide font-semibold shadow-md max-w-[120px] truncate flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
-                            <span className="truncate">{project.status || 'Verified'}</span>
-                          </div>
+                        {/* Status Badge */}
+                        <div className="bg-white/95 backdrop-blur-md text-[#183C32] border border-[#DFBE79]/50 px-2.5 py-1 rounded-full text-[10px] font-mono tracking-wide font-semibold shadow-md max-w-[130px] truncate flex items-center gap-1.5 pointer-events-auto shrink-0">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0" />
+                          <span className="truncate">{project.status || 'Verified'}</span>
                         </div>
                       </div>
 
-                      {/* Bottom Right: 360° Virtual Tour button - strictly conditional */}
-                      {hasVirtualTour && (
+                      {/* Bottom Right: 360° Virtual Tour & Share Button */}
+                      <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 pointer-events-auto">
+                        {hasVirtualTour && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenTour(project.id);
+                            }}
+                            className="bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
+                          >
+                            <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
+                            <span>360° Tour</span>
+                          </button>
+                        )}
+
                         <button
                           type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onOpenTour(project.id);
-                          }}
-                          className="absolute bottom-3 right-3 z-20 bg-[#183C32]/90 hover:bg-[#245348] backdrop-blur-md text-white px-3 py-1 rounded-full text-[10.5px] font-semibold flex items-center gap-1.5 shadow-md transition-all border border-[#DFBE79]/50 hover:scale-105 active:scale-95"
+                          onClick={(e) => handleShareProject(e, project)}
+                          title={`Share ${project.name} direct link`}
+                          aria-label={`Share ${project.name}`}
+                          className="bg-[#12221E]/85 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] backdrop-blur-md border border-[#DFBE79]/50 hover:border-[#DFBE79] w-7.5 h-7.5 rounded-full flex items-center justify-center transition-all shadow-md cursor-pointer hover:scale-110 active:scale-95"
                         >
-                          <Compass className="w-3.5 h-3.5 text-[#DFBE79] animate-spin" style={{ animationDuration: '8s' }} />
-                          <span>360° Tour</span>
+                          <Share2 className="w-3.5 h-3.5" />
                         </button>
-                      )}
+                      </div>
 
                       {/* Bottom Left: Multiple photos count pill */}
                       {project.images && project.images.length > 0 && (
@@ -720,24 +721,13 @@ export function SignatureProjects({
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-1.5 sm:gap-2">
+                        <div className="flex items-center gap-2">
                           <button
                             type="button"
                             onClick={() => onSelectProject(project)}
-                            className="flex-1 py-2 px-2 sm:px-3 rounded-xl border border-[#1D3530]/35 bg-[#FAF8F3] hover:bg-[#1D3530] text-[#1D3530] hover:text-[#DFBE79] hover:border-[#1D3530] text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-200 text-center cursor-pointer shadow-xs active:scale-[0.98]"
+                            className="flex-1 py-2 px-3 rounded-xl border border-[#1D3530]/35 bg-[#FAF8F3] hover:bg-[#1D3530] text-[#1D3530] hover:text-[#DFBE79] hover:border-[#1D3530] text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-200 text-center cursor-pointer shadow-xs active:scale-[0.98]"
                           >
                             Details
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => handleShareProject(e, project)}
-                            title={`Share link for ${project.name}`}
-                            aria-label={`Share link for ${project.name}`}
-                            className="py-2 px-2.5 sm:px-3 rounded-xl border border-[#DFBE79]/60 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-[10.5px] uppercase tracking-wider font-bold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.98] group/share shrink-0"
-                          >
-                            <Share2 className="w-3.5 h-3.5 text-[#C59B4E] group-hover/share:text-[#14221F] transition-colors" />
-                            <span className="hidden xs:inline">Share</span>
                           </button>
 
                           <button
@@ -747,7 +737,7 @@ export function SignatureProjects({
                               location: project.location,
                               project: project
                             })}
-                            className="flex-1 py-2 px-2 sm:px-3 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#DFBE79] hover:via-[#C59B4E] hover:to-[#B3883B] text-[#FFF7E2] hover:text-[#14221F] border border-[#C59B4E]/60 text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-300 shadow-[0_6px_18px_rgba(20,34,31,0.2)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.35)] flex items-center justify-center gap-1 cursor-pointer active:scale-[0.98]"
+                            className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-[#14221F] via-[#1D3530] to-[#245348] hover:from-[#DFBE79] hover:via-[#C59B4E] hover:to-[#B3883B] text-[#FFF7E2] hover:text-[#14221F] border border-[#C59B4E]/60 text-[10.5px] uppercase tracking-[0.12em] sm:tracking-[0.14em] font-bold transition-all duration-300 shadow-[0_6px_18px_rgba(20,34,31,0.2)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.35)] flex items-center justify-center gap-1 cursor-pointer active:scale-[0.98]"
                           >
                             <PhoneCall className="w-3.5 h-3.5 text-[#DFBE79] group-hover:text-current shrink-0" />
                             <span>Enquire</span>
