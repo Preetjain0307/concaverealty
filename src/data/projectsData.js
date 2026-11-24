@@ -183,7 +183,7 @@ export const PROJECTS_DATA = [
       "Timeless Art Deco architectural facade with private dual-aspect sundecks",
       "Grand clubhouse featuring Café Altus, library lounge, and banquet spaces",
       "On-premise Ganesha Temple / Shrine set amidst landscaped garden lawns",
-      "5 Mins to Kandivali West Metro Station & 10 Mins to Borivali Railway Station"
+      "3 Mins to Shimpoli Metro Station (Line 2A) & Mahavir Nagar, Borivali West"
     ],
     amenities: [
       "Temperature-Controlled Swimming Pool",
@@ -2407,7 +2407,7 @@ export const PROJECT_ENRICHMENTS = {
     "coords": { "lat": 19.2274, "lng": 72.8486 },
     "keyFeatures": [
       "Direct access to S.V. Road & Saibaba Nagar residential corridor",
-      "5 Mins to Kandivali West & Borivali West Metro Stations (Line 2A)",
+      "3 Mins to Shimpoli Metro Station (Line 2A) & Mahavir Nagar, Borivali West",
       "8 Mins to Borivali Railway Station (West)",
       "10 Mins to Western Express Highway & upcoming Borivali-Thane Tunnel",
       "6 Mins to Poinsur Gymkhana & Kora Kendra Cultural Grounds",
@@ -3533,13 +3533,13 @@ export const PROJECT_COORDINATES = {
     landmark: "Don Bosco High School (400m), Vazira Naka (550m) & Kora Kendra (1.2 km)"
   },
   2: {
-    lat: 19.2244, lng: 72.8622, pincode: "400066",
-    address: "Off Western Express Highway, Magathane, Borivali East, Mumbai — 400066",
-    metro: "Magathane Metro Station (Line 7) — 350m (4 mins walk)",
-    railway: "Borivali Railway Station (East) — 1.8 km (7 mins)",
-    highway: "Western Express Highway (WEH) — 150m (Direct Ramp Access)",
+    lat: 19.2274, lng: 72.8486, pincode: "400092",
+    address: "Saibaba Nagar, Near Mahavir Nagar, Borivali West, Mumbai — 400092",
+    metro: "Shimpoli Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Borivali Railway Station (West) — 1.5 km (6 mins)",
+    highway: "S.V. Road & Link Road Corridor — 200m (2 mins)",
     airport: "CSM International Airport (BOM) — 16.5 km (28 mins)",
-    landmark: "Sanjay Gandhi National Park (1.1 km), Tata Power Center & Magathane Flyover"
+    landmark: "Mahavir Nagar, Borivali West"
   },
   3: {
     lat: 19.2198, lng: 72.8637, pincode: "400066",
@@ -3548,7 +3548,7 @@ export const PROJECT_COORDINATES = {
     railway: "Borivali Railway Station (East) — 1.6 km (6 mins)",
     highway: "Western Express Highway (WEH) — 0 km (Direct WEH Service Road Frontage)",
     airport: "CSM International Airport (BOM) — 16.0 km (25 mins)",
-    landmark: "Sky City Mall (On-Campus), Oberoi International School & SGNP Forest Views"
+    landmark: "Western Express Highway, Borivali East"
   },
   4: {
     lat: 19.2285, lng: 72.8675, pincode: "400066",
@@ -3767,13 +3767,13 @@ export const PROJECT_COORDINATES = {
     landmark: "Lokhandwala / Versova, Andheri West"
   },
   28: {
-    lat: 19.1215, lng: 72.8355, pincode: "400058",
-    address: "Veera Desai Road, Andheri West, Mumbai — 400058",
-    metro: "D.N. Nagar Metro Station (Line 1 & 2A) — 450m (4 mins walk)",
-    railway: "Andheri Railway Station (West) — 1.8 km (6 mins)",
-    highway: "New Link Road (150m) & Western Express Highway — 2.3 km (7 mins)",
-    airport: "CSM International Airport (BOM) — 7.0 km (14 mins)",
-    landmark: "The Country Club (150m), Yash Raj Films Studio (350m) & Kokilaben Hospital (750m)"
+    lat: 19.1485, lng: 72.8345, pincode: "400053",
+    address: "New Link Road, Opposite Vicino Mall, Oshiwara / Goregaon, Mumbai — 400053",
+    metro: "Goregaon Metro Station (Line 2A) — 250m (3 mins walk)",
+    railway: "Goregaon / Ram Mandir Railway Station — 1.5 km (5 mins)",
+    highway: "New Link Road Frontage & WEH via Mrinal Gore Flyover — 2.0 km (6 mins)",
+    airport: "CSM International Airport (BOM) — 8.5 km (16 mins)",
+    landmark: "Goregaon Metro Station near Vicino Mall"
   },
   29: {
     lat: 19.1285, lng: 72.8305, pincode: "400053",
@@ -3805,11 +3805,11 @@ export const PROJECT_COORDINATES = {
   32: {
     lat: 19.1365, lng: 72.8255, pincode: "400053",
     address: "Oshiwara Link Road, Andheri West, Mumbai — 400053",
-    metro: "Oshiwara Metro Station (Line 2A) — 200m (2 mins walk)",
+    metro: "Lower Oshiwara Metro Station (Line 2A) — 150m (2 mins walk)",
     railway: "Ram Mandir Railway Station — 1.2 km (4 mins)",
     highway: "Direct Link Road Frontage — 0 km",
     airport: "CSM International Airport (BOM) — 8.8 km (17 mins)",
-    landmark: "Mega Mall (250m), Laxmi Industrial Estate (150m) & Star Bazaar"
+    landmark: "Infiniti Mall, Lokhandwala Area"
   },
   33: {
     lat: 19.0652, lng: 72.8285, pincode: "400050",
