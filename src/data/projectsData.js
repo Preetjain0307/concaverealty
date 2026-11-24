@@ -257,7 +257,7 @@ export const PROJECTS_DATA = [
   },
   {
     id: 4,
-    name: "Chandak GreenAiry",
+    name: "Chandak greenairy",
     builder: "Chandak Group",
     tagline: "High-Rise Living Overlooking National Park Greens on WEH",
     location: "Borivali",
@@ -288,7 +288,7 @@ export const PROJECTS_DATA = [
       { bhk: "4 BHK Grand Jodi", carpetArea: "1,346 sq.ft CA", price: "₹4.98 Cr*", floorPlanLabel: "Type 4A Presidential Jodi", possessionDate: "June 2028" }
     ],
     mapUrl: "https://maps.google.com/?q=Chandak+Greenairy+Western+Express+Highway%2C+Borivali+East+Mumbai",
-    overview: "Chandak GreenAiry is an ultra-modern high-rise residential sanctuary standing tall along the Western Express Highway in Borivali East. Overlooking the serene green expanses of Sanjay Gandhi National Park, it combines rapid transit (just 100 meters walking from Magathane Metro Station) with nature-inspired architecture, spacious balcony residences, and 30+ curated lifestyle amenities.",
+    overview: "Chandak greenairy is an ultra-modern high-rise residential sanctuary standing tall along the Western Express Highway in Borivali East. Overlooking the serene green expanses of Sanjay Gandhi National Park, it combines rapid transit (just 100 meters walking from Magathane Metro Station) with nature-inspired architecture, spacious balcony residences, and 30+ curated lifestyle amenities.",
     highlights: [
       "Prime Transit: Just 100 meters walking distance from Magathane Metro Station (Line 7)",
       "Direct frontage on Western Express Highway with effortless arterial commute",
