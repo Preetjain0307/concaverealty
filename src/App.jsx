@@ -207,6 +207,12 @@ export function App() {
       } else if (hash === '#legal' || path === '/legal') {
         setLegalTab('terms');
         setCurrentView('legal');
+      } else if (hash === '#projects') {
+        setCurrentView('projects');
+      } else if (hash === '#amenities') {
+        setCurrentView('amenities');
+      } else if (hash === '#contact' || path === '/contact') {
+        setCurrentView('contact');
       } else {
         // Directs back to Home page of the website for any empty path, root '/', '#home' or unexpected route
         setCurrentView('home');

@@ -261,7 +261,7 @@ export const PROJECTS_DATA = [
     builder: "Chandak Group",
     tagline: "High-Rise Living Overlooking National Park Greens on WEH",
     location: "Borivali",
-    locality: "Western Express Highway, Near Magathane Metro, Borivali East",
+    locality: "Ganesh Nagar, Western Express Highway, Borivali East",
     exactAddress: "Western Express Highway (WEH), Near Magathane Metro Station, Ganesh Nagar, Borivali East, Mumbai - 400066",
     city: "Mumbai",
     priceRange: "₹1.66 Cr - ₹4.98 Cr*",
@@ -697,8 +697,8 @@ export const PROJECTS_DATA = [
     builder: "Anchor Point Developers",
     tagline: "Elevated High-Rise Luxury with 50+ Amenities near Orlem",
     location: "Malad",
-    locality: "Orlem Circle, Malad West",
-    exactAddress: "Bhagwan Gautam Buddha Road, Near Orlem Circle, Malad West, Mumbai - 400064",
+    locality: "Malad West near Mithi Choki",
+    exactAddress: "Near Mithi Choki (Mithichowki), Malad West, Mumbai - 400064",
     city: "Mumbai",
     priceRange: "₹1.24 Cr - ₹2.89 Cr*",
     priceDisplay: "₹1.24 Cr*",
@@ -729,7 +729,7 @@ export const PROJECTS_DATA = [
       "Prime location near Orlem Circle & Lourdes Colony in Malad West",
       "Over 50 curated lifestyle, podium, and rooftop sky amenities",
       "Half-Olympic infinity lap pool with heated jacuzzi & spa",
-      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station"
+      "4 Mins to Mithi Choki (Mithichowki) Metro Station (Line 2A)"
     ],
     amenities: [
       "Half-Olympic Infinity-Edge Lap Pool",
@@ -1109,8 +1109,8 @@ export const PROJECTS_DATA = [
     builder: "Sunteck Realty",
     tagline: "23-Acre Master Integrated Township at Oshiwara District Centre (ODC)",
     location: "Jogeshwari",
-    locality: "Oshiwara District Centre (ODC), Ram Mandir Road, Jogeshwari / Goregaon West",
-    exactAddress: "Sunteck City, Oshiwara District Centre (ODC), Off SV Road & JVLR, Ram Mandir Road, Mumbai - 400102",
+    locality: "Oshiwara District Centre (ODC), Goregaon West",
+    exactAddress: "Sunteck City, Oshiwara District Centre (ODC), Off SV Road & JVLR, Goregaon West, Mumbai - 400102",
     city: "Mumbai",
     priceRange: "₹2.58 Cr - ₹5.90 Cr*",
     priceDisplay: "₹2.58 Cr*",
@@ -1136,7 +1136,7 @@ export const PROJECTS_DATA = [
     overview: "Sunteck City is a prestigious 23-acre premium mixed-use township strategically situated at the Oshiwara District Centre (ODC), on the Jogeshwari-Goregaon West border. Seamlessly integrating high-end residential towers (such as 4th & 5th Avenue), upscale retail boulevards, fine-dining bistros, and sprawling multi-level club facilities, it offers an unmatched walk-to-work lifestyle.",
     highlights: [
       "Sprawling 23-acre master township at Oshiwara District Centre (ODC)",
-      "5 Mins walk to Ram Mandir Railway Station & quick access to JVLR",
+      "Nearest Oshiwara Metro Station & Goregaon Railway Station (~1.3 km)",
       "Integrated fine-dining restaurants, retail high-street & grade-A offices",
       "Lavish multi-storey clubhouse with swimming pools, sports turf & spa"
     ],
@@ -1203,8 +1203,8 @@ export const PROJECTS_DATA = [
     builder: "Kalpataru Limited",
     tagline: "Ultra-Luxury Haven on Lokhandwala Back Road",
     location: "Andheri",
-    locality: "Lokhandwala Back Road, Andheri West",
-    exactAddress: "Lokhandwala Back Road, Next to Lokhandwala Complex, Andheri West, Mumbai 400053",
+    locality: "Lower Oshiwara / Lokhandwala, Andheri West",
+    exactAddress: "Lokhandwala Back Road, Lower Oshiwara, Near Infiniti Mall, Andheri West, Mumbai 400053",
     city: "Mumbai",
     priceRange: "₹5.61 Cr - ₹13.26 Cr*",
     priceDisplay: "From ₹5.61 Cr*",
@@ -1231,7 +1231,7 @@ export const PROJECTS_DATA = [
     mapUrl: "https://maps.google.com/?q=Kalpataru+Vian+Lokhandwala+Back+Road+Andheri+West+Mumbai",
     overview: "Kalpataru Vian on Lokhandwala Back Road is a boutique, low-density residential masterpiece offering expansive sundecks, lush mangrove views, and world-class club amenities in the heart of Andheri West.",
     highlights: [
-      "Prime Lokhandwala Back Road address surrounded by green mangroves",
+      "Lower Oshiwara address, near Infiniti Mall (300m) & Lokhandwala (300m)",
       "Expansive low-density floor plans with private decks and cross ventilation",
       "Lavish clubhouse with swimming pool, gym, and landscaped podium"
     ],
@@ -1281,8 +1281,8 @@ export const PROJECTS_DATA = [
     builder: "Puravankara Limited",
     tagline: "Ultra-Luxury Urban Landmark at Lokhandwala Circle",
     location: "Andheri",
-    locality: "Lokhandwala Circle, Andheri West",
-    exactAddress: "Off Lokhandwala Circle, Near New Link Road, Andheri West, Mumbai 400053",
+    locality: "Lower Oshiwara / Lokhandwala, Andheri West",
+    exactAddress: "Off New Link Road, Lower Oshiwara, Near Infiniti Mall, Andheri West, Mumbai 400053",
     city: "Mumbai",
     priceRange: "₹3.35 Cr - ₹7.30 Cr*",
     priceDisplay: "From ₹3.35 Cr*",
@@ -1308,7 +1308,7 @@ export const PROJECTS_DATA = [
     mapUrl: "https://maps.google.com/?q=Purva+Estrella+Lokhandwala+Circle+Andheri+West+Mumbai",
     overview: "Purva Estrella brings Puravankara's nationally celebrated architectural craftsmanship to Lokhandwala Circle, Andheri West, featuring grand Italian marble finishes, resort amenities, and elite lifestyle conveniences.",
     highlights: [
-      "Steps from Lokhandwala Market, cafe strips, and high-street shopping",
+      "Lower Oshiwara address, near Infiniti Mall (300m) & Lokhandwala (300m)",
       "Lush landscaped open podium spaces with infinity pool",
       "Puravankara hallmark 48-year construction legacy and quality assurance"
     ],
@@ -1320,8 +1320,8 @@ export const PROJECTS_DATA = [
     builder: "Gurukrupa Realcon",
     tagline: "Contemporary High-Rise Residences on New Link Road",
     location: "Andheri",
-    locality: "New Link Road, Andheri West",
-    exactAddress: "New Link Road, Near Lotus Petrol Pump, Andheri West, Mumbai 400053",
+    locality: "Lower Oshiwara, Andheri West",
+    exactAddress: "New Link Road, Lower Oshiwara, Near Infiniti Mall, Andheri West, Mumbai 400053",
     city: "Mumbai",
     priceRange: "₹2.57 Cr - ₹4.49 Cr*",
     priceDisplay: "From ₹2.57 Cr*",
@@ -1346,7 +1346,7 @@ export const PROJECTS_DATA = [
     mapUrl: "https://maps.google.com/?q=Gurukrupa+Ekam+New+Link+Road+Andheri+West+Mumbai",
     overview: "Gurukrupa Ekam presents modern, well-ventilated residences on New Link Road, Andheri West, placing residents within walking distance of prime retail hubs, metro lines, and fine dining.",
     highlights: [
-      "Walking distance to Oshiwara and Lower Oshiwara Metro Stations",
+      "300m walk to Lower Oshiwara Metro Station & Near Infiniti Mall (300m)",
       "Vastu-compliant contemporary apartment designs with expansive views",
       "Attractive entry investment pricing in prime Andheri West"
     ],
@@ -1358,8 +1358,8 @@ export const PROJECTS_DATA = [
     builder: "Shree Naman Group",
     tagline: "Executive Boutique Luxury in Four Bungalows",
     location: "Andheri",
-    locality: "Four Bungalows, Andheri West",
-    exactAddress: "Ratan Nagar, Four Bungalows, Near Versova Metro Station, Andheri West, Mumbai 400053",
+    locality: "Lokhandwala / Versova, Andheri West",
+    exactAddress: "Ratan Nagar, Lokhandwala / Versova, Near Versova Metro Station, Andheri West, Mumbai 400053",
     city: "Mumbai",
     priceRange: "₹4.62 Cr - ₹7.50 Cr*",
     priceDisplay: "From ₹4.62 Cr*",
@@ -1383,7 +1383,7 @@ export const PROJECTS_DATA = [
     mapUrl: "https://maps.google.com/?q=Naman+58+Four+Bungalows+Andheri+West+Mumbai",
     overview: "Naman 58 delivers boutique executive residences in Four Bungalows, Andheri West, tailored for discerning residents seeking quiet privacy, panoramic horizons, and immediate access to Versova Metro.",
     highlights: [
-      "2 minutes from Versova and DN Nagar Metro Stations",
+      "Lokhandwala / Versova landmark, 4 mins walk to Versova Metro Station (Line 1)",
       "Rooftop clubhouse and business conference facilities with horizon sea views",
       "Low-density single tower design with only select residences per floor"
     ],
@@ -1395,8 +1395,8 @@ export const PROJECTS_DATA = [
     builder: "Kolte-Patil Developers",
     tagline: "Serene Luxury Living in Versova Corridor",
     location: "Andheri",
-    locality: "Versova / Four Bungalows, Andheri West",
-    exactAddress: "Near Ratan Nagar, Versova / Four Bungalows, Andheri West, Mumbai 400053",
+    locality: "Lokhandwala / Versova, Andheri West",
+    exactAddress: "Near Ratan Nagar, Lokhandwala / Versova, Andheri West, Mumbai 400053",
     city: "Mumbai",
     priceRange: "₹3.19 Cr - ₹7.90 Cr*",
     priceDisplay: "From ₹3.19 Cr*",
@@ -1421,7 +1421,7 @@ export const PROJECTS_DATA = [
     mapUrl: "https://maps.google.com/?q=Kolte-Patil+Serenova+Versova+Andheri+West+Mumbai",
     overview: "Kolte-Patil Serenova brings thoughtfully engineered urban homes to the tranquil Versova corridor in Andheri West, prioritizing natural light, cross-ventilation, and family wellness spaces.",
     highlights: [
-      "Serene, leafy residential pocket close to Versova Beach and cafes",
+      "Serene Lokhandwala / Versova residential pocket, 4 mins walk to Versova Metro Station (Line 1)",
       "Vastu-compliant layouts with dedicated utility spaces and wide decks",
       "Kolte-Patil's 3-decade legacy of punctual delivery and design excellence"
     ],
@@ -1561,11 +1561,10 @@ export const PROJECTS_DATA = [
     towerDetails: "Exclusive boutique residences managed by Saint Amand 5-star hospitality",
     elevators: "High-Speed Elevators with Biometric Security",
     amenitiesCount: "40+ Lodha Luxury Amenities",
-    coverImage: "/projects/project_31_user_1.png",
+    coverImage: "/project_photos/31%20-%20Lodha%20(Andheri)/cover.jpg",
     images: [
-      "/projects/project_31_user_1.png",
-      "/projects/project_31_user_2.png",
-      "/projects/project_31_user_3.png"
+      "/project_photos/31%20-%20Lodha%20(Andheri)/cover.jpg",
+      "/project_photos/31%20-%20Lodha%20(Andheri)/1.jpg"
     ],
     configurations: [
       { bhk: "3 BHK Luxury Suite", carpetArea: "1,232 - 1,395 sq.ft CA", price: "₹5.60 Cr*", floorPlanLabel: "Type 3A Luxury", possessionDate: "Dec 2026" },
@@ -2455,14 +2454,14 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "4": {
-    "coords": { "lat": 19.2195, "lng": 72.8631 },
+    "coords": { "lat": 19.2285, "lng": 72.8675 },
     "keyFeatures": [
       "100 Metres (1 Min Walk) to Magathane Metro Station (Line 7)",
+      "Ganesh Nagar, Western Express Highway, Borivali East landmark corridor",
       "Direct Frontage on Western Express Highway (WEH)",
       "8 Mins to Borivali Railway Station (East)",
       "3 Mins to Sanjay Gandhi National Park Main Gate",
-      "25 Mins to Mumbai International Airport (T2)",
-      "5 to 10 Mins to Growel's 101 Mall, Thakur College & Oberoi Mall"
+      "25 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
       "Swimming Pool & Poolside Café",
@@ -2504,14 +2503,14 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "6": {
-    "coords": { "lat": 19.2038, "lng": 72.8612 },
+    "coords": { "lat": 19.2054, "lng": 72.8667 },
     "keyFeatures": [
-      "Directly at Mahindra Yellow Gate, Akurli Road, Kandivali East",
-      "2 Mins to Western Express Highway (WEH) & Akurli Metro Station (Line 7)",
-      "3 Mins to Poisar Metro Station (Line 7)",
-      "4 Mins to Growel's 101 Mall, PVR Cinemas & Big Bazaar",
+      "Akurli Road, Kandivali East landmark (Directly at Mahindra Yellow Gate)",
+      "350 Metres (3 Mins walk) to Akurli Metro Station (Line 7)",
+      "2 Mins to Western Express Highway (WEH) via Akurli Road",
+      "4 Mins to Growel's 101 Mall, PVR Cinemas & Centrium",
       "5 Mins to Kandivali Railway Station (East)",
-      "Near Lokhandwala Foundation School, Thakur College & Cambridge School"
+      "Near Lokhandwala Foundation School & Cambridge School"
     ],
     "amenities": [
       "Infinity-Edge Lap Pool",
@@ -2554,14 +2553,14 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "8": {
-    "coords": { "lat": 19.2081, "lng": 72.8682 },
+    "coords": { "lat": 19.2115, "lng": 72.8655 },
     "keyFeatures": [
-      "Direct access on Akurli Road, Kandivali East",
-      "3 Mins to Poisar & Akurli Metro Stations (Line 7)",
+      "Akurli Road, Kandivali East landmark corridor",
+      "400 Metres (4 Mins walk) to Akurli Metro Station (Line 7)",
       "3 Mins to Western Express Highway (WEH)",
-      "Bordering 25,000 Acres of National Park Forest Reserve",
-      "500m to Apex Multispeciality Hospital",
-      "5 Mins to Growel's 101 Mall, Thakur Village High Street & D-Mart"
+      "Bordering 25,000 Acres of SGNP National Park Forest Reserve",
+      "5 Mins to Growel's 101 Mall, Thakur Village & D-Mart",
+      "5 Mins to Kandivali Railway Station (East)"
     ],
     "amenities": [
       "Temperature-Controlled Indoor Pool",
@@ -2650,12 +2649,12 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "12": {
-    "coords": { "lat": 19.1912, "lng": 72.8415 },
+    "coords": { "lat": 19.1895, "lng": 72.8442 },
     "keyFeatures": [
-      "Prime Bhagwan Gautam Buddha Road location near Orlem Circle, Malad West",
-      "3 Mins to Orlem Church & Lourdes Colony",
-      "4 Mins to S.V. Road & Valnai / Mithchowki Metro Station (Line 2A)",
-      "7 Mins to Malad Railway Station & Link Road retail hubs",
+      "Prime Malad West address near Mithi Choki (Mithichowki)",
+      "350 Metres (4 Mins walk) to Mithi Choki (Mithichowki) Metro Station (Line 2A)",
+      "3 Mins to Orlem Circle, S.V. Road & Link Road retail hubs",
+      "5 Mins to Malad Railway Station (West)",
       "12 Mins to Western Express Highway (WEH)",
       "25 Mins to Mumbai International Airport (T2)"
     ],
@@ -2830,13 +2829,13 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "20": {
-    "coords": { "lat": 19.1492, "lng": 72.8465 },
+    "coords": { "lat": 19.1518, "lng": 72.8488 },
     "keyFeatures": [
       "Sprawling master township at Oshiwara District Centre (ODC)",
+      "Landmark near Nesco IT Park & Goregaon Railway Station (approx. 1.3 km)",
+      "450 Metres (5 Mins walk) to Oshiwara Metro Station (Line 2A)",
       "3 Mins walk to Ram Mandir Railway Station (350m)",
-      "3 Mins to Western Express Highway (Flyover access directly into ODC)",
-      "5 Mins to Lower Oshiwara Metro Station & New Link Road",
-      "7 Mins to Nesco IT Park & Bombay Exhibition Centre",
+      "Direct flyover access to Western Express Highway & JVLR",
       "15 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
@@ -2873,12 +2872,12 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "22": {
-    "coords": { "lat": 19.1458, "lng": 72.8251 },
+    "coords": { "lat": 19.1415, "lng": 72.8315 },
     "keyFeatures": [
-      "Prime Lokhandwala Back Road address surrounded by green mangroves, Andheri West",
-      "2 Mins to Lokhandwala High Street Market & Celebration Sports Club",
+      "Lower Oshiwara address, near Infiniti Mall (300m) & Lokhandwala (300m)",
+      "300 Metres (3 Mins walk) to Lower Oshiwara Metro Station (Line 2A)",
+      "Immediate access to Lokhandwala High Street Market & dining avenues",
       "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "5 Mins to Oshiwara & DN Nagar Metro Stations (Lines 1 & 2A)",
       "10 Mins to Western Express Highway & Andheri Railway Station",
       "20 Mins to Mumbai International Airport (T2)"
     ],
@@ -2915,12 +2914,12 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "24": {
-    "coords": { "lat": 19.1315, "lng": 72.8312 },
+    "coords": { "lat": 19.1432, "lng": 72.8335 },
     "keyFeatures": [
-      "Prestigious address off New Link Road, near DN Nagar Metro, Andheri West",
-      "2 Mins walk to DN Nagar Metro Interchange (Line 1 & Line 2A)",
+      "Lower Oshiwara address, near Infiniti Mall (300m) & Lokhandwala (300m)",
+      "300 Metres (3 Mins walk) to Lower Oshiwara Metro Station (Line 2A)",
+      "Prestigious enclave off New Link Road, Lower Oshiwara",
       "4 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "5 Mins to Lokhandwala Circle & High Street Retail",
       "8 Mins to Andheri Railway Station (Western & Harbour Lines)",
       "18 Mins to Mumbai International Airport (T2)"
     ],
@@ -2936,13 +2935,13 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "25": {
-    "coords": { "lat": 19.1308, "lng": 72.8195 },
+    "coords": { "lat": 19.1420, "lng": 72.8328 },
     "keyFeatures": [
-      "Prime Seven Bungalows / Versova address, Andheri West",
-      "2 Mins to Versova Metro Station (Line 1)",
-      "3 Mins to Versova Beach Promenade & Nana Nani Park",
-      "5 Mins to Kokilaben Dhirubhai Ambani Hospital & Four Bungalows Market",
-      "8 Mins to DN Nagar Metro Station & New Link Road",
+      "Lower Oshiwara address, near Infiniti Mall (300m) & Lokhandwala (300m)",
+      "300 Metres (3 Mins walk) to Lower Oshiwara Metro Station (Line 2A)",
+      "Direct frontage along New Link Road, Lower Oshiwara",
+      "5 Mins to Kokilaben Dhirubhai Ambani Hospital & retail hubs",
+      "8 Mins to Andheri Railway Station & SV Road",
       "20 Mins to Mumbai International Airport (T2)"
     ],
     "amenities": [
@@ -2957,12 +2956,12 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "26": {
-    "coords": { "lat": 19.1275, "lng": 72.8284 },
+    "coords": { "lat": 19.1328, "lng": 72.8225 },
     "keyFeatures": [
-      "Prime Ratan Nagar address in Four Bungalows, Andheri West",
-      "2 Mins to DN Nagar Metro Interchange (Lines 1 & 2A)",
+      "Prime Lokhandwala / Versova address, Andheri West",
+      "350 Metres (4 Mins walk) to Versova Metro Station (Line 1)",
       "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "5 Mins to Four Bungalows Market, Versova Beach & Lokhandwala",
+      "5 Mins to Versova Beach, Four Bungalows & Lokhandwala Complex",
       "8 Mins to Andheri Railway Station & Western Express Highway",
       "18 Mins to Mumbai International Airport (T2)"
     ],
@@ -2978,12 +2977,12 @@ export const PROJECT_ENRICHMENTS = {
     ]
   },
   "27": {
-    "coords": { "lat": 19.1292, "lng": 72.8241 },
+    "coords": { "lat": 19.1342, "lng": 72.8218 },
     "keyFeatures": [
-      "Peaceful green corridor near Versova & Four Bungalows, Andheri West",
-      "2 Mins to Versova Metro Station (Line 1)",
+      "Serene Lokhandwala / Versova residential pocket, Andheri West",
+      "350 Metres (4 Mins walk) to Versova Metro Station (Line 1)",
       "3 Mins to Kokilaben Dhirubhai Ambani Hospital",
-      "5 Mins to Four Bungalows Market, Lokhandwala Complex & New Link Road",
+      "5 Mins to Versova Beach, Lokhandwala Complex & cafe avenues",
       "8 Mins to Andheri Railway Station & S.V. Road",
       "18 Mins to Mumbai International Airport (T2)"
     ],
@@ -3372,9 +3371,9 @@ export const BEST_COVER_FILES = {
   28: "cover.jpg",         // Hiranandani (Andheri): Widescreen sunset architectural master elevation render
   29: "4.jpg",             // Bharat (Andheri W): Full corporate & residential high-rise complex
   30: "cover.jpg",         // Rustomjee (Andheri): Widescreen boulevard avenue master elevation render
-  31: "cover.jpg",         // Lodha (Andheri): Widescreen sunset residential wings overlooking pool & sports court
+  31: "cover.jpg",         // Lodha Acenza (Andheri E): Official modern tower elevation nestled amidst lush trees
   32: "1.jpg",             // DLF (Andheri): DLF residential towers
-  33: "cover.jpg",         // Godrej (Bandra W): Waterfront luxury tower overlooking Bandra-Worli Sea Link
+  33: "cover.jpg",         // Godrej (Bandra W): Official waterfront luxury tower facade with Godrej crest
   34: "cover.jpg",         // Hiranandani (Bandra W): Widescreen sunset neoclassical skyscraper tower render
   35: "cover.jpg",         // Raymond (Bandra E): Widescreen master elevation render of full towers at dusk
   36: "cover.jpg",         // Sunteck (Bandra W): Widescreen sunset master elevation render with vertical sky-gardens
@@ -3395,7 +3394,7 @@ export const PROJECT_PHOTO_COUNTS = {
   16: 3, 17: 4, 18: 3, 19: 3, 20: 3,
   21: 4, 22: 5, 23: 3, 24: 3, 25: 3,
   26: 5, 27: 3, 28: 3, 29: 4, 30: 3,
-  31: 4, 32: 3, 33: 2, 34: 3, 35: 2,
+  31: 2, 32: 3, 33: 2, 34: 3, 35: 2,
   36: 3, 37: 3, 38: 4, 39: 3, 40: 2,
   41: 3, 42: 2, 43: 3
 };
@@ -3475,10 +3474,10 @@ PROJECTS_DATA.forEach(p => {
     // Rustomjee Andheri: cover (widescreen master render), 2 (twilight tower), 1 (tower elevation), 3
     photoOrder = [2, 1, 3];
   } else if (p.id === 31) {
-    // Lodha Andheri: cover (sunset wings overlooking pool), 1 (tower facade), 2, 3
-    photoOrder = [1, 2, 3];
+    // Lodha Acenza (Andheri E): cover (widescreen master facade), 1 (tower striking facade)
+    photoOrder = [1];
   } else if (p.id === 33) {
-    // Godrej Pali Hill / Bandra West: cover (waterfront tower facing Sea Link), 2 (coastline aerial)
+    // Godrej Bandra Bay: cover (official waterfront tower facade), 2 (aerial master estate & marina render)
     photoOrder = [2];
   } else if (p.id === 34) {
     // Hiranandani Bandra: cover (sunset master render), 1 (tower facade), 2 (interiors)
@@ -3553,12 +3552,12 @@ export const PROJECT_COORDINATES = {
   },
   4: {
     lat: 19.2285, lng: 72.8675, pincode: "400066",
-    address: "Near SGNP Main Gate, Kulupwadi, Borivali East, Mumbai — 400066",
-    metro: "Rashtriya Udyan (National Park) Metro Station (Line 7) — 350m (4 mins walk)",
+    address: "Ganesh Nagar, Western Express Highway (WEH), Borivali East, Mumbai — 400066",
+    metro: "Magathane Metro Station (Line 7) — 100m (1 min walk)",
     railway: "Borivali Railway Station (East) — 1.3 km (5 mins)",
-    highway: "Western Express Highway (WEH) — 250m (1 min drive)",
+    highway: "Western Express Highway (WEH) — Direct Frontage",
     airport: "CSM International Airport (BOM) — 17.0 km (30 mins)",
-    landmark: "Sanjay Gandhi National Park Main Entrance (250m) & Abhinav Nagar"
+    landmark: "Ganesh Nagar, Western Express Highway, Borivali East"
   },
   5: {
     lat: 19.2082, lng: 72.8685, pincode: "400101",
@@ -3571,12 +3570,12 @@ export const PROJECT_COORDINATES = {
   },
   6: {
     lat: 19.2054, lng: 72.8667, pincode: "400101",
-    address: "Akurli Road, Near WEH Junction, Kandivali East, Mumbai — 400101",
+    address: "Mahindra Yellow Gate, Akurli Road, Kandivali East, Mumbai — 400101",
     metro: "Akurli Metro Station (Line 7) — 350m (3 mins walk)",
     railway: "Kandivali Railway Station (East) — 1.3 km (5 mins)",
     highway: "Western Express Highway (WEH) — 200m (1 min)",
     airport: "CSM International Airport (BOM) — 14.2 km (24 mins)",
-    landmark: "Mahindra & Mahindra Compound Gate, Growel's 101 Mall & Lokhandwala Complex"
+    landmark: "Akurli Road, Kandivali East"
   },
   7: {
     lat: 19.2031, lng: 72.8715, pincode: "400101",
@@ -3589,12 +3588,12 @@ export const PROJECT_COORDINATES = {
   },
   8: {
     lat: 19.2115, lng: 72.8655, pincode: "400101",
-    address: "Off Western Express Highway, Thakur Village Corridor, Kandivali East, Mumbai — 400101",
-    metro: "Poisar Metro Station (Line 7) — 400m (4 mins walk)",
+    address: "Akurli Road, Off Western Express Highway, Kandivali East, Mumbai — 400101",
+    metro: "Akurli Metro Station (Line 7) — 400m (4 mins walk)",
     railway: "Kandivali Railway Station (East) — 1.6 km (6 mins)",
     highway: "Western Express Highway (WEH) — 150m (1 min)",
     airport: "CSM International Airport (BOM) — 14.8 km (25 mins)",
-    landmark: "Sanjay Gandhi National Park Border, D-Mart (300m) & Thakur Public School"
+    landmark: "Akurli Road, Kandivali East"
   },
   9: {
     lat: 19.1832, lng: 72.8365, pincode: "400064",
@@ -3625,12 +3624,12 @@ export const PROJECT_COORDINATES = {
   },
   12: {
     lat: 19.1895, lng: 72.8442, pincode: "400064",
-    address: "Off S.V. Road, Near Sundar Nagar, Malad West, Mumbai — 400064",
-    metro: "Malad West Metro Station (Line 2A) — 550m (5 mins)",
-    railway: "Malad Railway Station (West) — 700m (3 mins drive / 7 mins walk)",
-    highway: "Main S.V. Road (100m) & WEH via Malad Subway — 1.4 km (5 mins)",
+    address: "Near Mithi Choki (Mithichowki), Malad West, Mumbai — 400064",
+    metro: "Mithi Choki (Mithichowki) Metro Station (Line 2A) — 350m (4 mins walk)",
+    railway: "Malad Railway Station (West) — 1.2 km (5 mins)",
+    highway: "New Link Road / S.V. Road & WEH via Malad Subway — 1.4 km",
     airport: "CSM International Airport (BOM) — 13.0 km (22 mins)",
-    landmark: "Sundar Nagar Garden (150m), Ryan International School (450m) & Surana Hospital"
+    landmark: "Malad West near Mithi Choki (Mithichowki)"
   },
   13: {
     lat: 19.1678, lng: 72.8375, pincode: "400104",
@@ -3696,13 +3695,13 @@ export const PROJECT_COORDINATES = {
     landmark: "Mega Mall Oshiwara (600m), Anand Nagar Market & Link Road Corridor"
   },
   20: {
-    lat: 19.1315, lng: 72.8532, pincode: "400060",
-    address: "Near JVLR Junction & WEH, Jogeshwari East, Mumbai — 400060",
-    metro: "JVLR Metro Station (Line 7) — 200m (2 mins walk)",
-    railway: "Jogeshwari Railway Station (East) — 650m (3 mins)",
-    highway: "Western Express Highway Frontage & JVLR Start — 100m (1 min)",
-    airport: "CSM International Airport (BOM) — 6.2 km (11 mins)",
-    landmark: "SEEPZ IT Zone (1.6 km), Nesco IT Park (1.4 km) & Majas Bus Depot"
+    lat: 19.1518, lng: 72.8488, pincode: "400102",
+    address: "Sunteck City, Oshiwara District Centre (ODC), Off SV Road & JVLR, Goregaon West, Mumbai — 400102",
+    metro: "Oshiwara Metro Station (Line 2A) — 450m (5 mins walk)",
+    railway: "Goregaon Railway Station — approx. 1.3 km (5 mins) & Ram Mandir Station (350m)",
+    highway: "Western Express Highway & SV Road / JVLR Corridor",
+    airport: "CSM International Airport (BOM) — 9.5 km (18 mins)",
+    landmark: "Nesco IT Park & Goregaon Railway Station (approx. 1.3 km)"
   },
   21: {
     lat: 19.1312, lng: 72.8165, pincode: "400061",
@@ -3714,13 +3713,13 @@ export const PROJECT_COORDINATES = {
     landmark: "Versova Beach & Rock Beach (250m), Nana Nani Park & Prithvi Theatre (2 km)"
   },
   22: {
-    lat: 19.1175, lng: 72.8572, pincode: "400069",
-    address: "Near Western Express Highway, Andheri East, Mumbai — 400069",
-    metro: "Gundavali Metro (Line 7) & WEH Metro (Line 1) — 200m (2 mins walk / Direct Interchange)",
-    railway: "Andheri Railway Station (East) — 850m (3 mins drive / 7 mins walk)",
-    highway: "Western Express Highway (WEH) — 100m (Direct Flyover Ramp)",
-    airport: "CSM International Airport (Terminal 1 & 2) — 3.6 km (7 mins)",
-    landmark: "The Lalit Mumbai (1.1 km), Solitaire Corporate Park (500m) & Bisleri Junction"
+    lat: 19.1415, lng: 72.8315, pincode: "400053",
+    address: "Lokhandwala Back Road, Lower Oshiwara, Andheri West, Mumbai — 400053",
+    metro: "Lower Oshiwara Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (West) — 3.2 km / Jogeshwari Station — 2.0 km",
+    highway: "New Link Road & SV Road Corridor — 300m",
+    airport: "CSM International Airport (BOM) — 9.0 km (20 mins)",
+    landmark: "Lower Oshiwara, Near Infiniti Mall (300m) & Lokhandwala Complex (300m)"
   },
   23: {
     lat: 19.1248, lng: 72.8322, pincode: "400053",
@@ -3732,40 +3731,40 @@ export const PROJECT_COORDINATES = {
     landmark: "Kokilaben Dhirubhai Ambani Hospital (650m), Bhavan's College (350m) & The Club (750m)"
   },
   24: {
-    lat: 19.1192, lng: 72.8465, pincode: "400058",
-    address: "Andheri Central Corridor, S.V. Road, Andheri West, Mumbai — 400058",
-    metro: "Andheri Metro Station (Line 1) — 350m (3 mins walk)",
-    railway: "Andheri Railway Station (Harbour & Western Line Junction) — 450m (3 mins walk)",
-    highway: "S.V. Road (Immediate) & Western Express Highway — 1.3 km (4 mins)",
-    airport: "CSM International Airport (BOM) — 5.5 km (11 mins)",
-    landmark: "Shoppers Stop Andheri (250m), Gilbert Hill Heritage Rock (500m) & Nadco Center"
+    lat: 19.1432, lng: 72.8335, pincode: "400053",
+    address: "Off New Link Road, Lower Oshiwara, Andheri West, Mumbai — 400053",
+    metro: "Lower Oshiwara Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (West) — 3.0 km / Jogeshwari Station — 2.1 km",
+    highway: "New Link Road (Direct Frontage) & SV Road (600m)",
+    airport: "CSM International Airport (BOM) — 9.2 km (20 mins)",
+    landmark: "Lower Oshiwara, Near Infiniti Mall (300m) & Lokhandwala Complex (300m)"
   },
   25: {
-    lat: 19.1145, lng: 72.8625, pincode: "400069",
-    address: "Andheri-Kurla Road, Chakala, Andheri East, Mumbai — 400069",
-    metro: "Chakala (J.B. Nagar) Metro Station (Line 1) — 200m (2 mins walk)",
-    railway: "Andheri Railway Station (East) — 1.2 km (5 mins)",
-    highway: "Western Express Highway — 750m (2 mins)",
-    airport: "CSM International Airport (T2) — 3.0 km (6 mins)",
-    landmark: "Solitaire Business Park (250m), ITC Maratha (1.6 km) & Courtyard Marriott"
+    lat: 19.1420, lng: 72.8328, pincode: "400053",
+    address: "New Link Road, Lower Oshiwara, Andheri West, Mumbai — 400053",
+    metro: "Lower Oshiwara Metro Station (Line 2A) — 300m (3 mins walk)",
+    railway: "Andheri Railway Station (West) — 3.1 km",
+    highway: "New Link Road (Direct Access) & SV Road",
+    airport: "CSM International Airport (BOM) — 9.0 km (20 mins)",
+    landmark: "Lower Oshiwara, Near Infiniti Mall (300m) & Lokhandwala Complex (300m)"
   },
   26: {
-    lat: 19.1118, lng: 72.8605, pincode: "400093",
-    address: "Chakala Central Corridor, Andheri East, Mumbai — 400093",
-    metro: "Western Express Highway (WEH) Metro Station (Line 1) — 300m (3 mins walk)",
-    railway: "Andheri Railway Station (East) — 900m (3 mins)",
-    highway: "Western Express Highway — 350m (1 min)",
-    airport: "CSM International Airport (BOM) — 2.8 km (5 mins)",
-    landmark: "Courtyard by Marriott (150m), Naman Midtown Hub & Chakala Market"
+    lat: 19.1328, lng: 72.8225, pincode: "400053",
+    address: "Ratan Nagar, Lokhandwala / Versova, Andheri West, Mumbai — 400053",
+    metro: "Versova Metro Station (Line 1) — 350m (4 mins walk)",
+    railway: "Andheri Railway Station (West) — 2.8 km (8 mins)",
+    highway: "JP Road, Link Road & SV Road Corridor",
+    airport: "CSM International Airport (BOM) — 8.5 km (18 mins)",
+    landmark: "Lokhandwala / Versova, Andheri West"
   },
   27: {
-    lat: 19.1225, lng: 72.8405, pincode: "400058",
-    address: "Lallubhai Park Road, Andheri West, Mumbai — 400058",
-    metro: "Azad Nagar Metro Station (Line 1) — 300m (3 mins walk)",
-    railway: "Andheri Railway Station (West) — 700m (3 mins drive / 7 mins walk)",
-    highway: "S.V. Road (150m) & Western Express Highway — 1.7 km (5 mins)",
-    airport: "CSM International Airport (BOM) — 6.0 km (12 mins)",
-    landmark: "Lallubhai Park (80m), Prime Superspeciality Hospital (250m) & Bhavan's Campus"
+    lat: 19.1342, lng: 72.8218, pincode: "400053",
+    address: "Near Ratan Nagar, Lokhandwala / Versova, Andheri West, Mumbai — 400053",
+    metro: "Versova Metro Station (Line 1) — 350m (4 mins walk)",
+    railway: "Andheri Railway Station (West) — 2.9 km (8 mins)",
+    highway: "JP Road & New Link Road Corridor",
+    airport: "CSM International Airport (BOM) — 8.6 km (18 mins)",
+    landmark: "Lokhandwala / Versova, Andheri West"
   },
   28: {
     lat: 19.1215, lng: 72.8355, pincode: "400058",
