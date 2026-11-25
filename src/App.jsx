@@ -637,8 +637,8 @@ export function App() {
           </ErrorBoundary>
         )}
 
-        {/* Luxury Cookie & Privacy Preferences Banner (Fixed at Bottom-Left on all devices, hidden when a modal is active) */}
-        {!isPortalView && !selectedProject && !enquiryModalOpen && !tourModalOpen && cookieConsentVisible && (
+        {/* Luxury Cookie & Privacy Preferences Banner (Fixed at Bottom-Left on all devices) */}
+        {!isPortalView && cookieConsentVisible && (
           <aside
             aria-label="Privacy and Cookie Preferences"
             className="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] sm:w-[380px] p-4 sm:p-4.5 rounded-2xl bg-[#14221F]/95 backdrop-blur-md border border-[#C59B4E]/50 text-white shadow-2xl animate-fade-up space-y-2.5"
