@@ -25,6 +25,7 @@ import {
   Film,
   Flame,
   ArrowUpRight,
+  ArrowRight,
   Plane,
   Maximize2,
   Copy,
@@ -174,29 +175,29 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         tabIndex="-1"
-        className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col border border-gray-200 focus:outline-none"
+        className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92vh] sm:max-h-[90vh] flex flex-col border border-gray-200 focus:outline-none min-w-0"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar using #1D3530 */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white gap-2">
+        <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white gap-2 shrink-0">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <h3 id="project-modal-title" className="font-serif text-lg sm:text-2xl font-bold truncate">
+              <h3 id="project-modal-title" className="font-serif text-base sm:text-2xl font-bold truncate">
                 {project.name}
               </h3>
               {project.status && (
-                <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40 shrink-0">
+                <span className="text-[8.5px] sm:text-[10px] uppercase font-mono tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40 shrink-0">
                   {project.status}
                 </span>
               )}
             </div>
-            <p className="text-[11px] sm:text-xs text-[#DFBE79] mt-0.5 truncate">
+            <p className="text-[10.5px] sm:text-xs text-[#DFBE79] mt-0.5 truncate font-medium">
               {project.builder} • {project.locality || project.location}, {project.city || 'Mumbai'}
             </p>
           </div>
@@ -222,8 +223,8 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1 text-[#14221F]">
+        {/* Modal Scrollable Body - Strictly lock horizontal overflow */}
+        <div className="p-3.5 sm:p-6 overflow-y-auto overflow-x-hidden space-y-4 sm:space-y-6 flex-1 text-[#14221F] w-full min-w-0">
 
           {/* Section: Property Image Gallery */}
           {/* Section: Property Image Gallery */}
@@ -516,10 +517,10 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     Curated Lifestyle & Wellness Amenities
                   </h4>
                 </div>
-                <div className="self-start sm:self-auto shrink-0">
-                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs whitespace-nowrap">
-                    <Sparkles className="w-3 h-3 text-[#C59B4E]" />
-                    <span>{project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}</span>
+                <div className="self-start sm:self-auto max-w-full">
+                  <span className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-[11px] sm:text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs break-words max-w-full">
+                    <Sparkles className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                    <span className="break-words">{project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}</span>
                   </span>
                 </div>
               </div>
@@ -565,35 +566,79 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                 </h4>
               </div>
               {project.possession && (
-                <div className="self-start sm:self-auto shrink-0">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#C59B4E]/30 text-[11px] font-mono text-gray-700 whitespace-nowrap shadow-2xs">
+                <div className="self-start sm:self-auto max-w-full">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FAF9F6] border border-[#C59B4E]/30 text-[10.5px] sm:text-[11px] font-mono text-gray-700 shadow-2xs break-words max-w-full">
                     <Calendar className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
-                    <span>Possession: <strong className="text-[#14221F] font-semibold">{project.possession}</strong></span>
+                    <span className="break-words">Possession: <strong className="text-[#14221F] font-semibold">{project.possession}</strong></span>
                   </span>
                 </div>
               )}
             </div>
 
-            {/* Mobile Scroll Indicator Banner: Always highlights that pricing table scrolls horizontally */}
-            <div className="flex items-center justify-between text-[11px] bg-gradient-to-r from-[#245348]/10 via-[#FAF9F6] to-[#C59B4E]/15 px-3 py-2 rounded-xl border border-[#C59B4E]/40 text-[#14221F] sm:hidden shadow-2xs">
-              <span className="flex items-center gap-1.5 font-semibold text-[#183C32]">
-                <span className="w-2 h-2 rounded-full bg-[#C59B4E] animate-ping shrink-0" />
-                <span>Swipe table to view Price & Possession</span>
-              </span>
-              <span className="font-mono font-bold text-[#8B6846] shrink-0 flex items-center gap-1 animate-pulse">
-                Scroll Table ➔
-              </span>
+            {/* Mobile View: High-End Responsive Cards (100% of Content Visible, No Horizontal Scroll Needed) */}
+            <div className="sm:hidden space-y-2.5">
+              {project.configurations && project.configurations.length > 0 ? (
+                project.configurations.map((cfg, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] shadow-2xs hover:border-[#C59B4E] transition-all"
+                  >
+                    <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#EAE6DF]/70">
+                      <div>
+                        <div className="font-serif text-base font-bold text-[#14221F]">{cfg.bhk}</div>
+                        {cfg.floorPlanLabel && (
+                          <span className="text-[10px] text-gray-500 font-mono block">
+                            {cfg.floorPlanLabel}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-xs font-mono font-bold text-[#245348] px-2.5 py-1 rounded-md bg-[#245348]/10 border border-[#245348]/20 inline-block">
+                          {cfg.price}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 py-2.5 text-xs">
+                      <div>
+                        <span className="text-[9.5px] uppercase font-mono text-gray-400 block font-semibold">Carpet Area</span>
+                        <span className="font-mono text-gray-800 font-medium text-[11.5px]">{cfg.carpetArea}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9.5px] uppercase font-mono text-gray-400 block font-semibold">Possession</span>
+                        <span className="font-mono text-gray-800 font-medium text-[11.5px]">{cfg.possessionDate || project.possession}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenEnquiry({
+                          projectName: project.name,
+                          location: project.location,
+                          configuration: cfg.bhk,
+                          project
+                        });
+                      }}
+                      className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-[#FFF7E2] hover:text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                    >
+                      <span>Enquire Unit &amp; Floor Plan</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-[#FAF9F6] text-center text-gray-500 font-mono text-xs border border-[#EAE6DF]">
+                  Configurations and quotation available on request
+                </div>
+              )}
             </div>
 
-            {/* Table Container with Right Edge Gradient Indicator & Always-Visible High-Contrast Scrollbar */}
-            <div className="relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white">
-              {/* Right edge shadow indicator to visually signal off-screen content on mobile */}
-              <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#183C32]/20 to-transparent z-10 rounded-r-xl sm:hidden flex items-center justify-end pr-1 text-[#C59B4E] font-bold">
-                ›
-              </div>
-
-              <div className="overflow-x-auto overflow-y-hidden rounded-xl scrollbar-luxury-green pb-1.5">
-                <table className="min-w-[620px] w-full text-left text-xs">
+            {/* Desktop View: Full Spreadsheet Table (hidden sm:block) */}
+            <div className="hidden sm:block relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white overflow-hidden">
+              <div className="overflow-x-auto scrollbar-luxury-green pb-1">
+                <table className="w-full text-left text-xs">
                   <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
                     <tr>
                       <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
@@ -653,14 +698,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            {/* Persistent Mobile Scroll Notice & Visual Guide */}
-            <div className="flex items-center justify-between text-[10px] text-gray-500 font-mono pt-0.5 sm:hidden px-1">
-              <span className="flex items-center gap-1 text-[#8B6846]">
-                <span>◀ Swipe horizontally to explore all 5 columns ▶</span>
-              </span>
-              <span className="text-[#245348] font-bold">Quoted Value &amp; Action</span>
             </div>
 
           </div>
