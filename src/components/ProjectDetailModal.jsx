@@ -729,7 +729,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   <Lock className="w-3 h-3 text-[#C59B4E]" />
                   <span>Floor View Protected</span>
                 </div>
-                <div className="absolute top-3 right-3 bg-[#245348] text-white px-2.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider font-semibold shadow-sm">
+                <div className="absolute top-3 right-3 bg-[#245348] text-white px-2.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider font-semibold shadow-sm truncate max-w-[45%]">
                   {project.name}
                 </div>
 
@@ -965,7 +965,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Metro Connectivity</span>
-                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.metro}</p>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug break-words">{project.transit.metro}</p>
                     </div>
                   </div>
                 )}
@@ -977,7 +977,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Suburban Railway</span>
-                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.railway}</p>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug break-words">{project.transit.railway}</p>
                     </div>
                   </div>
                 )}
@@ -989,7 +989,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Arterial Highway</span>
-                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.highway}</p>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug break-words">{project.transit.highway}</p>
                     </div>
                   </div>
                 )}
@@ -1001,7 +1001,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Airport Access</span>
-                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.airport}</p>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug break-words">{project.transit.airport}</p>
                     </div>
                   </div>
                 )}
@@ -1013,7 +1013,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 block font-semibold">Prime Vicinity Landmark</span>
-                      <p className="text-xs text-[#14221F] font-medium leading-snug">{project.transit.landmark}</p>
+                      <p className="text-xs text-[#14221F] font-medium leading-snug break-words">{project.transit.landmark}</p>
                     </div>
                   </div>
                 )}
