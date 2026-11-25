@@ -25,6 +25,7 @@ import {
   Film,
   Flame,
   ArrowUpRight,
+  ArrowRight,
   Plane,
   Maximize2,
   Copy,
@@ -126,12 +127,14 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
   const [mapType, setMapType] = useState('roadmap'); // 'roadmap' | 'satellite'
   const [mapZoom, setMapZoom] = useState(16);
   const [copiedCoords, setCopiedCoords] = useState(false);
+  const [isMapInteractive, setIsMapInteractive] = useState(false);
 
   // Reset map zoom and mode when switching projects
   useEffect(() => {
     setMapZoom(16);
     setMapType('roadmap');
     setCopiedCoords(false);
+    setIsMapInteractive(false);
   }, [project?.id]);
 
   const handleCopyCoords = (lat, lng) => {
@@ -174,39 +177,39 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/70 backdrop-blur-sm overflow-y-auto"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
       onClick={onClose}
     >
       <div
         ref={modalRef}
         tabIndex="-1"
-        className="relative w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden my-auto max-h-[92vh] flex flex-col border border-gray-200 focus:outline-none"
+        className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden my-auto max-h-[92vh] sm:max-h-[90vh] flex flex-col border border-gray-200 focus:outline-none min-w-0"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Bar using #1D3530 */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white gap-2">
+        <div className="flex items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 bg-[#1D3530] text-white gap-2 shrink-0">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              <h3 id="project-modal-title" className="font-serif text-lg sm:text-2xl font-bold truncate">
+              <h3 id="project-modal-title" className="font-serif text-base sm:text-2xl font-bold truncate">
                 {project.name}
               </h3>
               {project.status && (
-                <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40 shrink-0">
+                <span className="text-[8.5px] sm:text-[10px] uppercase font-mono tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-[#284F45] text-[#DFBE79] border border-[#C59B4E]/40 shrink-0">
                   {project.status}
                 </span>
               )}
             </div>
-            <p className="text-[11px] sm:text-xs text-[#DFBE79] mt-0.5 truncate">
+            <p className="text-[10.5px] sm:text-xs text-[#DFBE79] mt-0.5 truncate font-medium">
               {project.builder} • {project.locality || project.location}, {project.city || 'Mumbai'}
             </p>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               onClick={() => handleShareModal(project)}
               aria-label="Share this project link"
               title="Share this project link"
-              className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] border border-[#DFBE79]/40 transition-all text-xs font-semibold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95"
+              className="px-2.5 sm:px-3 py-1.5 rounded-full bg-white/10 hover:bg-[#C59B4E] text-[#DFBE79] hover:text-[#14221F] border border-[#DFBE79]/40 transition-all text-[11px] sm:text-xs font-semibold flex items-center gap-1.5 shrink-0 cursor-pointer shadow-xs active:scale-95"
             >
               <Share2 className="w-3.5 h-3.5" />
               <span className="hidden xs:inline">Share</span>
@@ -222,8 +225,8 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
           </div>
         </div>
 
-        {/* Modal Scrollable Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto space-y-5 sm:space-y-6 flex-1 text-[#14221F]">
+        {/* Modal Scrollable Body - Strictly lock horizontal overflow */}
+        <div className="p-3.5 sm:p-6 overflow-y-auto overflow-x-hidden space-y-4 sm:space-y-6 flex-1 text-[#14221F] w-full min-w-0">
 
           {/* Section: Property Image Gallery */}
           {/* Section: Property Image Gallery */}
@@ -516,33 +519,33 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     Curated Lifestyle & Wellness Amenities
                   </h4>
                 </div>
-                <div className="self-start sm:self-auto shrink-0">
-                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs whitespace-nowrap">
-                    <Sparkles className="w-3 h-3 text-[#C59B4E]" />
-                    <span>{project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}</span>
+                <div className="self-start sm:self-auto max-w-full">
+                  <span className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 rounded-full bg-gradient-to-r from-[#DFBE79]/20 to-[#C59B4E]/30 text-[#8B6846] text-[11px] sm:text-xs font-semibold font-mono border border-[#C59B4E]/40 shadow-2xs break-words max-w-full">
+                    <Sparkles className="w-3 h-3 text-[#C59B4E] shrink-0" />
+                    <span className="break-words">{project.amenitiesCount || `${project.amenities.length}+ Curated Facilities`}</span>
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                 {project.amenities.map((amenity, idx) => {
                   const meta = getAmenityConfig(amenity);
                   const IconComp = meta.icon;
                   return (
                     <div
                       key={idx}
-                      className="relative flex flex-col justify-between p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] shadow-[0_2px_8px_rgba(20,34,31,0.03)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.16)] transition-all duration-300 group hover:-translate-y-0.5"
+                      className="relative flex flex-col justify-between p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] shadow-[0_2px_8px_rgba(20,34,31,0.03)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.16)] transition-all duration-300 group hover:-translate-y-0.5 min-w-0"
                     >
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-[#183C32]/10 text-[#183C32] group-hover:bg-[#183C32] group-hover:text-[#DFBE79] flex items-center justify-center transition-colors duration-300 shadow-2xs">
-                          <IconComp className="w-4 h-4" />
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#183C32]/10 text-[#183C32] group-hover:bg-[#183C32] group-hover:text-[#DFBE79] flex items-center justify-center transition-colors duration-300 shadow-2xs shrink-0">
+                          <IconComp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </div>
-                        <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 group-hover:text-[#C59B4E] transition-colors font-semibold">
+                        <span className="text-[8.5px] sm:text-[9px] uppercase font-mono tracking-wider text-gray-400 group-hover:text-[#C59B4E] transition-colors font-semibold truncate">
                           {meta.category}
                         </span>
                       </div>
                       <div>
-                        <h5 className="text-xs sm:text-[13px] font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug">
+                        <h5 className="text-[11.5px] sm:text-[13px] font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug break-words">
                           {amenity}
                         </h5>
                       </div>
@@ -574,26 +577,70 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               )}
             </div>
 
-            {/* Mobile Scroll Indicator Banner: Always highlights that pricing table scrolls horizontally */}
-            <div className="flex items-center justify-between text-[11px] bg-gradient-to-r from-[#245348]/10 via-[#FAF9F6] to-[#C59B4E]/15 px-3 py-2 rounded-xl border border-[#C59B4E]/40 text-[#14221F] sm:hidden shadow-2xs">
-              <span className="flex items-center gap-1.5 font-semibold text-[#183C32]">
-                <span className="w-2 h-2 rounded-full bg-[#C59B4E] animate-ping shrink-0" />
-                <span>Swipe table to view Price & Possession</span>
-              </span>
-              <span className="font-mono font-bold text-[#8B6846] shrink-0 flex items-center gap-1 animate-pulse">
-                Scroll Table ➔
-              </span>
+            {/* Mobile View: High-End Responsive Cards (Zero Horizontal Scroll Needed) */}
+            <div className="sm:hidden space-y-2.5">
+              {project.configurations && project.configurations.length > 0 ? (
+                project.configurations.map((cfg, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] shadow-2xs hover:border-[#C59B4E] transition-all"
+                  >
+                    <div className="flex items-start justify-between gap-2 pb-2 border-b border-[#EAE6DF]/70">
+                      <div>
+                        <div className="font-serif text-base font-bold text-[#14221F]">{cfg.bhk}</div>
+                        {cfg.floorPlanLabel && (
+                          <span className="text-[10px] text-gray-500 font-mono block">
+                            {cfg.floorPlanLabel}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <span className="text-xs font-mono font-bold text-[#245348] px-2.5 py-1 rounded-md bg-[#245348]/10 border border-[#245348]/20 inline-block">
+                          {cfg.price}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 py-2.5 text-xs">
+                      <div>
+                        <span className="text-[9.5px] uppercase font-mono text-gray-400 block font-semibold">Carpet Area</span>
+                        <span className="font-mono text-gray-800 font-medium text-[11.5px]">{cfg.carpetArea}</span>
+                      </div>
+                      <div>
+                        <span className="text-[9.5px] uppercase font-mono text-gray-400 block font-semibold">Possession</span>
+                        <span className="font-mono text-gray-800 font-medium text-[11.5px]">{cfg.possessionDate || project.possession}</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenEnquiry({
+                          projectName: project.name,
+                          location: project.location,
+                          configuration: cfg.bhk,
+                          project
+                        });
+                      }}
+                      className="w-full py-2 px-3 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-[#FFF7E2] hover:text-white font-semibold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+                    >
+                      <span>Enquire Unit &amp; Floor Plan</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded-xl bg-[#FAF9F6] text-center text-gray-500 font-mono text-xs border border-[#EAE6DF]">
+                  Configurations and quotation available on request
+                </div>
+              )}
             </div>
 
-            {/* Table Container with Right Edge Gradient Indicator & Always-Visible High-Contrast Scrollbar */}
-            <div className="relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white">
-              {/* Right edge shadow indicator to visually signal off-screen content on mobile */}
-              <div className="pointer-events-none absolute right-0 top-0 bottom-3 w-8 bg-gradient-to-l from-[#183C32]/20 to-transparent z-10 rounded-r-xl sm:hidden flex items-center justify-end pr-1 text-[#C59B4E] font-bold">
-                ›
-              </div>
-
-              <div className="overflow-x-auto overflow-y-hidden rounded-xl scrollbar-luxury-green pb-1.5">
-                <table className="min-w-[620px] w-full text-left text-xs">
+            {/* Desktop View: Full Spreadsheet Table (hidden sm:block) */}
+            <div className="hidden sm:block relative rounded-xl border border-[#EAE6DF] shadow-2xs bg-white overflow-hidden">
+              <div className="overflow-x-auto scrollbar-luxury-green pb-1">
+                <table className="w-full text-left text-xs">
                   <thead className="bg-[#FAF9F6] text-gray-600 uppercase font-mono text-[10px] border-b border-[#EAE6DF]">
                     <tr>
                       <th className="py-3 px-3.5 whitespace-nowrap font-semibold">Configuration</th>
@@ -653,14 +700,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            {/* Persistent Mobile Scroll Notice & Visual Guide */}
-            <div className="flex items-center justify-between text-[10px] text-gray-500 font-mono pt-0.5 sm:hidden px-1">
-              <span className="flex items-center gap-1 text-[#8B6846]">
-                <span>◀ Swipe horizontally to explore all 5 columns ▶</span>
-              </span>
-              <span className="text-[#245348] font-bold">Quoted Value &amp; Action</span>
             </div>
 
           </div>
@@ -835,16 +874,40 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
 
             {/* Interactive Embedded Google Map with Map Controls */}
-            <div className="relative w-full h-72 sm:h-84 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-md bg-slate-100 group">
+            <div className="relative w-full h-56 sm:h-80 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-md bg-slate-100 group">
               <iframe
                 key={`${project.id}-${mapType}-${mapZoom}`}
                 title={`${project.name} precision location on Google Maps`}
                 src={`https://maps.google.com/maps?q=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}&hl=en&z=${mapZoom}${mapType === 'satellite' ? '&t=k' : '&t=m'}&ie=UTF8&iwloc=near&output=embed`}
-                className="w-full h-full border-0"
+                className={`w-full h-full border-0 transition-opacity ${!isMapInteractive ? 'pointer-events-none sm:pointer-events-auto' : 'pointer-events-auto'}`}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
               />
+
+              {/* Mobile Scroll Guard: Prevent map from hijacking vertical page scrolling */}
+              {!isMapInteractive && (
+                <div
+                  onClick={() => setIsMapInteractive(true)}
+                  className="sm:hidden absolute inset-0 z-10 bg-black/10 flex items-center justify-center cursor-pointer p-4 select-none"
+                  aria-label="Tap to enable map interaction"
+                >
+                  <span className="px-3 py-1.5 rounded-full bg-white/95 text-[#14221F] text-[11px] font-semibold shadow-md border border-gray-200 flex items-center gap-1.5 backdrop-blur-sm">
+                    <Navigation className="w-3.5 h-3.5 text-[#245348]" />
+                    <span>Tap map to pan &amp; zoom</span>
+                  </span>
+                </div>
+              )}
+
+              {isMapInteractive && (
+                <button
+                  type="button"
+                  onClick={() => setIsMapInteractive(false)}
+                  className="sm:hidden absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-md bg-white/95 text-[10px] font-semibold text-[#14221F] shadow-md border border-gray-200"
+                >
+                  Lock map scroll
+                </button>
+              )}
 
               {/* Floating Map Controls Bar */}
               <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10 bg-white/95 backdrop-blur-md p-1 rounded-lg border border-gray-200 shadow-md">
@@ -984,25 +1047,52 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
           </div>
 
-          {/* Bottom Action Footer */}
-          <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => handleShareModal(project)}
-              className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
-            >
-              <Share2 className="w-3.5 h-3.5 text-[#C59B4E] group-hover:text-inherit" />
-              <span>Share Project Link</span>
-            </button>
+          {/* Spacing clearance for bottom sticky bar */}
+          <div className="h-4" />
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+        </div>
+
+        {/* Sticky Luxury Advisory & Action Bar */}
+        <div className="px-3.5 sm:px-6 py-2.5 sm:py-3.5 bg-[#FAF9F6] border-t border-[#EAE6DF] shrink-0 z-20">
+          {/* Mobile Layout (<sm): 2-tier stacked so price and action buttons never get squished or truncated */}
+          <div className="sm:hidden space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <span className="text-[8.5px] uppercase font-mono tracking-wider text-gray-500 block font-semibold truncate">
+                  Starting Investment
+                </span>
+                <span className="text-sm font-bold text-[#14221F] font-serif block leading-tight truncate">
+                  {project.priceDisplay || project.priceRange || 'Price on Request'}
+                </span>
+              </div>
+              {project.status && (
+                <span className="text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-[#183C32]/10 text-[#183C32] border border-[#183C32]/20 font-bold shrink-0">
+                  {project.status}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleShareModal(project)}
+                className="px-3 py-2 rounded-lg border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-[11px] uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 shrink-0"
+                title="Share Project Link"
+                aria-label="Share Project Link"
+              >
+                <Share2 className="w-3.5 h-3.5 text-[#C59B4E]" />
+                <span>Share</span>
+              </button>
+
               <button
                 onClick={onClose}
+                type="button"
                 aria-label="Close project details"
-                className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer"
+                className="flex-1 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer active:scale-95"
               >
                 Close
               </button>
+
               <button
                 onClick={() => {
                   onClose();
@@ -1012,14 +1102,64 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     project
                   });
                 }}
+                type="button"
                 aria-label={`Enquire about ${project.name}`}
-                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center cursor-pointer"
+                className="flex-2 py-2 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-white text-[11px] uppercase tracking-widest font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
               >
-                Enquire Now
+                <span>Enquire Now</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
               </button>
             </div>
           </div>
 
+          {/* Desktop Layout (>=sm): Single horizontal bar */}
+          <div className="hidden sm:flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400 block font-semibold truncate">
+                {project.status || 'Verified Listing'}
+              </span>
+              <span className="text-lg font-bold text-[#14221F] font-serif truncate block leading-tight">
+                {project.priceDisplay || project.priceRange || 'Price on Request'}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => handleShareModal(project)}
+                className="px-4 py-2 rounded-lg border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+              >
+                <Share2 className="w-3.5 h-3.5 text-[#C59B4E]" />
+                <span>Share</span>
+              </button>
+
+              <button
+                onClick={onClose}
+                type="button"
+                aria-label="Close project details"
+                className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenEnquiry({
+                    projectName: project.name,
+                    location: project.location,
+                    project
+                  });
+                }}
+                type="button"
+                aria-label={`Enquire about ${project.name}`}
+                className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer"
+              >
+                <span>Enquire Now</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1027,7 +1167,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       {/* Fullscreen High-Resolution Lightbox View */}
       {isLightboxOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
           onClick={() => setIsLightboxOpen(false)}
         >
           <button
