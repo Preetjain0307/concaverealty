@@ -213,7 +213,7 @@ export const PROJECTS_DATA = [
     priceDisplay: "₹5.05 Cr*",
     status: "Under Construction & Ready Phases",
     possession: "Phase 1 Ready / Phased Possession (Dec 2026 - Dec 2028)",
-    rera: "P51800003582 (Towers A-D), P51800018404 (Tower E), P51800028419 (Tower F), P51800047575 (Tower G)",
+    rera: "P51800003582",
     landParcel: "25 Acres Integrated Township",
     towers: "8 Iconic Skyscraper Towers (Up to 60 Storeys)",
     towerDetails: "Magnificent 60-Storey Towers | Self-Sustaining Ecosystem with Sky City Mall & Mumbai Marriott Hotel",

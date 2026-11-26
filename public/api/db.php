@@ -151,10 +151,21 @@ function ensure_database_tables_exist($pdo) {
           `phone` VARCHAR(30) NOT NULL,
           `experience` VARCHAR(100) NULL,
           `portfolio_link` VARCHAR(255) NULL,
-          `status` VARCHAR(50) NOT NULL DEFAULT 'Pending Review',
+          `resume_name` VARCHAR(255) NULL,
+          `resume_path` VARCHAR(255) NULL,
+          `resume_data` LONGTEXT NULL,
+          `city` VARCHAR(100) NULL,
+          `current_company` VARCHAR(150) NULL,
+          `current_role` VARCHAR(150) NULL,
+          `current_ctc` VARCHAR(50) NULL,
+          `expected_ctc` VARCHAR(50) NULL,
+          `notice_period` VARCHAR(50) NULL,
+          `cover_note` TEXT NULL,
+          `status` VARCHAR(50) NOT NULL DEFAULT 'Under Review',
           `verified_at` TIMESTAMP NULL,
           `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           INDEX `idx_careers_email` (`email`),
+          INDEX `idx_careers_phone` (`phone`),
           INDEX `idx_careers_job` (`job_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
     ];
@@ -165,6 +176,30 @@ function ensure_database_tables_exist($pdo) {
         } catch (\Throwable $e) {
             error_log("[DB Table Init] Table creation notice: " . $e->getMessage());
         }
+    }
+
+    // Auto-migrate job_applications table columns if created under older schema
+    try {
+        $cols = $pdo->query("SHOW COLUMNS FROM `job_applications`")->fetchAll(PDO::FETCH_COLUMN);
+        $neededCols = [
+            'resume_name' => 'VARCHAR(255) NULL',
+            'resume_path' => 'VARCHAR(255) NULL',
+            'resume_data' => 'LONGTEXT NULL',
+            'city' => 'VARCHAR(100) NULL',
+            'current_company' => 'VARCHAR(150) NULL',
+            'current_role' => 'VARCHAR(150) NULL',
+            'current_ctc' => 'VARCHAR(50) NULL',
+            'expected_ctc' => 'VARCHAR(50) NULL',
+            'notice_period' => 'VARCHAR(50) NULL',
+            'cover_note' => 'TEXT NULL'
+        ];
+        foreach ($neededCols as $cName => $cType) {
+            if (!in_array($cName, $cols)) {
+                $pdo->exec("ALTER TABLE `job_applications` ADD COLUMN `$cName` $cType");
+            }
+        }
+    } catch (\Throwable $e) {
+        error_log("[DB Table Init] Column migration notice: " . $e->getMessage());
     }
 
     // Seed default callers if empty

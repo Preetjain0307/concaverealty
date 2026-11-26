@@ -266,18 +266,56 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
 
   const handleViewResume = (app) => {
     if (!app) return;
-    if (app.resumeData) {
-      window.open(app.resumeData, '_blank');
+
+    // 1. If server uploaded file path exists (e.g. /uploads/resumes/resume_xxx.pdf), open directly
+    if (app.resumePath) {
+      window.open(app.resumePath, '_blank');
       return;
     }
+
+    // 2. If base64 data URI exists, convert to Blob and open native browser PDF viewer
+    if (app.resumeData && typeof app.resumeData === 'string' && app.resumeData.startsWith('data:')) {
+      try {
+        const parts = app.resumeData.split(',');
+        const mimeMatch = parts[0].match(/:(.*?);/);
+        const mime = mimeMatch ? mimeMatch[1] : 'application/pdf';
+        const byteCharacters = atob(parts[1]);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: mime });
+        const blobUrl = URL.createObjectURL(blob);
+        const win = window.open(blobUrl, '_blank');
+        if (!win) {
+          // If popup is blocked by browser, trigger native download
+          const dlLink = document.createElement('a');
+          dlLink.href = blobUrl;
+          dlLink.download = app.resumeName || `${app.name.replace(/\s+/g, '_')}_Resume.pdf`;
+          document.body.appendChild(dlLink);
+          dlLink.click();
+          document.body.removeChild(dlLink);
+        }
+        return;
+      } catch (err) {
+        console.warn('[Admin Portal] Could not decode resume blob:', err);
+      }
+    }
+
+    // 3. Fallback: Formatted Candidate Dossier Sheet (with robust fallbacks against undefined)
     const resumeWin = window.open('', '_blank');
     if (resumeWin) {
+      const posLabel = app.position || app.jobTitle || 'General Luxury Real Estate Advisory';
+      const mobLabel = app.mobile || app.phone || 'Not Disclosed';
+      const appliedLabel = app.appliedAt || app.createdAt ? new Date(app.appliedAt || app.createdAt).toLocaleString() : 'Recently Submitted';
+
       resumeWin.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8" />
-          <title>${app.name} - Resume Profile - Concave Realty</title>
+          <title>${app.name} - Candidate Profile - Concave Realty</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #FAF9F6; margin: 0; padding: 40px; color: #14221F; }
             .card { max-width: 780px; margin: 0 auto; background: #fff; border: 1px solid #EAE6DF; border-radius: 16px; padding: 36px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
@@ -298,13 +336,13 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
             <div class="header">
               <div>
                 <h1>${app.name}</h1>
-                <div style="color: #555; font-size: 13px; margin-top: 4px;">${app.email} • +91 ${app.mobile} • ${app.city || 'Mumbai'}</div>
+                <div style="color: #555; font-size: 13px; margin-top: 4px;">${app.email} • +91 ${mobLabel} • ${app.city || 'Mumbai'}</div>
               </div>
               <div class="badge">REF: ${app.id}</div>
             </div>
             <div class="grid">
-              <div class="item"><div class="label">Applied Position</div><div class="val">${app.position}</div></div>
-              <div class="item"><div class="label">Total Experience</div><div class="val">${app.experience}</div></div>
+              <div class="item"><div class="label">Applied Position</div><div class="val">${posLabel}</div></div>
+              <div class="item"><div class="label">Total Experience</div><div class="val">${app.experience || '1 - 3 Years'}</div></div>
               <div class="item"><div class="label">Current Organization</div><div class="val">${app.currentCompany || 'Not Disclosed'}</div></div>
               <div class="item"><div class="label">Current Role / Title</div><div class="val">${app.currentRole || 'N/A'}</div></div>
               <div class="item"><div class="label">Current CTC</div><div class="val">${app.currentCtc || 'Not Disclosed'}</div></div>
@@ -316,14 +354,14 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
             <div class="label" style="margin-bottom:6px;">Candidate Background & Pitch</div>
             <div class="note-box">"${app.coverNote}"</div>
             ` : ''}
-            ${app.linkedin ? `
+            ${(app.linkedin || app.portfolioLink) ? `
             <div style="margin-bottom: 24px; font-size: 13px;">
-              <strong>LinkedIn Profile:</strong> <a href="${app.linkedin}" target="_blank" style="color: #0A66C2;">${app.linkedin}</a>
+              <strong>LinkedIn Profile:</strong> <a href="${app.linkedin || app.portfolioLink}" target="_blank" style="color: #0A66C2;">${app.linkedin || app.portfolioLink}</a>
             </div>
             ` : ''}
             <div class="footer-info">
-              <span>Attached Resume Document: ${app.resumeName || 'Resume.pdf'} (${app.resumeSize || '1.2 MB'})</span>
-              <span>Applied: ${new Date(app.appliedAt).toLocaleString()}</span>
+              <span>Attached Resume Document: ${app.resumeName || 'Resume.pdf'} (${app.resumeSize || 'Document Available'})</span>
+              <span>Applied: ${appliedLabel}</span>
             </div>
           </div>
           <script>window.onload = function() { setTimeout(function(){ window.print(); }, 500); };</script>
@@ -869,8 +907,8 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
   // 2. Status & Description Modal Handler (Opens modal for giving status & notes)
   const handleOpenStatusModal = (lead) => {
     setCallingLead(lead);
-    setSelectedDisposition(null); // Full empty - not prefilled!
-    setCallerRemark(''); // Full empty - not prefilled!
+    setSelectedDisposition(lead.statusCode || null); // Highlight current caller status
+    setCallerRemark(''); // Ready for new note if admin adds one
     setDispositionError('');
   };
 
@@ -1945,6 +1983,11 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                           <p className="font-medium text-[#14221F] text-xs leading-tight">
                             {lead.callStatusName}
                           </p>
+                          {lead.notes && lead.notes.length > 0 && lead.notes[0].txt && (
+                            <span className="text-[10px] text-gray-500 font-normal truncate max-w-[140px] block" title={lead.notes[0].txt}>
+                              💬 {lead.notes[0].txt}
+                            </span>
+                          )}
                           {lead.statusCode === 4 && (
                             <span className="text-[10.5px] text-amber-800 font-medium block whitespace-nowrap">
                               Attempt {lead.retryCount}/10 • Next: {lead.nextAttemptAt ? new Date(lead.nextAttemptAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
@@ -2115,6 +2158,14 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                       </p>
                     </div>
                   </div>
+
+                  {/* Caller's Latest Note / Discussion Snippet */}
+                  {lead.notes && lead.notes.length > 0 && lead.notes[0].txt && (
+                    <div className="p-2.5 rounded-lg bg-amber-50/70 border border-[#C59B4E]/30 text-xs text-gray-800">
+                      <span className="text-[9.5px] uppercase font-bold text-gray-500 block">Latest Caller Remark:</span>
+                      <p className="font-semibold text-gray-900 mt-0.5 line-clamp-2">{lead.notes[0].txt}</p>
+                    </div>
+                  )}
 
                   {/* Actions: 2 Main Buttons for Mobile View (1: Direct Call, 2: Status & Description) */}
                   <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[#EAE6DF]">
@@ -3259,7 +3310,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                     {selectedCandidateModal.name}
                   </h3>
                   <span className="text-[11px] font-mono text-[#DFBE79]">
-                    Application ID: {selectedCandidateModal.id} • Submitted: {new Date(selectedCandidateModal.appliedAt).toLocaleString()}
+                    Application ID: {selectedCandidateModal.id} • Submitted: {selectedCandidateModal.appliedAt || selectedCandidateModal.createdAt ? new Date(selectedCandidateModal.appliedAt || selectedCandidateModal.createdAt).toLocaleString() : 'Recently Submitted'}
                   </span>
                 </div>
               </div>
@@ -3279,23 +3330,27 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase font-mono text-gray-400 font-semibold block">Candidate Contact</span>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <strong className="font-mono text-sm text-[#14221F]">+91 {selectedCandidateModal.mobile}</strong>
-                    <a
-                      href={`tel:${selectedCandidateModal.mobile}`}
-                      className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-semibold flex items-center gap-1 transition-colors"
-                    >
-                      <PhoneCall className="w-3 h-3 text-[#245348]" />
-                      <span>Call</span>
-                    </a>
-                    <a
-                      href={`https://wa.me/91${selectedCandidateModal.mobile}?text=Hello%20${encodeURIComponent(selectedCandidateModal.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(selectedCandidateModal.position)}.`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold flex items-center gap-1 hover:bg-emerald-200 transition-colors"
-                    >
-                      <MessageCircle className="w-3 h-3 text-emerald-600" />
-                      <span>WhatsApp</span>
-                    </a>
+                    <strong className="font-mono text-sm text-[#14221F]">+91 {selectedCandidateModal.mobile || selectedCandidateModal.phone || 'N/A'}</strong>
+                    {(selectedCandidateModal.mobile || selectedCandidateModal.phone) && (
+                      <>
+                        <a
+                          href={`tel:${selectedCandidateModal.mobile || selectedCandidateModal.phone}`}
+                          className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                        >
+                          <PhoneCall className="w-3 h-3 text-[#245348]" />
+                          <span>Call</span>
+                        </a>
+                        <a
+                          href={`https://wa.me/91${selectedCandidateModal.mobile || selectedCandidateModal.phone}?text=Hello%20${encodeURIComponent(selectedCandidateModal.name)}%2C%20this%20is%20Concave%20Realty%20Talent%20Acquisition%20regarding%20your%20job%20enquiry%20for%20${encodeURIComponent(selectedCandidateModal.position || selectedCandidateModal.jobTitle || 'Career Opportunity')}.`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-semibold flex items-center gap-1 hover:bg-emerald-200 transition-colors"
+                        >
+                          <MessageCircle className="w-3 h-3 text-emerald-600" />
+                          <span>WhatsApp</span>
+                        </a>
+                      </>
+                    )}
                     <a
                       href={`mailto:${selectedCandidateModal.email}?subject=Concave%20Realty%20Job%20Enquiry%20-${encodeURIComponent(selectedCandidateModal.id)}`}
                       className="px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-[11px] font-semibold flex items-center gap-1 hover:bg-blue-100 transition-colors"
@@ -3334,7 +3389,7 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
                   <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Position Applied For</span>
-                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.position}</span>
+                  <span className="font-semibold text-gray-900 block mt-1 text-xs">{selectedCandidateModal.position || selectedCandidateModal.jobTitle || 'General Application'}</span>
                 </div>
                 <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-100">
                   <span className="text-[10px] text-gray-400 font-mono uppercase font-semibold block">Experience</span>
@@ -4166,6 +4221,78 @@ export function AdminPortal({ currentUser, onLogin, onLogout, onNavigateHome }) 
                   <span>{dispositionError}</span>
                 </div>
               )}
+
+              {/* ── HIGHLIGHTED CALLER DATA & STATUS (User Priority: Firstly See Highlighted Data Put by Caller) ── */}
+              <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-br from-[#FCF9F3] via-amber-50/60 to-emerald-50/40 border-2 border-[#C59B4E] shadow-sm space-y-2.5">
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse shrink-0" />
+                    <span className="text-xs font-bold text-[#14221F] uppercase tracking-wider font-mono">
+                      Caller's Latest Update
+                    </span>
+                    <span className="text-[11px] text-gray-600 font-medium">
+                      (by <strong className="text-[#245348]">{callingLead.callerName || 'Assigned Caller'}</strong>)
+                    </span>
+                  </div>
+
+                  {/* Prominent Current Status Badge */}
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1 border shadow-xs ${
+                    callingLead.statusCode === 1 ? 'bg-emerald-600 text-white border-emerald-700' :
+                    callingLead.statusCode === 2 ? 'bg-teal-600 text-white border-teal-700' :
+                    callingLead.statusCode === 3 ? 'bg-amber-100 text-amber-900 border-amber-300' :
+                    callingLead.statusCode === 4 ? 'bg-orange-100 text-orange-900 border-orange-300' :
+                    callingLead.statusCode === 5 ? 'bg-rose-100 text-rose-900 border-rose-300' :
+                    callingLead.statusCode === 6 ? 'bg-red-100 text-red-900 border-red-300' :
+                    'bg-[#245348] text-[#DFBE79] border-[#C59B4E]'
+                  }`}>
+                    {callingLead.statusName || STATUS_CODES[callingLead.statusCode] || 'New Enquiry'}
+                  </span>
+                </div>
+
+                {/* Caller Discussion Description & Notes */}
+                <div className="bg-white rounded-lg p-3 border border-[#EAE6DF] shadow-2xs space-y-1">
+                  <span className="text-[10.5px] uppercase font-bold text-gray-400 tracking-wider block">
+                    Caller Discussion Description & Client Notes:
+                  </span>
+                  <p className="font-semibold text-xs text-[#14221F] leading-relaxed whitespace-pre-wrap">
+                    {(() => {
+                      if (callingLead.notes && callingLead.notes.length > 0) {
+                        return callingLead.notes[0].txt;
+                      }
+                      if (callingLead.description && callingLead.description.trim()) {
+                        return callingLead.description;
+                      }
+                      return 'No discussion notes logged yet by caller.';
+                    })()}
+                  </p>
+
+                  {callingLead.notes && callingLead.notes[0] && callingLead.notes[0].at && (
+                    <div className="pt-1 text-[10px] text-gray-400 font-mono flex items-center justify-between border-t border-gray-100 mt-2">
+                      <span>Logged: {new Date(callingLead.notes[0].at).toLocaleString()}</span>
+                      <span>By: {callingLead.notes[0].by || callingLead.callerName || 'Caller'}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* History of notes if more than 1 */}
+                {callingLead.notes && callingLead.notes.length > 1 && (
+                  <details className="text-[11px] text-gray-600 pt-1 cursor-pointer">
+                    <summary className="font-semibold text-[#245348] hover:underline">
+                      View previous notes history ({callingLead.notes.length - 1} earlier entries)
+                    </summary>
+                    <div className="mt-2 space-y-1.5 pl-2 border-l-2 border-[#C59B4E]/50">
+                      {callingLead.notes.slice(1).map((n, idx) => (
+                        <div key={idx} className="bg-white/80 p-2 rounded border border-[#EAE6DF] text-xs">
+                          <p className="text-gray-800">{n.txt}</p>
+                          <span className="text-[9.5px] text-gray-400 font-mono block mt-0.5">
+                            {n.at ? new Date(n.at).toLocaleString() : ''} • {n.by}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </div>
 
               {/* Status Selection Options with Scroll Feature */}
               <div className="space-y-1.5">

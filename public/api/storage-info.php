@@ -60,36 +60,40 @@ function get_directory_size($dir) {
 }
 
 try {
-    $rootDir = dirname(__DIR__); // Website directory on Hostinger
-    $diskFree = @disk_free_space($rootDir);
-    $diskTotal = @disk_total_space($rootDir);
+    $rootDir = dirname(__DIR__); // Website directory on Hostinger (public_html)
+    
+    // Calculate actual real directory size of website files and uploaded media
+    $siteSize = get_directory_size($rootDir);
 
-    $usedBytes = 0;
-    $rawRemainingBytes = 0;
-
-    // Detect if Hostinger provides container-level quota (<= 25GB)
-    if ($diskTotal !== false && $diskTotal <= 25 * 1024 * 1024 * 1024 && $diskFree !== false) {
-        $rawRemainingBytes = min(TOTAL_PLAN_BYTES, (float)$diskFree);
-        $usedBytes = max(0, TOTAL_PLAN_BYTES - $rawRemainingBytes);
-    } else {
-        // Shared Hostinger cluster: calculate actual website files size + baseline overhead
-        $siteSize = get_directory_size($rootDir);
-        
-        // Base system overhead for web server, OS libraries, PHP cache ~ 1.8 GB
-        $baseOverhead = 1.8 * 1024 * 1024 * 1024;
-        $usedBytes = min(TOTAL_PLAN_BYTES, $siteSize + $baseOverhead);
-        $rawRemainingBytes = max(0, TOTAL_PLAN_BYTES - $usedBytes);
+    // Calculate actual MySQL database table size
+    $dbSize = 0;
+    try {
+        require_once __DIR__ . '/db.php';
+        $pdo = get_db_connection();
+        if ($pdo) {
+            $stmt = $pdo->query("SELECT SUM(data_length + index_length) AS dbsize FROM information_schema.TABLES WHERE table_schema = DATABASE()");
+            $row = $stmt ? $stmt->fetch(PDO::FETCH_ASSOC) : null;
+            if (!empty($row['dbsize'])) {
+                $dbSize = (float)$row['dbsize'];
+            }
+        }
+    } catch (\Throwable $dbErr) {
+        // Safe fallback if MySQL offline
     }
 
+    // Real used storage: Website build + Uploaded resumes/media + Live MySQL database
+    $usedBytes = max(1024 * 1024 * 50, $siteSize + $dbSize); // Actual files size
+    $rawRemainingBytes = max(0, TOTAL_PLAN_BYTES - $usedBytes);
+
     // Apply the 2.00 GB Buffer Rule:
-    // If raw remaining is 18 GB -> Displayed empty is 16 GB
+    // If raw remaining is e.g. 19.78 GB -> Displayed usable empty is 17.78 GB (2.00 GB buffer reserved)
     $displayedEmptyBytes = max(0, $rawRemainingBytes - BUFFER_RESERVE_BYTES);
 
-    // Compute percentage used of usable quota (18 GB)
+    // Compute real percentage used of usable quota (18 GB)
     $usagePercent = USABLE_QUOTA_BYTES > 0 
-        ? round(($usedBytes / USABLE_QUOTA_BYTES) * 100) 
-        : 11;
-    $usagePercent = min(100, max(1, $usagePercent));
+        ? round(($usedBytes / USABLE_QUOTA_BYTES) * 100, 1) 
+        : 1;
+    $usagePercent = min(100, max(0.5, $usagePercent));
 
     echo json_encode([
         'success' => true,

@@ -517,11 +517,12 @@ export function SignatureProjects({
                   return (
                     <div
                       key={`${selectedLocation}-${selectedBhk}-${project.id}`}
+                      id={`project-${project.id}`}
                       ref={(el) => {
                         if (el) cardRefs.current[cardIdx] = el;
                       }}
                       style={{ '--card-delay': `${(cardIdx % 3) * 75}ms` }}
-                      className="project-card-reveal relative bg-gradient-to-b from-white via-white to-[#FCF9F3] rounded-[22px] overflow-hidden border border-[#E6DDCB] shadow-[0_10px_30px_-8px_rgba(20,34,31,0.10)] hover:shadow-[0_24px_50px_-12px_rgba(20,34,31,0.20)] hover:border-[#C59B4E] flex flex-col group"
+                      className="project-card-reveal relative bg-gradient-to-b from-white via-white to-[#FCF9F3] rounded-[22px] overflow-hidden border border-[#E6DDCB] shadow-[0_10px_30px_-8px_rgba(20,34,31,0.10)] hover:shadow-[0_24px_50px_-12px_rgba(20,34,31,0.20)] hover:border-[#C59B4E] flex flex-col group scroll-mt-28"
                     >
                       {/* Signature Forest-Gold Luxury Top Bar */}
                       <div className="h-[3px] w-full bg-gradient-to-r from-[#14221F] via-[#DFBE79] to-[#14221F]" />

@@ -339,9 +339,9 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
       return;
     }
 
-    // Size limit: 5MB
-    if (file.size > 5 * 1024 * 1024) {
-      setFileError('File size exceeds 5MB limit. Please upload a smaller file.');
+    // Size limit: 2MB (User rule: strictly 2MB limit for client resumes)
+    if (file.size > 2 * 1024 * 1024) {
+      setFileError('File size exceeds 2MB limit. Please upload a PDF under 2MB.');
       setAttachedFile(null);
       return;
     }
@@ -410,20 +410,48 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
     setIsSubmitting(true);
 
-    // Backend Verification Validation & Live MySQL Submission
-    try {
-      const applicationPayload = {
-        name: cleanName,
-        email: cleanEmail,
-        phone: cleanMobile,
-        city: cleanCity || 'Mumbai',
-        jobId: formData.position || 'GENERAL',
-        jobTitle: formData.position || 'General Luxury Advisory Application',
-        experience: formData.experience || 'Fresher',
-        portfolioLink: sanitizeInput((formData.linkedin || '').trim(), 200),
-        verificationToken
-      };
+    // Read attached resume as base64 data URI so it is stored in DB & server
+    let resumeBase64 = null;
+    if (attachedFile) {
+      try {
+        resumeBase64 = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => resolve(null);
+          reader.readAsDataURL(attachedFile);
+        });
+      } catch (fileErr) {
+        console.warn('[Career Apply] Could not read resume as base64:', fileErr);
+      }
+    }
 
+    const applicationPayload = {
+      name: cleanName,
+      email: cleanEmail,
+      phone: cleanMobile,
+      mobile: cleanMobile,
+      city: cleanCity || 'Mumbai',
+      jobId: formData.position || 'GENERAL',
+      jobTitle: formData.position || 'General Luxury Advisory Application',
+      position: formData.position || 'General Luxury Advisory Application',
+      experience: formData.experience || 'Fresher',
+      currentCompany: sanitizeInput((formData.currentCompany || '').trim(), 100) || 'Not Disclosed',
+      currentRole: sanitizeInput((formData.currentRole || '').trim(), 100) || 'N/A',
+      currentCtc: sanitizeInput((formData.currentCtc || '').trim(), 50) || 'Not Disclosed',
+      expectedCtc: sanitizeInput((formData.expectedCtc || '').trim(), 50) || 'Negotiable',
+      noticePeriod: formData.noticePeriod || 'Immediate',
+      portfolioLink: sanitizeInput((formData.linkedin || '').trim(), 200),
+      linkedin: sanitizeInput((formData.linkedin || '').trim(), 200),
+      coverNote: sanitizeInput((formData.coverNote || '').trim(), 1000),
+      resumeName: attachedFile ? attachedFile.name : 'Resume_Attached.pdf',
+      resumeSize: attachedFile ? `${(attachedFile.size / (1024 * 1024)).toFixed(1)} MB` : '1.2 MB',
+      resumeData: resumeBase64,
+      verificationToken,
+      otpVerified: true
+    };
+
+    // Single Backend Verification Validation & Live MySQL Submission
+    try {
       let verifyRes = await fetch('/api/career-apply.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -454,27 +482,8 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
     setTimeout(() => {
       try {
-        const payload = {
-          name: cleanName,
-          email: cleanEmail,
-          mobile: cleanMobile,
-          city: cleanCity || 'Mumbai',
-          position: formData.position,
-          experience: formData.experience,
-          currentCompany: sanitizeInput((formData.currentCompany || '').trim(), 100) || 'Not Disclosed',
-          currentRole: sanitizeInput((formData.currentRole || '').trim(), 100) || 'N/A',
-          currentCtc: sanitizeInput((formData.currentCtc || '').trim(), 50) || 'Not Disclosed',
-          expectedCtc: sanitizeInput((formData.expectedCtc || '').trim(), 50) || 'Negotiable',
-          noticePeriod: formData.noticePeriod || 'Immediate',
-          linkedin: sanitizeInput(formData.linkedin.trim(), 200),
-          coverNote: sanitizeInput(formData.coverNote.trim(), 1000),
-          resumeName: attachedFile ? attachedFile.name : 'Resume_Attached.pdf',
-          resumeSize: attachedFile ? `${(attachedFile.size / (1024 * 1024)).toFixed(1)} MB` : '1.2 MB',
-          otpVerified: true,
-          verificationToken
-        };
-
-        const result = dbStore.addJobApplication(payload);
+        // Save to local cache with skipApiDispatch=true to prevent duplicate DB insertion!
+        const result = dbStore.addJobApplication(applicationPayload, { skipApiDispatch: true });
 
         if (result.success) {
           setSubmissionSuccess(result.application);
@@ -508,11 +517,11 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
         }
       } catch (err) {
         console.error("Career submission error:", err);
-        setFormError('A system error occurred. Please contact our team directly.');
+        setFormError('An error occurred while saving your application. Please try again.');
       } finally {
         setIsSubmitting(false);
       }
-    }, 600);
+    }, 400);
   };
 
   return (
@@ -1251,7 +1260,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
 
                       {/* Resume Upload Area */}
                       <div className="space-y-1.5">
-                        <label className="text-[#14221F] font-semibold block">Attach Resume / CV (.pdf, .doc, .docx - max 5MB)</label>
+                        <label className="text-[#14221F] font-semibold block">Attach Resume / CV (.pdf, .doc, .docx - max 2MB)</label>
 
                         <input
                           ref={fileInputRef}
@@ -1269,7 +1278,7 @@ export function CareerPage({ onNavigateHome, onOpenEnquiry }) {
                           >
                             <UploadCloud className="w-6 h-6 text-[#245348]" />
                             <span className="text-xs font-semibold text-[#1D3530]">Click to Browse and Upload Resume</span>
-                            <span className="text-[10px] text-[#63706B] font-mono">PDF, DOC, DOCX up to 5MB</span>
+                            <span className="text-[10px] text-[#63706B] font-mono">PDF, DOC, DOCX up to 2MB</span>
                           </label>
                         ) : (
                           <div className="p-3 rounded-xl bg-[#FAF9F6] border border-[#1D3530] flex items-center justify-between shadow-xs">

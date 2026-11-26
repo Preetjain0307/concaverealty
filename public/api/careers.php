@@ -26,15 +26,29 @@ if ($method === 'GET') {
                     'id' => intval($row['id']),
                     'jobId' => $row['job_id'],
                     'jobTitle' => $row['job_title'],
+                    'position' => $row['job_title'],
                     'applicantName' => $row['applicant_name'],
                     'name' => $row['applicant_name'],
                     'email' => $row['email'],
                     'phone' => $row['phone'],
+                    'mobile' => $row['phone'],
                     'experience' => $row['experience'] ?? '',
                     'portfolioLink' => $row['portfolio_link'] ?? '',
-                    'status' => $row['status'] ?? 'Pending Review',
+                    'linkedin' => $row['portfolio_link'] ?? '',
+                    'city' => $row['city'] ?? 'Mumbai',
+                    'currentCompany' => $row['current_company'] ?? 'Not Disclosed',
+                    'currentRole' => $row['current_role'] ?? 'N/A',
+                    'currentCtc' => $row['current_ctc'] ?? 'Not Disclosed',
+                    'expectedCtc' => $row['expected_ctc'] ?? 'Negotiable',
+                    'noticePeriod' => $row['notice_period'] ?? 'Immediate',
+                    'coverNote' => $row['cover_note'] ?? '',
+                    'resumeName' => !empty($row['resume_name']) ? $row['resume_name'] : 'Resume.pdf',
+                    'resumePath' => $row['resume_path'] ?? '',
+                    'resumeData' => $row['resume_data'] ?? '',
+                    'status' => $row['status'] ?? 'Under Review',
                     'verifiedAt' => $row['verified_at'],
-                    'createdAt' => !empty($row['created_at']) ? strtotime($row['created_at']) * 1000 : time() * 1000
+                    'createdAt' => !empty($row['created_at']) ? strtotime($row['created_at']) * 1000 : time() * 1000,
+                    'appliedAt' => !empty($row['created_at']) ? strtotime($row['created_at']) * 1000 : time() * 1000
                 ];
             }
         }

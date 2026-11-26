@@ -105,6 +105,7 @@ export function App() {
   const [showSplash, setShowSplash] = useState(() => !isInitialAdminOrCaller() && !initialLinkedProject);
   const [currentView, setCurrentView] = useState(() => {
     try {
+      if (initialLinkedProject) return 'projects';
       const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
       const hash = window.location.hash.toLowerCase();
       if (path === '/concave-admin' || path === '/admin' || hash === '#concave-admin' || hash === '#admin') return 'admin';
@@ -115,6 +116,9 @@ export function App() {
       if (hash.startsWith('#disclaimer') || path === '/disclaimer') return 'legal';
       if (hash.startsWith('#cookies') || path === '/cookies') return 'legal';
       if (hash === '#legal' || path === '/legal') return 'legal';
+      if (hash === '#projects' || hash.startsWith('#project')) return 'projects';
+      if (hash === '#amenities') return 'amenities';
+      if (hash === '#contact') return 'contact';
     } catch (e) { }
     return 'home';
   });
@@ -135,50 +139,63 @@ export function App() {
   const [searchFilter, setSearchFilter] = useState({ location: 'All', type: 'All', budget: 'All' });
   const [activeUser, setActiveUser] = useState(null);
 
-  // Synchronize deep-linked project URLs (?project=17 or #project-17)
+  // Synchronize deep-linked project URLs (?project=17)
   const handleSelectProject = (project) => {
     setSelectedProject(project);
+    setCurrentView('projects');
     if (project) {
       try {
-        const newUrl = `${window.location.pathname}?project=${project.id}#project-${project.id}`;
-        window.history.replaceState({ projectId: project.id }, '', newUrl);
+        const newUrl = `${window.location.pathname}?project=${project.id}#projects`;
+        window.history.pushState({ projectId: project.id, view: 'project-detail' }, '', newUrl);
       } catch (e) { }
     }
   };
 
   const handleCloseProjectModal = () => {
+    const closedProjId = selectedProject?.id;
     setSelectedProject(null);
+    setCurrentView('projects');
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('project');
       url.searchParams.delete('p');
       url.searchParams.delete('projectId');
-      if (url.hash.startsWith('#project')) {
-        url.hash = '';
-      }
+      url.hash = 'projects';
       const cleanUrl = url.pathname + (url.search ? url.search : '') + (url.hash ? url.hash : '');
-      window.history.replaceState({}, '', cleanUrl);
+      window.history.replaceState({ view: 'projects' }, '', cleanUrl);
+
+      // Once modal is closed, smoothly position user at this project card in projects section
+      if (closedProjId) {
+        setTimeout(() => {
+          const card = document.getElementById(`project-${closedProjId}`) || document.getElementById('projects');
+          if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 80);
+      }
     } catch (e) { }
   };
 
   // Cookie transparency & DPDP storage notice banner
   const [cookieConsentVisible, setCookieConsentVisible] = useState(false);
 
+  // Deep-link initial landing: Automatically open shared project and prepare history stack
   useEffect(() => {
-    const handleCheckProjectUrl = () => {
-      const proj = getProjectFromUrl();
-      if (proj) {
-        setShowSplash(false);
-        setSelectedProject(proj);
-      }
-    };
-
-    window.addEventListener('popstate', handleCheckProjectUrl);
-    window.addEventListener('hashchange', handleCheckProjectUrl);
-    return () => {
-      window.removeEventListener('popstate', handleCheckProjectUrl);
-      window.removeEventListener('hashchange', handleCheckProjectUrl);
-    };
+    if (initialLinkedProject) {
+      setShowSplash(false);
+      setCurrentView('projects');
+      // Setup browser history stack: [Home Page] -> [Projects Section] -> [Project Detail Modal]
+      // This ensures 1st Back goes to Projects page, and 2nd Back goes to Home page!
+      try {
+        window.history.replaceState({ view: 'home' }, '', '/');
+        window.history.pushState({ view: 'projects' }, '', '/#projects');
+        window.history.pushState(
+          { view: 'project-detail', projectId: initialLinkedProject.id },
+          '',
+          `${window.location.pathname}?project=${initialLinkedProject.id}#projects`
+        );
+      } catch (e) { }
+    }
   }, []);
 
   useEffect(() => {
@@ -209,33 +226,58 @@ export function App() {
 
     // Dedicated Portal & Multi-Route Navigation (/concave-admin, /concave-caller, hash & pushState)
     const handleRoute = (e) => {
-      // Dismiss any open modals when navigating with browser back/forward buttons
-      setSelectedProject(null);
-      setTourModalOpen(false);
-      setEnquiryModalOpen(false);
-
       const path = window.location.pathname.toLowerCase().replace(/\/+$/, '');
       const hash = window.location.hash.toLowerCase();
 
+      // 1. Direct administrative portals
       if (path === '/concave-admin' || path === '/admin' || hash === '#concave-admin' || hash === '#admin') {
+        setSelectedProject(null);
+        setTourModalOpen(false);
+        setEnquiryModalOpen(false);
         setShowSplash(false);
         setCurrentView('admin');
         if (window.location.pathname !== '/concave-admin') {
           window.history.replaceState({ view: 'admin', hasHomeBase: true }, '', '/concave-admin');
         }
-      } else if (path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller') {
+        return;
+      }
+
+      if (path === '/concave-caller' || path === '/caller' || hash === '#concave-caller' || hash === '#caller') {
+        setSelectedProject(null);
+        setTourModalOpen(false);
+        setEnquiryModalOpen(false);
         setShowSplash(false);
         setCurrentView('caller');
         if (window.location.pathname !== '/concave-caller') {
           window.history.replaceState({ view: 'caller', hasHomeBase: true }, '', '/concave-caller');
         }
-      } else if (path === '/careers' || hash === '#careers' || hash === '#career') {
+        return;
+      }
+
+      // 2. Deep-linked project check (?project=17 or #project-17)
+      const linkedProj = getProjectFromUrl();
+      if (linkedProj) {
+        setShowSplash(false);
+        setCurrentView('projects');
+        setSelectedProject(linkedProj);
+        setTourModalOpen(false);
+        setEnquiryModalOpen(false);
+        return;
+      }
+
+      // If user navigated away from project modal via Back button or link
+      setSelectedProject(null);
+      setTourModalOpen(false);
+      setEnquiryModalOpen(false);
+
+      // 3. Regular routes
+      if (path === '/careers' || hash === '#careers' || hash === '#career') {
         setCurrentView('careers');
-      } else if (hash === '#projects') {
+      } else if (hash === '#projects' || hash.startsWith('#project')) {
         setCurrentView('projects');
       } else if (hash === '#amenities') {
         setCurrentView('amenities');
-      } else if (hash === '#contact') {
+      } else if (hash === '#contact' || path === '/contact') {
         setCurrentView('contact');
       } else if (hash === '#terms' || hash === '#terms-and-conditions' || path === '/terms') {
         setLegalTab('terms');
@@ -252,12 +294,6 @@ export function App() {
       } else if (hash === '#legal' || path === '/legal') {
         setLegalTab('terms');
         setCurrentView('legal');
-      } else if (hash === '#projects') {
-        setCurrentView('projects');
-      } else if (hash === '#amenities') {
-        setCurrentView('amenities');
-      } else if (hash === '#contact' || path === '/contact') {
-        setCurrentView('contact');
       } else {
         // Directs back to Home page of the website for any empty path, root '/', '#home' or unexpected route
         setCurrentView('home');
@@ -637,8 +673,8 @@ export function App() {
           </ErrorBoundary>
         )}
 
-        {/* Luxury Cookie & Privacy Preferences Banner (Fixed at Bottom-Left on all devices, hidden when a modal is active) */}
-        {!isPortalView && !selectedProject && !enquiryModalOpen && !tourModalOpen && cookieConsentVisible && (
+        {/* Luxury Cookie & Privacy Preferences Banner (Fixed at Bottom-Left on all devices) */}
+        {!isPortalView && cookieConsentVisible && (
           <aside
             aria-label="Privacy and Cookie Preferences"
             className="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] sm:w-[380px] p-4 sm:p-4.5 rounded-2xl bg-[#14221F]/95 backdrop-blur-md border border-[#C59B4E]/50 text-white shadow-2xl animate-fade-up space-y-2.5"

@@ -1999,12 +1999,20 @@ export const dbStore = {
       const bufferBytes = 2 * 1024 * 1024 * 1024;    // 2.00 GB buffer
       const usableQuotaBytes = totalPlanBytes - bufferBytes; // 18.00 GB
 
-      // Local / Client fallback: Baseline website files + database records
-      const estimatedUsedBytes = Math.round(1.85 * 1024 * 1024 * 1024) + rawBytes;
+      // Local / Client fallback: Actual website production build (~210 MB) + live database records
+      const baselineBuildBytes = 210 * 1024 * 1024;
+      const estimatedUsedBytes = baselineBuildBytes + rawBytes;
       const rawRemainingBytes = Math.max(0, totalPlanBytes - estimatedUsedBytes);
-      // User rule: if remaining is 18gb then show only 16gb (keep 2gb buffer)
+      // User rule: if raw remaining is 19.79 GB then show 17.79 GB (keep 2 GB buffer reserved)
       const displayedEmptyBytes = Math.max(0, rawRemainingBytes - bufferBytes);
       const usagePercent = Math.min(100, Math.max(1, Math.round((estimatedUsedBytes / usableQuotaBytes) * 100)));
+
+      const formatBytes = (bytes) => {
+        if (bytes >= 1024 * 1024 * 1024) {
+          return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+        }
+        return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+      };
 
       return {
         recordCount: allLeads.length,
@@ -2019,7 +2027,7 @@ export const dbStore = {
         usableQuotaBytes,
         usableQuotaFormatted: "18.00 GB",
         usedBytes: estimatedUsedBytes,
-        usedFormatted: (estimatedUsedBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB",
+        usedFormatted: formatBytes(estimatedUsedBytes),
         rawRemainingBytes,
         rawRemainingFormatted: (rawRemainingBytes / (1024 * 1024 * 1024)).toFixed(2) + " GB",
         displayedEmptyBytes,
@@ -2039,13 +2047,13 @@ export const dbStore = {
         bufferFormatted: "2.00 GB",
         usableQuotaBytes: 18 * 1024 * 1024 * 1024,
         usableQuotaFormatted: "18.00 GB",
-        usedBytes: 2 * 1024 * 1024 * 1024,
-        usedFormatted: "2.00 GB",
-        rawRemainingBytes: 18 * 1024 * 1024 * 1024,
-        rawRemainingFormatted: "18.00 GB",
-        displayedEmptyBytes: 16 * 1024 * 1024 * 1024,
-        displayedEmptyFormatted: "16.00 GB",
-        usagePercent: 11
+        usedBytes: 210 * 1024 * 1024,
+        usedFormatted: "210.0 MB",
+        rawRemainingBytes: 19.79 * 1024 * 1024 * 1024,
+        rawRemainingFormatted: "19.79 GB",
+        displayedEmptyBytes: 17.79 * 1024 * 1024 * 1024,
+        displayedEmptyFormatted: "17.79 GB",
+        usagePercent: 1
       };
     }
   },
@@ -2396,60 +2404,82 @@ export const dbStore = {
   // ==============================================================
   // CAREERS & TALENT ACQUISITION
   // ==============================================================
-  addJobApplication(appData) {
+  addJobApplication(appData, options = {}) {
     try {
       this.init();
       const existing = this.getJobApplications();
       const newApp = {
         id: `CR-APP-${Date.now().toString().slice(-5)}`,
         name: sanitizeInput(appData.name, 100),
+        applicantName: sanitizeInput(appData.name, 100),
         email: sanitizeInput(appData.email, 120),
-        mobile: sanitizeInput(appData.mobile, 15),
+        mobile: sanitizeInput(appData.mobile || appData.phone || '', 15),
+        phone: sanitizeInput(appData.mobile || appData.phone || '', 15),
         city: sanitizeInput(appData.city || 'Mumbai', 80),
-        position: sanitizeInput(appData.position, 100),
+        position: sanitizeInput(appData.position || appData.jobTitle || 'General Application', 100),
+        jobTitle: sanitizeInput(appData.position || appData.jobTitle || 'General Application', 100),
         experience: sanitizeInput(appData.experience || 'Fresher', 50),
         currentCompany: sanitizeInput(appData.currentCompany || 'Not Disclosed', 100),
         currentRole: sanitizeInput(appData.currentRole || 'N/A', 100),
         currentCtc: sanitizeInput(appData.currentCtc || 'Not Disclosed', 50),
         noticePeriod: sanitizeInput(appData.noticePeriod || 'Immediate', 50),
         expectedCtc: sanitizeInput(appData.expectedCtc || 'Negotiable', 50),
-        linkedin: sanitizeInput(appData.linkedin || '', 200),
+        linkedin: sanitizeInput(appData.linkedin || appData.portfolioLink || '', 200),
+        portfolioLink: sanitizeInput(appData.linkedin || appData.portfolioLink || '', 200),
         coverNote: sanitizeInput(appData.coverNote || '', 1000),
         resumeName: sanitizeInput(appData.resumeName || 'Profile_Resume.pdf', 120),
         resumeSize: appData.resumeSize || '1.2 MB',
+        resumeData: appData.resumeData || null,
+        resumePath: appData.resumePath || '',
         otpVerified: Boolean(appData.otpVerified),
         status: 'Under Review',
-        appliedAt: Date.now()
+        appliedAt: Date.now(),
+        createdAt: Date.now()
       };
       existing.unshift(newApp);
       localStorage.setItem('concave_career_applications_v1', JSON.stringify(existing));
 
-      // LIVE DATABASE ACTION: Insert into MySQL job_applications table immediately
-      try {
-        const payload = {
-          name: newApp.name,
-          email: newApp.email,
-          phone: newApp.mobile,
-          jobId: newApp.position || 'GENERAL',
-          jobTitle: newApp.position || 'General Application',
-          experience: newApp.experience,
-          portfolioLink: newApp.linkedin,
-          verificationToken: appData.verificationToken || ''
-        };
+      // LIVE DATABASE ACTION: Insert into MySQL job_applications table only if not already dispatched
+      if (!options.skipApiDispatch) {
+        try {
+          const payload = {
+            name: newApp.name,
+            email: newApp.email,
+            phone: newApp.mobile,
+            mobile: newApp.mobile,
+            city: newApp.city,
+            jobId: newApp.position || 'GENERAL',
+            jobTitle: newApp.position || 'General Application',
+            position: newApp.position || 'General Application',
+            experience: newApp.experience,
+            currentCompany: newApp.currentCompany,
+            currentRole: newApp.currentRole,
+            currentCtc: newApp.currentCtc,
+            expectedCtc: newApp.expectedCtc,
+            noticePeriod: newApp.noticePeriod,
+            portfolioLink: newApp.linkedin,
+            linkedin: newApp.linkedin,
+            coverNote: newApp.coverNote,
+            resumeName: newApp.resumeName,
+            resumeSize: newApp.resumeSize,
+            resumeData: newApp.resumeData,
+            verificationToken: appData.verificationToken || ''
+          };
 
-        fetch('/api/career-apply.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).catch(() => {
-          fetch('/api/careers.php?action=create', {
+          fetch('/api/career-apply.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
-          }).catch(() => {});
-        });
-      } catch (err) {
-        console.warn("[dbStore] Career application DB dispatch warning:", err);
+          }).catch(() => {
+            fetch('/api/careers.php?action=create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            }).catch(() => {});
+          });
+        } catch (err) {
+          console.warn("[dbStore] Career application DB dispatch warning:", err);
+        }
       }
 
       return { success: true, application: newApp };

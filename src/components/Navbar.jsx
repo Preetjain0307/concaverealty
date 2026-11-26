@@ -25,14 +25,14 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
   return (
     <nav className="fixed top-0 left-0 right-0 z-40 bg-[#1D3530] text-white border-b border-[#284F45] transition-all">
       <div className="max-w-7xl mx-auto px-2.5 xs:px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
+        <div className="flex items-center justify-between h-16 sm:h-20">
 
           {/* Brand Logo & Slogan (Lodha minimalist style) */}
           <div
             onClick={() => onNavigate('home')}
-            className="flex items-center gap-2 xs:gap-2.5 sm:gap-3.5 cursor-pointer group min-w-0 shrink"
+            className="flex items-center gap-2 xs:gap-2.5 sm:gap-3.5 cursor-pointer group min-w-0"
           >
-            <div className="w-8 h-8 min-[380px]:w-9 min-[380px]:h-9 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform shadow-xs">
+            <div className="w-9 h-9 xs:w-10 xs:h-10 sm:w-12 sm:h-12 md:w-13 md:h-13 rounded-full overflow-hidden border border-[#C59B4E]/60 p-0.5 bg-[#284F45] flex-shrink-0 group-hover:scale-105 transition-transform shadow-xs">
               <img
                 src="/logo_icon.jpg"
                 alt="Concave Realty"
@@ -40,10 +40,10 @@ export function Navbar({ onNavigate, currentView, onOpenEnquiry, activeUser, onL
               />
             </div>
             <div className="flex flex-col justify-center min-w-0">
-              <span className="font-serif text-[13px] min-[350px]:text-[14px] min-[380px]:text-[16px] sm:text-[22px] md:text-[24px] lg:text-[26px] font-bold tracking-[0.05em] min-[380px]:tracking-[0.08em] sm:tracking-[0.14em] text-white whitespace-nowrap select-none leading-tight">
+              <span className="font-serif text-[15px] xs:text-[17px] sm:text-[22px] md:text-[24px] lg:text-[26px] font-bold tracking-[0.08em] sm:tracking-[0.14em] text-white whitespace-nowrap select-none leading-tight">
                 CONCAVE REALTY
               </span>
-              <span className="text-[6px] min-[350px]:text-[6.5px] min-[380px]:text-[7px] sm:text-[8px] md:text-[9px] uppercase font-sans tracking-[0.1em] min-[380px]:tracking-[0.14em] sm:tracking-[0.2em] text-[#DFBE79] font-medium whitespace-nowrap block mt-0.5 leading-tight">
+              <span className="text-[6.5px] xs:text-[7px] sm:text-[8px] md:text-[9px] uppercase font-sans tracking-[0.14em] sm:tracking-[0.2em] text-[#DFBE79] font-medium whitespace-nowrap block mt-0.5 leading-tight">
                 Where Legacy Meets Luxury
               </span>
             </div>

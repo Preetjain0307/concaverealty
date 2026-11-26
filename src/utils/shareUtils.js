@@ -18,7 +18,7 @@ import { PROJECTS_DATA } from '../data/projectsData';
 export function getProjectShareUrl(project) {
   if (typeof window === 'undefined' || !project) return '';
   const baseUrl = `${window.location.origin}${window.location.pathname}`;
-  return `${baseUrl}?project=${project.id}#project-${project.id}`;
+  return `${baseUrl}?project=${project.id}#projects`;
 }
 
 /**
