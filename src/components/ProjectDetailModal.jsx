@@ -127,12 +127,14 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
   const [mapType, setMapType] = useState('roadmap'); // 'roadmap' | 'satellite'
   const [mapZoom, setMapZoom] = useState(16);
   const [copiedCoords, setCopiedCoords] = useState(false);
+  const [isMapInteractive, setIsMapInteractive] = useState(false);
 
   // Reset map zoom and mode when switching projects
   useEffect(() => {
     setMapZoom(16);
     setMapType('roadmap');
     setCopiedCoords(false);
+    setIsMapInteractive(false);
   }, [project?.id]);
 
   const handleCopyCoords = (lat, lng) => {
@@ -175,7 +177,11 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
+<<<<<<< Updated upstream
       className="fixed inset-0 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
+=======
+      className="fixed inset-0 z-[100] flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
+>>>>>>> Stashed changes
       onClick={onClose}
     >
       <div
@@ -202,6 +208,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </p>
           </div>
 
+<<<<<<< Updated upstream
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleShareModal(project)}
@@ -221,16 +228,24 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               <X className="w-5 h-5" />
             </button>
           </div>
+=======
+          <button
+            onClick={onClose}
+            aria-label="Close project details"
+            className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 cursor-pointer"
+          >
+            <X className="w-5 h-5" />
+          </button>
+>>>>>>> Stashed changes
         </div>
 
         {/* Modal Scrollable Body - Strictly lock horizontal overflow */}
         <div className="p-3.5 sm:p-6 overflow-y-auto overflow-x-hidden space-y-4 sm:space-y-6 flex-1 text-[#14221F] w-full min-w-0">
 
           {/* Section: Property Image Gallery */}
-          {/* Section: Property Image Gallery */}
           <div className="space-y-3">
             <div 
-              className="relative h-72 sm:h-96 md:h-[490px] rounded-xl overflow-hidden border border-[#EAE6DF] bg-[#0E1715] flex items-center justify-center group cursor-pointer"
+              className="relative h-60 sm:h-80 md:h-[480px] rounded-xl overflow-hidden border border-[#EAE6DF] bg-[#0E1715] flex items-center justify-center group cursor-pointer w-full max-w-full"
               onClick={() => currentImage && setIsLightboxOpen(true)}
               title={currentImage ? "Click to view full photo" : ""}
             >
@@ -414,37 +429,37 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               </span>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 text-xs">
+              <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group min-w-0">
                 <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                  <Layers className="w-3.5 h-3.5 text-[#C59B4E]" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Land Parcel</span>
+                  <Layers className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                  <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider font-semibold truncate">Land Parcel</span>
                 </div>
-                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.landParcel || 'On Request'}</span>
+                <span className="font-bold text-[#14221F] text-xs sm:text-sm block group-hover:text-[#183C32] transition-colors truncate">{project.landParcel || 'On Request'}</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+              <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group min-w-0">
                 <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                  <Building2 className="w-3.5 h-3.5 text-[#C59B4E]" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Towers & Structure</span>
+                  <Building2 className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                  <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider font-semibold truncate">Towers</span>
                 </div>
-                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.towers || 'High-Rise Tower'}</span>
+                <span className="font-bold text-[#14221F] text-xs sm:text-sm block group-hover:text-[#183C32] transition-colors truncate">{project.towers || 'High-Rise Tower'}</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+              <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group min-w-0">
                 <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                  <Navigation className="w-3.5 h-3.5 text-[#C59B4E]" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">Elevators</span>
+                  <Navigation className="w-3.5 h-3.5 text-[#C59B4E] shrink-0" />
+                  <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider font-semibold truncate">Elevators</span>
                 </div>
-                <span className="font-bold text-[#14221F] text-sm block group-hover:text-[#183C32] transition-colors">{project.elevators || 'High-Speed Elevators'}</span>
+                <span className="font-bold text-[#14221F] text-xs sm:text-sm block group-hover:text-[#183C32] transition-colors truncate">{project.elevators || 'High-Speed Elevators'}</span>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group">
+              <div className="p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-[#FAF8F5] to-white border border-[#EAE6DF] hover:border-[#C59B4E]/60 transition-all shadow-2xs group min-w-0">
                 <div className="flex items-center gap-1.5 text-gray-400 mb-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-[10px] uppercase font-mono tracking-wider font-semibold">MahaRERA Registered</span>
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span className="text-[9px] sm:text-[10px] uppercase font-mono tracking-wider font-semibold truncate">MahaRERA</span>
                 </div>
-                <span className="font-bold font-mono text-emerald-800 text-xs block break-all mt-0.5">
+                <span className="font-bold font-mono text-emerald-800 text-[10px] sm:text-xs block truncate mt-0.5" title={project.rera || 'Verified / In Progress'}>
                   {project.rera || 'Verified / In Progress'}
                 </span>
               </div>
@@ -525,25 +540,25 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
                 {project.amenities.map((amenity, idx) => {
                   const meta = getAmenityConfig(amenity);
                   const IconComp = meta.icon;
                   return (
                     <div
                       key={idx}
-                      className="relative flex flex-col justify-between p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] shadow-[0_2px_8px_rgba(20,34,31,0.03)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.16)] transition-all duration-300 group hover:-translate-y-0.5"
+                      className="relative flex flex-col justify-between p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-b from-white to-[#FAF9F6] border border-[#EAE6DF] hover:border-[#C59B4E] shadow-[0_2px_8px_rgba(20,34,31,0.03)] hover:shadow-[0_8px_22px_rgba(197,155,78,0.16)] transition-all duration-300 group hover:-translate-y-0.5 min-w-0"
                     >
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-[#183C32]/10 text-[#183C32] group-hover:bg-[#183C32] group-hover:text-[#DFBE79] flex items-center justify-center transition-colors duration-300 shadow-2xs">
-                          <IconComp className="w-4 h-4" />
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#183C32]/10 text-[#183C32] group-hover:bg-[#183C32] group-hover:text-[#DFBE79] flex items-center justify-center transition-colors duration-300 shadow-2xs shrink-0">
+                          <IconComp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </div>
-                        <span className="text-[9px] uppercase font-mono tracking-wider text-gray-400 group-hover:text-[#C59B4E] transition-colors font-semibold">
+                        <span className="text-[8.5px] sm:text-[9px] uppercase font-mono tracking-wider text-gray-400 group-hover:text-[#C59B4E] transition-colors font-semibold truncate">
                           {meta.category}
                         </span>
                       </div>
                       <div>
-                        <h5 className="text-xs sm:text-[13px] font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug">
+                        <h5 className="text-[11.5px] sm:text-[13px] font-bold text-[#14221F] group-hover:text-[#183C32] transition-colors leading-snug break-words">
                           {amenity}
                         </h5>
                       </div>
@@ -575,7 +590,11 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               )}
             </div>
 
+<<<<<<< Updated upstream
             {/* Mobile View: High-End Responsive Cards (100% of Content Visible, No Horizontal Scroll Needed) */}
+=======
+            {/* Mobile View: High-End Responsive Cards (Zero Horizontal Scroll Needed) */}
+>>>>>>> Stashed changes
             <div className="sm:hidden space-y-2.5">
               {project.configurations && project.configurations.length > 0 ? (
                 project.configurations.map((cfg, idx) => (
@@ -699,7 +718,10 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                 </table>
               </div>
             </div>
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
           </div>
 
           {/* Section: Architectural Floor View */}
@@ -872,16 +894,40 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
 
             {/* Interactive Embedded Google Map with Map Controls */}
-            <div className="relative w-full h-72 sm:h-84 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-md bg-slate-100 group">
+            <div className="relative w-full h-56 sm:h-80 rounded-xl overflow-hidden border border-[#EAE6DF] shadow-md bg-slate-100 group">
               <iframe
                 key={`${project.id}-${mapType}-${mapZoom}`}
                 title={`${project.name} precision location on Google Maps`}
                 src={`https://maps.google.com/maps?q=${project.coords?.lat || 19.1197},${project.coords?.lng || 72.8468}&hl=en&z=${mapZoom}${mapType === 'satellite' ? '&t=k' : '&t=m'}&ie=UTF8&iwloc=near&output=embed`}
-                className="w-full h-full border-0"
+                className={`w-full h-full border-0 transition-opacity ${!isMapInteractive ? 'pointer-events-none sm:pointer-events-auto' : 'pointer-events-auto'}`}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
               />
+
+              {/* Mobile Scroll Guard: Prevent map from hijacking vertical page scrolling */}
+              {!isMapInteractive && (
+                <div
+                  onClick={() => setIsMapInteractive(true)}
+                  className="sm:hidden absolute inset-0 z-10 bg-black/10 flex items-center justify-center cursor-pointer p-4 select-none"
+                  aria-label="Tap to enable map interaction"
+                >
+                  <span className="px-3 py-1.5 rounded-full bg-white/95 text-[#14221F] text-[11px] font-semibold shadow-md border border-gray-200 flex items-center gap-1.5 backdrop-blur-sm">
+                    <Navigation className="w-3.5 h-3.5 text-[#245348]" />
+                    <span>Tap map to pan &amp; zoom</span>
+                  </span>
+                </div>
+              )}
+
+              {isMapInteractive && (
+                <button
+                  type="button"
+                  onClick={() => setIsMapInteractive(false)}
+                  className="sm:hidden absolute bottom-3 right-3 z-20 px-2.5 py-1 rounded-md bg-white/95 text-[10px] font-semibold text-[#14221F] shadow-md border border-gray-200"
+                >
+                  Lock map scroll
+                </button>
+              )}
 
               {/* Floating Map Controls Bar */}
               <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10 bg-white/95 backdrop-blur-md p-1 rounded-lg border border-gray-200 shadow-md">
@@ -1021,6 +1067,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
           </div>
 
+<<<<<<< Updated upstream
           {/* Bottom Action Footer */}
           <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <button
@@ -1033,10 +1080,43 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </button>
 
             <div className="flex items-center gap-2.5 w-full sm:w-auto">
+=======
+          {/* Spacing clearance for bottom bar */}
+          <div className="h-8" />
+
+        </div>
+
+        {/* Sticky Luxury Advisory & Action Bar */}
+        <div className="px-3 sm:px-6 py-2.5 sm:py-3.5 bg-[#FAF9F6] border-t border-[#EAE6DF] shrink-0 z-20">
+          {/* Mobile Layout (<sm): 2-tier stacked layout so starting price and action buttons never squish */}
+          <div className="sm:hidden space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <span className="text-[8.5px] uppercase font-mono tracking-wider text-gray-400 block font-semibold truncate">
+                  Starting Investment
+                </span>
+                <span className="text-sm font-bold text-[#14221F] font-serif block leading-tight truncate">
+                  {project.priceDisplay || project.priceRange || 'Price on Request'}
+                </span>
+              </div>
+              {project.status && (
+                <span className="text-[9px] uppercase font-mono tracking-wider px-2 py-0.5 rounded bg-[#183C32]/10 text-[#183C32] border border-[#183C32]/20 font-bold shrink-0">
+                  {project.status}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+>>>>>>> Stashed changes
               <button
                 onClick={onClose}
+                type="button"
                 aria-label="Close project details"
+<<<<<<< Updated upstream
                 className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer"
+=======
+                className="flex-1 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer active:scale-95"
+>>>>>>> Stashed changes
               >
                 Close
               </button>
@@ -1049,14 +1129,57 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                     project
                   });
                 }}
+                type="button"
                 aria-label={`Enquire about ${project.name}`}
+<<<<<<< Updated upstream
                 className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center cursor-pointer"
+=======
+                className="flex-2 py-2 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-white text-[11px] uppercase tracking-widest font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
+>>>>>>> Stashed changes
               >
-                Enquire Now
+                <span>Enquire Now</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
               </button>
             </div>
           </div>
 
+          {/* Desktop Layout (>=sm): Single horizontal bar */}
+          <div className="hidden sm:flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400 block font-semibold truncate">
+                {project.status || 'Verified Listing'}
+              </span>
+              <span className="text-lg font-bold text-[#14221F] font-serif truncate block leading-tight">
+                {project.priceDisplay || project.priceRange || 'Price on Request'}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={onClose}
+                type="button"
+                aria-label="Close project details"
+                className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  onClose();
+                  onOpenEnquiry({
+                    projectName: project.name,
+                    location: project.location,
+                    project
+                  });
+                }}
+                type="button"
+                aria-label={`Enquire about ${project.name}`}
+                className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm flex items-center gap-1.5 active:scale-95 cursor-pointer"
+              >
+                <span>Enquire Now</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
+              </button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -1064,7 +1187,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       {/* Fullscreen High-Resolution Lightbox View */}
       {isLightboxOpen && (
         <div
-          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
+          className="fixed inset-0 z-[120] bg-black/95 backdrop-blur-md flex items-center justify-center p-3 sm:p-6"
           onClick={() => setIsLightboxOpen(false)}
         >
           <button
