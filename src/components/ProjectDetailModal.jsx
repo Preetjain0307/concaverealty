@@ -177,11 +177,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-modal-title"
-<<<<<<< Updated upstream
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
-=======
       className="fixed inset-0 z-[100] flex items-center justify-center p-2 xs:p-3 sm:p-6 bg-black/75 backdrop-blur-sm overflow-y-auto"
->>>>>>> Stashed changes
       onClick={onClose}
     >
       <div
@@ -208,7 +204,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </p>
           </div>
 
-<<<<<<< Updated upstream
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleShareModal(project)}
@@ -228,15 +223,6 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               <X className="w-5 h-5" />
             </button>
           </div>
-=======
-          <button
-            onClick={onClose}
-            aria-label="Close project details"
-            className="p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors shrink-0 cursor-pointer"
-          >
-            <X className="w-5 h-5" />
-          </button>
->>>>>>> Stashed changes
         </div>
 
         {/* Modal Scrollable Body - Strictly lock horizontal overflow */}
@@ -590,11 +576,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
               )}
             </div>
 
-<<<<<<< Updated upstream
             {/* Mobile View: High-End Responsive Cards (100% of Content Visible, No Horizontal Scroll Needed) */}
-=======
-            {/* Mobile View: High-End Responsive Cards (Zero Horizontal Scroll Needed) */}
->>>>>>> Stashed changes
             <div className="sm:hidden space-y-2.5">
               {project.configurations && project.configurations.length > 0 ? (
                 project.configurations.map((cfg, idx) => (
@@ -718,10 +700,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                 </table>
               </div>
             </div>
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
           </div>
 
           {/* Section: Architectural Floor View */}
@@ -1067,22 +1046,20 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
           </div>
 
-<<<<<<< Updated upstream
-          {/* Bottom Action Footer */}
-          <div className="pt-4 border-t border-[#EAE6DF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Share Project Link button */}
+          <div className="pt-2 flex justify-start">
             <button
               type="button"
               onClick={() => handleShareModal(project)}
-              className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
+              className="px-4 py-2 rounded-lg border border-[#DFBE79]/70 bg-[#FAF8F3] hover:bg-[#C59B4E] text-[#8B6846] hover:text-[#14221F] text-xs uppercase tracking-wider font-bold transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
             >
-              <Share2 className="w-3.5 h-3.5 text-[#C59B4E] group-hover:text-inherit" />
+              <Share2 className="w-3.5 h-3.5 text-[#C59B4E]" />
               <span>Share Project Link</span>
             </button>
+          </div>
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
-=======
           {/* Spacing clearance for bottom bar */}
-          <div className="h-8" />
+          <div className="h-6" />
 
         </div>
 
@@ -1107,16 +1084,11 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
             </div>
 
             <div className="flex items-center gap-2">
->>>>>>> Stashed changes
               <button
                 onClick={onClose}
                 type="button"
                 aria-label="Close project details"
-<<<<<<< Updated upstream
-                className="flex-1 sm:flex-initial px-4 py-2.5 sm:py-2 rounded border border-gray-300 hover:border-black text-xs uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer"
-=======
                 className="flex-1 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 text-[11px] uppercase tracking-wider font-semibold text-gray-700 transition-colors text-center cursor-pointer active:scale-95"
->>>>>>> Stashed changes
               >
                 Close
               </button>
@@ -1131,11 +1103,7 @@ export function ProjectDetailModal({ project, onClose, onOpenTour, onOpenEnquiry
                 }}
                 type="button"
                 aria-label={`Enquire about ${project.name}`}
-<<<<<<< Updated upstream
-                className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-2 rounded bg-[#245348] hover:bg-[#1B3F37] text-white text-xs uppercase tracking-widest font-semibold transition-all shadow-sm text-center cursor-pointer"
-=======
                 className="flex-2 py-2 rounded-lg bg-gradient-to-r from-[#183C32] to-[#245348] hover:from-[#245348] hover:to-[#1B3F37] text-white text-[11px] uppercase tracking-widest font-semibold transition-all shadow-sm flex items-center justify-center gap-1.5 active:scale-95 cursor-pointer"
->>>>>>> Stashed changes
               >
                 <span>Enquire Now</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#DFBE79]" />
